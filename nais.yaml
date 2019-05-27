@@ -1,0 +1,20 @@
+team: teamdokumenthandtering
+image: "repo.adeo.no:5443/dok/serviceklagemottak"
+replicas:
+  min: 1
+  max: 2
+  cpuThresholdPercentage: 50
+port: 8080
+healthcheck:
+  liveness:
+    path: /isAlive
+    initialDelay: 30
+    failureThreshold: 10
+  readiness:
+    path: /isReady
+    initialDelay: 30
+    timeout: 3
+resources:
+  limits:
+    cpu: 3000m
+    memory: 1024Mi
