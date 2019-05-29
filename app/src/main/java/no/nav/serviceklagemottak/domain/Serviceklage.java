@@ -40,7 +40,7 @@ public class Serviceklage {
     @Column(name = "klagetekst", nullable = false)
     private String klagetekst;
 
-    @Column(name = "tilbakemelding", nullable = false)
+    @Column(name = "tilbakemelding")
     private String tilbakemelding;
 
 }
