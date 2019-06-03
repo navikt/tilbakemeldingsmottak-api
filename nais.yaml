@@ -31,3 +31,10 @@ fasitResources:
     propertyMap:
       username: SERVICEUSER_USERNAME
       password: SERVICEUSER_PASSWORD
+  - alias: srvpam-kandidatsok
+    resourceType: credential
+    propertyMap:
+      username: SPRING_MAIL_USERNAME
+      password: SPRING_MAIL_PASSWORD
+  - alias: serviceklagemottakconfig
+    resourceType: applicationproperties
