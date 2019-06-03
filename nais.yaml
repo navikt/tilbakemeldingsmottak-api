@@ -18,3 +18,16 @@ resources:
   limits:
     cpu: 3000m
     memory: 1024Mi
+fasitResources:
+  used:
+  - alias: serviceklagemottakDB
+    resourceType: datasource
+    propertyMap:
+      url: SPRING_DATASOURCE_URL
+      username: SPRING_DATASOURCE_USERNAME
+      password: SPRING_DATASOURCE_PASSWORD
+  - alias: srvserviceklagemottak
+    resourceType: credential
+    propertyMap:
+      username: SERVICEUSER_USERNAME
+      password: SERVICEUSER_PASSWORD
