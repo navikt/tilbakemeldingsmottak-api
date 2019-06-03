@@ -38,3 +38,8 @@ fasitResources:
       password: SPRING_MAIL_PASSWORD
   - alias: serviceklagemottakconfig
     resourceType: applicationproperties
+  exposed:
+  - alias: serviceklagemottak
+    resourceType: restservice
+    path: /rest/serviceklage
+    description: Rest-tjeneste for å persistere serviceklager og tilbakemeldinger
