@@ -7,7 +7,12 @@ import lombok.Getter;
 @Getter
 public class OpprettServiceklageRequest {
 
-    private String email;
+    private PaaVegneAvType paaVegneAv;
+    private Innmelder innmelder;
+    private PaaVegneAvPerson paaVegneAvPerson;
+    private PaaVegneAvBedrift paaVegneAvBedrift;
+    private String klagetype;
     private String klagetekst;
+    private Boolean oenskerAaKontaktes;
 
 }
