@@ -20,17 +20,16 @@ import javax.transaction.Transactional;
 @RequestMapping("/rest/serviceklage")
 public class ServiceklageRestController {
 
-    private final OpprettServiceklageValidator opprettServiceklageValidator;
     private final ServiceklageService serviceklageService;
     private final RegistrerTilbakemeldingValidator registrerTilbakemeldingValidator;
+    private final OpprettServiceklageValidator opprettServiceklageValidator;
 
     @Inject
-    public ServiceklageRestController(final OpprettServiceklageValidator opprettServiceklageValidator,
-                                      final ServiceklageService serviceklageService,
+    public ServiceklageRestController(final ServiceklageService serviceklageService,
                                       final RegistrerTilbakemeldingValidator registrerTilbakemeldingValidator) {
-        this.opprettServiceklageValidator = opprettServiceklageValidator;
         this.serviceklageService = serviceklageService;
         this.registrerTilbakemeldingValidator = registrerTilbakemeldingValidator;
+        this.opprettServiceklageValidator = new OpprettServiceklageValidator();
     }
 
     @Transactional

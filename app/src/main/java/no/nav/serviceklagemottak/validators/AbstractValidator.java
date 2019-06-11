@@ -5,10 +5,23 @@ import org.apache.commons.lang3.StringUtils;
 
 public abstract class AbstractValidator {
 
-    protected static void hasText(String input, String feltnavn) {
+    static void hasText(String input, String feltnavn) {
+        hasText(input, feltnavn, "");
+    }
+
+    static void hasText(String input, String feltnavn, String condition) {
         if (StringUtils.isBlank(input)) {
-            throw new IllegalArgumentException(String.format("%s kan ikke være null eller tom", feltnavn));
+            throw new InvalidRequestException(String.format("%s kan ikke være null eller tom %s", feltnavn, condition));
         }
     }
 
+    static void isNotNull(Object input, String feltnavn) {
+        isNotNull(input, feltnavn, "");
+    }
+
+        static void isNotNull(Object input, String feltnavn, String condition) {
+        if (input == null) {
+            throw new InvalidRequestException(String.format("%s kan ikke være null %s", feltnavn, condition));
+        }
+    }
 }
