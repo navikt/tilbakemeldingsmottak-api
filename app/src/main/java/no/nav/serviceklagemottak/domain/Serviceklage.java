@@ -34,8 +34,8 @@ public class Serviceklage {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "email", nullable = false)
-    private String email;
+    @Column(name = "navn", nullable = false)
+    private String navn;
 
     @Column(name = "klagetekst", nullable = false)
     private String klagetekst;

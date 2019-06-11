@@ -24,7 +24,7 @@ public class ServiceklageService {
 
     public long opprettServiceklage(OpprettServiceklageRequest request) {
         Serviceklage serviceklage = Serviceklage.builder()
-                .email(request.getEmail())
+                .navn(request.getInnmelder().getNavn())
                 .klagetekst(request.getKlagetekst())
                 .build();
 

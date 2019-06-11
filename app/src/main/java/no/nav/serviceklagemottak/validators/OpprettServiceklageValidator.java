@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 public class OpprettServiceklageValidator extends AbstractValidator {
 
     public void validateRequest(OpprettServiceklageRequest request) {
-        validateEmail(request.getEmail());
         hasText(request.getKlagetekst(), "klagetekst");
     }
 
