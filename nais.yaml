@@ -29,8 +29,8 @@ fasitResources:
   - alias: srvserviceklagemottak
     resourceType: credential
     propertyMap:
-      username: SPRING_MAIL_USERNAME
-      password: SPRING_MAIL_PASSWORD
+      username: SERVICEUSER_USERNAME
+      password: SERVICEUSER_PASSWORD
   - alias: serviceklagemottakconfig
     resourceType: applicationproperties
   exposed:
