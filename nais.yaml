@@ -31,8 +31,6 @@ fasitResources:
     propertyMap:
       username: SERVICEUSER_USERNAME
       password: SERVICEUSER_PASSWORD
-  - alias: serviceklagemottakconfig
-    resourceType: applicationproperties
   exposed:
   - alias: serviceklagemottak
     resourceType: restservice
