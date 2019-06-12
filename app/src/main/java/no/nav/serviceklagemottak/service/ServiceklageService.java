@@ -32,7 +32,7 @@ public class ServiceklageService {
 
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med id=%d lagret", serviceklage.getId());
-        emailService.sendMail("bjornar.hunshamar@nav.no", "Serviceklage", "Serviceklage er mottatt");
+        emailService.sendMail("leif.ljastad@trygdeetaten.no", "Serviceklage", "Serviceklage er mottatt");
         log.info("Mail sendt");
 
         return serviceklage.getId();
