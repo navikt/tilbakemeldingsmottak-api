@@ -26,11 +26,16 @@ fasitResources:
       url: SPRING_DATASOURCE_URL
       username: SPRING_DATASOURCE_USERNAME
       password: SPRING_DATASOURCE_PASSWORD
-  - alias: srvpam-serviceklage-temp
+  - alias: srvserviceklagemottak
     resourceType: credential
     propertyMap:
       username: SERVICEUSER_USERNAME
       password: SERVICEUSER_PASSWORD
+  - alias: srvpam-serviceklage-temp
+    resourceType: credential
+    propertyMap:
+      username: SPRING_MAIL_USERNAME
+      password: SPRING_MAIL_PASSWORD
   exposed:
   - alias: serviceklagemottak
     resourceType: restservice
