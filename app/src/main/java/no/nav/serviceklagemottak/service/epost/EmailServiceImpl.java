@@ -17,7 +17,7 @@ public class EmailServiceImpl {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
-        message.setFrom("noreply-serviceklage@nav.no");
+        message.setFrom("srvpam-kandidatsok@preprod.local");
         emailSender.send(message);
     }
 
