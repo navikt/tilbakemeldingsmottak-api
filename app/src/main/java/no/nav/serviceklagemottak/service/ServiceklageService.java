@@ -1,5 +1,6 @@
 package no.nav.serviceklagemottak.service;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.serviceklagemottak.api.OpprettServiceklageRequest;
 import no.nav.serviceklagemottak.api.RegistrerTilbakemeldingRequest;
 import no.nav.serviceklagemottak.domain.Serviceklage;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 
 @Service
+@Slf4j
 public class ServiceklageService {
 
     private ServiceklageRepository serviceklageRepository;
@@ -29,17 +31,20 @@ public class ServiceklageService {
                 .build();
 
         serviceklageRepository.save(serviceklage);
+        log.info("Serviceklage med id=%d lagret", serviceklage.getId());
         emailService.sendMail("bjornar.hunshamar@nav.no", "Serviceklage", "Serviceklage er mottatt");
+        log.info("Mail sendt");
 
         return serviceklage.getId();
     }
 
     public void registrerTilbakemelding(long id, RegistrerTilbakemeldingRequest request) {
         Serviceklage serviceklage = serviceklageRepository.findById(id)
-                .orElseThrow(() -> new ServiceklageIkkeFunnetException("Kunne ikke finne serviceklage med id=%d" + id));
+                .orElseThrow(() -> new ServiceklageIkkeFunnetException("Kunne ikke finne serviceklage med id=" + id));
 
         serviceklage.setTilbakemelding(request.getTilbakemelding());
 
         serviceklageRepository.save(serviceklage);
+        log.info("Tilbkaemelding registrert");
     }
 }
