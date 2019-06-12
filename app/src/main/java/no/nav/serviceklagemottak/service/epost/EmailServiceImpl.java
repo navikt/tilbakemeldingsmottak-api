@@ -17,6 +17,7 @@ public class EmailServiceImpl {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
+        message.setFrom("srvserviceklagemot@preprod.local");
         emailSender.send(message);
     }
 
