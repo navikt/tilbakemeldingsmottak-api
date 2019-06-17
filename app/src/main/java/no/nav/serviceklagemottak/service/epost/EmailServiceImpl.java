@@ -9,8 +9,12 @@ import javax.inject.Inject;
 @Component
 public class EmailServiceImpl {
 
+    private final JavaMailSender emailSender;
+
     @Inject
-    private JavaMailSender emailSender;
+    public EmailServiceImpl(JavaMailSender emailSender) {
+        this.emailSender = emailSender;
+    }
 
     public void sendMail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();

@@ -43,6 +43,7 @@ public class AbstractIT {
 
     @BeforeEach
     void setup() {
+        serviceklageRepository.deleteAll();
         smtpServer = new GreenMail(new ServerSetup(port, null, "smtp"));
         smtpServer.start();
     }

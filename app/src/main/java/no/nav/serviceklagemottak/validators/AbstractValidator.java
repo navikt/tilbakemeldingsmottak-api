@@ -19,7 +19,7 @@ public abstract class AbstractValidator {
         isNotNull(input, feltnavn, "");
     }
 
-        static void isNotNull(Object input, String feltnavn, String condition) {
+    static void isNotNull(Object input, String feltnavn, String condition) {
         if (input == null) {
             throw new InvalidRequestException(String.format("%s kan ikke være null %s", feltnavn, condition));
         }

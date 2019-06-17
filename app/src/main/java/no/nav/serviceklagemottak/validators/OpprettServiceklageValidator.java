@@ -14,7 +14,7 @@ public class OpprettServiceklageValidator extends AbstractValidator {
         isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes");
 
         validateInnmelder(request.getInnmelder(), request.getPaaVegneAv());
-        if (request.getPaaVegneAv() == PaaVegneAvType.PERSON) {
+        if (request.getPaaVegneAv() == PaaVegneAvType.ANNEN_PERSON) {
             validatePaaVegneAvPerson(request.getPaaVegneAvPerson());
         }
         if (request.getPaaVegneAv() == PaaVegneAvType.BEDRIFT) {
@@ -25,26 +25,26 @@ public class OpprettServiceklageValidator extends AbstractValidator {
     private void validateInnmelder(Innmelder innmelder, PaaVegneAvType paaVegneAv) {
         isNotNull(innmelder, "innmelder");
         hasText(innmelder.getNavn(), "innmelder.navn");
-        hasText(innmelder.getPersonnummer(), "innmelder.personnummer");
-        if (paaVegneAv == null) {
-            hasText(innmelder.getTelefonnummer(), "innmelder.telefonnummer", "dersom paaVegneAv ikke er satt");
+        hasText(innmelder.getTelefonnummer(), "innmelder.telefonnummer");
+        if (paaVegneAv == PaaVegneAvType.PRIVATPERSON) {
+            hasText(innmelder.getPersonnummer(), "innmelder.personnummer", "dersom paaVegneAv=PRIVATPERSON");
         }
-        if (paaVegneAv == PaaVegneAvType.PERSON) {
-            isNotNull(innmelder.getHarFullmakt(), "innmelder.harFullmakt", "dersom paaVegneAv=person");
+        if (paaVegneAv == PaaVegneAvType.ANNEN_PERSON) {
+            isNotNull(innmelder.getHarFullmakt(), "innmelder.harFullmakt", "dersom paaVegneAv=ANNEN_PERSON");
         }
-        if (paaVegneAv == PaaVegneAvType.PERSON || paaVegneAv == PaaVegneAvType.BEDRIFT) {
-            hasText(innmelder.getRolle(), "innmelder.rolle", "dersom paaVegneAv er satt");
+        if (paaVegneAv == PaaVegneAvType.ANNEN_PERSON || paaVegneAv == PaaVegneAvType.BEDRIFT) {
+            hasText(innmelder.getRolle(), "innmelder.rolle", "dersom paaVegneAv=ANNEN_PERSON eller paaVegneAv=BEDRIFT");
         }
     }
 
     private void validatePaaVegneAvPerson(PaaVegneAvPerson paaVegneAvPerson) {
-        isNotNull(paaVegneAvPerson, "paaVegneAvPerson", "dersom paaVegneAv=person");
+        isNotNull(paaVegneAvPerson, "paaVegneAvPerson", "dersom paaVegneAv=ANNEN_PERSON");
         hasText(paaVegneAvPerson.getNavn(), "paaVegneAvPerson.navn");
         hasText(paaVegneAvPerson.getPersonnummer(), "paaVegneAvPerson.personnummer");
     }
 
     private void validatePaaVegneAvBedrift(PaaVegneAvBedrift paaVegneAvBedrift) {
-        isNotNull(paaVegneAvBedrift, "paaVegneAvBedrift", "dersom paaVegneAv=bedrift");
+        isNotNull(paaVegneAvBedrift, "paaVegneAvBedrift", "dersom paaVegneAv=BEDRIFT");
         hasText(paaVegneAvBedrift.getNavn(), "paaVegneAvBedrift.navn");
         hasText(paaVegneAvBedrift.getOrganisasjonsnummer(), "paaVegneAvBedrift.organisasjonsnummer");
         hasText(paaVegneAvBedrift.getPostadresse(), "paaVegneAvBedrift.postadresse");

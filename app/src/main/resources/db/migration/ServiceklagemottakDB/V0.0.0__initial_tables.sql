@@ -1,10 +1,9 @@
 CREATE TABLE serviceklage (
-  id                      NUMBER(3) NOT NULL,
-  navn                   VARCHAR(320) NOT NULL,
-  klagetekst              VARCHAR(512) NOT NULL,
-  tilbakemelding          VARCHAR(512)
+  serviceklage_id               NUMBER GENERATED ALWAYS AS IDENTITY,
+  dato_opprettet                TIMESTAMP(6) NOT NULL,
+  paa_vegne_av                  VARCHAR2(15),
+  klagen_gjelder_id             VARCHAR2(15) NOT NULL,
+  klagetype                     VARCHAR2(30),
+  klagetekst                    CLOB,
+  oensker_aa_kontaktes          NUMBER(1)
 );
-
-ALTER TABLE serviceklage ADD CONSTRAINT serviceklage_pk PRIMARY KEY (id);
-
-CREATE SEQUENCE serviceklage_seq;

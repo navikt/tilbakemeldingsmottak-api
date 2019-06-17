@@ -8,30 +8,31 @@ import no.nav.serviceklagemottak.api.PaaVegneAvType;
 
 public class TestUtils {
 
-    private static final String NAVN_INNMELDER = "Innmelder Innmeldersen";
-    private static final String PERSONNUMMER_INNMELDER = "0101200012345";
-    private static final String TELEFONNUMMER_INNMELDER = "81549300";
-    private static final Boolean HAR_FULLMAKT = Boolean.TRUE;
-    private static final String ROLLE = "Advokat";
+    public static final String NAVN_INNMELDER = "Innmelder Innmeldersen";
+    public static final String PERSONNUMMER_INNMELDER = "0101200012345";
+    public static final String TELEFONNUMMER_INNMELDER = "81549300";
+    public static final Boolean HAR_FULLMAKT = Boolean.TRUE;
+    public static final String ROLLE = "Advokat";
 
-    private static final String NAVN_PERSON = "Paal Vegne Personsen";
-    private static final String PERSONNUMMER_PERSON = "0203200112345";
+    public static final String NAVN_PERSON = "Paal Vegne Personsen";
+    public static final String PERSONNUMMER_PERSON = "0203200112345";
 
-    private static final String NAVN_BEDRIFT= "Bedrift AS";
-    private static final String ORGANISASJONSNUMMER= "123456789";
-    private static final String POSTADRESSE= "Nedre Bedriftsgate 15A, 0168 OSLO";
-    private static final String TELEFONNUMMER_BEDRIFT= "12345678";
+    public static final String NAVN_BEDRIFT= "Bedrift AS";
+    public static final String ORGANISASJONSNUMMER= "123456789";
+    public static final String POSTADRESSE= "Nedre Bedriftsgate 15A, 0168 OSLO";
+    public static final String TELEFONNUMMER_BEDRIFT= "12345678";
 
-    private static final String KLAGETYPE = "Nav.no";
-    private static final String KLAGETEKST = "Saksbehandleren var slem";
-    private static final Boolean OENSKER_AA_KONTAKTES = Boolean.TRUE;
+    public static final String KLAGETYPE = "Nav.no";
+    public static final String KLAGETEKST = "Saksbehandleren var slem";
+    public static final Boolean OENSKER_AA_KONTAKTES = Boolean.TRUE;
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatperson() {
         return OpprettServiceklageRequest.builder()
+                .paaVegneAv(PaaVegneAvType.PRIVATPERSON)
                 .innmelder(Innmelder.builder()
                         .navn(NAVN_INNMELDER)
-                        .personnummer(PERSONNUMMER_INNMELDER)
                         .telefonnummer(TELEFONNUMMER_INNMELDER)
+                        .personnummer(PERSONNUMMER_INNMELDER)
                         .build())
                 .klagetype(KLAGETYPE)
                 .klagetekst(KLAGETEKST)
@@ -41,10 +42,10 @@ public class TestUtils {
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPaaVegneAvPerson() {
         return OpprettServiceklageRequest.builder()
-                .paaVegneAv(PaaVegneAvType.PERSON)
+                .paaVegneAv(PaaVegneAvType.ANNEN_PERSON)
                 .innmelder(Innmelder.builder()
                         .navn(NAVN_INNMELDER)
-                        .personnummer(PERSONNUMMER_INNMELDER)
+                        .telefonnummer(TELEFONNUMMER_INNMELDER)
                         .harFullmakt(HAR_FULLMAKT)
                         .rolle(ROLLE)
                         .build())
@@ -63,7 +64,7 @@ public class TestUtils {
                 .paaVegneAv(PaaVegneAvType.BEDRIFT)
                 .innmelder(Innmelder.builder()
                         .navn(NAVN_INNMELDER)
-                        .personnummer(PERSONNUMMER_INNMELDER)
+                        .telefonnummer(TELEFONNUMMER_INNMELDER)
                         .rolle(ROLLE)
                         .build())
                 .paaVegneAvBedrift(PaaVegneAvBedrift.builder()

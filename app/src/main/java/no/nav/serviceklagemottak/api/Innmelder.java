@@ -13,8 +13,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Innmelder {
     private String navn;
-    private String personnummer;
     private String telefonnummer;
+    private String personnummer;
     private Boolean harFullmakt;
     private String rolle;
 }
