@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 
 @RestController
@@ -28,7 +29,7 @@ public class ServiceklageRestController {
 
     @Transactional
     @PostMapping
-    public ResponseEntity<String> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) {
+    public ResponseEntity<String> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws MessagingException {
         opprettServiceklageValidator.validateRequest(request);
         long id = serviceklageService.opprettServiceklage(request);
         return ResponseEntity

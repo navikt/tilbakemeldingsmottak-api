@@ -9,6 +9,7 @@ import no.nav.serviceklagemottak.service.mappers.OpprettServiceklageRequestMappe
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import javax.mail.MessagingException;
 
 @Service
 @Slf4j
@@ -25,12 +26,12 @@ public class ServiceklageService {
         this.opprettServiceklageRequestMapper = opprettServiceklageRequestMapper;
     }
 
-    public long opprettServiceklage(OpprettServiceklageRequest request) {
+    public long opprettServiceklage(OpprettServiceklageRequest request) throws MessagingException {
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request);
 
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med serviceklageId={} persistert", serviceklage.getServiceklageId());
-        emailService.sendMail("bjornar.hunshamar@nav.no", "Serviceklage", "Serviceklage er mottatt");
+        emailService.sendMail(request, serviceklage.getServiceklageId());
 
         return serviceklage.getServiceklageId();
     }
