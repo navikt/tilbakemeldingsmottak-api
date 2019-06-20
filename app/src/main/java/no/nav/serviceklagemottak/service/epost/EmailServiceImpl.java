@@ -25,7 +25,7 @@ public class EmailServiceImpl {
     public void sendMail(OpprettServiceklageRequest request, long id) throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
         message.setHeader("Content-Encoding", "UTF-8");
-        message.setContent(createContent(request), "text/html");
+        message.setContent(createContent(request), "text/html; charset=UTF-8");
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
         helper.setTo(TO);
         helper.setFrom(FROM);
