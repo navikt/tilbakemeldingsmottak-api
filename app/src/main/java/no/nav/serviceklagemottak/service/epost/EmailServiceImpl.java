@@ -25,7 +25,7 @@ public class EmailServiceImpl {
     public void sendMail(OpprettServiceklageRequest request, long id) throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
         message.setContent(createContent(request), "text/html");
-        MimeMessageHelper helper = new MimeMessageHelper(message);
+        MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
         helper.setTo(TO);
         helper.setFrom(FROM);
         helper.setSubject("Serviceklage med id=" + id + " mottatt");
@@ -63,6 +63,6 @@ public class EmailServiceImpl {
     }
 
     private String createParagraph(String fieldname, String content) {
-        return String.format("<p><b>%s:</b> %s</p>/n", fieldname, content);
+        return String.format("<p><b>%s:</b> %s</p>", fieldname, content);
     }
 }
