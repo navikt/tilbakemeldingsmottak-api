@@ -20,7 +20,7 @@
 		<appender-ref ref="applikasjonslogg"/>
 	</root>
 
-	<logger name="no.nav.serviceklagemottak" level="INFO" additivity="false">
+	<logger name="no.nav.tilbakemeldingsmottak" level="INFO" additivity="false">
 		<appender-ref ref="applikasjonslogg"/>
 	</logger>
 </included>

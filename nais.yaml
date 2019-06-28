@@ -1,5 +1,5 @@
 team: teamdokumenthandtering
-image: "repo.adeo.no:5443/dok/serviceklagemottak"
+image: "repo.adeo.no:5443/dok/tilbakemeldingsmottak"
 replicas:
   min: 1
   max: 2
@@ -20,19 +20,19 @@ resources:
     memory: 1024Mi
 fasitResources:
   used:
-  - alias: serviceklagemottakDB
+  - alias: serviceklageDB
     resourceType: datasource
     propertyMap:
       url: SPRING_DATASOURCE_URL
       username: SPRING_DATASOURCE_USERNAME
       password: SPRING_DATASOURCE_PASSWORD
-  - alias: srvserviceklagemottak
+  - alias: srvtilbakemeldingsmottak
     resourceType: credential
     propertyMap:
       username: SERVICEUSER_USERNAME
       password: SERVICEUSER_PASSWORD
   exposed:
-  - alias: serviceklagemottak
+  - alias: tilbakemeldingsmottak
     resourceType: restservice
     path: /rest/serviceklage
     description: Rest-tjeneste for å persistere serviceklager og tilbakemeldinger
