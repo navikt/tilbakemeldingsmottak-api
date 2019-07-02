@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-@Profile("nais")
+@Profile({"nais", "itest"})
 @Component
 public class EmailServiceImpl extends AbstractEmailService{
 
