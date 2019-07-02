@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
-import no.nav.tilbakemeldingsmottak.service.epost.EmailServiceImpl;
+import no.nav.tilbakemeldingsmottak.service.epost.AbstractEmailService;
 import no.nav.tilbakemeldingsmottak.service.epost.HtmlContent;
 import no.nav.tilbakemeldingsmottak.service.mappers.OpprettServiceklageRequestMapper;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,11 +19,11 @@ import javax.mail.internet.MimeMessage;
 public class ServiceklageService {
 
     private ServiceklageRepository serviceklageRepository;
-    private EmailServiceImpl emailService;
+    private AbstractEmailService emailService;
     private final OpprettServiceklageRequestMapper opprettServiceklageRequestMapper;
 
     @Inject
-    public ServiceklageService(ServiceklageRepository serviceklageRepository, EmailServiceImpl emailService, OpprettServiceklageRequestMapper opprettServiceklageRequestMapper) {
+    public ServiceklageService(ServiceklageRepository serviceklageRepository, AbstractEmailService emailService, OpprettServiceklageRequestMapper opprettServiceklageRequestMapper) {
         this.serviceklageRepository = serviceklageRepository;
         this.emailService = emailService;
         this.opprettServiceklageRequestMapper = opprettServiceklageRequestMapper;

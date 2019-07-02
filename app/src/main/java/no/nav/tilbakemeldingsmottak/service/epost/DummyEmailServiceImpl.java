@@ -7,16 +7,17 @@ import org.springframework.stereotype.Component;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-@Profile("nais")
+@Profile("local")
 @Component
-public class EmailServiceImpl extends AbstractEmailService{
+public class DummyEmailServiceImpl extends AbstractEmailService {
 
-    public EmailServiceImpl(JavaMailSender emailSender) {
+    public DummyEmailServiceImpl(JavaMailSender emailSender) {
         super(emailSender);
     }
 
     @Override
     public void sendMail(MimeMessage message) throws MessagingException {
-        emailSender.send(message);
+
     }
+
 }

@@ -2,7 +2,7 @@ package no.nav.tilbakemeldingsmottak.service;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerRequest;
-import no.nav.tilbakemeldingsmottak.service.epost.EmailServiceImpl;
+import no.nav.tilbakemeldingsmottak.service.epost.AbstractEmailService;
 import no.nav.tilbakemeldingsmottak.service.epost.HtmlContent;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -15,10 +15,10 @@ import javax.mail.internet.MimeMessage;
 @Slf4j
 public class FeilOgManglerService {
 
-    private EmailServiceImpl emailService;
+    private AbstractEmailService emailService;
 
     @Inject
-    public FeilOgManglerService(EmailServiceImpl emailService) {
+    public FeilOgManglerService(AbstractEmailService emailService) {
         this.emailService = emailService;
     }
 
