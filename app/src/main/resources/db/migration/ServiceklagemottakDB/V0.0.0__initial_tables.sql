@@ -1,5 +1,5 @@
 CREATE TABLE serviceklage (
-  serviceklage_id               NUMBER GENERATED ALWAYS AS IDENTITY,
+  serviceklage_id               NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   dato_opprettet                TIMESTAMP(6) NOT NULL,
   paa_vegne_av                  VARCHAR2(15),
   klagen_gjelder_id             VARCHAR2(15) NOT NULL,
