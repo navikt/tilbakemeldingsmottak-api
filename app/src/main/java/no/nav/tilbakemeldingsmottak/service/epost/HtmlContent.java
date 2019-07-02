@@ -5,7 +5,7 @@ import lombok.Getter;
 public class HtmlContent {
 
     @Getter
-    private String contentString;
+    private String contentString = "";
 
     public void addParagraph(String fieldname, String content) {
         String paragraph = createParagraph(fieldname, content);
