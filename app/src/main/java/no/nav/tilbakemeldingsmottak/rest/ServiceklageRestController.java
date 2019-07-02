@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest;
 
+import com.itextpdf.text.DocumentException;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.service.ServiceklageService;
 import no.nav.tilbakemeldingsmottak.validators.OpprettServiceklageValidator;
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import java.io.FileNotFoundException;
 
 @RestController
 @RequestMapping("/rest/serviceklage")
@@ -30,7 +31,7 @@ public class ServiceklageRestController {
 
     @Transactional
     @PostMapping
-    public ResponseEntity<String> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws MessagingException {
+    public ResponseEntity<String> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws FileNotFoundException, DocumentException {
         opprettServiceklageValidator.validateRequest(request);
         long id = serviceklageService.opprettServiceklage(request);
         return ResponseEntity
