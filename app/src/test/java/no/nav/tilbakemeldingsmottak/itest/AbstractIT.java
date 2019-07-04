@@ -63,7 +63,7 @@ public class AbstractIT {
 
     private String getToken() {
         TokenGeneratorController tokenGeneratorController = new TokenGeneratorController();
-        return tokenGeneratorController.issueToken("test");
+        return tokenGeneratorController.issueToken("srvtest");
     }
 
 }
