@@ -38,7 +38,7 @@ public class AbstractIT {
     @Inject
     protected TestRestTemplate restTemplate;
 
-    private GreenMail smtpServer;
+    protected GreenMail smtpServer;
     private int port = 2500;
 
     @BeforeEach

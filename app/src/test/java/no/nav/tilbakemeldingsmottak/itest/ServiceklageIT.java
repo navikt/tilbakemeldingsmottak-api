@@ -29,9 +29,9 @@ class ServiceklageIT extends AbstractIT {
 
     @Test
     void happyPathPrivatperson() {
-        OpprettServiceklageRequest opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
-        HttpEntity request = new HttpEntity(opprettServiceklageRequest, createHeaders());
-        ResponseEntity<String> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, request, String.class);
+        OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<String> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, String.class);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
@@ -39,7 +39,7 @@ class ServiceklageIT extends AbstractIT {
         assertNotNull(serviceklage.getServiceklageId());
         assertNotNull(serviceklage.getDatoOpprettet());
         assertEquals(serviceklage.getPaaVegneAv(), PRIVATPERSON.name());
-        assertEquals(serviceklage.getKlagenGjelderId().toString(), PERSONNUMMER_INNMELDER);
+        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER_INNMELDER);
         assertEquals(serviceklage.getKlagetype(), KLAGETYPE);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
@@ -47,9 +47,9 @@ class ServiceklageIT extends AbstractIT {
 
     @Test
     void happyPathAnnenPerson() {
-        OpprettServiceklageRequest opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvPerson();
-        HttpEntity request = new HttpEntity(opprettServiceklageRequest, createHeaders());
-        ResponseEntity<String> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, request, String.class);
+        OpprettServiceklageRequest request = createOpprettServiceklageRequestPaaVegneAvPerson();
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<String> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, String.class);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
@@ -57,7 +57,7 @@ class ServiceklageIT extends AbstractIT {
         assertNotNull(serviceklage.getServiceklageId());
         assertNotNull(serviceklage.getDatoOpprettet());
         assertEquals(serviceklage.getPaaVegneAv(), ANNEN_PERSON.name());
-        assertEquals(serviceklage.getKlagenGjelderId().toString(), PERSONNUMMER_PERSON);
+        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER_PERSON);
         assertEquals(serviceklage.getKlagetype(), KLAGETYPE);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
@@ -65,9 +65,9 @@ class ServiceklageIT extends AbstractIT {
 
     @Test
     void happyPathBedrift() {
-        OpprettServiceklageRequest opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
-        HttpEntity request = new HttpEntity(opprettServiceklageRequest, createHeaders());
-        ResponseEntity<String> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, request, String.class);
+        OpprettServiceklageRequest request = createOpprettServiceklageRequestPaaVegneAvBedrift();
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<String> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, String.class);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
@@ -75,7 +75,7 @@ class ServiceklageIT extends AbstractIT {
         assertNotNull(serviceklage.getServiceklageId());
         assertNotNull(serviceklage.getDatoOpprettet());
         assertEquals(serviceklage.getPaaVegneAv(), BEDRIFT.name());
-        assertEquals(serviceklage.getKlagenGjelderId().toString(), ORGANISASJONSNUMMER);
+        assertEquals(serviceklage.getKlagenGjelderId(), ORGANISASJONSNUMMER);
         assertEquals(serviceklage.getKlagetype(), KLAGETYPE);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);

@@ -1,10 +1,12 @@
 package no.nav.tilbakemeldingsmottak;
 
 import no.nav.tilbakemeldingsmottak.api.Innmelder;
+import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.api.PaaVegneAvBedrift;
 import no.nav.tilbakemeldingsmottak.api.PaaVegneAvPerson;
 import no.nav.tilbakemeldingsmottak.api.PaaVegneAvType;
+import no.nav.tilbakemeldingsmottak.api.SendRosRequest;
 
 public class TestUtils {
 
@@ -25,6 +27,13 @@ public class TestUtils {
     public static final String KLAGETYPE = "Nav.no";
     public static final String KLAGETEKST = "Saksbehandleren var slem";
     public static final Boolean OENSKER_AA_KONTAKTES = Boolean.TRUE;
+
+    public static final String EPOST = "navn@email.com";
+    public static final String KATEGORI = "Teknisk feil på nav.no";
+    public static final String BESKRIVELSE_FEIL = "Det er en teknisk feil på nav.no";
+
+    public static final String NAV_KONTOR = "NAV Grünerløkka";
+    public static final String BESKRIVELSE_ROS = "Saksbehandleren var snill";
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatperson() {
         return OpprettServiceklageRequest.builder()
@@ -78,4 +87,21 @@ public class TestUtils {
                 .oenskerAaKontaktes(OENSKER_AA_KONTAKTES)
                 .build();
     }
+
+    public static MeldFeilOgManglerRequest createMeldFeilOgManglerRequest() {
+        return MeldFeilOgManglerRequest.builder()
+                .kategori(KATEGORI)
+                .epost(EPOST)
+                .beskrivelse(BESKRIVELSE_FEIL)
+                .build();
+    }
+
+    public static SendRosRequest createSendRosRequest() {
+        return SendRosRequest.builder()
+                .navKontor(NAV_KONTOR)
+                .beskrivelse(BESKRIVELSE_ROS)
+                .navn(NAVN_INNMELDER)
+                .build();
+    }
+
 }
