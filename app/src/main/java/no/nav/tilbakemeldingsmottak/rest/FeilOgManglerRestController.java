@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest;
 
+import no.nav.security.oidc.api.Protected;
 import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.service.FeilOgManglerService;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 
+@Protected
 @RestController
 @RequestMapping("/rest/feil-og-mangler")
 public class FeilOgManglerRestController {

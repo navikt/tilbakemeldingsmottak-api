@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.itest;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import no.nav.security.spring.oidc.test.TokenGeneratorController;
 import no.nav.tilbakemeldingsmottak.CoreConfig;
 import no.nav.tilbakemeldingsmottak.config.RepositoryConfig;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
@@ -56,6 +57,13 @@ public class AbstractIT {
     HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken());
         return headers;
     }
+
+    private String getToken() {
+        TokenGeneratorController tokenGeneratorController = new TokenGeneratorController();
+        return tokenGeneratorController.issueToken("test");
+    }
+
 }

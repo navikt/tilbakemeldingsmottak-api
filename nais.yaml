@@ -26,11 +26,18 @@ fasitResources:
       url: SPRING_DATASOURCE_URL
       username: SPRING_DATASOURCE_USERNAME
       password: SPRING_DATASOURCE_PASSWORD
+
   - alias: srvtilbakemeldingsmottak
     resourceType: credential
     propertyMap:
       username: SERVICEUSER_USERNAME
       password: SERVICEUSER_PASSWORD
+
+  - alias: security-token-service-openid-configuration
+    resourceType: restservice
+    propertyMap:
+      url: NO_NAV_SECURITY_OIDC_ISSUER_RESTSTS_DISCOVERYURL
+
   exposed:
   - alias: tilbakemeldingsmottak
     resourceType: restservice

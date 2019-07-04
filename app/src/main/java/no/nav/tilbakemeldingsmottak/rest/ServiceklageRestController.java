@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest;
 
 import com.itextpdf.text.DocumentException;
+import no.nav.security.oidc.api.Protected;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.service.ServiceklageService;
 import no.nav.tilbakemeldingsmottak.validators.OpprettServiceklageValidator;
@@ -16,6 +17,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.FileNotFoundException;
 
+@Protected
 @RestController
 @RequestMapping("/rest/serviceklage")
 public class ServiceklageRestController {
