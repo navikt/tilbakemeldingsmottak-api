@@ -5,11 +5,13 @@ import no.nav.security.oidc.api.Protected;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.service.ServiceklageService;
 import no.nav.tilbakemeldingsmottak.validators.OpprettServiceklageValidator;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,9 +35,10 @@ public class ServiceklageRestController {
 
     @Transactional
     @PostMapping
-    public ResponseEntity<String> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws FileNotFoundException, DocumentException {
+    public ResponseEntity<String> opprettServiceklage(@RequestBody OpprettServiceklageRequest request,
+                                                      @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationHeader) throws FileNotFoundException, DocumentException {
         opprettServiceklageValidator.validateRequest(request);
-        long id = serviceklageService.opprettServiceklage(request);
+        long id = serviceklageService.opprettServiceklage(request, authorizationHeader);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body("Opprettet serviceklage med serviceaklageId=" + id);

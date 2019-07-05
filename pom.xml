@@ -34,6 +34,7 @@
 		<itextpdf.version>5.5.10</itextpdf.version>
 		<oidc-spring-support.version>0.2.15</oidc-spring-support.version>
 		<oidc-spring-test.version>0.2.5</oidc-spring-test.version>
+		<cxf.version>3.2.7</cxf.version>
 	</properties>
 
 	<dependencyManagement>
@@ -55,6 +56,18 @@
 						<artifactId>oidc-spring-support</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+
+			<!-- CXF/WS-->
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-spring-boot-starter-jaxws</artifactId>
+				<version>${cxf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-rt-ws-security</artifactId>
+				<version>${cxf.version}</version>
 			</dependency>
 
 			<dependency>

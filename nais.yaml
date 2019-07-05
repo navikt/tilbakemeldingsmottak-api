@@ -38,6 +38,12 @@ fasitResources:
     propertyMap:
       url: NO_NAV_SECURITY_OIDC_ISSUER_RESTSTS_DISCOVERYURL
 
+  - alias: Journalpost_v1
+    resourceType: restservice
+    propertyMap:
+      url: JOURNALPOST_V1_URL
+
+
   exposed:
   - alias: tilbakemeldingsmottak
     resourceType: restservice
