@@ -43,6 +43,11 @@ fasitResources:
     propertyMap:
       url: JOURNALPOST_V1_URL
 
+  - alias: oppgave.oppgaver
+    resourceType: restservice
+    propertyMap:
+      url: OPPGAVE_URL
+
 
   exposed:
   - alias: tilbakemeldingsmottak
