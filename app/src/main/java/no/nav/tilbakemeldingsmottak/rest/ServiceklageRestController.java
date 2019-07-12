@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.rest;
 
 import com.itextpdf.text.DocumentException;
 import no.nav.security.oidc.api.Protected;
+import no.nav.security.oidc.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.service.ServiceklageService;
 import no.nav.tilbakemeldingsmottak.validators.OpprettServiceklageValidator;
@@ -41,7 +42,7 @@ public class ServiceklageRestController {
         long id = serviceklageService.opprettServiceklage(request, authorizationHeader);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body("Opprettet serviceklage med serviceaklageId=" + id);
+                .body("Opprettet serviceklage med serviceklageId=" + id);
     }
 
     @GetMapping(value = "/ping")

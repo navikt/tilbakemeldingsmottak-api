@@ -5,17 +5,21 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 
-import java.io.FileNotFoundException;
+import java.io.ByteArrayOutputStream;
 
 public class PdfCreator {
 
     private static Font regular = new Font(Font.FontFamily.HELVETICA, 12);
     private static Font bold = new Font(Font.FontFamily.HELVETICA, 12,Font.BOLD);
 
-    public static Document opprettPdf(OpprettServiceklageRequest request) throws FileNotFoundException, DocumentException {
+    public static byte[] opprettPdf(OpprettServiceklageRequest request) throws DocumentException {
         Document document = new Document();
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, stream);
 
         document.open();
 
@@ -46,7 +50,7 @@ public class PdfCreator {
 
         document.close();
 
-        return document;
+        return stream.toByteArray();
     }
 
     private static Paragraph createParagraph(String fieldname, String content) {

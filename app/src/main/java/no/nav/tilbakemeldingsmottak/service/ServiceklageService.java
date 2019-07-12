@@ -2,12 +2,14 @@ package no.nav.tilbakemeldingsmottak.service;
 
 import static no.nav.tilbakemeldingsmottak.service.pdf.PdfCreator.opprettPdf;
 
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.consumer.joark.OpprettJournalpostConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.joark.api.OpprettJournalpostRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.joark.api.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OpprettOppgaveConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.api.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.service.mappers.OpprettJournalpostRequestToMapper;
@@ -49,10 +51,13 @@ public class ServiceklageService {
 
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med serviceklageId={} persistert", serviceklage.getServiceklageId());
-        Document pdf = opprettPdf(request);
+        byte[] fysiskDokument = opprettPdf(request);
 
-//        opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestToMapper.map(request), authorizationHeader);
-        opprettOppgaveConsumer.opprettOppgave(opprettOppgaveRequestToMapper.map(request), authorizationHeader);
+        OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument);
+        OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo, authorizationHeader);
+
+        OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(request, opprettJournalpostResponseTo);
+        opprettOppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo, authorizationHeader);
 
         return serviceklage.getServiceklageId();
     }
