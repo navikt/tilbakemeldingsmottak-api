@@ -41,7 +41,7 @@ fasitResources:
   - alias: Journalpost_v1
     resourceType: restservice
 
-  - alias: oppgave.oppgaver
+  - alias: "oppgave.oppgaver"
     resourceType: restservice
 
   exposed:
