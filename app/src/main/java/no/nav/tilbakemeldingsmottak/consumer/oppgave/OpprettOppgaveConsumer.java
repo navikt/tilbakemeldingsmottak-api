@@ -29,7 +29,7 @@ public class OpprettOppgaveConsumer {
     private final String oppgaveUrl;
 
     public OpprettOppgaveConsumer(RestTemplateBuilder restTemplateBuilder,
-                                      @Value("${oppgaver_oppgave_url}") String oppgaveUrl,
+                                      @Value("${oppgave_oppgaver_url}") String oppgaveUrl,
                                       ServiceuserAlias serviceuserAlias) {
         this.oppgaveUrl = oppgaveUrl;
         this.restTemplate = restTemplateBuilder
