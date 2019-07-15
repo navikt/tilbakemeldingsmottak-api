@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import no.nav.security.spring.oidc.test.TokenGeneratorController;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +49,17 @@ public class AbstractIT {
         serviceklageRepository.deleteAll();
         smtpServer = new GreenMail(new ServerSetup(port, null, "smtp"));
         smtpServer.start();
+
+        WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/OPPRETT_JOURNALPOST/journalpost/"))
+            .willReturn(WireMock.aResponse().withStatus(HttpStatus.CREATED.value())
+                    .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .withBodyFile("joark/opprettJournalpost/opprettJournalpostResponse.json")));
+
+        WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/OPPGAVE"))
+            .willReturn(WireMock.aResponse().withStatus(HttpStatus.CREATED.value())
+                    .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .withBody("Oppgave opprettet")));
+
     }
 
     @AfterEach

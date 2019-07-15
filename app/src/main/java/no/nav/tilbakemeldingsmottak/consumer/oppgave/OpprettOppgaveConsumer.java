@@ -53,7 +53,7 @@ public class OpprettOppgaveConsumer {
 
             ResponseEntity<String> response = restTemplate.exchange(oppgaveUrl, HttpMethod.POST, requestEntity, String.class);
             if (log.isDebugEnabled()) {
-                log.debug("Journalpost opprettet");
+                log.debug("Oppgave opprettet");
             }
             return response.getBody();
         } catch (HttpClientErrorException e) {
