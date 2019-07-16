@@ -38,6 +38,9 @@ fasitResources:
     propertyMap:
       url: NO_NAV_SECURITY_OIDC_ISSUER_RESTSTS_DISCOVERYURL
 
+  - alias: securityTokenService
+    resourceType: baseurl
+
   - alias: Journalpost_v1
     resourceType: restservice
 
