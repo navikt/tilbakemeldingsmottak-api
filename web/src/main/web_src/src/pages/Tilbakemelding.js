@@ -17,7 +17,7 @@ class Tilbakemelding extends Component {
             gjelder: '',
             paaklagetEnhet: '',
             behandlendeEnhet: '',
-            ytelse_tjeneste: '',
+            ytelseTjeneste: '',
             tema: '',
             utfall: '',
             svarmetode: []

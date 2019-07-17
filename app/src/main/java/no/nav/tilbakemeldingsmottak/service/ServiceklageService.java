@@ -5,12 +5,13 @@ import static no.nav.tilbakemeldingsmottak.service.pdf.PdfCreator.opprettPdf;
 import com.itextpdf.text.DocumentException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
 import no.nav.tilbakemeldingsmottak.consumer.joark.OpprettJournalpostConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.joark.api.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.api.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OpprettOppgaveConsumer;
-import no.nav.tilbakemeldingsmottak.consumer.oppgave.api.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.domain.Serviceklage;
+import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.service.mappers.OpprettJournalpostRequestToMapper;
 import no.nav.tilbakemeldingsmottak.service.mappers.OpprettOppgaveRequestToMapper;
@@ -56,8 +57,30 @@ public class ServiceklageService {
         OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument);
         OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo, authorizationHeader);
 
-        OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(request, opprettJournalpostResponseTo);
-        opprettOppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo, authorizationHeader);
+//        OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(request, opprettJournalpostResponseTo);
+//        opprettOppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo, authorizationHeader);
+
+        return serviceklage.getServiceklageId();
+    }
+
+    public long registrerTilbakemelding(RegistrerTilbakemeldingRequest request, String serviceklageId)  {
+        Serviceklage serviceklage = serviceklageRepository.findById(Long.parseLong(serviceklageId))
+                .orElseThrow(() -> new ServiceklageIkkeFunnetException(String.format("Kunne ikke finne serviceklage med serviceklageId=%s", serviceklageId)));
+
+        serviceklage.setErServiceklage(request.getErServiceklage());
+        if (request.getErServiceklage().equalsIgnoreCase("ja")) {
+            serviceklage.setPaaklagetEnhet(request.getPaaklagetEnhet());
+            serviceklage.setBehandlendeEnhet(request.getBehandlendeEnhet());
+            serviceklage.setYtelseTjeneste(request.getYtelseTjeneste());
+            serviceklage.setTema(request.getTema());
+            serviceklage.setUtfall(request.getUtfall());
+            serviceklage.setSvarmetode(String.join(",", request.getSvarmetode()));
+        } else {
+            serviceklage.setGjelder(request.getGjelder());
+        }
+
+        serviceklageRepository.save(serviceklage);
+        log.info("Tilbakemelding registrert for serviceklage med serviceklageId={}", serviceklage.getServiceklageId());
 
         return serviceklage.getServiceklageId();
     }

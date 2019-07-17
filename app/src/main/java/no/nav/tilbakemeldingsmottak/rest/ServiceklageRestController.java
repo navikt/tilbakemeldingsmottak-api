@@ -4,13 +4,16 @@ import com.itextpdf.text.DocumentException;
 import no.nav.security.oidc.api.Protected;
 import no.nav.security.oidc.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
 import no.nav.tilbakemeldingsmottak.service.ServiceklageService;
 import no.nav.tilbakemeldingsmottak.validators.OpprettServiceklageValidator;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +49,18 @@ public class ServiceklageRestController {
     }
 
     @GetMapping(value = "/ping")
+    @Unprotected
     public String pong(){
         return "pong" + Math.random();
+    }
+
+    @Transactional
+    @PutMapping(value = "/{serviceklageId}/registrerTilbakemelding")
+    @Unprotected
+    public ResponseEntity<String> sendTilbakemelding(@RequestBody RegistrerTilbakemeldingRequest request, @PathVariable String serviceklageId) {
+        serviceklageService.registrerTilbakemelding(request, serviceklageId);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body("Registrert tilbakemelding på serviceklage med serviceklageid=" + serviceklageId);
     }
 }

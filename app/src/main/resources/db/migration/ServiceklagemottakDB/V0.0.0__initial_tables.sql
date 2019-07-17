@@ -5,5 +5,13 @@ CREATE TABLE serviceklage (
   klagen_gjelder_id             VARCHAR2(15) NOT NULL,
   klagetype                     VARCHAR2(30),
   klagetekst                    CLOB,
-  oensker_aa_kontaktes          NUMBER(1)
+  oensker_aa_kontaktes          NUMBER(1),
+  er_serviceklage                VARCHAR2(10),
+  gjelder                       VARCHAR2(2000),
+  paaklaget_enhet                VARCHAR2(4),
+  behandlende_enhet              VARCHAR2(4),
+  ytelse_tjeneste                VARCHAR2(30),
+  tema                          VARCHAR2(30),
+  utfall                        VARCHAR2(100),
+  svarmetode                    VARCHAR2(100)
 );

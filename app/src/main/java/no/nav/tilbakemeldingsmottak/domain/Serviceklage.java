@@ -49,4 +49,27 @@ public class Serviceklage {
     @Column(name = "oensker_aa_kontaktes")
     private Boolean oenskerAaKontaktes;
 
+    @Column(name = "er_serviceklage")
+    private String erServiceklage;
+
+    @Column(name = "gjelder")
+    private String gjelder;
+
+    @Column(name = "paaklaget_enhet")
+    private String paaklagetEnhet;
+
+    @Column(name = "behandlende_enhet")
+    private String behandlendeEnhet;
+
+    @Column(name = "ytelse_tjeneste")
+    private String ytelseTjeneste;
+
+    @Column(name = "tema")
+    private String tema;
+
+    @Column(name = "utfall")
+    private String utfall;
+
+    @Column(name = "svarmetode")
+    private String svarmetode;
 }
