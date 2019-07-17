@@ -5,6 +5,7 @@ import Input from "nav-frontend-skjema/lib/input";
 import Textarea from "nav-frontend-skjema/lib/textarea";
 import CheckboksPanelGruppe from "nav-frontend-skjema/lib/checkboks-panel-gruppe";
 import Hovedknapp from "nav-frontend-knapper/lib/hovedknapp";
+import Select from "nav-frontend-skjema/lib/select";
 
 class Tilbakemelding extends Component {
 
@@ -117,37 +118,36 @@ class Tilbakemelding extends Component {
                             </div>
 
                             <div className="Skjemafelt">
-                                <RadioPanelGruppe
-                                    name="ytelse_tjeneste"
-                                    legend="4. Angi ytelse/tjeneste serviceklagen gjelder (velg det viktigste alternativet)"
-                                    radios={[
-                                        { label: 'AFP - Avtalefestet pensjon', value: 'AFP - Avtalefestet pensjon'},
-                                        { label: 'Alderspensjon', value: 'Alderspensjon'},
-                                        { label: 'Arbeidsavklaringspenger', value: 'Arbeidsavklaringspenger'},
-                                        { label: 'Arbeidsmarkedsloven', value: 'Arbeidsmarkedsloven'},
-                                        { label: 'Barnebidragsområdet', value: 'Barnebidragsområdet'},
-                                        { label: 'Barnepensjon', value: 'Barnepensjon'},
-                                        { label: 'Barnetrygd', value: 'Barnetrygd'},
-                                        { label: 'Barns sykdom', value: 'Barns sykdom'},
-                                        { label: 'Bil', value: 'Bil'},
-                                        { label: 'Dagpenger', value: 'Dagpenger'},
-                                        { label: 'Eneforsørger', value: 'Eneforsørger'},
-                                        { label: 'Foreldrepenger', value: 'Foreldrepenger'},
-                                        { label: 'Gjenlevende ektefelle', value: 'Gjenlevende ektefelle'},
-                                        { label: 'Grunnstønad/hjelpestønad', value: 'Grunnstønad/hjelpestønad'},
-                                        { label: 'Hjelpemidler', value: 'Hjelpemidler'},
-                                        { label: 'Kontantstøtte', value: 'Kontantstøtte'},
-                                        { label: 'Medlemsskap', value: 'Medlemsskap'},
-                                        { label: 'Supplerende stønad', value: 'Supplerende stønad'},
-                                        { label: 'Sykepenger', value: 'Sykepenger'},
-                                        { label: 'Uførepensjon', value: 'Uførepensjon'},
-                                        { label: 'Yrkesskade/yrkessykdom', value: 'Yrkesskade/yrkessykdom'},
-                                        { label: 'Andre stønadsområder/lover/tjenester', value: 'Andre stønadsområder/lover/tjenester'},
-                                        { label: 'Uspesifisert', value: 'Uspesifisert'},
-                                    ]}
-                                    checked={this.state.ytelse_tjeneste}
-                                    onChange={this.onChange}
-                                />
+                                <legend className="skjema__legend">4. Angi ytelse/tjeneste serviceklagen gjelder (velg det viktigste alternativet)</legend>
+                                <Select label=""
+                                        name="ytelse_tjeneste"
+                                        selected={this.state.ytelse_tjeneste}
+                                        onChange={this.onChange}>
+                                        <option value=''>Velg ytelse/tjeneste</option>
+                                        <option value='AFP - Avtalefestet pensjon'>AFP - Avtalefestet pensjon</option>
+                                        <option value='Alderspensjon'>Alderspensjon</option>
+                                        <option value='Arbeidsavklaringspenger'>Arbeidsavklaringspenger</option>
+                                        <option value='Arbeidsmarkedsloven'>Arbeidsmarkedsloven</option>
+                                        <option value='Barnebidragsområdet'>Barnebidragsområdet</option>
+                                        <option value='Barnepensjon'>Barnepensjon</option>
+                                        <option value='Barnetrygd'>Barnetrygd</option>
+                                        <option value='Barns sykdom'>Barns sykdom</option>
+                                        <option value='Bil'>Bil</option>
+                                        <option value='Dagpenger'>Dagpenger</option>
+                                        <option value='Eneforsørger'>Eneforsørger</option>
+                                        <option value='Foreldrepenger'>Foreldrepenger</option>
+                                        <option value='Gjenlevende ektefelle'>Gjenlevende ektefelle</option>
+                                        <option value='Grunnstønad/hjelpestønad'>Grunnstønad/hjelpestønad</option>
+                                        <option value='Hjelpemidler'>Hjelpemidler</option>
+                                        <option value='Kontantstøtte'>Kontantstøtte</option>
+                                        <option value='Medlemsskap'>Medlemsskap</option>
+                                        <option value='Supplerende stønad'>Supplerende stønad</option>
+                                        <option value='Sykepenger'>Sykepenger</option>
+                                        <option value='Uførepensjon'>Uførepensjon</option>
+                                        <option value='Yrkesskade/yrkessykdom'>Yrkesskade/yrkessykdom</option>
+                                        <option value='Andre stønadsområder/lover/tjenester'>Andre stønadsområder/lover/tjenester</option>
+                                        <option value='Uspesifisert'>Uspesifisert</option>
+                                </Select>
                             </div>
 
                             <div className="Skjemafelt">
