@@ -6,6 +6,7 @@ import Textarea from "nav-frontend-skjema/lib/textarea";
 import CheckboksPanelGruppe from "nav-frontend-skjema/lib/checkboks-panel-gruppe";
 import Hovedknapp from "nav-frontend-knapper/lib/hovedknapp";
 import Select from "nav-frontend-skjema/lib/select";
+import {ServiceKlageApi} from "../api/Api";
 
 class Tilbakemelding extends Component {
 
@@ -51,12 +52,12 @@ class Tilbakemelding extends Component {
         console.log("gjelder: " + this.state.gjelder);
         console.log("paaklagetEnhet: " + this.state.paaklagetEnhet);
         console.log("behandlendeEnhet: " + this.state.behandlendeEnhet);
-        console.log("ytelse_tjeneste: " + this.state.ytelse_tjeneste);
+        console.log("ytelseTjeneste: " + this.state.ytelseTjeneste);
         console.log("tema: " + this.state.tema);
         console.log("utfall: " + this.state.utfall);
         console.log("svarmetode: " + this.state.svarmetode);
 
-        event.preventDefault();
+        ServiceKlageApi.registrerTilbakemelding(7, this.state);
     };
 
     render() {
@@ -120,8 +121,8 @@ class Tilbakemelding extends Component {
                             <div className="Skjemafelt">
                                 <legend className="skjema__legend">4. Angi ytelse/tjeneste serviceklagen gjelder (velg det viktigste alternativet)</legend>
                                 <Select label=""
-                                        name="ytelse_tjeneste"
-                                        selected={this.state.ytelse_tjeneste}
+                                        name="ytelseTjeneste"
+                                        selected={this.state.ytelseTjeneste}
                                         onChange={this.onChange}>
                                         <option value=''>Velg ytelse/tjeneste</option>
                                         <option value='AFP - Avtalefestet pensjon'>AFP - Avtalefestet pensjon</option>

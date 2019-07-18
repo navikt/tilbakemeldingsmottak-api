@@ -69,6 +69,7 @@ public class ServiceklageService {
 
         serviceklage.setErServiceklage(request.getErServiceklage());
         if (request.getErServiceklage().equalsIgnoreCase("ja")) {
+            serviceklage.setGjelder(null);
             serviceklage.setPaaklagetEnhet(request.getPaaklagetEnhet());
             serviceklage.setBehandlendeEnhet(request.getBehandlendeEnhet());
             serviceklage.setYtelseTjeneste(request.getYtelseTjeneste());
@@ -77,6 +78,12 @@ public class ServiceklageService {
             serviceklage.setSvarmetode(String.join(",", request.getSvarmetode()));
         } else {
             serviceklage.setGjelder(request.getGjelder());
+            serviceklage.setPaaklagetEnhet(null);
+            serviceklage.setBehandlendeEnhet(null);
+            serviceklage.setYtelseTjeneste(null);
+            serviceklage.setTema(null);
+            serviceklage.setUtfall(null);
+            serviceklage.setSvarmetode(null);
         }
 
         serviceklageRepository.save(serviceklage);
