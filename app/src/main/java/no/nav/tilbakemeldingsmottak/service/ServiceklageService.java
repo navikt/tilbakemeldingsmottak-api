@@ -4,8 +4,10 @@ import static no.nav.tilbakemeldingsmottak.service.pdf.PdfCreator.opprettPdf;
 
 import com.itextpdf.text.DocumentException;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.tilbakemeldingsmottak.api.HentServiceklagerResponse;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
+import no.nav.tilbakemeldingsmottak.api.ServiceklageTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.OpprettJournalpostConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.joark.api.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.api.OpprettJournalpostResponseTo;
@@ -20,6 +22,9 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -90,5 +95,23 @@ public class ServiceklageService {
         log.info("Tilbakemelding registrert for serviceklage med serviceklageId={}", serviceklage.getServiceklageId());
 
         return serviceklage.getServiceklageId();
+    }
+
+    public HentServiceklagerResponse hentServiceklager(String brukerId) {
+        List<Serviceklage> serviceklager = serviceklageRepository.findAllByKlagenGjelderId(brukerId);
+        ArrayList<ServiceklageTo> serviceklageTos = serviceklager.stream().map(s ->
+                ServiceklageTo.builder()
+                        .serviceklageId(s.getServiceklageId())
+                        .datoOpprettet(s.getDatoOpprettet())
+                        .klagetype(s.getKlagetype())
+                        .klagetekst(s.getKlagetekst())
+                        .oenskerAaKontaktes(s.getOenskerAaKontaktes())
+                        .erBehandlet(s.getErServiceklage() != null)
+                        .build())
+                        .collect(Collectors.toCollection(ArrayList::new));
+
+        return HentServiceklagerResponse.builder()
+                .serviceklager(serviceklageTos)
+                .build();
     }
 }

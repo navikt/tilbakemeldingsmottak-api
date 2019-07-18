@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.rest;
 import com.itextpdf.text.DocumentException;
 import no.nav.security.oidc.api.Protected;
 import no.nav.security.oidc.api.Unprotected;
+import no.nav.tilbakemeldingsmottak.api.HentServiceklagerResponse;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
 import no.nav.tilbakemeldingsmottak.service.ServiceklageService;
@@ -60,7 +61,17 @@ public class ServiceklageRestController {
     public ResponseEntity<String> sendTilbakemelding(@RequestBody RegistrerTilbakemeldingRequest request, @PathVariable String serviceklageId) {
         serviceklageService.registrerTilbakemelding(request, serviceklageId);
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .status(HttpStatus.OK)
                 .body("Registrert tilbakemelding på serviceklage med serviceklageid=" + serviceklageId);
+    }
+
+    @Transactional
+    @GetMapping(value = "/{brukerId}")
+    @Unprotected
+    public ResponseEntity<HentServiceklagerResponse> hentServiceklager(@PathVariable String brukerId) {
+        HentServiceklagerResponse response = serviceklageService.hentServiceklager(brukerId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 }
