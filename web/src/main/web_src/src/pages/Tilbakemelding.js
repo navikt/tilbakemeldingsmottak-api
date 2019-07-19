@@ -14,6 +14,7 @@ class Tilbakemelding extends Component {
 
     constructor(props) {
         super(props);
+        this.serviceklageId = props.match.params.serviceklageId;
         this.state = {
             erServiceklage: '',
             gjelder: '',
@@ -27,7 +28,7 @@ class Tilbakemelding extends Component {
         this.initState = {...this.state, svarmetode: []};
     }
 
-    onChange = (event, ...rest) => {
+    onChange = (event) => {
         this.setState ( {...this.state, [event.target.name]: event.target.value });
     };
 
@@ -48,16 +49,9 @@ class Tilbakemelding extends Component {
     };
 
     onSubmit = (event) => {
-        console.log("erServiceklage: " + this.state.erServiceklage);
-        console.log("gjelder: " + this.state.gjelder);
-        console.log("paaklagetEnhet: " + this.state.paaklagetEnhet);
-        console.log("behandlendeEnhet: " + this.state.behandlendeEnhet);
-        console.log("ytelseTjeneste: " + this.state.ytelseTjeneste);
-        console.log("tema: " + this.state.tema);
-        console.log("utfall: " + this.state.utfall);
-        console.log("svarmetode: " + this.state.svarmetode);
-
-        ServiceKlageApi.registrerTilbakemelding(7, this.state);
+        ServiceKlageApi.registrerTilbakemelding(this.serviceklageId, this.state);
+        window.location = "/serviceklage/frontpage";
+        event.preventDefault();
     };
 
     render() {

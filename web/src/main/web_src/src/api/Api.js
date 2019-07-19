@@ -19,5 +19,6 @@ const requests = {
 
 export const ServiceKlageApi = {
     ping: () => requests.get(`/ping`),
-    registrerTilbakemelding: (serviceklageId, payload) => requests.put(`/${serviceklageId}/registrerTilbakemelding`, payload)
+    registrerTilbakemelding: (serviceklageId, payload) => requests.put(`/${serviceklageId}/registrerTilbakemelding`, payload),
+    hentServiceklager: (brukerId) => requests.get(`/${brukerId}`)
 };
