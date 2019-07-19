@@ -49,12 +49,6 @@ public class ServiceklageRestController {
                 .body("Opprettet serviceklage med serviceklageId=" + id);
     }
 
-    @GetMapping(value = "/ping")
-    @Unprotected
-    public String pong(){
-        return "pong" + Math.random();
-    }
-
     @Transactional
     @PutMapping(value = "/{serviceklageId}/registrerTilbakemelding")
     @Unprotected
