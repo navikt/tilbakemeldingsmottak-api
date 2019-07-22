@@ -73,7 +73,7 @@ public class ServiceklageService {
                 .orElseThrow(() -> new ServiceklageIkkeFunnetException(String.format("Kunne ikke finne serviceklage med serviceklageId=%s", serviceklageId)));
 
         serviceklage.setErServiceklage(request.getErServiceklage());
-        if (request.getErServiceklage().equalsIgnoreCase("ja")) {
+        if (request.getErServiceklage().contains("Ja")) {
             serviceklage.setGjelder(null);
             serviceklage.setPaaklagetEnhet(request.getPaaklagetEnhet());
             serviceklage.setBehandlendeEnhet(request.getBehandlendeEnhet());

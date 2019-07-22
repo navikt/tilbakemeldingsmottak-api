@@ -49,10 +49,24 @@ class Tilbakemelding extends Component {
     };
 
     onSubmit = (event) => {
-        ServiceKlageApi.registrerTilbakemelding(this.serviceklageId, this.state);
-        window.location = "/serviceklage/frontpage";
+        if ((this.state.erServiceklage.includes('Ja') && this.checkIsSet(this.state.paaklagetEnhet, this.state.behandlendeEnhet, this.state.ytelseTjeneste, this.state.tema, this.state.utfall, this.state.svarmetode))
+            || (this.state.erServiceklage.includes('Nei') && this.checkIsSet(this.state.gjelder))) {
+            ServiceKlageApi.registrerTilbakemelding(this.serviceklageId, this.state);
+            window.location = "/serviceklage/frontpage";
+        } else {
+            alert('Påkrevde felter er ikke satt');
+        }
+
         event.preventDefault();
     };
+
+    checkIsSet() {
+        for (let i = 0; i < arguments.length; i++) {
+            if (arguments[i] === '' || arguments[i] === []) {
+                return false;
+            }
+        } return true;
+    }
 
     render() {
         return (
@@ -64,9 +78,9 @@ class Tilbakemelding extends Component {
                             name="erServiceklage"
                             legend="1. Er henvendelsen en serviceklage?"
                             radios={[
-                                { label: 'Ja (inkludert saker som også har andre elementer)', value: 'ja'},
-                                { label: 'Nei - kun en forvaltningsklage', value: 'nei_forvaltning'},
-                                { label: 'Nei - annet', value: 'nei_annet'}
+                                { label: 'Ja (inkludert saker som også har andre elementer)', value: 'Ja (inkludert saker som også har andre elementer)'},
+                                { label: 'Nei - kun en forvaltningsklage', value: 'Nei - kun en forvaltningsklage'},
+                                { label: 'Nei - annet', value: 'Nei - annet'}
                             ]}
                             checked={this.state.erServiceklage}
                             onChange={this.onErServiceklageChange}
@@ -74,7 +88,7 @@ class Tilbakemelding extends Component {
                     </div>
 
                     <div>
-                        {(this.state.erServiceklage === 'nei_forvaltning' || this.state.erServiceklage === 'nei_annet') &&
+                        {this.state.erServiceklage.includes('Nei') &&
                             <div className="Skjemafelt">
                                 <legend className="skjema__legend">2. Kommenter hva henvendelsen gjaldt</legend>
                                 <Textarea
@@ -88,7 +102,7 @@ class Tilbakemelding extends Component {
                     </div>
 
                     <div>
-                        {this.state.erServiceklage === 'ja' &&
+                        {this.state.erServiceklage.includes('Ja') &&
                         <Fragment>
                             <div className="Skjemafelt">
                                 <legend className="skjema__legend">2. Angi enhetsnummer til enheten det klages på (4 siffer)</legend>
@@ -201,7 +215,7 @@ class Tilbakemelding extends Component {
                                     name="utfall"
                                     legend="6. Angi utfallet av serviceklagen"
                                     radios={[
-                                        { label: 'NAVs tilgjengelighet har vært for dårlig', value: 'uforberedt'},
+                                        { label: 'NAVs tilgjengelighet har vært for dårlig', value: 'NAVs tilgjengelighet har vært for dårlig'},
                                         { label: 'NAVs tilgjengelighet er i henhold til enhetens vedtatte rutiner, men burde vært bedre tilpasset brukers behov', value: 'NAVs tilgjengelighet er i henhold til etatens vedtatte rutiner, men burde vært bedre tilpasset brukers behov'},
                                         { label: 'NAVs tilgjengelighet er i henhold til enhetens vedtatte rutiner', value: 'NAVs tilgjengelighet er i henhold til enhetens vedtatte rutiner'},
                                         { label: 'Det er ikke mulig å spore hva som har skjedd', value: 'Det er ikke mulig å spore hva som har skjedd'},
@@ -218,10 +232,10 @@ class Tilbakemelding extends Component {
                                     name="utfall"
                                     legend="6. Angi utfallet av serviceklagen"
                                     radios={[
-                                        { label: 'Erkjennes at NAV-ansatte var uforberedt til avtalt møte', value: 'uforberedt'},
-                                        { label: 'Erkjennes at NAV-ansattes språkbruk/oppførsel var uheldig/uønsket', value: 'uheldig_atferd'},
-                                        { label: 'NAV-ansattes språkbruk/oppførsel vurderes som akseptabel', value: 'akseptabel_atferd'},
-                                        { label: 'Det er ikke mulig å spore hvem som har hatt kontakt med bruker', value: 'ikke_mulig_aa_spore'},
+                                        { label: 'Erkjennes at NAV-ansatte var uforberedt til avtalt møte', value: 'Erkjennes at NAV-ansatte var uforberedt til avtalt møte'},
+                                        { label: 'Erkjennes at NAV-ansattes språkbruk/oppførsel var uheldig/uønsket', value: 'Erkjennes at NAV-ansattes språkbruk/oppførsel var uheldig/uønsket'},
+                                        { label: 'NAV-ansattes språkbruk/oppførsel vurderes som akseptabel', value: 'NAV-ansattes språkbruk/oppførsel vurderes som akseptabel'},
+                                        { label: 'Det er ikke mulig å spore hvem som har hatt kontakt med bruker', value: 'Det er ikke mulig å spore hvem som har hatt kontakt med bruker'},
                                     ]}
                                     checked={this.state.utfall}
                                     onChange={this.onChange}

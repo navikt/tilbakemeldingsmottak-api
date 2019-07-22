@@ -6,7 +6,7 @@ CREATE TABLE serviceklage (
   klagetype                     VARCHAR2(30),
   klagetekst                    CLOB,
   oensker_aa_kontaktes          NUMBER(1),
-  er_serviceklage               VARCHAR2(20),
+  er_serviceklage               VARCHAR2(50),
   gjelder                       VARCHAR2(2000),
   paaklaget_enhet               VARCHAR2(4),
   behandlende_enhet             VARCHAR2(4),
