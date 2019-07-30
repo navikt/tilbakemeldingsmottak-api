@@ -68,4 +68,10 @@ public class ServiceklageRestController {
                 .status(HttpStatus.OK)
                 .body(response);
     }
+
+    @GetMapping("/hello-world")
+    @Unprotected
+    public ResponseEntity<String> helloWorld() {
+        return ResponseEntity.status(HttpStatus.OK).body("Hello world");
+    }
 }
