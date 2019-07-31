@@ -28,8 +28,9 @@ public class RosIT extends AbstractIT {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertTrue(message.getContent().toString().contains(request.getBeskrivelse()));
-        assertTrue(message.getContent().toString().contains(request.getNavKontor()));
         assertTrue(message.getContent().toString().contains(request.getNavn()));
+        assertTrue(message.getContent().toString().contains(request.getTelefonnummer()));
+        assertTrue(message.getContent().toString().contains(request.getHvemRoses()));
+        assertTrue(message.getContent().toString().contains(request.getMelding()));
     }
 }

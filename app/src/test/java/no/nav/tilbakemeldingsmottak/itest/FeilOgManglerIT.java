@@ -28,8 +28,9 @@ public class FeilOgManglerIT extends AbstractIT {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertTrue(message.getContent().toString().contains(request.getBeskrivelse()));
-        assertTrue(message.getContent().toString().contains(request.getEpost()));
-        assertTrue(message.getContent().toString().contains(request.getKategori()));
+        assertTrue(message.getContent().toString().contains(request.getNavn()));
+        assertTrue(message.getContent().toString().contains(request.getTelefonnummer()));
+        assertTrue(message.getContent().toString().contains(request.getFeiltype()));
+        assertTrue(message.getContent().toString().contains(request.getMelding()));
     }
 }
