@@ -12,7 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MeldFeilOgManglerRequest {
-    private String kategori;
-    private String epost;
-    private String beskrivelse;
+    private String navn;
+    private String telefonnummer;
+    private String feiltype;
+    private String melding;
 }

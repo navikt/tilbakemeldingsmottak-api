@@ -12,7 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SendRosRequest {
-    private String navKontor;
-    private String beskrivelse;
     private String navn;
+    private String telefonnummer;
+    private String hvemRoses;
+    private String melding;
 }

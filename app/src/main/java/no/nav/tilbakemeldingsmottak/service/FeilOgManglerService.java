@@ -40,9 +40,10 @@ public class FeilOgManglerService {
     private String createContent(MeldFeilOgManglerRequest request) {
         HtmlContent content = new HtmlContent();
 
-        content.addParagraph("Kategori", request.getKategori());
-        content.addParagraph("Epost til innmelder", request.getEpost());
-        content.addParagraph("Tilbakemeldingen gjelder", request.getBeskrivelse());
+        content.addParagraph("Navn", request.getNavn());
+        content.addParagraph("Telefonnummer", request.getTelefonnummer());
+        content.addParagraph("Hva slags feil", request.getFeiltype());
+        content.addParagraph("Melding", request.getMelding());
 
         return content.getContentString();
     }

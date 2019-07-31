@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest;
 
 import no.nav.security.oidc.api.Protected;
+import no.nav.security.oidc.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.service.FeilOgManglerService;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ public class FeilOgManglerRestController {
 
     @Transactional
     @PostMapping
+    @Unprotected
     public ResponseEntity<String> meldFeilOgMangler(@RequestBody MeldFeilOgManglerRequest request) throws MessagingException {
         feilOgManglerService.meldFeilOgMangler(request);
         return ResponseEntity

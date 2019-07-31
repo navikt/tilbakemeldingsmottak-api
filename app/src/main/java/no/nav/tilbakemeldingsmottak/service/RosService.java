@@ -40,9 +40,10 @@ public class RosService {
     private String createContent(SendRosRequest request) {
         HtmlContent content = new HtmlContent();
 
-        content.addParagraph("NAV-kontor", request.getNavKontor());
-        content.addParagraph("Nærmere beskrivelse", request.getBeskrivelse());
-        content.addParagraph("Innmelders navn", request.getNavn());
+        content.addParagraph("Navn", request.getNavn());
+        content.addParagraph("Telefonnummer", request.getTelefonnummer());
+        content.addParagraph("Hvem roses", request.getHvemRoses());
+        content.addParagraph("Melding", request.getMelding());
 
         return content.getContentString();
     }
