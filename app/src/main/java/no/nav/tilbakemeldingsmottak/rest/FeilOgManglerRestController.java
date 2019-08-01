@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.rest;
 import no.nav.security.oidc.api.Protected;
 import no.nav.security.oidc.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerRequest;
+import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerResponse;
 import no.nav.tilbakemeldingsmottak.service.FeilOgManglerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,10 +31,10 @@ public class FeilOgManglerRestController {
     @Transactional
     @PostMapping
     @Unprotected
-    public ResponseEntity<String> meldFeilOgMangler(@RequestBody MeldFeilOgManglerRequest request) throws MessagingException {
+    public ResponseEntity<MeldFeilOgManglerResponse> meldFeilOgMangler(@RequestBody MeldFeilOgManglerRequest request) throws MessagingException {
         feilOgManglerService.meldFeilOgMangler(request);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body("Feil/mangel meldt");
+                .body(MeldFeilOgManglerResponse.builder().message("Feil/mangel meldt").build());
     }
 }

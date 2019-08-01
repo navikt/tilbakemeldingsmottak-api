@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.rest;
 import no.nav.security.oidc.api.Protected;
 import no.nav.security.oidc.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.api.SendRosRequest;
+import no.nav.tilbakemeldingsmottak.api.SendRosResponse;
 import no.nav.tilbakemeldingsmottak.service.RosService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,10 +31,10 @@ public class RosRestController {
     @Transactional
     @PostMapping
     @Unprotected
-    public ResponseEntity<String> sendRos(@RequestBody SendRosRequest request) throws MessagingException {
+    public ResponseEntity<SendRosResponse> sendRos(@RequestBody SendRosRequest request) throws MessagingException {
         rosService.sendRos(request);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body("Ros sendt");
+                .body(SendRosResponse.builder().message("Ros sendt").build());
     }
 }
