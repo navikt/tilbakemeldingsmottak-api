@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerRequest;
+import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -23,7 +24,7 @@ public class FeilOgManglerIT extends AbstractIT {
     void happyPath() throws MessagingException, IOException {
         MeldFeilOgManglerRequest request = createMeldFeilOgManglerRequest();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-        ResponseEntity<String> response = restTemplate.exchange(URL_FEIL_OG_MANGLER, HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<MeldFeilOgManglerResponse> response = restTemplate.exchange(URL_FEIL_OG_MANGLER, HttpMethod.POST, requestEntity, MeldFeilOgManglerResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 

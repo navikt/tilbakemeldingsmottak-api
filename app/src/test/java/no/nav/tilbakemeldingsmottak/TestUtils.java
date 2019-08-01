@@ -6,7 +6,11 @@ import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.api.PaaVegneAvBedrift;
 import no.nav.tilbakemeldingsmottak.api.PaaVegneAvPerson;
 import no.nav.tilbakemeldingsmottak.api.PaaVegneAvType;
+import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
 import no.nav.tilbakemeldingsmottak.api.SendRosRequest;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class TestUtils {
 
@@ -33,6 +37,18 @@ public class TestUtils {
 
     public static final String HVEM_ROSES = "NAV kontaktsenter";
     public static final String BESKRIVELSE_ROS = "Saksbehandleren var snill";
+
+    public static final String ER_SERVICEKLAGE = "Ja (inkludert saker som også har andre elementer)";
+    public static final String PAAKLAGET_ENHET = "1234";
+    public static final String BEHANDLENDE_ENHET = "4321";
+    public static final String YTELSE_TJENESTE = "Alderspensjon";
+    public static final String TEMA = "Saksbehandling og svartid";
+    public static final String UTFALL = "Bruker har ikke fått svar innen frist";
+    public static final List<String> SVARMETODE = Arrays.asList("Avtalt møte");
+
+    public static final String NEI_ANNET = "Nei - annet";
+    public static final String GJELDER = "Klagen gjelder noe annet";
+
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatperson() {
         return OpprettServiceklageRequest.builder()
@@ -102,6 +118,25 @@ public class TestUtils {
                 .telefonnummer(TELEFONNUMMER_INNMELDER)
                 .hvemRoses(HVEM_ROSES)
                 .melding(BESKRIVELSE_ROS)
+                .build();
+    }
+
+    public static RegistrerTilbakemeldingRequest createRegistrerTilbakemeldingRequest() {
+        return RegistrerTilbakemeldingRequest.builder()
+                .erServiceklage(ER_SERVICEKLAGE)
+                .paaklagetEnhet(PAAKLAGET_ENHET)
+                .behandlendeEnhet(BEHANDLENDE_ENHET)
+                .ytelseTjeneste(YTELSE_TJENESTE)
+                .tema(TEMA)
+                .utfall(UTFALL)
+                .svarmetode(SVARMETODE)
+                .build();
+    }
+
+    public static RegistrerTilbakemeldingRequest createRegistrerTilbakemeldingRequestNotServiceklage() {
+        return RegistrerTilbakemeldingRequest.builder()
+                .erServiceklage(NEI_ANNET)
+                .gjelder(GJELDER)
                 .build();
     }
 

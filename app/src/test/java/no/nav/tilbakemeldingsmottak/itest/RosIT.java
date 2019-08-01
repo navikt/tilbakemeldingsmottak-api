@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import no.nav.tilbakemeldingsmottak.api.SendRosRequest;
+import no.nav.tilbakemeldingsmottak.api.SendRosResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -23,7 +24,7 @@ public class RosIT extends AbstractIT {
     void happyPath() throws MessagingException, IOException {
         SendRosRequest request = createSendRosRequest();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-        ResponseEntity<String> response = restTemplate.exchange(URL_ROS, HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<SendRosResponse> response = restTemplate.exchange(URL_ROS, HttpMethod.POST, requestEntity, SendRosResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 

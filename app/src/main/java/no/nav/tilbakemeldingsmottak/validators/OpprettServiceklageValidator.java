@@ -12,6 +12,7 @@ public class OpprettServiceklageValidator extends AbstractValidator {
         hasText(request.getKlagetype(), "klagetype");
         hasText(request.getKlagetekst(), "klagetekst");
         isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes");
+        isNotNull(request.getPaaVegneAv(), "paaVegneAv");
 
         validateInnmelder(request.getInnmelder(), request.getPaaVegneAv());
         if (request.getPaaVegneAv() == PaaVegneAvType.ANNEN_PERSON) {

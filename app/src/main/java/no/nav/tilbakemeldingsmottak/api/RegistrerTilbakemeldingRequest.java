@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,6 +22,6 @@ public class RegistrerTilbakemeldingRequest {
     private String ytelseTjeneste;
     private String tema;
     private String utfall;
-    private ArrayList<String> svarmetode;
+    private List<String> svarmetode;
 
 }
