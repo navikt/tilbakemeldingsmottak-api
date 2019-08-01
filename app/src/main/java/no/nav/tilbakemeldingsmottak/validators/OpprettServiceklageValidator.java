@@ -27,24 +27,24 @@ public class OpprettServiceklageValidator extends AbstractValidator {
         hasText(innmelder.getNavn(), "innmelder.navn");
         hasText(innmelder.getTelefonnummer(), "innmelder.telefonnummer");
         if (paaVegneAv == PaaVegneAvType.PRIVATPERSON) {
-            hasText(innmelder.getPersonnummer(), "innmelder.personnummer", "dersom paaVegneAv=PRIVATPERSON");
+            hasText(innmelder.getPersonnummer(), "innmelder.personnummer", " dersom paaVegneAv=PRIVATPERSON");
         }
         if (paaVegneAv == PaaVegneAvType.ANNEN_PERSON) {
-            isNotNull(innmelder.getHarFullmakt(), "innmelder.harFullmakt", "dersom paaVegneAv=ANNEN_PERSON");
+            isNotNull(innmelder.getHarFullmakt(), "innmelder.harFullmakt", " dersom paaVegneAv=ANNEN_PERSON");
         }
         if (paaVegneAv == PaaVegneAvType.ANNEN_PERSON || paaVegneAv == PaaVegneAvType.BEDRIFT) {
-            hasText(innmelder.getRolle(), "innmelder.rolle", "dersom paaVegneAv=ANNEN_PERSON eller paaVegneAv=BEDRIFT");
+            hasText(innmelder.getRolle(), "innmelder.rolle", " dersom paaVegneAv=ANNEN_PERSON eller paaVegneAv=BEDRIFT");
         }
     }
 
     private void validatePaaVegneAvPerson(PaaVegneAvPerson paaVegneAvPerson) {
-        isNotNull(paaVegneAvPerson, "paaVegneAvPerson", "dersom paaVegneAv=ANNEN_PERSON");
+        isNotNull(paaVegneAvPerson, "paaVegneAvPerson", " dersom paaVegneAv=ANNEN_PERSON");
         hasText(paaVegneAvPerson.getNavn(), "paaVegneAvPerson.navn");
         hasText(paaVegneAvPerson.getPersonnummer(), "paaVegneAvPerson.personnummer");
     }
 
     private void validatePaaVegneAvBedrift(PaaVegneAvBedrift paaVegneAvBedrift) {
-        isNotNull(paaVegneAvBedrift, "paaVegneAvBedrift", "dersom paaVegneAv=BEDRIFT");
+        isNotNull(paaVegneAvBedrift, "paaVegneAvBedrift", " dersom paaVegneAv=BEDRIFT");
         hasText(paaVegneAvBedrift.getNavn(), "paaVegneAvBedrift.navn");
         hasText(paaVegneAvBedrift.getOrganisasjonsnummer(), "paaVegneAvBedrift.organisasjonsnummer");
         hasText(paaVegneAvBedrift.getPostadresse(), "paaVegneAvBedrift.postadresse");

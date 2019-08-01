@@ -5,6 +5,7 @@ import no.nav.security.oidc.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerResponse;
 import no.nav.tilbakemeldingsmottak.service.FeilOgManglerService;
+import no.nav.tilbakemeldingsmottak.validators.MeldFeilOgManglerValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,16 +23,19 @@ import javax.transaction.Transactional;
 public class FeilOgManglerRestController {
 
     private final FeilOgManglerService feilOgManglerService;
+    private final MeldFeilOgManglerValidator meldFeilOgManglerValidator;
 
     @Inject
     public FeilOgManglerRestController(final FeilOgManglerService feilOgManglerService) {
         this.feilOgManglerService = feilOgManglerService;
+        this.meldFeilOgManglerValidator = new MeldFeilOgManglerValidator();
     }
 
     @Transactional
     @PostMapping
     @Unprotected
     public ResponseEntity<MeldFeilOgManglerResponse> meldFeilOgMangler(@RequestBody MeldFeilOgManglerRequest request) throws MessagingException {
+        meldFeilOgManglerValidator.validateRequest(request);
         feilOgManglerService.meldFeilOgMangler(request);
         return ResponseEntity
                 .status(HttpStatus.OK)

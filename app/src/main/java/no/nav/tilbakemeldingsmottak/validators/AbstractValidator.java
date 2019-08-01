@@ -11,7 +11,7 @@ public abstract class AbstractValidator {
 
     static void hasText(String input, String feltnavn, String condition) {
         if (StringUtils.isBlank(input)) {
-            throw new InvalidRequestException(String.format("%s kan ikke være null eller tom %s", feltnavn, condition));
+            throw new InvalidRequestException(String.format("%s er påkrevd%s", feltnavn, condition));
         }
     }
 
@@ -21,7 +21,7 @@ public abstract class AbstractValidator {
 
     static void isNotNull(Object input, String feltnavn, String condition) {
         if (input == null) {
-            throw new InvalidRequestException(String.format("%s kan ikke være null %s", feltnavn, condition));
+            throw new InvalidRequestException(String.format("%s er påkrevd%s", feltnavn, condition));
         }
     }
 }
