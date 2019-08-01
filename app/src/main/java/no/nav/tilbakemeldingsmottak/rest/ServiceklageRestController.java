@@ -47,7 +47,7 @@ public class ServiceklageRestController {
         opprettServiceklageValidator.validateRequest(request);
         long id = serviceklageService.opprettServiceklage(request, authorizationHeader);
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .status(HttpStatus.OK)
                 .body(OpprettServiceklageResponse.builder().message("Opprettet serviceklage med serviceklageId=" + id).build());
     }
 
