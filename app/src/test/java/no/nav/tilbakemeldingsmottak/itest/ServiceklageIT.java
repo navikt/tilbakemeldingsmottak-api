@@ -33,7 +33,7 @@ class ServiceklageIT extends AbstractIT {
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
         ResponseEntity<String> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, String.class);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
         Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
         assertNotNull(serviceklage.getServiceklageId());
@@ -51,7 +51,7 @@ class ServiceklageIT extends AbstractIT {
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
         ResponseEntity<String> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, String.class);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
         Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
         assertNotNull(serviceklage.getServiceklageId());
@@ -69,7 +69,7 @@ class ServiceklageIT extends AbstractIT {
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
         ResponseEntity<String> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, String.class);
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
         Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
         assertNotNull(serviceklage.getServiceklageId());
@@ -79,5 +79,10 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getKlagetype(), KLAGETYPE);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
+    }
+
+    @Test
+    void happyPathRegistrerTilbakemelding() {
+
     }
 }

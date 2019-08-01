@@ -39,7 +39,7 @@ class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest.getInnmelder().setPersonnummer(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("innmelder.personnummer kan ikke være null eller tom dersom paaVegneAv=PRIVATPERSON"));
+        assertTrue(thrown.getMessage().contains("innmelder.personnummer er påkrevd dersom paaVegneAv=PRIVATPERSON"));
     }
 
     @Test
@@ -48,7 +48,7 @@ class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest.getInnmelder().setHarFullmakt(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("innmelder.harFullmakt kan ikke være null dersom paaVegneAv=ANNEN_PERSON"));
+        assertTrue(thrown.getMessage().contains("innmelder.harFullmakt er påkrevd dersom paaVegneAv=ANNEN_PERSON"));
     }
 
     @Test
@@ -57,7 +57,7 @@ class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest.getInnmelder().setRolle(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("innmelder.rolle kan ikke være null eller tom dersom paaVegneAv=ANNEN_PERSON eller paaVegneAv=BEDRIFT"));
+        assertTrue(thrown.getMessage().contains("innmelder.rolle er påkrevd dersom paaVegneAv=ANNEN_PERSON eller paaVegneAv=BEDRIFT"));
     }
 
     @Test
@@ -66,7 +66,7 @@ class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest.getInnmelder().setRolle(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("innmelder.rolle kan ikke være null eller tom dersom paaVegneAv=ANNEN_PERSON eller paaVegneAv=BEDRIFT"));
+        assertTrue(thrown.getMessage().contains("innmelder.rolle er påkrevd dersom paaVegneAv=ANNEN_PERSON eller paaVegneAv=BEDRIFT"));
     }
 
     @Test
@@ -75,7 +75,7 @@ class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest.setPaaVegneAvPerson(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("paaVegneAvPerson kan ikke være null dersom paaVegneAv=ANNEN_PERSON"));
+        assertTrue(thrown.getMessage().contains("paaVegneAvPerson er påkrevd dersom paaVegneAv=ANNEN_PERSON"));
     }
 
     @Test
@@ -84,6 +84,6 @@ class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest.setPaaVegneAvBedrift(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("paaVegneAvBedrift kan ikke være null dersom paaVegneAv=BEDRIFT"));
+        assertTrue(thrown.getMessage().contains("paaVegneAvBedrift er påkrevd dersom paaVegneAv=BEDRIFT"));
     }
 }
