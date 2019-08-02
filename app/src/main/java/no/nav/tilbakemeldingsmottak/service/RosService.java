@@ -24,6 +24,7 @@ public class RosService {
 
     public void sendRos(SendRosRequest request) throws MessagingException {
         sendEmail(request);
+        log.info("Ros sendt");
     }
 
     private void sendEmail(SendRosRequest request) throws MessagingException {

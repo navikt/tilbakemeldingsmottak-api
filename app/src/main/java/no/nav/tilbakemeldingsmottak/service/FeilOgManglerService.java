@@ -24,6 +24,7 @@ public class FeilOgManglerService {
 
     public void meldFeilOgMangler(MeldFeilOgManglerRequest request) throws MessagingException {
         sendEmail(request);
+        log.info("Feil/mangel meldt");
     }
 
     private void sendEmail(MeldFeilOgManglerRequest request) throws MessagingException {
