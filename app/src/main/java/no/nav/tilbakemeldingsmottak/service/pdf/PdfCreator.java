@@ -10,7 +10,7 @@ import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 
 import java.io.ByteArrayOutputStream;
 
-public class PdfCreator {
+public final class PdfCreator {
 
     private static Font regular = new Font(Font.FontFamily.HELVETICA, 12);
     private static Font bold = new Font(Font.FontFamily.HELVETICA, 12,Font.BOLD);
@@ -47,7 +47,7 @@ public class PdfCreator {
                 document.add(createParagraph("Telefonnummer til forulempet bedrift", request.getPaaVegneAvBedrift().getTelefonnummer()));
         }
 
-        document.add(createParagraph("Klagetype", request.getKlagetype()));
+        document.add(createParagraph("Klagetype", request.getKlagetype().text));
         document.add(createParagraph("Klagetekst", request.getKlagetekst()));
         document.add(createParagraph("Ønsker å kontaktes", request.getOenskerAaKontaktes() ? "Ja" : "Nei"));
 

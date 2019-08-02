@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak;
 
 import no.nav.tilbakemeldingsmottak.api.Innmelder;
+import no.nav.tilbakemeldingsmottak.api.Klagetype;
 import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.api.PaaVegneAvBedrift;
@@ -28,7 +29,7 @@ public class TestUtils {
     public static final String POSTADRESSE= "Nedre Bedriftsgate 15A, 0168 OSLO";
     public static final String TELEFONNUMMER_BEDRIFT= "12345678";
 
-    public static final String KLAGETYPE = "Nav.no";
+    public static final Klagetype KLAGETYPE = Klagetype.NAVNO;
     public static final String KLAGETEKST = "Saksbehandleren var slem";
     public static final Boolean OENSKER_AA_KONTAKTES = Boolean.TRUE;
 

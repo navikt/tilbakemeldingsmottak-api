@@ -31,7 +31,7 @@ public class Serviceklage {
     @Column(name = "serviceklage_id", nullable = false)
     private Long serviceklageId;
 
-    @Column(name = "dato_opprettet", updatable = false, nullable = false)
+    @Column(name = "dato_opprettet", nullable = false, updatable = false)
     private LocalDateTime datoOpprettet;
 
     @Column(name = "paa_vegne_av")

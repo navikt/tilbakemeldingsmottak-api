@@ -9,7 +9,7 @@ import no.nav.tilbakemeldingsmottak.api.PaaVegneAvType;
 public class OpprettServiceklageValidator implements RequestValidator {
 
     public void validateRequest(OpprettServiceklageRequest request) {
-        hasText(request.getKlagetype(), "klagetype");
+        isNotNull(request.getKlagetype(), "klagetype");
         hasText(request.getKlagetekst(), "klagetekst");
         isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes");
         isNotNull(request.getPaaVegneAv(), "paaVegneAv");

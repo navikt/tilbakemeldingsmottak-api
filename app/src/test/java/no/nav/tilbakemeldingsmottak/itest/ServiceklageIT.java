@@ -53,7 +53,7 @@ class ServiceklageIT extends AbstractIT {
         assertNotNull(serviceklage.getDatoOpprettet());
         assertEquals(serviceklage.getPaaVegneAv(), PRIVATPERSON.name());
         assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER_INNMELDER);
-        assertEquals(serviceklage.getKlagetype(), KLAGETYPE);
+        assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
     }
@@ -71,7 +71,7 @@ class ServiceklageIT extends AbstractIT {
         assertNotNull(serviceklage.getDatoOpprettet());
         assertEquals(serviceklage.getPaaVegneAv(), ANNEN_PERSON.name());
         assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER_PERSON);
-        assertEquals(serviceklage.getKlagetype(), KLAGETYPE);
+        assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
     }
@@ -89,7 +89,7 @@ class ServiceklageIT extends AbstractIT {
         assertNotNull(serviceklage.getDatoOpprettet());
         assertEquals(serviceklage.getPaaVegneAv(), BEDRIFT.name());
         assertEquals(serviceklage.getKlagenGjelderId(), ORGANISASJONSNUMMER);
-        assertEquals(serviceklage.getKlagetype(), KLAGETYPE);
+        assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
     }

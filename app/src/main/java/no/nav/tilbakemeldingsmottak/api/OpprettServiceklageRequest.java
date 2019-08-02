@@ -16,7 +16,7 @@ public class OpprettServiceklageRequest {
     private Innmelder innmelder;
     private PaaVegneAvPerson paaVegneAvPerson;
     private PaaVegneAvBedrift paaVegneAvBedrift;
-    private String klagetype;
+    private Klagetype klagetype;
     private String klagetekst;
     private Boolean oenskerAaKontaktes;
 }

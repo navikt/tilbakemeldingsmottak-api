@@ -14,7 +14,7 @@ public class OpprettServiceklageRequestMapper {
                 .datoOpprettet(LocalDateTime.now())
                 .paaVegneAv(request.getPaaVegneAv().name())
                 .klagenGjelderId(findKlagenGjelderId(request))
-                .klagetype(request.getKlagetype())
+                .klagetype(request.getKlagetype().text)
                 .klagetekst(request.getKlagetekst())
                 .oenskerAaKontaktes(request.getOenskerAaKontaktes())
                 .build();
