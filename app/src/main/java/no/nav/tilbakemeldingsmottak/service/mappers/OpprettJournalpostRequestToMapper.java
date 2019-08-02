@@ -14,12 +14,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class OpprettJournalpostRequestToMapper {
 
-    private final static String TEMA_SER = "SER";
-    private final static String KANAL_NAV_NO_UINNLOGGET = "NAV_NO_UINNLOGGET";
-    private final static String TITTEL_SERVICEKLAGE = "Serviceklage";
-    private final static String JOURNALFOERENDE_ENHET = "9999";
-    private final static String FILTYPE_PDFA = "PDFA";
-    private final static String VARIANTFORMAT_ARKIV = "ARKIV";
+    private static final String TEMA_SER = "SER";
+    private static final String KANAL_NAV_NO_UINNLOGGET = "NAV_NO_UINNLOGGET";
+    private static final String TITTEL_SERVICEKLAGE = "Serviceklage";
+    private static final String JOURNALFOERENDE_ENHET = "9999";
+    private static final String FILTYPE_PDFA = "PDFA";
+    private static final String VARIANTFORMAT_ARKIV = "ARKIV";
 
     public OpprettJournalpostRequestTo map(OpprettServiceklageRequest request, byte[] fysiskDokument) {
         OpprettJournalpostRequestTo opprettJournalpostRequestTo = OpprettJournalpostRequestTo.builder()
@@ -57,25 +57,28 @@ public class OpprettJournalpostRequestToMapper {
     }
 
     private Bruker mapBruker(OpprettServiceklageRequest request) {
+        Bruker bruker = null;
         switch (request.getPaaVegneAv()) {
             case PRIVATPERSON:
-                return Bruker.builder()
+                bruker = Bruker.builder()
                         .id(request.getInnmelder().getPersonnummer())
                         .idType(BrukerIdType.FNR)
                         .build();
+                break;
             case ANNEN_PERSON:
-                return Bruker.builder()
+                bruker = Bruker.builder()
                         .id(request.getPaaVegneAvPerson().getPersonnummer())
                         .idType(BrukerIdType.FNR)
                         .build();
+                break;
             case BEDRIFT:
-                return Bruker.builder()
+                bruker = Bruker.builder()
                         .id(request.getPaaVegneAvBedrift().getOrganisasjonsnummer())
                         .idType(BrukerIdType.ORGNR)
                         .build();
-            default:
-                return null;
+                break;
         }
+        return bruker;
     }
 
 }

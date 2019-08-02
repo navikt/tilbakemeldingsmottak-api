@@ -62,7 +62,7 @@ public class ServiceklageService {
         OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument);
         OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo, authorizationHeader);
 
-//        OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(request, opprettJournalpostResponseTo);
+//        OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(serviceklage.getKlagenGjelderId(), opprettJournalpostResponseTo);
 //        opprettOppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo, authorizationHeader);
 
         return serviceklage.getServiceklageId();

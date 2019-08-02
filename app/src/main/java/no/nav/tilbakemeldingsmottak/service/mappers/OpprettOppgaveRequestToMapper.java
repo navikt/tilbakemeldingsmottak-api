@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.service.mappers;
 
-import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.consumer.joark.api.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.api.OpprettOppgaveRequestTo;
 import org.springframework.stereotype.Component;
@@ -15,29 +14,17 @@ public class OpprettOppgaveRequestToMapper {
     private static final String TEMA= "SER";
     private static final String OPPGAVETYPE_VUR = "VUR";
     private static final String OPPGAVETYPE_JFR = "JFR";
+    private static final String JOURNALSTATUS_ENDELIG= "ENDELIG";
 
-    public OpprettOppgaveRequestTo map(OpprettServiceklageRequest request, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
+    public OpprettOppgaveRequestTo map(String klagenGjelderId, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
         return OpprettOppgaveRequestTo.builder()
                 .tildeltEnhetsnr(TILDELT_ENHETSNR)
                 .prioritet(PRIORITET)
-//                .aktoerId(mapAktoerId(request))
+                .aktoerId(klagenGjelderId) // må mappes
                 .aktivDato(LocalDate.now().toString())
                 .journalpostId(opprettJournalpostResponseTo.getJournalpostId())
                 .tema(TEMA)
-                .oppgavetype(opprettJournalpostResponseTo.getJournalstatus().equals("ENDELIG") ? OPPGAVETYPE_VUR : OPPGAVETYPE_JFR)
+                .oppgavetype(JOURNALSTATUS_ENDELIG.equals(opprettJournalpostResponseTo.getJournalstatus()) ? OPPGAVETYPE_VUR : OPPGAVETYPE_JFR)
                 .build();
-    }
-
-    private String mapAktoerId(OpprettServiceklageRequest request) {
-        switch (request.getPaaVegneAv()) {
-            case PRIVATPERSON:
-                return request.getInnmelder().getPersonnummer();
-            case ANNEN_PERSON:
-                return request.getPaaVegneAvPerson().getPersonnummer();
-            case BEDRIFT:
-                return request.getPaaVegneAvBedrift().getOrganisasjonsnummer();
-            default:
-                return null;
-        }
     }
 }

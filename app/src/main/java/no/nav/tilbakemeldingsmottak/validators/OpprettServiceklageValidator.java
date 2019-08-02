@@ -6,7 +6,7 @@ import no.nav.tilbakemeldingsmottak.api.PaaVegneAvBedrift;
 import no.nav.tilbakemeldingsmottak.api.PaaVegneAvPerson;
 import no.nav.tilbakemeldingsmottak.api.PaaVegneAvType;
 
-public class OpprettServiceklageValidator extends AbstractValidator {
+public class OpprettServiceklageValidator implements RequestValidator {
 
     public void validateRequest(OpprettServiceklageRequest request) {
         hasText(request.getKlagetype(), "klagetype");

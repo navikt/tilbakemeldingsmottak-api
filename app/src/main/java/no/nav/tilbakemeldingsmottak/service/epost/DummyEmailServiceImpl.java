@@ -17,7 +17,7 @@ public class DummyEmailServiceImpl extends AbstractEmailService {
 
     @Override
     public void sendMail(MimeMessage message) throws MessagingException {
-
+        /* Mail skal ikke sendes når appen kjøres lokalt, pga hindringer i brannmur */
     }
 
 }

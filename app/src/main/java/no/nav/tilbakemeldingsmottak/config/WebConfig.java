@@ -11,8 +11,12 @@ import javax.inject.Inject;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+	private final OIDCRequestContextHolder oidcRequestContextHolder;
+
 	@Inject
-	private OIDCRequestContextHolder oidcRequestContextHolder;
+	public WebConfig(OIDCRequestContextHolder oidcRequestContextHolder) {
+		this.oidcRequestContextHolder = oidcRequestContextHolder;
+	}
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {

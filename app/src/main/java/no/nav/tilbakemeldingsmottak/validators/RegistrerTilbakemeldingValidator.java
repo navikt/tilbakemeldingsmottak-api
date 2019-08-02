@@ -2,7 +2,7 @@ package no.nav.tilbakemeldingsmottak.validators;
 
 import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
 
-public class RegistrerTilbakemeldingValidator  extends AbstractValidator {
+public class RegistrerTilbakemeldingValidator implements RequestValidator {
 
     private static final String DERSOM_SERVICEKLAGE = " dersom klagen er en serviceklage";
     private static final String DERSOM_IKKE_SERVICEKLAGE = " dersom klagen ikke er en serviceklage";

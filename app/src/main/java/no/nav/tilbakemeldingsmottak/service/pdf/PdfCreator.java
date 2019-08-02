@@ -15,6 +15,9 @@ public class PdfCreator {
     private static Font regular = new Font(Font.FontFamily.HELVETICA, 12);
     private static Font bold = new Font(Font.FontFamily.HELVETICA, 12,Font.BOLD);
 
+    private PdfCreator() {
+    }
+
     public static byte[] opprettPdf(OpprettServiceklageRequest request) throws DocumentException {
         Document document = new Document();
 
