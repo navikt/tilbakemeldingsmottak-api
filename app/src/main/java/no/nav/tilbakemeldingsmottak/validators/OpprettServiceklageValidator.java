@@ -27,7 +27,7 @@ public class OpprettServiceklageValidator implements RequestValidator {
         isNotNull(innmelder, "innmelder");
         hasText(innmelder.getNavn(), "innmelder.navn");
         if (oenskerAaKontaktes) {
-            hasText(innmelder.getTelefonnummer(), "innmelder.telefonnummer");
+            hasText(innmelder.getTelefonnummer(), "innmelder.telefonnummer", "dersom oenskerAaKontaktes=true");
         }
         if (paaVegneAv == PaaVegneAvType.PRIVATPERSON) {
             hasText(innmelder.getPersonnummer(), "innmelder.personnummer", " dersom paaVegneAv=PRIVATPERSON");
