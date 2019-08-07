@@ -14,7 +14,7 @@ public class OpprettServiceklageValidator implements RequestValidator {
         isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes");
         isNotNull(request.getPaaVegneAv(), "paaVegneAv");
 
-        validateInnmelder(request.getInnmelder(), request.getPaaVegneAv());
+        validateInnmelder(request.getInnmelder(), request.getPaaVegneAv(), request.getOenskerAaKontaktes());
         if (request.getPaaVegneAv() == PaaVegneAvType.ANNEN_PERSON) {
             validatePaaVegneAvPerson(request.getPaaVegneAvPerson());
         }
@@ -23,10 +23,12 @@ public class OpprettServiceklageValidator implements RequestValidator {
         }
     }
 
-    private void validateInnmelder(Innmelder innmelder, PaaVegneAvType paaVegneAv) {
+    private void validateInnmelder(Innmelder innmelder, PaaVegneAvType paaVegneAv, boolean oenskerAaKontaktes) {
         isNotNull(innmelder, "innmelder");
         hasText(innmelder.getNavn(), "innmelder.navn");
-        hasText(innmelder.getTelefonnummer(), "innmelder.telefonnummer");
+        if (oenskerAaKontaktes) {
+            hasText(innmelder.getTelefonnummer(), "innmelder.telefonnummer");
+        }
         if (paaVegneAv == PaaVegneAvType.PRIVATPERSON) {
             hasText(innmelder.getPersonnummer(), "innmelder.personnummer", " dersom paaVegneAv=PRIVATPERSON");
         }
