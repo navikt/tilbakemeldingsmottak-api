@@ -27,7 +27,9 @@ public final class PdfCreator {
         document.open();
 
         document.add(createParagraph("Navn til innmelder", request.getInnmelder().getNavn()));
-        document.add(createParagraph("Telefonnummer til innmelder", request.getInnmelder().getTelefonnummer()));
+        if (request.getOenskerAaKontaktes()) {
+            document.add(createParagraph("Telefonnummer til innmelder", request.getInnmelder().getTelefonnummer()));
+        }
 
         switch (request.getPaaVegneAv()) {
             case PRIVATPERSON:

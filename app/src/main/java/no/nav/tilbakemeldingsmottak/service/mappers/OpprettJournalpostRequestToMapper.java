@@ -25,7 +25,7 @@ public class OpprettJournalpostRequestToMapper {
         OpprettJournalpostRequestTo opprettJournalpostRequestTo = OpprettJournalpostRequestTo.builder()
                 .avsenderMottaker( AvsenderMottaker.builder()
                         .id(request.getInnmelder().getPersonnummer())
-                        .idType(AvsenderMottakerIdType.FNR)
+                        .idType(request.getInnmelder().getPersonnummer() != null ? AvsenderMottakerIdType.FNR : null)
                         .navn(request.getInnmelder().getNavn())
                         .build())
                 .bruker(mapBruker(request))
