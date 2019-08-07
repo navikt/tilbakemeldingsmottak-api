@@ -9,7 +9,10 @@ import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
 import no.nav.tilbakemeldingsmottak.api.ServiceklageTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.OpprettJournalpostConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OpprettOppgaveConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
@@ -57,11 +60,11 @@ public class ServiceklageService {
         log.info("Serviceklage med serviceklageId={} persistert", serviceklage.getServiceklageId());
         byte[] fysiskDokument = opprettPdf(request);
 
-//        OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument);
-//        OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo, authorizationHeader);
+        OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument);
+        OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo, authorizationHeader);
 
-//        OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(serviceklage.getKlagenGjelderId(), opprettJournalpostResponseTo);
-//        opprettOppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo, authorizationHeader);
+        OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(serviceklage.getKlagenGjelderId(), request.getPaaVegneAv(), opprettJournalpostResponseTo);
+        opprettOppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo, authorizationHeader);
 
         return serviceklage.getServiceklageId();
     }

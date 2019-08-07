@@ -1,10 +1,11 @@
 package no.nav.tilbakemeldingsmottak.consumer.joark;
 
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
+import static no.nav.tilbakemeldingsmottak.util.RestSecurityHeadersUtils.createOidcHeaders;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.consumer.joark.api.OpprettJournalpostRequestTo;
-import no.nav.tilbakemeldingsmottak.consumer.joark.api.OpprettJournalpostResponseTo;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.OpprettJournalpostFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.OpprettJournalpostTechnicalException;
 import no.nav.tilbakemeldingsmottak.integration.fasit.ServiceuserAlias;
@@ -14,7 +15,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -46,10 +46,8 @@ public class OpprettJournalpostConsumer {
 		}
 		try {
 
-			HttpHeaders headers = new HttpHeaders();
+			HttpHeaders headers = createOidcHeaders();
 			headers.set("Nav-Callid", MDC.get(MDC_CALL_ID));
-			headers.set("Authorization", authorizationHeader);
-			headers.setContentType(MediaType.APPLICATION_JSON);
 
 			HttpEntity<OpprettJournalpostRequestTo> requestEntity = new HttpEntity<>(opprettJournalpostRequestTo, headers);
 

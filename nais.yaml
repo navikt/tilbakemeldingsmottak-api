@@ -41,11 +41,19 @@ fasitResources:
   - alias: securityTokenService
     resourceType: baseurl
 
+  - alias: security-token-service-token
+    resourceType: restservice
+
   - alias: Journalpost_v1
     resourceType: restservice
 
   - alias: "oppgave.oppgaver"
     resourceType: restservice
+
+  - alias: "aktoerregister.api.v1"
+    resourceType: restservice
+    propertyMap:
+      url: aktoerregister.identer.url
 
   exposed:
   - alias: tilbakemeldingsmottak

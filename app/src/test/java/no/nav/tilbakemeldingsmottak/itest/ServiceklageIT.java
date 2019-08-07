@@ -7,8 +7,7 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETYPE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.OENSKER_AA_KONTAKTES;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ORGANISASJONSNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.PAAKLAGET_ENHET;
-import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER_INNMELDER;
-import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER_PERSON;
+import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.SVARMETODE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.TEMA;
 import static no.nav.tilbakemeldingsmottak.TestUtils.UTFALL;
@@ -52,7 +51,7 @@ class ServiceklageIT extends AbstractIT {
         assertNotNull(serviceklage.getServiceklageId());
         assertNotNull(serviceklage.getDatoOpprettet());
         assertEquals(serviceklage.getPaaVegneAv(), PRIVATPERSON.name());
-        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER_INNMELDER);
+        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
         assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
@@ -70,7 +69,7 @@ class ServiceklageIT extends AbstractIT {
         assertNotNull(serviceklage.getServiceklageId());
         assertNotNull(serviceklage.getDatoOpprettet());
         assertEquals(serviceklage.getPaaVegneAv(), ANNEN_PERSON.name());
-        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER_PERSON);
+        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
         assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
@@ -97,7 +96,7 @@ class ServiceklageIT extends AbstractIT {
     @Test
     void happyPathRegistrerTilbakemelding() {
         restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
-        HentServiceklagerResponse serviceklager = restTemplate.getForEntity(URL_SERVICEKLAGE + "/" + PERSONNUMMER_INNMELDER, HentServiceklagerResponse.class).getBody();
+        HentServiceklagerResponse serviceklager = restTemplate.getForEntity(URL_SERVICEKLAGE + "/" + PERSONNUMMER, HentServiceklagerResponse.class).getBody();
 
         assertEquals(serviceklageRepository.count(), 1);
         Long serviceklageId = serviceklager.getServiceklager().iterator().next().getServiceklageId();

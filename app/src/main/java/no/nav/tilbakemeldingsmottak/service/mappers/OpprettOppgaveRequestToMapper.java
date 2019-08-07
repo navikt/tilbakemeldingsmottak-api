@@ -1,9 +1,12 @@
 package no.nav.tilbakemeldingsmottak.service.mappers;
 
-import no.nav.tilbakemeldingsmottak.consumer.joark.api.OpprettJournalpostResponseTo;
-import no.nav.tilbakemeldingsmottak.consumer.oppgave.api.OpprettOppgaveRequestTo;
+import no.nav.tilbakemeldingsmottak.api.PaaVegneAvType;
+import no.nav.tilbakemeldingsmottak.consumer.aktoer.AktoerConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.time.LocalDate;
 
 @Component
@@ -16,11 +19,19 @@ public class OpprettOppgaveRequestToMapper {
     private static final String OPPGAVETYPE_JFR = "JFR";
     private static final String JOURNALSTATUS_ENDELIG= "ENDELIG";
 
-    public OpprettOppgaveRequestTo map(String klagenGjelderId, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
+    private AktoerConsumer aktoerConsumer;
+
+    @Inject
+    public OpprettOppgaveRequestToMapper(AktoerConsumer aktoerConsumerService) {
+        this.aktoerConsumer = aktoerConsumerService;
+    }
+
+    public OpprettOppgaveRequestTo map(String klagenGjelderId, PaaVegneAvType paaVegneAvType, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
         return OpprettOppgaveRequestTo.builder()
                 .tildeltEnhetsnr(TILDELT_ENHETSNR)
                 .prioritet(PRIORITET)
-                .aktoerId(klagenGjelderId) // må mappes
+                .aktoerId(paaVegneAvType.equals(PaaVegneAvType.BEDRIFT) ? null : aktoerConsumer.hentAktoerIdForIdent(klagenGjelderId).get(klagenGjelderId).getFirstIdent())
+                .orgnr(paaVegneAvType.equals(PaaVegneAvType.BEDRIFT) ? klagenGjelderId : null)
                 .aktivDato(LocalDate.now().toString())
                 .journalpostId(opprettJournalpostResponseTo.getJournalpostId())
                 .tema(TEMA)

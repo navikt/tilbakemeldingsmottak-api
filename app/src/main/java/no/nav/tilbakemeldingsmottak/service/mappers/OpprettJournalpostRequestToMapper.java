@@ -1,14 +1,14 @@
 package no.nav.tilbakemeldingsmottak.service.mappers;
 
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.consumer.joark.api.AvsenderMottaker;
-import no.nav.tilbakemeldingsmottak.consumer.joark.api.AvsenderMottakerIdType;
-import no.nav.tilbakemeldingsmottak.consumer.joark.api.Bruker;
-import no.nav.tilbakemeldingsmottak.consumer.joark.api.BrukerIdType;
-import no.nav.tilbakemeldingsmottak.consumer.joark.api.Dokument;
-import no.nav.tilbakemeldingsmottak.consumer.joark.api.DokumentVariant;
-import no.nav.tilbakemeldingsmottak.consumer.joark.api.JournalpostType;
-import no.nav.tilbakemeldingsmottak.consumer.joark.api.OpprettJournalpostRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.AvsenderMottaker;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.AvsenderMottakerIdType;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Bruker;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.BrukerIdType;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Dokument;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.DokumentVariant;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.JournalpostType;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import org.springframework.stereotype.Component;
 
 @Component

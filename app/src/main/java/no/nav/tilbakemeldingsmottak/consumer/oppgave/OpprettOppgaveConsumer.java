@@ -1,9 +1,10 @@
 package no.nav.tilbakemeldingsmottak.consumer.oppgave;
 
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
+import static no.nav.tilbakemeldingsmottak.util.RestSecurityHeadersUtils.createOidcHeaders;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.consumer.oppgave.api.OpprettOppgaveRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.exceptions.OpprettJournalpostFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.OpprettOppgaveTechnicalException;
 import no.nav.tilbakemeldingsmottak.integration.fasit.ServiceuserAlias;
@@ -13,7 +14,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -44,10 +44,8 @@ public class OpprettOppgaveConsumer {
         }
         try {
 
-            HttpHeaders headers = new HttpHeaders();
+            HttpHeaders headers = createOidcHeaders();
             headers.set("X-Correlation-ID", MDC.get(MDC_CALL_ID));
-            headers.set("Authorization", authorizationHeader);
-            headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<OpprettOppgaveRequestTo> requestEntity = new HttpEntity<>(opprettOppgaveRequestTo, headers);
 

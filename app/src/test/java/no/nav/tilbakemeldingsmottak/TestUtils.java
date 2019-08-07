@@ -16,13 +16,12 @@ import java.util.List;
 public class TestUtils {
 
     public static final String NAVN_INNMELDER = "Innmelder Innmeldersen";
-    public static final String PERSONNUMMER_INNMELDER = "0101200012345";
-    public static final String TELEFONNUMMER_INNMELDER = "81549300";
+    public static final String PERSONNUMMER = "01010096460";
+    public static final String TELEFONNUMMER = "81549300";
     public static final Boolean HAR_FULLMAKT = Boolean.TRUE;
     public static final String ROLLE = "Advokat";
 
     public static final String NAVN_PERSON = "Paal Vegne Personsen";
-    public static final String PERSONNUMMER_PERSON = "0203200112345";
 
     public static final String NAVN_BEDRIFT= "Bedrift AS";
     public static final String ORGANISASJONSNUMMER= "123456789";
@@ -56,8 +55,8 @@ public class TestUtils {
                 .paaVegneAv(PaaVegneAvType.PRIVATPERSON)
                 .innmelder(Innmelder.builder()
                         .navn(NAVN_INNMELDER)
-                        .telefonnummer(TELEFONNUMMER_INNMELDER)
-                        .personnummer(PERSONNUMMER_INNMELDER)
+                        .telefonnummer(TELEFONNUMMER)
+                        .personnummer(PERSONNUMMER)
                         .build())
                 .klagetype(KLAGETYPE)
                 .klagetekst(KLAGETEKST)
@@ -70,13 +69,13 @@ public class TestUtils {
                 .paaVegneAv(PaaVegneAvType.ANNEN_PERSON)
                 .innmelder(Innmelder.builder()
                         .navn(NAVN_INNMELDER)
-                        .telefonnummer(TELEFONNUMMER_INNMELDER)
+                        .telefonnummer(TELEFONNUMMER)
                         .harFullmakt(HAR_FULLMAKT)
                         .rolle(ROLLE)
                         .build())
                 .paaVegneAvPerson(PaaVegneAvPerson.builder()
                         .navn(NAVN_PERSON)
-                        .personnummer(PERSONNUMMER_PERSON)
+                        .personnummer(PERSONNUMMER)
                         .build())
                 .klagetype(KLAGETYPE)
                 .klagetekst(KLAGETEKST)
@@ -89,7 +88,7 @@ public class TestUtils {
                 .paaVegneAv(PaaVegneAvType.BEDRIFT)
                 .innmelder(Innmelder.builder()
                         .navn(NAVN_INNMELDER)
-                        .telefonnummer(TELEFONNUMMER_INNMELDER)
+                        .telefonnummer(TELEFONNUMMER)
                         .rolle(ROLLE)
                         .build())
                 .paaVegneAvBedrift(PaaVegneAvBedrift.builder()
@@ -107,7 +106,7 @@ public class TestUtils {
     public static MeldFeilOgManglerRequest createMeldFeilOgManglerRequest() {
         return MeldFeilOgManglerRequest.builder()
                 .navn(NAVN_INNMELDER)
-                .telefonnummer(TELEFONNUMMER_INNMELDER)
+                .telefonnummer(TELEFONNUMMER)
                 .feiltype(FEILTYPE)
                 .melding(BESKRIVELSE_FEIL)
                 .build();
@@ -116,7 +115,7 @@ public class TestUtils {
     public static SendRosRequest createSendRosRequest() {
         return SendRosRequest.builder()
                 .navn(NAVN_INNMELDER)
-                .telefonnummer(TELEFONNUMMER_INNMELDER)
+                .telefonnummer(TELEFONNUMMER)
                 .hvemRoses(HVEM_ROSES)
                 .melding(BESKRIVELSE_ROS)
                 .build();

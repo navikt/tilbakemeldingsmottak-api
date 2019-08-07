@@ -1,6 +1,9 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import no.nav.security.spring.oidc.test.TokenGeneratorController;
@@ -21,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -47,6 +51,10 @@ public class AbstractIT {
     @BeforeEach
     void setup() {
         serviceklageRepository.deleteAll();
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+        TestTransaction.start();
+
         smtpServer = new GreenMail(new ServerSetup(port, null, "smtp"));
         smtpServer.start();
 
@@ -60,6 +68,16 @@ public class AbstractIT {
                     .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .withBody("Oppgave opprettet")));
 
+        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/STS"))
+                .willReturn(aResponse().withStatus(HttpStatus.OK.value())
+                        .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(String.format("{\"accessToken\": \"%s\", \"token_type\": \"%s\", \"expires_in\":3600}", getToken("srvtilbakemeldingsmot"), "Bearer"))));
+
+        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/AKTOER/identer/"))
+            .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
+                    .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
+                    .withBodyFile("aktoer/aktoerResponse.json")));
+
     }
 
     @AfterEach
@@ -70,13 +88,13 @@ public class AbstractIT {
     HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken());
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken("srvconsumer"));
         return headers;
     }
 
-    private String getToken() {
+    private String getToken(String user) {
         TokenGeneratorController tokenGeneratorController = new TokenGeneratorController();
-        return tokenGeneratorController.issueToken("srvtest");
+        return tokenGeneratorController.issueToken(user);
     }
 
 }

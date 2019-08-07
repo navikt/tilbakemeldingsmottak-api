@@ -1,4 +1,4 @@
-package no.nav.tilbakemeldingsmottak.consumer.joark.api;
+package no.nav.tilbakemeldingsmottak.consumer.joark.domain;
 
 public enum AvsenderMottakerIdType {
 	FNR,

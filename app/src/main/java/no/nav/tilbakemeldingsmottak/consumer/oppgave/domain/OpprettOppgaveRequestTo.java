@@ -1,4 +1,4 @@
-package no.nav.tilbakemeldingsmottak.consumer.oppgave.api;
+package no.nav.tilbakemeldingsmottak.consumer.oppgave.domain;
 
 import lombok.Builder;
 import lombok.Value;
