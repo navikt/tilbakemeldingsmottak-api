@@ -31,6 +31,9 @@ public class Serviceklage {
     @Column(name = "serviceklage_id", nullable = false)
     private Long serviceklageId;
 
+    @Column(name = "journalpost_id", nullable = false)
+    private String journalpostId;
+
     @Column(name = "dato_opprettet", nullable = false, updatable = false)
     private LocalDateTime datoOpprettet;
 
