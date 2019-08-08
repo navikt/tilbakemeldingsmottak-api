@@ -6,7 +6,9 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
+import no.nav.tilbakemeldingsmottak.api.Klagetype;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 
@@ -50,6 +52,9 @@ public final class PdfCreator {
         }
 
         document.add(createParagraph("Klagetype", request.getKlagetype().text));
+        if (request.getKlagetype().equals(Klagetype.SAKSBEHANDLING) && StringUtils.isNotBlank(request.getYtelseTjeneste())) {
+            document.add(createParagraph("Ytelse/tjeneste", request.getYtelseTjeneste()));
+        }
         document.add(createParagraph("Klagetekst", request.getKlagetekst()));
         document.add(createParagraph("Ønsker å kontaktes", request.getOenskerAaKontaktes() ? "Ja" : "Nei"));
 
