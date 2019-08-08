@@ -1,5 +1,5 @@
 naisPipeline {
-    applicationName = "serviceklagemottak"
+    applicationName = "tilbakemeldingsmottak"
     dockerfileDir = "."
-    deployEnvironmentT = "t6"
+    deployEnvironmentT = "q1"
 }
