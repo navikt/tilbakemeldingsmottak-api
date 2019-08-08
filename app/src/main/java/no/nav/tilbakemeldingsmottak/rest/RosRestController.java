@@ -1,9 +1,12 @@
 package no.nav.tilbakemeldingsmottak.rest;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
 import no.nav.security.oidc.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.api.SendRosRequest;
 import no.nav.tilbakemeldingsmottak.api.SendRosResponse;
+import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
 import no.nav.tilbakemeldingsmottak.service.RosService;
 import no.nav.tilbakemeldingsmottak.validators.SendRosValidator;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,7 @@ import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 
+@Slf4j
 @Protected
 @RestController
 @RequestMapping("/rest/ros")
@@ -36,10 +40,20 @@ public class RosRestController {
     @PostMapping
     @Unprotected
     public ResponseEntity<SendRosResponse> sendRos(@RequestBody SendRosRequest request) throws MessagingException {
-        sendRosValidator.validateRequest(request);
-        rosService.sendRos(request);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(SendRosResponse.builder().message("Ros sendt").build());
+        try {
+            sendRosValidator.validateRequest(request);
+            rosService.sendRos(request);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(SendRosResponse.builder().message("Ros sendt").build());
+        } catch (AbstractTilbakemeldingsmottakFunctionalException e) {
+            log.warn("sendRos feilet funksjonelt. Feilmelding={}", e
+                    .getMessage());
+            throw e;
+        } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
+            log.warn("sendRos feilet teknisk. Feilmelding={}", e
+                    .getMessage());
+            throw e;
+        }
     }
 }

@@ -1,9 +1,12 @@
 package no.nav.tilbakemeldingsmottak.rest;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
 import no.nav.security.oidc.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerResponse;
+import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
 import no.nav.tilbakemeldingsmottak.service.FeilOgManglerService;
 import no.nav.tilbakemeldingsmottak.validators.MeldFeilOgManglerValidator;
 import org.springframework.http.HttpStatus;
@@ -20,6 +23,7 @@ import javax.transaction.Transactional;
 @Protected
 @RestController
 @RequestMapping("/rest/feil-og-mangler")
+@Slf4j
 public class FeilOgManglerRestController {
 
     private final FeilOgManglerService feilOgManglerService;
@@ -35,10 +39,20 @@ public class FeilOgManglerRestController {
     @PostMapping
     @Unprotected
     public ResponseEntity<MeldFeilOgManglerResponse> meldFeilOgMangler(@RequestBody MeldFeilOgManglerRequest request) throws MessagingException {
-        meldFeilOgManglerValidator.validateRequest(request);
-        feilOgManglerService.meldFeilOgMangler(request);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(MeldFeilOgManglerResponse.builder().message("Feil/mangel meldt").build());
+        try {
+            meldFeilOgManglerValidator.validateRequest(request);
+            feilOgManglerService.meldFeilOgMangler(request);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(MeldFeilOgManglerResponse.builder().message("Feil/mangel meldt").build());
+        } catch (AbstractTilbakemeldingsmottakFunctionalException e) {
+            log.warn("meldFeilOgMangler feilet funksjonelt. Feilmelding={}", e
+                    .getMessage());
+            throw e;
+        } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
+            log.warn("meldFeilOgMangler feilet teknisk. Feilmelding={}", e
+                    .getMessage());
+            throw e;
+        }
     }
 }
