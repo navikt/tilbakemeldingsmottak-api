@@ -14,6 +14,7 @@ import lombok.Setter;
 public class SendRosRequest {
     private String navn;
     private String telefonnummer;
-    private String hvemRoses;
+    private HvemRosesType hvemRoses;
+    private String navKontor;
     private String melding;
 }

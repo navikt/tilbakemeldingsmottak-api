@@ -1,5 +1,8 @@
 package no.nav.tilbakemeldingsmottak;
 
+import static no.nav.tilbakemeldingsmottak.api.HvemRosesType.NAV_KONTAKTSENTER;
+
+import no.nav.tilbakemeldingsmottak.api.HvemRosesType;
 import no.nav.tilbakemeldingsmottak.api.Innmelder;
 import no.nav.tilbakemeldingsmottak.api.Klagetype;
 import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerRequest;
@@ -35,7 +38,7 @@ public class TestUtils {
     public static final String FEILTYPE = "Teknisk feil";
     public static final String BESKRIVELSE_FEIL = "Det er en teknisk feil på nav.no";
 
-    public static final String HVEM_ROSES = "NAV kontaktsenter";
+    public static final HvemRosesType HVEM_ROSES = NAV_KONTAKTSENTER;
     public static final String BESKRIVELSE_ROS = "Saksbehandleren var snill";
 
     public static final String ER_SERVICEKLAGE = "Ja (inkludert saker som også har andre elementer)";

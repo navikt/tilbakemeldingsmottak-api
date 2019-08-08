@@ -1,5 +1,7 @@
 package no.nav.tilbakemeldingsmottak.service;
 
+import static no.nav.tilbakemeldingsmottak.api.HvemRosesType.NAV_KONTOR;
+
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.api.SendRosRequest;
 import no.nav.tilbakemeldingsmottak.service.epost.AbstractEmailService;
@@ -43,7 +45,10 @@ public class RosService {
 
         content.addParagraph("Navn", request.getNavn());
         content.addParagraph("Telefonnummer", request.getTelefonnummer());
-        content.addParagraph("Hvem roses", request.getHvemRoses());
+        content.addParagraph("Hvem roses", request.getHvemRoses().text);
+        if(NAV_KONTOR.equals(request.getHvemRoses())) {
+            content.addParagraph("NAV-kontor", request.getNavKontor());
+        }
         content.addParagraph("Melding", request.getMelding());
 
         return content.getContentString();
