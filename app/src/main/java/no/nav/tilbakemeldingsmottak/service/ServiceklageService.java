@@ -53,16 +53,16 @@ public class ServiceklageService {
         this.opprettOppgaveConsumer = opprettOppgaveConsumer;
     }
 
-    public long opprettServiceklage(OpprettServiceklageRequest request, String authorizationHeader) throws FileNotFoundException , DocumentException {
+    public long opprettServiceklage(OpprettServiceklageRequest request) throws FileNotFoundException , DocumentException {
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request);
 
         byte[] fysiskDokument = opprettPdf(request);
 
         OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument);
-        OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo, authorizationHeader);
+        OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo);
 
         OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(serviceklage.getKlagenGjelderId(), request.getPaaVegneAv(), opprettJournalpostResponseTo);
-        opprettOppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo, authorizationHeader);
+        opprettOppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
 
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
         serviceklageRepository.save(serviceklage);

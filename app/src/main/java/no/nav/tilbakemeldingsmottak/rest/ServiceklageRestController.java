@@ -14,7 +14,6 @@ import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTech
 import no.nav.tilbakemeldingsmottak.service.ServiceklageService;
 import no.nav.tilbakemeldingsmottak.validators.OpprettServiceklageValidator;
 import no.nav.tilbakemeldingsmottak.validators.RegistrerTilbakemeldingValidator;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,11 +48,10 @@ public class ServiceklageRestController {
     @Transactional
     @PostMapping
     @Unprotected
-    public ResponseEntity<OpprettServiceklageResponse> opprettServiceklage(@RequestBody OpprettServiceklageRequest request,
-                                                                           @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationHeader) throws FileNotFoundException, DocumentException {
+    public ResponseEntity<OpprettServiceklageResponse> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws FileNotFoundException, DocumentException {
         try {
             opprettServiceklageValidator.validateRequest(request);
-            long id = serviceklageService.opprettServiceklage(request, authorizationHeader);
+            long id = serviceklageService.opprettServiceklage(request);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(OpprettServiceklageResponse.builder().message("Opprettet serviceklage med serviceklageId=" + id).build());
