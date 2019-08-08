@@ -40,7 +40,7 @@ public class OpprettJournalpostConsumer {
 				.basicAuthentication(serviceuserAlias.getUsername(), serviceuserAlias.getPassword()).build();
 	}
 
-	public OpprettJournalpostResponseTo opprettJournalpost(OpprettJournalpostRequestTo opprettJournalpostRequestTo, String authorizationHeader) {
+	public OpprettJournalpostResponseTo opprettJournalpost(OpprettJournalpostRequestTo opprettJournalpostRequestTo) {
 		if (log.isDebugEnabled()) {
 			log.debug("Oppretter journalpost");
 		}

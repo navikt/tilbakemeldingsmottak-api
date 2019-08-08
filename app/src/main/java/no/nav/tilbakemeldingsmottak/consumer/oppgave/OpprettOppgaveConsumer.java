@@ -38,7 +38,7 @@ public class OpprettOppgaveConsumer {
                 .basicAuthentication(serviceuserAlias.getUsername(), serviceuserAlias.getPassword()).build();
     }
 
-    public String opprettOppgave(OpprettOppgaveRequestTo opprettOppgaveRequestTo, String authorizationHeader) {
+    public String opprettOppgave(OpprettOppgaveRequestTo opprettOppgaveRequestTo) {
         if (log.isDebugEnabled()) {
             log.debug("Oppretter oppgave");
         }
