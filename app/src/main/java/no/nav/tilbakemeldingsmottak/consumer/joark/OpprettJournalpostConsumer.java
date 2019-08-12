@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.joark;
 
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
-import static no.nav.tilbakemeldingsmottak.util.RestSecurityHeadersUtils.createOidcHeaders;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
@@ -9,6 +8,7 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResp
 import no.nav.tilbakemeldingsmottak.exceptions.OpprettJournalpostFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.OpprettJournalpostTechnicalException;
 import no.nav.tilbakemeldingsmottak.integration.fasit.ServiceuserAlias;
+import no.nav.tilbakemeldingsmottak.util.RestSecurityHeadersUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -29,11 +29,13 @@ public class OpprettJournalpostConsumer {
 
 	private final RestTemplate restTemplate;
 	private final String journalpostUrl;
+	private final RestSecurityHeadersUtils restSecurityHeadersUtils;
 
 	public OpprettJournalpostConsumer(RestTemplateBuilder restTemplateBuilder,
 									  @Value("${Journalpost_v1_url}") String journalpostUrl,
-									  ServiceuserAlias serviceuserAlias) {
+									  ServiceuserAlias serviceuserAlias, RestSecurityHeadersUtils restSecurityHeadersUtils) {
 		this.journalpostUrl = journalpostUrl;
+		this.restSecurityHeadersUtils = restSecurityHeadersUtils;
 		this.restTemplate = restTemplateBuilder
 				.setReadTimeout(Duration.ofSeconds(20))
 				.setConnectTimeout(Duration.ofSeconds(5))
@@ -46,7 +48,7 @@ public class OpprettJournalpostConsumer {
 		}
 		try {
 
-			HttpHeaders headers = createOidcHeaders();
+			HttpHeaders headers = restSecurityHeadersUtils.createOidcHeaders();
 			headers.set("Nav-Callid", MDC.get(MDC_CALL_ID));
 
 			HttpEntity<OpprettJournalpostRequestTo> requestEntity = new HttpEntity<>(opprettJournalpostRequestTo, headers);

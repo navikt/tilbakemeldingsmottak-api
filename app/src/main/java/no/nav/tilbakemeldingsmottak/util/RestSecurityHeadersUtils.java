@@ -13,14 +13,14 @@ import javax.inject.Inject;
 @Component
 public final class RestSecurityHeadersUtils {
 
-	private static STSTokenService stsTokenService;
+	private final STSTokenService stsTokenService;
 
 	@Inject
 	private RestSecurityHeadersUtils(STSTokenService stsTokenService) {
 		this.stsTokenService = stsTokenService;
 	}
 
-    public static HttpHeaders createOidcHeaders() {
+    public HttpHeaders createOidcHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + stsTokenService.hentOidcToken().getAccessToken());

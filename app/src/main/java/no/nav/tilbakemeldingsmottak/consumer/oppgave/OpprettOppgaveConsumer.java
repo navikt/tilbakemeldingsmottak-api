@@ -1,13 +1,13 @@
 package no.nav.tilbakemeldingsmottak.consumer.oppgave;
 
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
-import static no.nav.tilbakemeldingsmottak.util.RestSecurityHeadersUtils.createOidcHeaders;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.exceptions.OpprettJournalpostFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.OpprettOppgaveTechnicalException;
 import no.nav.tilbakemeldingsmottak.integration.fasit.ServiceuserAlias;
+import no.nav.tilbakemeldingsmottak.util.RestSecurityHeadersUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -27,11 +27,13 @@ import java.time.Duration;
 public class OpprettOppgaveConsumer {
     private final RestTemplate restTemplate;
     private final String oppgaveUrl;
+    private final RestSecurityHeadersUtils restSecurityHeadersUtils;
 
     public OpprettOppgaveConsumer(RestTemplateBuilder restTemplateBuilder,
-                                      @Value("${oppgave_oppgaver_url}") String oppgaveUrl,
-                                      ServiceuserAlias serviceuserAlias) {
+                                  @Value("${oppgave_oppgaver_url}") String oppgaveUrl,
+                                  ServiceuserAlias serviceuserAlias, RestSecurityHeadersUtils restSecurityHeadersUtils) {
         this.oppgaveUrl = oppgaveUrl;
+        this.restSecurityHeadersUtils = restSecurityHeadersUtils;
         this.restTemplate = restTemplateBuilder
                 .setReadTimeout(Duration.ofSeconds(20))
                 .setConnectTimeout(Duration.ofSeconds(5))
@@ -44,7 +46,7 @@ public class OpprettOppgaveConsumer {
         }
         try {
 
-            HttpHeaders headers = createOidcHeaders();
+            HttpHeaders headers = restSecurityHeadersUtils.createOidcHeaders();
             headers.set("X-Correlation-ID", MDC.get(MDC_CALL_ID));
 
             HttpEntity<OpprettOppgaveRequestTo> requestEntity = new HttpEntity<>(opprettOppgaveRequestTo, headers);
