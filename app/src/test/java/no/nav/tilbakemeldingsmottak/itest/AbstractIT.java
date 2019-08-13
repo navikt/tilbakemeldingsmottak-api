@@ -48,6 +48,8 @@ public class AbstractIT {
     protected GreenMail smtpServer;
     private int port = 2500;
 
+    protected static final String JOURNALPOST_ID = "12345";
+
     @BeforeEach
     void setup() {
         serviceklageRepository.deleteAll();

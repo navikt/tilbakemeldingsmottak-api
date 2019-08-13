@@ -6,7 +6,7 @@ import Tilbakemelding from "./pages/Tilbakemelding";
 const Routes = () => (
         <Switch>
             <Route exact path="/serviceklage/frontpage" component={FrontPage}/>
-            <Route exact path="/serviceklage/tilbakemelding/:serviceklageId" component={Tilbakemelding}/>
+            <Route exact path="/serviceklage/tilbakemelding/:journalpostId" component={Tilbakemelding}/>
         </Switch>
 );
 

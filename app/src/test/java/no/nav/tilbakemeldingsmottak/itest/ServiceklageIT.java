@@ -22,7 +22,6 @@ import static no.nav.tilbakemeldingsmottak.api.PaaVegneAvType.PRIVATPERSON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import no.nav.tilbakemeldingsmottak.api.HentServiceklagerResponse;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
@@ -96,14 +95,12 @@ class ServiceklageIT extends AbstractIT {
     @Test
     void happyPathRegistrerTilbakemelding() {
         restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
-        HentServiceklagerResponse serviceklager = restTemplate.getForEntity(URL_SERVICEKLAGE + "/" + PERSONNUMMER, HentServiceklagerResponse.class).getBody();
 
         assertEquals(serviceklageRepository.count(), 1);
-        Long serviceklageId = serviceklager.getServiceklager().iterator().next().getServiceklageId();
 
         RegistrerTilbakemeldingRequest request = createRegistrerTilbakemeldingRequest();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-        ResponseEntity<RegistrerTilbakemeldingResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + serviceklageId + "/" + REGISTRER_TILBAKEMELDING, HttpMethod.PUT, requestEntity, RegistrerTilbakemeldingResponse.class);
+        ResponseEntity<RegistrerTilbakemeldingResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID + "/" + REGISTRER_TILBAKEMELDING, HttpMethod.PUT, requestEntity, RegistrerTilbakemeldingResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -115,6 +112,5 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getTema(), TEMA);
         assertEquals(serviceklage.getUtfall(), UTFALL);
         assertEquals(serviceklage.getSvarmetode(), SVARMETODE.get(0));
-
     }
 }

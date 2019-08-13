@@ -4,10 +4,8 @@ import static no.nav.tilbakemeldingsmottak.service.pdf.PdfCreator.opprettPdf;
 
 import com.itextpdf.text.DocumentException;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.api.HentServiceklagerResponse;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
-import no.nav.tilbakemeldingsmottak.api.ServiceklageTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.OpprettJournalpostConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
@@ -22,10 +20,6 @@ import no.nav.tilbakemeldingsmottak.service.mappers.OpprettServiceklageRequestMa
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -53,7 +47,7 @@ public class ServiceklageService {
         this.opprettOppgaveConsumer = opprettOppgaveConsumer;
     }
 
-    public long opprettServiceklage(OpprettServiceklageRequest request) throws FileNotFoundException , DocumentException {
+    public long opprettServiceklage(OpprettServiceklageRequest request) throws DocumentException {
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request);
 
         byte[] fysiskDokument = opprettPdf(request);
@@ -71,9 +65,11 @@ public class ServiceklageService {
         return serviceklage.getServiceklageId();
     }
 
-    public long registrerTilbakemelding(RegistrerTilbakemeldingRequest request, String serviceklageId)  {
-        Serviceklage serviceklage = serviceklageRepository.findById(Long.parseLong(serviceklageId))
-                .orElseThrow(() -> new ServiceklageIkkeFunnetException(String.format("Kunne ikke finne serviceklage med serviceklageId=%s", serviceklageId)));
+    public void registrerTilbakemelding(RegistrerTilbakemeldingRequest request, String journalpostId)  {
+        Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
+        if (serviceklage == null) {
+            throw new ServiceklageIkkeFunnetException(String.format("Kunne ikke finne serviceklage med journalpostId=%s", journalpostId));
+        }
 
         serviceklage.setErServiceklage(request.getErServiceklage());
         if (request.getErServiceklage().contains("Ja")) {
@@ -96,25 +92,9 @@ public class ServiceklageService {
 
         serviceklageRepository.save(serviceklage);
         log.info("Tilbakemelding registrert for serviceklage med serviceklageId={}", serviceklage.getServiceklageId());
-
-        return serviceklage.getServiceklageId();
     }
 
-    public HentServiceklagerResponse hentServiceklager(String brukerId) {
-        List<Serviceklage> serviceklager = serviceklageRepository.findAllByKlagenGjelderId(brukerId);
-        ArrayList<ServiceklageTo> serviceklageTos = serviceklager.stream().map(s ->
-                ServiceklageTo.builder()
-                        .serviceklageId(s.getServiceklageId())
-                        .datoOpprettet(s.getDatoOpprettet())
-                        .klagetype(s.getKlagetype())
-                        .klagetekst(s.getKlagetekst())
-                        .oenskerAaKontaktes(s.getOenskerAaKontaktes())
-                        .erBehandlet(s.getErServiceklage() != null)
-                        .build())
-                        .collect(Collectors.toCollection(ArrayList::new));
-
-        return HentServiceklagerResponse.builder()
-                .serviceklager(serviceklageTos)
-                .build();
+    public Serviceklage hentServiceklage(String journalpostId) {
+        return serviceklageRepository.findByJournalpostId(journalpostId);
     }
 }

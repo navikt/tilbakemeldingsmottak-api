@@ -14,7 +14,7 @@ class Tilbakemelding extends Component {
 
     constructor(props) {
         super(props);
-        this.serviceklageId = props.match.params.serviceklageId;
+        this.journalpostId = props.match.params.journalpostId;
         this.state = {
             erServiceklage: '',
             gjelder: '',
@@ -51,7 +51,7 @@ class Tilbakemelding extends Component {
     onSubmit = (event) => {
         if ((this.state.erServiceklage.includes('Ja') && this.checkIsSet(this.state.paaklagetEnhet, this.state.behandlendeEnhet, this.state.ytelseTjeneste, this.state.tema, this.state.utfall, this.state.svarmetode))
             || (this.state.erServiceklage.includes('Nei') && this.checkIsSet(this.state.gjelder))) {
-            ServiceKlageApi.registrerTilbakemelding(this.serviceklageId, this.state);
+            ServiceKlageApi.registrerTilbakemelding(this.journalpostId, this.state);
             window.location = "/serviceklage/frontpage";
         } else {
             alert('Påkrevde felter er ikke satt');

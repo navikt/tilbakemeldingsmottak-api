@@ -4,11 +4,11 @@ import com.itextpdf.text.DocumentException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
 import no.nav.security.oidc.api.Unprotected;
-import no.nav.tilbakemeldingsmottak.api.HentServiceklagerResponse;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
 import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingResponse;
+import no.nav.tilbakemeldingsmottak.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
 import no.nav.tilbakemeldingsmottak.service.ServiceklageService;
@@ -67,15 +67,15 @@ public class ServiceklageRestController {
     }
 
     @Transactional
-    @PutMapping(value = "/{serviceklageId}/registrerTilbakemelding")
+    @PutMapping(value = "/{journalpostId}/registrerTilbakemelding")
     @Unprotected
-    public ResponseEntity<RegistrerTilbakemeldingResponse> registrerTilbakemelding(@RequestBody RegistrerTilbakemeldingRequest request, @PathVariable String serviceklageId) {
+    public ResponseEntity<RegistrerTilbakemeldingResponse> registrerTilbakemelding(@RequestBody RegistrerTilbakemeldingRequest request, @PathVariable String journalpostId) {
         try {
             registrerTilbakemeldingValidator.validateRequest(request);
-            serviceklageService.registrerTilbakemelding(request, serviceklageId);
+            serviceklageService.registrerTilbakemelding(request, journalpostId);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(RegistrerTilbakemeldingResponse.builder().message("Registrert tilbakemelding på serviceklage med serviceklageid=" + serviceklageId).build());
+                    .body(RegistrerTilbakemeldingResponse.builder().message("Registrert tilbakemelding på serviceklage med journalpostId=" + journalpostId).build());
         } catch (AbstractTilbakemeldingsmottakFunctionalException e) {
             log.warn("registrerTilbakemelding feilet funksjonelt. Feilmelding={}", e
                     .getMessage());
@@ -88,20 +88,20 @@ public class ServiceklageRestController {
     }
 
     @Transactional
-    @GetMapping(value = "/{brukerId}")
+    @GetMapping(value = "/{journalpostId}")
     @Unprotected
-    public ResponseEntity<HentServiceklagerResponse> hentServiceklager(@PathVariable String brukerId) {
+    public ResponseEntity<Serviceklage> hentServiceklage(@PathVariable String journalpostId) {
         try {
-            HentServiceklagerResponse response = serviceklageService.hentServiceklager(brukerId);
+            Serviceklage response = serviceklageService.hentServiceklage(journalpostId);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(response);
         } catch (AbstractTilbakemeldingsmottakFunctionalException e) {
-            log.warn("hentServiceklager feilet funksjonelt. Feilmelding={}", e
+            log.warn("hentServiceklage feilet funksjonelt. Feilmelding={}", e
                     .getMessage());
             throw e;
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
-            log.warn("hentServiceklager feilet teknisk. Feilmelding={}", e
+            log.warn("hentServiceklage feilet teknisk. Feilmelding={}", e
                     .getMessage());
             throw e;
         }
