@@ -7,6 +7,8 @@ import CheckboksPanelGruppe from "nav-frontend-skjema/lib/checkboks-panel-gruppe
 import Hovedknapp from "nav-frontend-knapper/lib/hovedknapp";
 import Select from "nav-frontend-skjema/lib/select";
 import {ServiceKlageApi} from "../api/Api";
+import Modal from 'nav-frontend-modal';
+
 
 class Tilbakemelding extends Component {
 
@@ -23,7 +25,10 @@ class Tilbakemelding extends Component {
             ytelseTjeneste: '',
             tema: '',
             utfall: '',
-            svarmetode: []
+            svarmetode: [],
+            submitting: false,
+            submittedModalIsOpen: false,
+            missingFieldsModalIsOpen: false,
         };
         this.initState = {...this.state, svarmetode: []};
     }
@@ -48,16 +53,26 @@ class Tilbakemelding extends Component {
         }
     };
 
-    onSubmit = (event) => {
+    onSubmit = async (event) => {
+        event.preventDefault();
+        await this.setState({...this.state, submitting: true});
         if ((this.state.erServiceklage.includes('Ja') && this.checkIsSet(this.state.paaklagetEnhet, this.state.behandlendeEnhet, this.state.ytelseTjeneste, this.state.tema, this.state.utfall, this.state.svarmetode))
             || (this.state.erServiceklage.includes('Nei') && this.checkIsSet(this.state.gjelder))) {
-            ServiceKlageApi.registrerTilbakemelding(this.journalpostId, this.state);
-            window.location = "/serviceklage/frontpage";
+            await ServiceKlageApi.registrerTilbakemelding(this.journalpostId, this.state);
+            await this.setState({...this.state, submittedModalIsOpen: true});
         } else {
-            alert('Påkrevde felter er ikke satt');
+            await this.setState({...this.state, missingFieldsModalIsOpen: true});
         }
+        await this.setState({...this.state, submitting: false});
+    };
 
-        event.preventDefault();
+    onClickSubmittedModalButton = () => {
+        this.setState({...this.state, submittedModalIsOpen: false});
+        window.location.reload();
+    };
+
+    onClickMissingFieldsModalButton = () => {
+        this.setState({...this.state, missingFieldsModalIsOpen: false});
     };
 
     checkIsSet() {
@@ -265,11 +280,37 @@ class Tilbakemelding extends Component {
                         </Fragment>}
                     </div>
 
-                    <Hovedknapp htmlType="submit" onClick={this.onSubmit}>Send tilbakemelding</Hovedknapp>
+                    <Hovedknapp spinner={this.state.submitting} htmlType="submit" onClick={this.onSubmit}>Send tilbakemelding</Hovedknapp>
+
+                    <Modal
+                        isOpen={this.state.submittedModalIsOpen}
+                        closeButton={false}
+                        onRequestClose={this.onClickModalButton}
+                        contentLabel="Min modalrute"
+                    >
+                        <div style={{padding:'2rem 2.5rem'}}>
+                            <p>Innhold sendt</p>
+                            <button onClick={this.onClickSubmittedModalButton}>Ok</button>
+                        </div>
+                    </Modal>
+
+                    <Modal
+                        isOpen={this.state.missingFieldsModalIsOpen}
+                        closeButton={false}
+                        onRequestClose={this.onClickMissingFieldsModalButton}
+                        contentLabel="Min modalrute"
+                    >
+                        <div style={{padding:'2rem 2.5rem'}}>
+                            <p>Påkrevde felter er ikke satt</p>
+                            <button onClick={this.onClickMissingFieldsModalButton}>Ok</button>
+                        </div>
+                    </Modal>
+
                 </form>
             </div>
         )
     }
+
 }
 
 export default Tilbakemelding
