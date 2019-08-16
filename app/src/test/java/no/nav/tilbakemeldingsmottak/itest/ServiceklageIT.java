@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.itest;
 
 import static no.nav.tilbakemeldingsmottak.TestUtils.BEHANDLENDE_ENHET;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ER_SERVICEKLAGE;
+import static no.nav.tilbakemeldingsmottak.TestUtils.KANAL;
 import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETEKST;
 import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETYPE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.OENSKER_AA_KONTAKTES;
@@ -107,6 +108,7 @@ class ServiceklageIT extends AbstractIT {
         Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
         assertEquals(serviceklage.getErServiceklage(), ER_SERVICEKLAGE);
         assertEquals(serviceklage.getPaaklagetEnhet(), PAAKLAGET_ENHET);
+        assertEquals(serviceklage.getKanal(), KANAL);
         assertEquals(serviceklage.getBehandlendeEnhet(), BEHANDLENDE_ENHET);
         assertEquals(serviceklage.getYtelseTjeneste(), YTELSE_TJENESTE);
         assertEquals(serviceklage.getTema(), TEMA);

@@ -66,7 +66,7 @@ class FrontPage extends Component {
                             gjelder={this.state.serviceklage.gjelder}
                             utfall={this.state.serviceklage.utfall}
                             svarmetode={this.state.serviceklage.svarmetode}/>
-                        <Knapp disabled={this.state.serviceklage.erServiceklage} onClick={() => this.velgServiceklage(this.state.serviceklage.journalpostId)}>Registrer tilbakemelding</Knapp>
+                        <Knapp disabled={!!this.state.serviceklage.erServiceklage} onClick={() => this.velgServiceklage(this.state.serviceklage.journalpostId)}>Registrer tilbakemelding</Knapp>
                     </div>}
             </div>
 

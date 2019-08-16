@@ -17,6 +17,7 @@ public class RegistrerTilbakemeldingRequest {
 
     private String erServiceklage;
     private String gjelder;
+    private String kanal;
     private String paaklagetEnhet;
     private String behandlendeEnhet;
     private String ytelseTjeneste;

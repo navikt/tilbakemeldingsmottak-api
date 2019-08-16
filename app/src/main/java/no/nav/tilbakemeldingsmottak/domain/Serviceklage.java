@@ -58,6 +58,9 @@ public class Serviceklage {
     @Column(name = "gjelder")
     private String gjelder;
 
+    @Column(name = "kanal")
+    private String kanal;
+
     @Column(name = "paaklaget_enhet")
     private String paaklagetEnhet;
 

@@ -10,6 +10,7 @@ public class RegistrerTilbakemeldingValidator implements RequestValidator {
     public void validateRequest(RegistrerTilbakemeldingRequest request) {
         hasText(request.getErServiceklage(), "erServiceklage");
         if(request.getErServiceklage().contains("Ja")) {
+            hasText(request.getKanal(), "kanal", DERSOM_SERVICEKLAGE);
             hasText(request.getPaaklagetEnhet(), "paaklagetEnhet", DERSOM_SERVICEKLAGE);
             hasText(request.getBehandlendeEnhet(), "behandlendeEnhet", DERSOM_SERVICEKLAGE);
             hasText(request.getYtelseTjeneste(), "ytelseTjeneste", DERSOM_SERVICEKLAGE);

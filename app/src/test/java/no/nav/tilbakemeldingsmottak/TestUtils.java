@@ -42,6 +42,7 @@ public class TestUtils {
     public static final String BESKRIVELSE_ROS = "Saksbehandleren var snill";
 
     public static final String ER_SERVICEKLAGE = "Ja (inkludert saker som også har andre elementer)";
+    public static final String KANAL = "nav.no";
     public static final String PAAKLAGET_ENHET = "1234";
     public static final String BEHANDLENDE_ENHET = "4321";
     public static final String YTELSE_TJENESTE = "Alderspensjon";
@@ -127,6 +128,7 @@ public class TestUtils {
     public static RegistrerTilbakemeldingRequest createRegistrerTilbakemeldingRequest() {
         return RegistrerTilbakemeldingRequest.builder()
                 .erServiceklage(ER_SERVICEKLAGE)
+                .kanal(KANAL)
                 .paaklagetEnhet(PAAKLAGET_ENHET)
                 .behandlendeEnhet(BEHANDLENDE_ENHET)
                 .ytelseTjeneste(YTELSE_TJENESTE)

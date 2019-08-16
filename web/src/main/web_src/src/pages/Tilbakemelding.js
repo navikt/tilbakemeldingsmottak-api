@@ -20,6 +20,7 @@ class Tilbakemelding extends Component {
         this.state = {
             erServiceklage: '',
             gjelder: '',
+            kanal: '',
             paaklagetEnhet: '',
             behandlendeEnhet: '',
             ytelseTjeneste: '',
@@ -95,6 +96,7 @@ class Tilbakemelding extends Component {
                             radios={[
                                 { label: 'Ja (inkludert saker som også har andre elementer)', value: 'Ja (inkludert saker som også har andre elementer)'},
                                 { label: 'Nei - kun en forvaltningsklage', value: 'Nei - kun en forvaltningsklage'},
+                                { label: 'Nei - kun en beskjed til NAV', value: 'Nei - kun en beskjed til NAV'},
                                 { label: 'Nei - annet', value: 'Nei - annet'}
                             ]}
                             checked={this.state.erServiceklage}
@@ -120,7 +122,23 @@ class Tilbakemelding extends Component {
                         {this.state.erServiceklage.includes('Ja') &&
                         <Fragment>
                             <div className="Skjemafelt">
-                                <legend className="skjema__legend">2. Angi enhetsnummer til enheten det klages på (4 siffer)</legend>
+                                <RadioPanelGruppe
+                                    name="kanal"
+                                    legend="2. Angi kanal for serviceklagen"
+                                    radios={[
+                                        { label: 'nav.no', value: 'nav.no'},
+                                        { label: 'E-post', value: 'E-post'},
+                                        { label: 'Brev', value: 'Brev'},
+                                        { label: 'Muntlig (notat i Gosys fra NAV-medarbeider)', value: 'Muntlig (notat i Gosys fra NAV-medarbeider)'},
+                                        { label: 'Modia', value: 'Modia'}
+                                    ]}
+                                    checked={this.state.kanal}
+                                    onChange={this.onChange}
+                                />
+                            </div>
+
+                            <div className="Skjemafelt">
+                                <legend className="skjema__legend">3. Angi enhetsnummer til enheten det klages på (4 siffer)</legend>
                                 <Input
                                     label=""
                                     name="paaklagetEnhet"
@@ -131,7 +149,7 @@ class Tilbakemelding extends Component {
                             </div>
 
                             <div className="Skjemafelt">
-                                <legend className="skjema__legend">3. Angi enhetsnummer til enhet som behandler klagen (4 siffer)</legend>
+                                <legend className="skjema__legend">4. Angi enhetsnummer til enhet som behandler klagen (4 siffer)</legend>
                                 <Input
                                     label=""
                                     name="behandlendeEnhet"
@@ -142,7 +160,7 @@ class Tilbakemelding extends Component {
                             </div>
 
                             <div className="Skjemafelt">
-                                <legend className="skjema__legend">4. Angi ytelse/tjeneste serviceklagen gjelder (velg det viktigste alternativet)</legend>
+                                <legend className="skjema__legend">5. Angi ytelse/tjeneste serviceklagen gjelder (velg det viktigste alternativet)</legend>
                                 <Select label=""
                                         name="ytelseTjeneste"
                                         selected={this.state.ytelseTjeneste}
@@ -177,7 +195,7 @@ class Tilbakemelding extends Component {
                             <div className="Skjemafelt">
                                 <RadioPanelGruppe
                                     name="tema"
-                                    legend="5. Hva gjelder serviceklagen? Velg det viktigste temaet"
+                                    legend="6. Hva gjelder serviceklagen? Velg det viktigste temaet"
                                     radios={[
                                         { label: 'Saksbehandling og svartid', value: 'Saksbehandling og svartid'},
                                         { label: 'Veiledning, informasjon og oppfølging', value: 'Veiledning, informasjon og oppfølging'},
@@ -193,7 +211,7 @@ class Tilbakemelding extends Component {
                                 <div className="Skjemafelt">
                                     <RadioPanelGruppe
                                         name="utfall"
-                                        legend="6. Angi utfallet av serviceklagen"
+                                        legend="7. Angi utfallet av serviceklagen"
                                         radios={[
                                             { label: 'Bruker har ikke fått svar innen frist', value: 'Bruker har ikke fått svar innen frist'},
                                             { label: 'Frist ikke passert, men bruker burde fått raskere svar', value: 'Frist ikke passert, men bruker burde fått raskere svar'},
@@ -211,7 +229,7 @@ class Tilbakemelding extends Component {
                             <div className="Skjemafelt">
                                 <RadioPanelGruppe
                                     name="utfall"
-                                    legend="6. Angi utfallet av serviceklagen"
+                                    legend="7. Angi utfallet av serviceklagen"
                                     radios={[
                                         { label: 'Veiledning/informasjon/oppfølging har vært mangelfull/feil, samt brudd på etatens standarder og rutiner', value: 'Veiledning/informasjon/oppfølging har vært mangelfull/feil, samt brudd på etatens standarder og rutiner'},
                                         { label: 'Veiledning/informasjon/oppfølging har vært i henhold til standarder og rutiner, men burde likevel vært bedre tilpasser brukers behov', value: 'Veiledning/informasjon/oppfølging har vært i henhold til standarder og rutiner, men burde likevel vært bedre tilpasser brukers behov'},
@@ -228,7 +246,7 @@ class Tilbakemelding extends Component {
                             <div className="Skjemafelt">
                                 <RadioPanelGruppe
                                     name="utfall"
-                                    legend="6. Angi utfallet av serviceklagen"
+                                    legend="7. Angi utfallet av serviceklagen"
                                     radios={[
                                         { label: 'NAVs tilgjengelighet har vært for dårlig', value: 'NAVs tilgjengelighet har vært for dårlig'},
                                         { label: 'NAVs tilgjengelighet er i henhold til enhetens vedtatte rutiner, men burde vært bedre tilpasset brukers behov', value: 'NAVs tilgjengelighet er i henhold til etatens vedtatte rutiner, men burde vært bedre tilpasset brukers behov'},
@@ -245,7 +263,7 @@ class Tilbakemelding extends Component {
                             <div className="Skjemafelt">
                                 <RadioPanelGruppe
                                     name="utfall"
-                                    legend="6. Angi utfallet av serviceklagen"
+                                    legend="7. Angi utfallet av serviceklagen"
                                     radios={[
                                         { label: 'Erkjennes at NAV-ansatte var uforberedt til avtalt møte', value: 'Erkjennes at NAV-ansatte var uforberedt til avtalt møte'},
                                         { label: 'Erkjennes at NAV-ansattes språkbruk/oppførsel var uheldig/uønsket', value: 'Erkjennes at NAV-ansattes språkbruk/oppførsel var uheldig/uønsket'},
@@ -262,7 +280,7 @@ class Tilbakemelding extends Component {
                             <div className="Skjemafelt">
                                 <CheckboksPanelGruppe
                                     name="svarmetode"
-                                    legend="7. Hvordan svares bruker? Velg ett eller flere alternativer"
+                                    legend="8. Hvordan svares bruker? Velg ett eller flere alternativer"
                                     checkboxes={[
                                         { label: 'Avtalt møte', value: 'Avtalt møte'},
                                         { label: 'Telefon', value: 'Telefon'},
