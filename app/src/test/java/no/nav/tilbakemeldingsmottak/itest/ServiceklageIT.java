@@ -2,9 +2,11 @@ package no.nav.tilbakemeldingsmottak.itest;
 
 import static no.nav.tilbakemeldingsmottak.TestUtils.BEHANDLENDE_ENHET;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ER_SERVICEKLAGE;
+import static no.nav.tilbakemeldingsmottak.TestUtils.GJELDER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.KANAL;
 import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETEKST;
 import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETYPE;
+import static no.nav.tilbakemeldingsmottak.TestUtils.NEI_ANNET;
 import static no.nav.tilbakemeldingsmottak.TestUtils.OENSKER_AA_KONTAKTES;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ORGANISASJONSNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.PAAKLAGET_ENHET;
@@ -17,6 +19,7 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRe
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvPerson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createRegistrerTilbakemeldingRequest;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createRegistrerTilbakemeldingRequestNotServiceklage;
 import static no.nav.tilbakemeldingsmottak.api.PaaVegneAvType.ANNEN_PERSON;
 import static no.nav.tilbakemeldingsmottak.api.PaaVegneAvType.BEDRIFT;
 import static no.nav.tilbakemeldingsmottak.api.PaaVegneAvType.PRIVATPERSON;
@@ -55,6 +58,7 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
+        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
     }
 
     @Test
@@ -73,6 +77,7 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
+        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
     }
 
     @Test
@@ -91,6 +96,7 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
+        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
     }
 
     @Test
@@ -114,5 +120,40 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getTema(), TEMA);
         assertEquals(serviceklage.getUtfall(), UTFALL);
         assertEquals(serviceklage.getSvarmetode(), SVARMETODE.get(0));
+    }
+
+    @Test
+    void happyPathRegistrerTilbakemeldingIkkeServiceklage() {
+        restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
+
+        assertEquals(serviceklageRepository.count(), 1);
+
+        RegistrerTilbakemeldingRequest request = createRegistrerTilbakemeldingRequestNotServiceklage();
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<RegistrerTilbakemeldingResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID + "/" + REGISTRER_TILBAKEMELDING, HttpMethod.PUT, requestEntity, RegistrerTilbakemeldingResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
+        assertEquals(serviceklage.getErServiceklage(), NEI_ANNET);
+        assertEquals(serviceklage.getGjelder(), GJELDER);
+    }
+
+    @Test
+    void happyPathHentServiceklage() {
+        restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
+        ResponseEntity<Serviceklage> response = restTemplate.getForEntity(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID, Serviceklage.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Serviceklage serviceklage = response.getBody();
+        assertNotNull(serviceklage.getServiceklageId());
+        assertNotNull(serviceklage.getDatoOpprettet());
+        assertEquals(serviceklage.getPaaVegneAv(), PRIVATPERSON.name());
+        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
+        assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
+        assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
+        assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
+        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
     }
 }

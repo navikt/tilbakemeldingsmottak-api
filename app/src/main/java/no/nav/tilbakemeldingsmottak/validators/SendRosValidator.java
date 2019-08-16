@@ -11,7 +11,7 @@ public class SendRosValidator implements RequestValidator {
         hasText(request.getTelefonnummer(), "telefonnummer");
         isNotNull(request.getHvemRoses(), "hvemRoses");
         if(NAV_KONTOR.equals(request.getHvemRoses())) {
-            hasText(request.getNavKontor(), "hvemRoses", "dersom hvemRoses=NAV_KONTOR");
+            hasText(request.getNavKontor(), "navKontor", " dersom hvemRoses=NAV_KONTOR");
         }
         hasText(request.getMelding(), "melding");
     }
