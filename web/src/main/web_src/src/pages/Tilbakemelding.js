@@ -28,7 +28,6 @@ class Tilbakemelding extends Component {
             utfall: '',
             svarmetode: [],
             submitting: false,
-            submittedModalIsOpen: false,
             missingFieldsModalIsOpen: false,
         };
         this.initState = {...this.state, svarmetode: []};
@@ -60,16 +59,12 @@ class Tilbakemelding extends Component {
         if ((this.state.erServiceklage.includes('Ja') && this.checkIsSet(this.state.paaklagetEnhet, this.state.behandlendeEnhet, this.state.ytelseTjeneste, this.state.tema, this.state.utfall, this.state.svarmetode))
             || (this.state.erServiceklage.includes('Nei') && this.checkIsSet(this.state.gjelder))) {
             await ServiceKlageApi.registrerTilbakemelding(this.journalpostId, this.state);
-            await this.setState({...this.state, submittedModalIsOpen: true});
+            await this.setState({...this.state, submitting: false});
+            window.location = "/serviceklage/takk";
         } else {
             await this.setState({...this.state, missingFieldsModalIsOpen: true});
+            await this.setState({...this.state, submitting: false});
         }
-        await this.setState({...this.state, submitting: false});
-    };
-
-    onClickSubmittedModalButton = () => {
-        this.setState({...this.state, submittedModalIsOpen: false});
-        window.location.reload();
     };
 
     onClickMissingFieldsModalButton = () => {
@@ -299,18 +294,6 @@ class Tilbakemelding extends Component {
                     </div>
 
                     <Hovedknapp spinner={this.state.submitting} htmlType="submit" onClick={this.onSubmit}>Send tilbakemelding</Hovedknapp>
-
-                    <Modal
-                        isOpen={this.state.submittedModalIsOpen}
-                        closeButton={false}
-                        onRequestClose={this.onClickModalButton}
-                        contentLabel="Min modalrute"
-                    >
-                        <div style={{padding:'2rem 2.5rem'}}>
-                            <p>Innhold sendt</p>
-                            <button onClick={this.onClickSubmittedModalButton}>Ok</button>
-                        </div>
-                    </Modal>
 
                     <Modal
                         isOpen={this.state.missingFieldsModalIsOpen}
