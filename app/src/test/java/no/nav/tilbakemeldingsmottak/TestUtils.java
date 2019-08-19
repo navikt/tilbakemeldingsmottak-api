@@ -40,6 +40,9 @@ public class TestUtils {
 
     public static final HvemRosesType HVEM_ROSES = NAV_KONTAKTSENTER;
     public static final String BESKRIVELSE_ROS = "Saksbehandleren var snill";
+    public static final HvemRosesType HVEM_ROSES_KONTOR = HvemRosesType.NAV_KONTOR;
+    public static final String NAV_KONTOR = "NAV Evje og Hornnes - 0937";
+
 
     public static final String ER_SERVICEKLAGE = "Ja (inkludert saker som også har andre elementer)";
     public static final String KANAL = "nav.no";
@@ -121,6 +124,16 @@ public class TestUtils {
                 .navn(NAVN_INNMELDER)
                 .telefonnummer(TELEFONNUMMER)
                 .hvemRoses(HVEM_ROSES)
+                .melding(BESKRIVELSE_ROS)
+                .build();
+    }
+
+    public static SendRosRequest createSendRosRequestWithNavKontor() {
+        return SendRosRequest.builder()
+                .navn(NAVN_INNMELDER)
+                .telefonnummer(TELEFONNUMMER)
+                .hvemRoses(HVEM_ROSES_KONTOR)
+                .navKontor(NAV_KONTOR)
                 .melding(BESKRIVELSE_ROS)
                 .build();
     }
