@@ -2,7 +2,6 @@ package no.nav.tilbakemeldingsmottak.rest;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
-import no.nav.security.oidc.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.api.SendRosRequest;
 import no.nav.tilbakemeldingsmottak.api.SendRosResponse;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
@@ -38,7 +37,7 @@ public class RosRestController {
 
     @Transactional
     @PostMapping
-    @Unprotected
+//    @Unprotected
     public ResponseEntity<SendRosResponse> sendRos(@RequestBody SendRosRequest request) throws MessagingException {
         try {
             sendRosValidator.validateRequest(request);
