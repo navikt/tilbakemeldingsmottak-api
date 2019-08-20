@@ -106,4 +106,9 @@ public class ServiceklageRestController {
             throw e;
         }
     }
+
+    @GetMapping("/hello-world-protected")
+    public ResponseEntity<String> helloWorldProtected() {
+        return ResponseEntity.status(HttpStatus.OK).body("Hello world");
+    }
 }
