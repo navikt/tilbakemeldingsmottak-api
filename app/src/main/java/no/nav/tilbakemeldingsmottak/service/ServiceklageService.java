@@ -47,7 +47,7 @@ public class ServiceklageService {
         this.opprettOppgaveConsumer = opprettOppgaveConsumer;
     }
 
-    public long opprettServiceklage(OpprettServiceklageRequest request) throws DocumentException {
+    public Serviceklage opprettServiceklage(OpprettServiceklageRequest request) throws DocumentException {
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request);
 
         byte[] fysiskDokument = opprettPdf(request);
@@ -62,7 +62,7 @@ public class ServiceklageService {
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med serviceklageId={} persistert", serviceklage.getServiceklageId());
 
-        return serviceklage.getServiceklageId();
+        return serviceklage;
     }
 
     public void registrerTilbakemelding(RegistrerTilbakemeldingRequest request, String journalpostId)  {

@@ -51,10 +51,14 @@ public class ServiceklageRestController {
     public ResponseEntity<OpprettServiceklageResponse> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws FileNotFoundException, DocumentException {
         try {
             opprettServiceklageValidator.validateRequest(request);
-            long id = serviceklageService.opprettServiceklage(request);
+            Serviceklage serviceklage = serviceklageService.opprettServiceklage(request);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(OpprettServiceklageResponse.builder().message("Opprettet serviceklage med serviceklageId=" + id).build());
+                    .body(OpprettServiceklageResponse.builder()
+                            .message("Serviceklage opprettet")
+                            .serviceklageId(serviceklage.getServiceklageId().toString())
+                            .journalpostId(serviceklage.getJournalpostId())
+                            .build());
         } catch (AbstractTilbakemeldingsmottakFunctionalException e) {
             log.warn("opprettServiceklage feilet funksjonelt. Feilmelding={}", e
                     .getMessage());
