@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {ServiceKlageApi} from "../api/Api";
+import {ServiceklageApi} from "../api/Api";
 import "./FrontPage.less"
 import Hovedknapp from "nav-frontend-knapper/lib/hovedknapp";
 import Input from "nav-frontend-skjema/lib/input";
@@ -21,7 +21,7 @@ class FrontPage extends Component {
     }
 
     async hentServiceklage(){
-       let serviceklage = await ServiceKlageApi.hentServiceklage(this.state.journalpostId);
+       let serviceklage = await ServiceklageApi.hentServiceklage(this.state.journalpostId);
         this.setState({
             serviceklage: serviceklage.data,
             serviceklageHentetFlag: true

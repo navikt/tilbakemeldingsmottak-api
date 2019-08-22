@@ -63,7 +63,7 @@ const webpackConfig = {
         }),
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
-            title: 'ServiceKlage',
+            title: 'Serviceklage',
             //favicon: 'src/assets/favicon.ico',
             inject: false,
             template: require('html-webpack-template'),

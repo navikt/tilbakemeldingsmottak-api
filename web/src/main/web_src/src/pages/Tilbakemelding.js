@@ -6,7 +6,7 @@ import Textarea from "nav-frontend-skjema/lib/textarea";
 import CheckboksPanelGruppe from "nav-frontend-skjema/lib/checkboks-panel-gruppe";
 import Hovedknapp from "nav-frontend-knapper/lib/hovedknapp";
 import Select from "nav-frontend-skjema/lib/select";
-import {ServiceKlageApi} from "../api/Api";
+import {ServiceklageApi} from "../api/Api";
 import Modal from 'nav-frontend-modal';
 
 
@@ -58,7 +58,7 @@ class Tilbakemelding extends Component {
         await this.setState({...this.state, submitting: true});
         if ((this.state.erServiceklage.includes('Ja') && this.checkIsSet(this.state.paaklagetEnhet, this.state.behandlendeEnhet, this.state.ytelseTjeneste, this.state.tema, this.state.utfall, this.state.svarmetode))
             || (this.state.erServiceklage.includes('Nei') && this.checkIsSet(this.state.gjelder))) {
-            await ServiceKlageApi.registrerTilbakemelding(this.journalpostId, this.state);
+            await ServiceklageApi.registrerTilbakemelding(this.journalpostId, this.state);
             await this.setState({...this.state, submitting: false});
             window.location = "/serviceklage/takk";
         } else {
