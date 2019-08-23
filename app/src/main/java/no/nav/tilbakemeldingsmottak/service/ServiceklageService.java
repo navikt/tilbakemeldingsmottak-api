@@ -9,11 +9,15 @@ import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
 import no.nav.tilbakemeldingsmottak.consumer.joark.OpprettJournalpostConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
-import no.nav.tilbakemeldingsmottak.consumer.oppgave.OpprettOppgaveConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
+import no.nav.tilbakemeldingsmottak.service.mappers.EndreOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.service.mappers.OpprettJournalpostRequestToMapper;
 import no.nav.tilbakemeldingsmottak.service.mappers.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.service.mappers.OpprettServiceklageRequestMapper;
@@ -30,7 +34,8 @@ public class ServiceklageService {
     private OpprettJournalpostRequestToMapper opprettJournalpostRequestToMapper;
     private OpprettJournalpostConsumer opprettJournalpostConsumer;
     private OpprettOppgaveRequestToMapper opprettOppgaveRequestToMapper;
-    private OpprettOppgaveConsumer opprettOppgaveConsumer;
+    private OppgaveConsumer oppgaveConsumer;
+    private EndreOppgaveRequestToMapper endreOppgaveRequestToMapper;
 
     @Inject
     public ServiceklageService(ServiceklageRepository serviceklageRepository,
@@ -38,13 +43,15 @@ public class ServiceklageService {
                                OpprettJournalpostRequestToMapper opprettJournalpostRequestToMapper,
                                OpprettJournalpostConsumer opprettJournalpostConsumer,
                                OpprettOppgaveRequestToMapper opprettOppgaveRequestToMapper,
-                               OpprettOppgaveConsumer opprettOppgaveConsumer) {
+                               OppgaveConsumer oppgaveConsumer,
+                               EndreOppgaveRequestToMapper endreOppgaveRequestToMapper) {
         this.serviceklageRepository = serviceklageRepository;
         this.opprettServiceklageRequestMapper = opprettServiceklageRequestMapper;
         this.opprettJournalpostRequestToMapper = opprettJournalpostRequestToMapper;
         this.opprettJournalpostConsumer = opprettJournalpostConsumer;
         this.opprettOppgaveRequestToMapper = opprettOppgaveRequestToMapper;
-        this.opprettOppgaveConsumer = opprettOppgaveConsumer;
+        this.oppgaveConsumer = oppgaveConsumer;
+        this.endreOppgaveRequestToMapper = endreOppgaveRequestToMapper;
     }
 
     public Serviceklage opprettServiceklage(OpprettServiceklageRequest request) throws DocumentException {
@@ -56,9 +63,10 @@ public class ServiceklageService {
         OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo);
 
         OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(serviceklage.getKlagenGjelderId(), request.getPaaVegneAv(), opprettJournalpostResponseTo);
-        opprettOppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
+        OpprettOppgaveResponseTo opprettOppgaveResponseTo = oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
 
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
+        serviceklage.setOppgaveId(opprettOppgaveResponseTo.getId());
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med serviceklageId={} persistert", serviceklage.getServiceklageId());
 
@@ -93,7 +101,12 @@ public class ServiceklageService {
         }
 
         serviceklageRepository.save(serviceklage);
+
         log.info("Tilbakemelding registrert for serviceklage med serviceklageId={}", serviceklage.getServiceklageId());
+
+        HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(serviceklage.getOppgaveId());
+        EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
+        oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
     }
 
     public Serviceklage hentServiceklage(String journalpostId) {

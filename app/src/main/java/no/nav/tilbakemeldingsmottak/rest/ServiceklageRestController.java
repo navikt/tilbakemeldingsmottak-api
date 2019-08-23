@@ -58,6 +58,7 @@ public class ServiceklageRestController {
                             .message("Serviceklage opprettet")
                             .serviceklageId(serviceklage.getServiceklageId().toString())
                             .journalpostId(serviceklage.getJournalpostId())
+                            .oppgaveId(serviceklage.getOppgaveId())
                             .build());
         } catch (AbstractTilbakemeldingsmottakFunctionalException e) {
             log.warn("opprettServiceklage feilet funksjonelt. Feilmelding={}", e

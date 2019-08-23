@@ -14,10 +14,10 @@ public class OpprettOppgaveRequestToMapper {
 
     private static final String TILDELT_ENHETSNR = "4200";
     private static final String PRIORITET = "NORM";
-    private static final String TEMA= "SER";
+    private static final String TEMA = "SER";
     private static final String OPPGAVETYPE_VUR = "VUR";
     private static final String OPPGAVETYPE_JFR = "JFR";
-    private static final String JOURNALSTATUS_ENDELIG= "ENDELIG";
+    private static final String JOURNALSTATUS_ENDELIG = "ENDELIG";
 
     private AktoerConsumer aktoerConsumer;
 
