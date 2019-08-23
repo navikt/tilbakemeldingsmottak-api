@@ -66,9 +66,19 @@ public class AbstractIT {
                     .withBodyFile("joark/opprettJournalpost/opprettJournalpostResponse.json")));
 
         WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/OPPGAVE"))
-            .willReturn(WireMock.aResponse().withStatus(HttpStatus.CREATED.value())
+            .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
                     .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .withBody("Oppgave opprettet")));
+                    .withBodyFile("oppgave/opprettOppgaveResponse.json")));
+
+        WireMock.stubFor(WireMock.put(WireMock.urlPathMatching("/OPPGAVE/[0-9]*"))
+            .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
+                    .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .withBody("Oppgave endret")));
+
+        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/OPPGAVE/[0-9]*"))
+            .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
+                    .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .withBodyFile("oppgave/hentOppgaveResponse.json")));
 
         WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/STS"))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())
