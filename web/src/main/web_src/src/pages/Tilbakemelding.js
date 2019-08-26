@@ -8,6 +8,7 @@ import Hovedknapp from "nav-frontend-knapper/lib/hovedknapp";
 import Select from "nav-frontend-skjema/lib/select";
 import {ServiceklageApi} from "../api/Api";
 import Modal from 'nav-frontend-modal';
+import AlertStripe from "nav-frontend-alertstriper";
 
 
 class Tilbakemelding extends Component {
@@ -29,6 +30,7 @@ class Tilbakemelding extends Component {
             svarmetode: [],
             submitting: false,
             missingFieldsModalIsOpen: false,
+            hasError: false
         };
         this.initState = {...this.state, svarmetode: []};
     }
@@ -58,12 +60,16 @@ class Tilbakemelding extends Component {
         await this.setState({...this.state, submitting: true});
         if ((this.state.erServiceklage.includes('Ja') && this.checkIsSet(this.state.paaklagetEnhet, this.state.behandlendeEnhet, this.state.ytelseTjeneste, this.state.tema, this.state.utfall, this.state.svarmetode))
             || (this.state.erServiceklage.includes('Nei') && this.checkIsSet(this.state.gjelder))) {
-            await ServiceklageApi.registrerTilbakemelding(this.journalpostId, this.state);
-            await this.setState({...this.state, submitting: false});
-            window.location = "/serviceklage/takk";
+            try {
+                await ServiceklageApi.registrerTilbakemelding(this.journalpostId, this.state);
+                await this.setState({...this.state, submitting: false});
+                window.location = "/serviceklage/takk";
+            } catch (error) {
+                this.setState({...this.state, submitting: false, hasError: true});
+                console.log(error);
+            }
         } else {
-            await this.setState({...this.state, missingFieldsModalIsOpen: true});
-            await this.setState({...this.state, submitting: false});
+            await this.setState({...this.state, missingFieldsModalIsOpen: true, submitting: false});
         }
     };
 
@@ -294,6 +300,10 @@ class Tilbakemelding extends Component {
                     </div>
 
                     <Hovedknapp spinner={this.state.submitting} htmlType="submit" onClick={this.onSubmit}>Send tilbakemelding</Hovedknapp>
+
+                    {this.state.hasError &&
+                        <AlertStripe type="advarsel" className="Advarsel">Feil i kall til registrerTilbakemelding</AlertStripe>
+                    }
 
                     <Modal
                         isOpen={this.state.missingFieldsModalIsOpen}
