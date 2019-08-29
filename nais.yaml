@@ -39,7 +39,7 @@ fasitResources:
     propertyMap:
       username: AZUREAD_CLIENTID
 
-  - alias: security-oidc-service-openid-configuration
+  - alias: security-token-service-openid-configuration
     resourceType: restservice
     propertyMap:
       url: NO_NAV_SECURITY_OIDC_ISSUER_RESTSTS_DISCOVERYURL
