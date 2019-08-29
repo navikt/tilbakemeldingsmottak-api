@@ -24,7 +24,7 @@
 		<appender-ref ref="applikasjonslogg"/>
 	</logger>
 
-	<logger name="no.nav.security" level="TRACE" additivity="false">
+	<logger name="no.nav.security" level="INFO" additivity="false">
 		<appender-ref ref="applikasjonslogg"/>
 	</logger>
 
