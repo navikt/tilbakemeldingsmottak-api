@@ -5,6 +5,7 @@ replicas:
   max: 2
   cpuThresholdPercentage: 50
 port: 8080
+webproxy: true
 healthcheck:
   liveness:
     path: /isAlive
