@@ -52,7 +52,7 @@ fasitResources:
     propertyMap:
       url: NO_NAV_SECURITY_OIDC_ISSUER_AZUREAD_DISCOVERYURL
 
-  - alias: security-oidc-service-oidc
+  - alias: security-token-service-token
     resourceType: restservice
 
   - alias: Journalpost_v1
