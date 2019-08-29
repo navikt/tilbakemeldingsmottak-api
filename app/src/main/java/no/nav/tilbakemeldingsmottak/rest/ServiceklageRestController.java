@@ -47,7 +47,6 @@ public class ServiceklageRestController {
 
     @Transactional
     @PostMapping
-    @Unprotected
     public ResponseEntity<OpprettServiceklageResponse> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws FileNotFoundException, DocumentException {
         try {
             opprettServiceklageValidator.validateRequest(request);

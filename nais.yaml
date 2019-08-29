@@ -5,6 +5,7 @@ replicas:
   max: 2
   cpuThresholdPercentage: 50
 port: 8080
+webproxy: true
 healthcheck:
   liveness:
     path: /isAlive
@@ -33,7 +34,12 @@ fasitResources:
       username: SERVICEUSER_USERNAME
       password: SERVICEUSER_PASSWORD
 
-  - alias: security-token-service-openid-configuration
+  - alias: aad_b2c_clientid
+    resourceType: credential
+    propertyMap:
+      username: AZUREAD_CLIENTID
+
+  - alias: security-oidc-service-openid-configuration
     resourceType: restservice
     propertyMap:
       url: NO_NAV_SECURITY_OIDC_ISSUER_RESTSTS_DISCOVERYURL
@@ -41,7 +47,12 @@ fasitResources:
   - alias: securityTokenService
     resourceType: baseurl
 
-  - alias: security-token-service-token
+  - alias: aad_b2c_discovery
+    resourceType: baseurl
+    propertyMap:
+      url: NO_NAV_SECURITY_OIDC_ISSUER_AZUREAD_DISCOVERYURL
+
+  - alias: security-oidc-service-oidc
     resourceType: restservice
 
   - alias: Journalpost_v1
@@ -60,3 +71,4 @@ fasitResources:
     resourceType: restservice
     path: /rest/serviceklage
     description: Rest-tjeneste for å persistere serviceklager og tilbakemeldinger
+

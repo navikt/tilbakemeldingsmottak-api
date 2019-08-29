@@ -5,6 +5,10 @@ import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.api.PaaVegneAvBedrift;
 import no.nav.tilbakemeldingsmottak.api.PaaVegneAvPerson;
 import no.nav.tilbakemeldingsmottak.api.PaaVegneAvType;
+import no.nav.tilbakemeldingsmottak.config.MDCConstants;
+import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
 
 public class OpprettServiceklageValidator implements RequestValidator {
 
@@ -25,6 +29,13 @@ public class OpprettServiceklageValidator implements RequestValidator {
 
     private void validateInnmelder(Innmelder innmelder, PaaVegneAvType paaVegneAv, boolean oenskerAaKontaktes) {
         isNotNull(innmelder, "innmelder");
+
+        if (PaaVegneAvType.PRIVATPERSON.equals(paaVegneAv)
+                && StringUtils.isNotBlank(MDC.get(MDCConstants.MDC_USER_ID))
+                && !innmelder.getPersonnummer().equals(MDC.get(MDCConstants.MDC_USER_ID))) {
+            throw new InvalidRequestException("innmelder.personnummer samsvarer ikke med brukertoken");
+        }
+
         hasText(innmelder.getNavn(), "innmelder.navn");
         if (oenskerAaKontaktes) {
             hasText(innmelder.getTelefonnummer(), "innmelder.telefonnummer", "dersom oenskerAaKontaktes=true");

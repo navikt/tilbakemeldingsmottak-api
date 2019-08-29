@@ -33,20 +33,27 @@ public class MDCPopulationInterceptor extends HandlerInterceptorAdapter {
 				"nav-consumerid", "nav-consumer-id", "x_consumerid", "consumerid");
 		addValueToMDC(consumerId, MDCConstants.MDC_CONSUMER_ID);
 
-		if (oidcRequestContextHolder.getOIDCValidationContext().hasValidToken() &&
-				oidcRequestContextHolder.getOIDCValidationContext().getFirstValidToken().isPresent()) {
-			TokenContext tokenContext = oidcRequestContextHolder.getOIDCValidationContext().getFirstValidToken().get();
-			SignedJWT parsedToken = SignedJWT.parse(tokenContext.getIdToken());
-			consumerId = parsedToken.getJWTClaimsSet().getSubject();
+		TokenContext consumerToken = oidcRequestContextHolder.getOIDCValidationContext().getToken("reststs");
+		if (consumerToken != null) {
+			SignedJWT parsedConsumerToken = SignedJWT.parse(consumerToken.getIdToken());
+			consumerId = parsedConsumerToken.getJWTClaimsSet().getSubject();
 			if (consumerId != null && consumerId.startsWith("srv")) {
 				addValueToMDC(consumerId, MDCConstants.MDC_CONSUMER_ID);
 			}  else {
-				String message = "OIDC token på Authorization header må tilhøre en Servicebruker";
+				String message = "Consumer oidc må tilhøre en Servicebruker";
 				log.warn(message);
 				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
 				return false;
 			}
 		}
+
+		TokenContext userToken = oidcRequestContextHolder.getOIDCValidationContext().getToken("azuread");
+		if (userToken != null) {
+			SignedJWT parsedUserToken = SignedJWT.parse(userToken.getIdToken());
+			String userId = parsedUserToken.getJWTClaimsSet().getSubject();
+			addValueToMDC(userId, MDCConstants.MDC_USER_ID);
+		}
+
 		return true;
 	}
 

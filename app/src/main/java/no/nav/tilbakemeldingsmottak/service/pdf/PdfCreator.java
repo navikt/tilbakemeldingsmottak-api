@@ -8,7 +8,9 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import no.nav.tilbakemeldingsmottak.api.Klagetype;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
 
 import java.io.ByteArrayOutputStream;
 
@@ -27,6 +29,10 @@ public final class PdfCreator {
         PdfWriter.getInstance(document, stream);
 
         document.open();
+
+        if (StringUtils.isBlank(MDC.get(MDCConstants.MDC_USER_ID))) {
+            document.add(createUinnloggetHeader());
+        }
 
         document.add(createParagraph("Navn til innmelder", request.getInnmelder().getNavn()));
         if (request.getOenskerAaKontaktes()) {
@@ -67,6 +73,12 @@ public final class PdfCreator {
         Paragraph p = new Paragraph();
         p.add(new Chunk(fieldname + ": ", bold));
         p.add(new Chunk(content, regular));
+        return p;
+    }
+
+    private static Paragraph createUinnloggetHeader() {
+        Paragraph p = new Paragraph();
+        p.add(new Chunk("OBS: Klagen er sendt inn uinnlogget", bold));
         return p;
     }
 }

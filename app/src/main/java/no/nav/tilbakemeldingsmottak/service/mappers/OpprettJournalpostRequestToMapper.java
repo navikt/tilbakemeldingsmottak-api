@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.service.mappers;
 
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.AvsenderMottaker;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.AvsenderMottakerIdType;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Bruker;
@@ -9,12 +10,15 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Dokument;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.DokumentVariant;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.JournalpostType;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OpprettJournalpostRequestToMapper {
 
     private static final String TEMA_SER = "SER";
+    private static final String KANAL_NAV_NO = "NAV_NO";
     private static final String KANAL_NAV_NO_UINNLOGGET = "NAV_NO_UINNLOGGET";
     private static final String TITTEL_SERVICEKLAGE = "Serviceklage";
     private static final String JOURNALFOERENDE_ENHET = "9999";
@@ -33,7 +37,7 @@ public class OpprettJournalpostRequestToMapper {
                 .journalfoerendeEnhet(JOURNALFOERENDE_ENHET)
                 .tema(TEMA_SER)
                 .tittel(TITTEL_SERVICEKLAGE)
-                .kanal(KANAL_NAV_NO_UINNLOGGET)
+                .kanal(StringUtils.isNotBlank(MDC.get(MDCConstants.MDC_USER_ID)) ? KANAL_NAV_NO : KANAL_NAV_NO_UINNLOGGET)
                 .build();
 
         opprettJournalpostRequestTo.getDokumenter().add(buildDokument(fysiskDokument));

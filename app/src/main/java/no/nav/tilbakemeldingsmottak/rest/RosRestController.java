@@ -37,7 +37,6 @@ public class RosRestController {
 
     @Transactional
     @PostMapping
-//    @Unprotected
     public ResponseEntity<SendRosResponse> sendRos(@RequestBody SendRosRequest request) throws MessagingException {
         try {
             sendRosValidator.validateRequest(request);

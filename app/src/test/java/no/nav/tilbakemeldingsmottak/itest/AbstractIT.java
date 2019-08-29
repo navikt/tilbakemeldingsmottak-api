@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
@@ -100,7 +101,7 @@ public class AbstractIT {
     HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken("srvconsumer"));
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(PERSONNUMMER));
         return headers;
     }
 
