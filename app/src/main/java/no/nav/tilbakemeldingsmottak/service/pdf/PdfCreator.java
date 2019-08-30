@@ -16,8 +16,9 @@ import java.io.ByteArrayOutputStream;
 
 public final class PdfCreator {
 
-    private static Font regular = new Font(Font.FontFamily.HELVETICA, 12);
-    private static Font bold = new Font(Font.FontFamily.HELVETICA, 12,Font.BOLD);
+    private static Font regular = new Font(Font.FontFamily.HELVETICA, 14);
+    private static Font bold = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
+    private static Font boldUnderline = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD|Font.UNDERLINE);
 
     private PdfCreator() {
     }
@@ -32,6 +33,7 @@ public final class PdfCreator {
 
         if (StringUtils.isBlank(MDC.get(MDCConstants.MDC_USER_ID))) {
             document.add(createUinnloggetHeader());
+            document.add(Chunk.NEWLINE);
         }
 
         document.add(createParagraph("Navn til innmelder", request.getInnmelder().getNavn()));
@@ -78,7 +80,7 @@ public final class PdfCreator {
 
     private static Paragraph createUinnloggetHeader() {
         Paragraph p = new Paragraph();
-        p.add(new Chunk("OBS: Klagen er sendt inn uinnlogget", bold));
+        p.add(new Chunk("OBS: klagen er sendt inn uinnlogget", boldUnderline));
         return p;
     }
 }
