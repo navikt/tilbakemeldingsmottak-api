@@ -7,6 +7,7 @@ const pkg = require('./package.json');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const fs = require("fs");
 
 // Buildtype
 const TARGET = process.env.npm_lifecycle_event;
@@ -120,9 +121,18 @@ const webpackConfig = {
     }
 };
 
+if (process.env.WEB_COMPONENT === "true") {
+    webpackConfig.output = {
+        ...webpackConfig.output,
+        library: 'serviceklage',
+        libraryTarget: 'window',
+    }
+}
+
 // If dev build
 if (TARGET === 'build-dev') {
     webpackConfig.output = {
+        ...webpackConfig.output,
         path: path.join(__dirname, outputDir.development),
         filename: 'bundle.js',
         publicPath: '/',
@@ -134,17 +144,19 @@ if (TARGET === 'build-dev') {
 if (TARGET === 'build') {
     webpackConfig.devtool = 'none';
     webpackConfig.output = {
+        library: 'serviceklage',
+        libraryTarget: 'window',
         path: path.join(__dirname, outputDir.production),
-        filename: 'bundle.[hash].js',
+        filename: 'bundle.js',
         publicPath: '/',
         globalObject: 'this'
     }
-    webpackConfig.plugins = [
+    webpackConfig.plugins = webpackConfig.plugins.concat([
         new UglifyJsPlugin({
             parallel: true
         }),
         new CompressionPlugin(),
-        new CleanWebpackPlugin(['dist'])].concat(webpackConfig.plugins).concat([
+        //new CleanWebpackPlugin(['dist']),
         new OptimizeCssAssetsPlugin({
             assetNameRegExp: /\.css$/g,
             cssProcessor: require('cssnano'),
@@ -152,8 +164,20 @@ if (TARGET === 'build') {
                 preset: ['default', {discardComments: {removeAll: true}}]
             },
             canPrint: true
-        })
-    ]);
+        }),
+        {
+            apply: compiler => compiler.hooks.done.tap("ServiceklageHtmlPlugin", params => {
+                let outputPath = path.join(params.compilation.outputOptions.path, "index.html");
+                let html = fs.readFileSync(outputPath).toString("utf-8");
+                let serviceklagescript =
+                    "<script>" +
+                    "window.serviceklage.render(document.getElementById('root'))" +
+                    "</script>";
+                let serviceKlageHtml = html.replace(/<\/body>/, serviceklagescript + "</body>")
+                fs.writeFileSync(outputPath, serviceKlageHtml);
+            })
+        }
+    ])
 }
 
 module.exports = webpackConfig;

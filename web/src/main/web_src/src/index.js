@@ -8,11 +8,9 @@ import {ConnectedRouter} from 'connected-react-router'
 import App from "./pages/App";
 import Store, {history} from "./store";
 
-
 export const store = Store();
-const target = document.getElementById('root')
 
-const render = () => {
+export const render = target => {
     ReactDOM.render(
         <AppContainer>
             <Provider store={store}>
@@ -23,9 +21,11 @@ const render = () => {
         </AppContainer>,
         target
     );
-}
+};
 
-render()
+if (process.env.NODE_ENV !== "production" && process.env.WEB_COMPONENT === "true") {
+    render(document.getElementById("root"))
+}
 
 if (module.hot) {
     module.hot.accept('./pages/App', () => {
