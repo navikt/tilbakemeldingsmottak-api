@@ -4,8 +4,12 @@ const config = {
 	services: {
 		serviceklageBackend: '/rest/serviceklage'
 	},
-    // Force values in production build
-    debug: isProdBuild
+	debug: true
 };
+
+// Force values in production build
+if (isProdBuild) {
+	config.debug = false
+}
 
 export default config;
