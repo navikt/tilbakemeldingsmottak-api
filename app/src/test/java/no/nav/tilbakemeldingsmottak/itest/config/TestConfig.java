@@ -12,5 +12,5 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @EnableAutoConfiguration
 @Import({TokenGeneratorConfiguration.class, CoreConfig.class})
-public class TilknyttVedleggTestConfig {
+public class TestConfig {
 }

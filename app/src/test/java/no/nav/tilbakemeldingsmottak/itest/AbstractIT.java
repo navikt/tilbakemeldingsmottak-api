@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
@@ -50,6 +49,7 @@ public class AbstractIT {
     private int port = 2500;
 
     protected static final String JOURNALPOST_ID = "12345";
+    protected static final String CONSUMER_ID = "srvtilbakemeldinge";
 
     @BeforeEach
     void setup() {
@@ -84,7 +84,7 @@ public class AbstractIT {
         WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/STS"))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())
                         .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .withBody(String.format("{\"accessToken\": \"%s\", \"token_type\": \"%s\", \"expires_in\":3600}", getToken("srvtilbakemeldingsmot"), "Bearer"))));
+                        .withBody(String.format("{\"accessToken\": \"%s\", \"token_type\": \"%s\", \"expires_in\":3600}", getToken(CONSUMER_ID), "Bearer"))));
 
         WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/AKTOER/identer/"))
             .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
@@ -101,7 +101,7 @@ public class AbstractIT {
     HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(PERSONNUMMER));
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(CONSUMER_ID));
         return headers;
     }
 

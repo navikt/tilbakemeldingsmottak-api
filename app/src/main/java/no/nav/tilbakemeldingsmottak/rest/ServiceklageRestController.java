@@ -93,7 +93,6 @@ public class ServiceklageRestController {
 
     @Transactional
     @GetMapping(value = "/{journalpostId}")
-    @Unprotected
     public ResponseEntity<Serviceklage> hentServiceklage(@PathVariable String journalpostId) {
         try {
             Serviceklage response = serviceklageService.hentServiceklage(journalpostId);
@@ -109,10 +108,5 @@ public class ServiceklageRestController {
                     .getMessage());
             throw e;
         }
-    }
-
-    @GetMapping("/hello-world-protected")
-    public ResponseEntity<String> helloWorldProtected() {
-        return ResponseEntity.status(HttpStatus.OK).body("Hello world");
     }
 }

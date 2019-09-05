@@ -34,13 +34,19 @@ public class MDCPopulationInterceptor extends HandlerInterceptorAdapter {
 		addValueToMDC(consumerId, MDCConstants.MDC_CONSUMER_ID);
 
 		TokenContext consumerToken = oidcRequestContextHolder.getOIDCValidationContext().getToken("reststs");
-		if (consumerToken != null) {
+		if (consumerToken == null) {
+			String message = "Consumertoken må være satt";
+			log.warn(message);
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
+			return false;
+
+		} else {
 			SignedJWT parsedConsumerToken = SignedJWT.parse(consumerToken.getIdToken());
 			consumerId = parsedConsumerToken.getJWTClaimsSet().getSubject();
 			if (consumerId != null && consumerId.startsWith("srv")) {
 				addValueToMDC(consumerId, MDCConstants.MDC_CONSUMER_ID);
 			}  else {
-				String message = "Consumer oidc må tilhøre en Servicebruker";
+				String message = "Consumertoken må tilhøre en servicebruker";
 				log.warn(message);
 				response.sendError(HttpServletResponse.SC_UNAUTHORIZED, message);
 				return false;
