@@ -93,6 +93,7 @@ public class ServiceklageRestController {
 
     @Transactional
     @GetMapping(value = "/{journalpostId}")
+    @Unprotected
     public ResponseEntity<Serviceklage> hentServiceklage(@PathVariable String journalpostId) {
         try {
             Serviceklage response = serviceklageService.hentServiceklage(journalpostId);
