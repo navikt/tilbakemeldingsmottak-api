@@ -35,7 +35,7 @@ public class RosService {
         message.setContent(createContent(request), "text/html; charset=UTF-8");
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
         helper.setTo("bjornar.hunshamar@trygdeetaten.no");
-        helper.setFrom("tilbakemeldinger-noreply@preprod.local");
+        helper.setFrom("srvtilbakemeldings@preprod.local");
         helper.setSubject("Ros mottatt");
         emailService.sendMail(message);
     }
