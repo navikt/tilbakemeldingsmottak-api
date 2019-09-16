@@ -65,6 +65,7 @@ public final class PdfCreator {
         }
         document.add(createParagraph("Klagetekst", request.getKlagetekst()));
         document.add(createParagraph("Ønsker å kontaktes", request.getOenskerAaKontaktes() ? "Ja" : "Nei"));
+        document.add(createParagraph("Kanal", "Nav.no"));
 
         document.close();
 
