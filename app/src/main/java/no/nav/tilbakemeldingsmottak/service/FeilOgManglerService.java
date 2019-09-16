@@ -33,7 +33,7 @@ public class FeilOgManglerService {
         message.setContent(createContent(request), "text/html; charset=UTF-8");
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
         helper.setTo("bjornar.hunshamar@trygdeetaten.no");
-        helper.setFrom("tilbakemeldinger-noreply@nav.no");
+        helper.setFrom("tilbakemeldinger-noreply@preprod.local");
         helper.setSubject("Feilmelding mottatt");
         emailService.sendMail(message);
     }
