@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak;
 
 import static no.nav.tilbakemeldingsmottak.api.HvemRosesType.NAV_KONTAKTSENTER;
 
+import no.nav.tilbakemeldingsmottak.api.Feiltype;
 import no.nav.tilbakemeldingsmottak.api.HvemRosesType;
 import no.nav.tilbakemeldingsmottak.api.Innmelder;
 import no.nav.tilbakemeldingsmottak.api.Klagetype;
@@ -35,7 +36,7 @@ public class TestUtils {
     public static final String KLAGETEKST = "Saksbehandleren var slem";
     public static final Boolean OENSKER_AA_KONTAKTES = Boolean.TRUE;
 
-    public static final String FEILTYPE = "Teknisk feil";
+    public static final Feiltype FEILTYPE = Feiltype.TEKNISK_FEIL;
     public static final String BESKRIVELSE_FEIL = "Det er en teknisk feil på nav.no";
 
     public static final HvemRosesType HVEM_ROSES = NAV_KONTAKTSENTER;

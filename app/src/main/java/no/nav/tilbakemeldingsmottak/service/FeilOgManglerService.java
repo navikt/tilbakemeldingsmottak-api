@@ -43,7 +43,7 @@ public class FeilOgManglerService {
 
         content.addParagraph("Navn", request.getNavn());
         content.addParagraph("Telefonnummer", request.getTelefonnummer());
-        content.addParagraph("Hva slags feil", request.getFeiltype());
+        content.addParagraph("Hva slags feil", request.getFeiltype().text);
         content.addParagraph("Melding", request.getMelding());
 
         return content.getContentString();

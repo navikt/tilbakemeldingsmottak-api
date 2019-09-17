@@ -8,6 +8,6 @@ import lombok.Data;
 public class MeldFeilOgManglerRequest {
     private String navn;
     private String telefonnummer;
-    private String feiltype;
+    private Feiltype feiltype;
     private String melding;
 }
