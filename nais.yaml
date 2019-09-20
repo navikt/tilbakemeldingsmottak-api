@@ -18,6 +18,8 @@ resources:
   limits:
     cpu: 3000m
     memory: 1024Mi
+vault:
+  enabled: true
 fasitResources:
   used:
   - alias: srvtilbakemeldingsmottak
