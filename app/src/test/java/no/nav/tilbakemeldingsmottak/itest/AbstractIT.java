@@ -8,7 +8,6 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
 import no.nav.security.spring.oidc.test.TokenGeneratorController;
 import no.nav.tilbakemeldingsmottak.CoreConfig;
-import no.nav.tilbakemeldingsmottak.config.RepositoryConfig;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {CoreConfig.class, RepositoryConfig.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {CoreConfig.class})
 @ActiveProfiles("itest")
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureDataJpa
