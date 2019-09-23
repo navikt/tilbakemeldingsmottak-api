@@ -81,7 +81,7 @@ public final class PdfCreator {
 
     private static Paragraph createUinnloggetHeader() {
         Paragraph p = new Paragraph();
-        p.add(new Chunk("OBS: klagen er sendt inn uinnlogget", boldUnderline));
+        p.add(new Chunk("OBS! Klagen er sendt inn uinnlogget", boldUnderline));
         return p;
     }
 }
