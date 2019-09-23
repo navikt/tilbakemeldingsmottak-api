@@ -25,19 +25,19 @@ import javax.sql.DataSource;
 @Profile("nais")
 public class DatabaseConfig {
 
-    private static final String SERVICEKLAGE_DB_URL = "${serviceklage_db_url}";
+    private static final String TILBAKEMELDINGSMOTTAK_DB_URL = "${tilbakemeldingsmottak_db_url}";
     private static final String APPLICATION_NAME = "tilbakemeldingsmottak";
 
     @Bean
     @Primary
-    public DataSource userDataSource(@Value(SERVICEKLAGE_DB_URL) final String serviceklageDbUrl) {
-        return dataSource("user", serviceklageDbUrl);
+    public DataSource userDataSource(@Value(TILBAKEMELDINGSMOTTAK_DB_URL) final String tilbakemeldingsmottakDbUrl) {
+        return dataSource("user", tilbakemeldingsmottakDbUrl);
     }
 
     @SneakyThrows
-    private HikariDataSource dataSource(String user, String serviceklageDbUrl) {
+    private HikariDataSource dataSource(String user, String tilbakemeldingsmottakDbUrl) {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(serviceklageDbUrl);
+        config.setJdbcUrl(tilbakemeldingsmottakDbUrl);
         config.setMaximumPoolSize(3);
         config.setMinimumIdle(1);
         String mountPath = "postgresql/preprod-fss";
@@ -45,9 +45,9 @@ public class DatabaseConfig {
     }
 
     @Bean
-    public FlywayMigrationStrategy flywayMigrationStrategy(@Value(SERVICEKLAGE_DB_URL) final String serviceklageDbUrl) {
+    public FlywayMigrationStrategy flywayMigrationStrategy(@Value(TILBAKEMELDINGSMOTTAK_DB_URL) final String tilbakemeldingsmottakDbUrl) {
         return flyway -> Flyway.configure()
-                .dataSource(dataSource("admin", serviceklageDbUrl))
+                .dataSource(dataSource("admin", tilbakemeldingsmottakDbUrl))
                 .initSql(String.format("SET ROLE \"%s\"", dbRole("admin")))
                 .load()
                 .migrate();
