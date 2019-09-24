@@ -16,6 +16,8 @@ import javax.mail.internet.MimeMessage;
 public class FeilOgManglerService {
 
     private AbstractEmailService emailService;
+    private static final String EMAIL_TO_ADDRESS = "${email_to_address}";
+    private static final String EMAIL_FROM_ADDRESS = "${email_from_address}";
 
     @Inject
     public FeilOgManglerService(AbstractEmailService emailService) {
@@ -32,8 +34,8 @@ public class FeilOgManglerService {
         message.setHeader("Content-Encoding", "UTF-8");
         message.setContent(createContent(request), "text/html; charset=UTF-8");
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
-        helper.setTo("bjornar.hunshamar@trygdeetaten.no");
-        helper.setFrom("srvtilbakemeldings@preprod.local");
+        helper.setTo(EMAIL_TO_ADDRESS);
+        helper.setFrom(EMAIL_FROM_ADDRESS);
         helper.setSubject("Feilmelding mottatt");
         emailService.sendMail(message);
     }
