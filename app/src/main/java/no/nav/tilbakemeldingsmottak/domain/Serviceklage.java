@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +27,10 @@ import java.time.LocalDateTime;
 public class Serviceklage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "serviceklage_seq")
+    @GenericGenerator(name = "serviceklage_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+            @Parameter(name = "sequence_name", value = "serviceklage_serviceklage_id_seq")
+    })
     @Column(name = "serviceklage_id", nullable = false)
     private Long serviceklageId;
 
