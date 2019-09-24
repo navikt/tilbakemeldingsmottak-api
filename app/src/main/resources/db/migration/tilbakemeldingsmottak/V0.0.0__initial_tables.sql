@@ -1,7 +1,7 @@
 CREATE TABLE serviceklage (
   serviceklage_id               INTEGER,
-  journalpost_id                INTEGER,
-  oppgave_id                    INTEGER,
+  journalpost_id                VARCHAR(10),
+  oppgave_id                    VARCHAR(10),
   dato_opprettet                TIMESTAMP(6) NOT NULL,
   paa_vegne_av                  VARCHAR(15),
   klagen_gjelder_id             VARCHAR(15) NOT NULL,
