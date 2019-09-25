@@ -8,14 +8,17 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import no.nav.tilbakemeldingsmottak.api.Klagetype;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
 
 import java.io.ByteArrayOutputStream;
 
 public final class PdfCreator {
 
-    private static Font regular = new Font(Font.FontFamily.HELVETICA, 12);
-    private static Font bold = new Font(Font.FontFamily.HELVETICA, 12,Font.BOLD);
+    private static Font regular = new Font(Font.FontFamily.HELVETICA, 14);
+    private static Font bold = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
+    private static Font boldUnderline = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD|Font.UNDERLINE);
 
     private PdfCreator() {
     }
@@ -27,6 +30,11 @@ public final class PdfCreator {
         PdfWriter.getInstance(document, stream);
 
         document.open();
+
+        if (StringUtils.isBlank(MDC.get(MDCConstants.MDC_USER_ID))) {
+            document.add(createUinnloggetHeader());
+            document.add(Chunk.NEWLINE);
+        }
 
         document.add(createParagraph("Navn til innmelder", request.getInnmelder().getNavn()));
         if (request.getOenskerAaKontaktes()) {
@@ -57,6 +65,7 @@ public final class PdfCreator {
         }
         document.add(createParagraph("Klagetekst", request.getKlagetekst()));
         document.add(createParagraph("Ønsker å kontaktes", request.getOenskerAaKontaktes() ? "Ja" : "Nei"));
+        document.add(createParagraph("Kanal", "Nav.no"));
 
         document.close();
 
@@ -67,6 +76,12 @@ public final class PdfCreator {
         Paragraph p = new Paragraph();
         p.add(new Chunk(fieldname + ": ", bold));
         p.add(new Chunk(content, regular));
+        return p;
+    }
+
+    private static Paragraph createUinnloggetHeader() {
+        Paragraph p = new Paragraph();
+        p.add(new Chunk("OBS! Klagen er sendt inn uinnlogget", boldUnderline));
         return p;
     }
 }

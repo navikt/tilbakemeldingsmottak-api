@@ -4,6 +4,7 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createSendRosRequest;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import no.nav.tilbakemeldingsmottak.api.HvemRosesType;
 import no.nav.tilbakemeldingsmottak.api.SendRosRequest;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,15 @@ class SendRosValidatorTest {
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> sendRosValidator.validateRequest(sendRosRequest));
         assertTrue(thrown.getMessage().contains("hvemRoses er påkrevd"));
+    }
+
+    @Test
+    void shouldThrowExceptionIfKontorNotSet() {
+        sendRosRequest = createSendRosRequest();
+        sendRosRequest.setHvemRoses(HvemRosesType.NAV_KONTOR);
+        Exception thrown = assertThrows(InvalidRequestException.class,
+                () -> sendRosValidator.validateRequest(sendRosRequest));
+        assertTrue(thrown.getMessage().contains("navKontor er påkrevd dersom hvemRoses=NAV_KONTOR"));
     }
 
     @Test

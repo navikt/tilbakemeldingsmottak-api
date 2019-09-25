@@ -2,9 +2,10 @@ package no.nav.tilbakemeldingsmottak.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,22 +18,27 @@ import java.time.LocalDateTime;
 /**
  * @author Bjørnar Hunshamar, Visma Consulting.
  */
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Entity
 @Table(name = "serviceklage")
 public class Serviceklage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "serviceklage_seq")
+    @GenericGenerator(name = "serviceklage_seq", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+            @Parameter(name = "sequence_name", value = "serviceklage_serviceklage_id_seq")
+    })
     @Column(name = "serviceklage_id", nullable = false)
     private Long serviceklageId;
 
     @Column(name = "journalpost_id", nullable = false)
     private String journalpostId;
+
+    @Column(name = "oppgave_id", nullable = false)
+    private String oppgaveId;
 
     @Column(name = "dato_opprettet", nullable = false, updatable = false)
     private LocalDateTime datoOpprettet;
@@ -57,6 +63,9 @@ public class Serviceklage {
 
     @Column(name = "gjelder")
     private String gjelder;
+
+    @Column(name = "kanal")
+    private String kanal;
 
     @Column(name = "paaklaget_enhet")
     private String paaklagetEnhet;

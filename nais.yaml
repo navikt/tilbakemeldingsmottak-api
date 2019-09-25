@@ -18,20 +18,20 @@ resources:
   limits:
     cpu: 3000m
     memory: 1024Mi
+vault:
+  enabled: true
 fasitResources:
   used:
-  - alias: serviceklageDB
-    resourceType: datasource
-    propertyMap:
-      url: SPRING_DATASOURCE_URL
-      username: SPRING_DATASOURCE_USERNAME
-      password: SPRING_DATASOURCE_PASSWORD
-
   - alias: srvtilbakemeldingsmottak
     resourceType: credential
     propertyMap:
       username: SERVICEUSER_USERNAME
       password: SERVICEUSER_PASSWORD
+
+  - alias: aad_b2c_clientid
+    resourceType: credential
+    propertyMap:
+      username: AZUREAD_CLIENTID
 
   - alias: security-token-service-openid-configuration
     resourceType: restservice
@@ -40,6 +40,11 @@ fasitResources:
 
   - alias: securityTokenService
     resourceType: baseurl
+
+  - alias: aad_b2c_discovery
+    resourceType: baseurl
+    propertyMap:
+      url: NO_NAV_SECURITY_OIDC_ISSUER_AZUREAD_DISCOVERYURL
 
   - alias: security-token-service-token
     resourceType: restservice
@@ -60,3 +65,4 @@ fasitResources:
     resourceType: restservice
     path: /rest/serviceklage
     description: Rest-tjeneste for å persistere serviceklager og tilbakemeldinger
+

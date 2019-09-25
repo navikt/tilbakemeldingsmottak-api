@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak;
 
 import static no.nav.tilbakemeldingsmottak.api.HvemRosesType.NAV_KONTAKTSENTER;
 
+import no.nav.tilbakemeldingsmottak.api.Feiltype;
 import no.nav.tilbakemeldingsmottak.api.HvemRosesType;
 import no.nav.tilbakemeldingsmottak.api.Innmelder;
 import no.nav.tilbakemeldingsmottak.api.Klagetype;
@@ -35,13 +36,17 @@ public class TestUtils {
     public static final String KLAGETEKST = "Saksbehandleren var slem";
     public static final Boolean OENSKER_AA_KONTAKTES = Boolean.TRUE;
 
-    public static final String FEILTYPE = "Teknisk feil";
+    public static final Feiltype FEILTYPE = Feiltype.TEKNISK_FEIL;
     public static final String BESKRIVELSE_FEIL = "Det er en teknisk feil på nav.no";
 
     public static final HvemRosesType HVEM_ROSES = NAV_KONTAKTSENTER;
     public static final String BESKRIVELSE_ROS = "Saksbehandleren var snill";
+    public static final HvemRosesType HVEM_ROSES_KONTOR = HvemRosesType.NAV_KONTOR;
+    public static final String NAV_KONTOR = "NAV Evje og Hornnes - 0937";
+
 
     public static final String ER_SERVICEKLAGE = "Ja (inkludert saker som også har andre elementer)";
+    public static final String KANAL = "nav.no";
     public static final String PAAKLAGET_ENHET = "1234";
     public static final String BEHANDLENDE_ENHET = "4321";
     public static final String YTELSE_TJENESTE = "Alderspensjon";
@@ -124,9 +129,20 @@ public class TestUtils {
                 .build();
     }
 
+    public static SendRosRequest createSendRosRequestWithNavKontor() {
+        return SendRosRequest.builder()
+                .navn(NAVN_INNMELDER)
+                .telefonnummer(TELEFONNUMMER)
+                .hvemRoses(HVEM_ROSES_KONTOR)
+                .navKontor(NAV_KONTOR)
+                .melding(BESKRIVELSE_ROS)
+                .build();
+    }
+
     public static RegistrerTilbakemeldingRequest createRegistrerTilbakemeldingRequest() {
         return RegistrerTilbakemeldingRequest.builder()
                 .erServiceklage(ER_SERVICEKLAGE)
+                .kanal(KANAL)
                 .paaklagetEnhet(PAAKLAGET_ENHET)
                 .behandlendeEnhet(BEHANDLENDE_ENHET)
                 .ytelseTjeneste(YTELSE_TJENESTE)

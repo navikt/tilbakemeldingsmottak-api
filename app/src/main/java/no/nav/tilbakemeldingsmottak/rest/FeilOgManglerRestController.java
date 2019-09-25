@@ -2,7 +2,6 @@ package no.nav.tilbakemeldingsmottak.rest;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
-import no.nav.security.oidc.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerResponse;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
@@ -37,7 +36,6 @@ public class FeilOgManglerRestController {
 
     @Transactional
     @PostMapping
-    @Unprotected
     public ResponseEntity<MeldFeilOgManglerResponse> meldFeilOgMangler(@RequestBody MeldFeilOgManglerRequest request) throws MessagingException {
         try {
             meldFeilOgManglerValidator.validateRequest(request);

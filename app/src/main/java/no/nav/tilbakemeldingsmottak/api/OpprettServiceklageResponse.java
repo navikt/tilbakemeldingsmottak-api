@@ -7,4 +7,7 @@ import lombok.Data;
 @Builder
 public class OpprettServiceklageResponse {
     String message;
+    String serviceklageId;
+    String journalpostId;
+    String oppgaveId;
 }

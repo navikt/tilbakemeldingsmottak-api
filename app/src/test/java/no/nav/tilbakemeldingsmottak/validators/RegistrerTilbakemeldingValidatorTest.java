@@ -36,6 +36,15 @@ class RegistrerTilbakemeldingValidatorTest {
     }
 
     @Test
+    void shouldThrowExceptionIfKanalNotSet() {
+        registrerTilbakemeldingRequest = createRegistrerTilbakemeldingRequest();
+        registrerTilbakemeldingRequest.setKanal(null);
+        Exception thrown = assertThrows(InvalidRequestException.class,
+                () -> registrerTilbakemeldingValidator.validateRequest(registrerTilbakemeldingRequest));
+        assertTrue(thrown.getMessage().contains("kanal er påkrevd dersom klagen er en serviceklage"));
+    }
+
+    @Test
     void shouldThrowExceptionIfPaaklagetEnhetNotSet() {
         registrerTilbakemeldingRequest = createRegistrerTilbakemeldingRequest();
         registrerTilbakemeldingRequest.setPaaklagetEnhet(null);

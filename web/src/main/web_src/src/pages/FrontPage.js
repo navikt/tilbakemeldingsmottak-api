@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {ServiceKlageApi} from "../api/Api";
+import {ServiceklageApi} from "../api/Api";
 import "./FrontPage.less"
 import Hovedknapp from "nav-frontend-knapper/lib/hovedknapp";
 import Input from "nav-frontend-skjema/lib/input";
@@ -13,18 +13,18 @@ class FrontPage extends Component {
         super(props)
 
         this.state = {
-            serviceklager: [],
-            brukerId: '',
-            serviceklagerHentetFlag: false
+            serviceklage: null,
+            journalpostId: '',
+            serviceklageHentetFlag: false
         }
 
     }
 
-    async hentServiceklager(){
-       let serviceklageList = await ServiceKlageApi.hentServiceklager(this.state.brukerId);
+    async hentServiceklage(){
+       let serviceklage = await ServiceklageApi.hentServiceklage(this.state.journalpostId);
         this.setState({
-            serviceklager: serviceklageList.data.serviceklager,
-            serviceklagerHentetFlag: true
+            serviceklage: serviceklage.data,
+            serviceklageHentetFlag: true
         });
         this.render();
     }
@@ -43,28 +43,31 @@ class FrontPage extends Component {
             <div className="ListView">
                 <h1>Serviceklagesøk</h1>
                 <Input
-                    label="Skriv inn bruker-id (fødselsnummer eller organisasjonsnummer):"
-                    name="brukerId"
+                    label="Skriv inn journalpost-id:"
+                    name="journalpostId"
                     onChange={this.onChange}
-                    value={this.state.brukerId}
+                    value={this.state.journalpostId}
                 />
-                {this.state.serviceklagerHentetFlag && this.state.serviceklager.length === 0 &&
-                    <div className="Advarsel"><AlertStripe type="advarsel">Det finnes ingen serviceklager knyttet til denne bruker-iden.</AlertStripe></div>}
+                {this.state.serviceklageHentetFlag && !this.state.serviceklage &&
+                    <div className="Advarsel"><AlertStripe type="advarsel">Det finnes ingen serviceklager knyttet til denne journalpost-iden.</AlertStripe></div>}
 
-                <Hovedknapp onClick={() => this.hentServiceklager()}>Hent serviceklager</Hovedknapp>
+                <Hovedknapp onClick={() => this.hentServiceklage()}>Hent serviceklage</Hovedknapp>
 
-                {this.state.serviceklager.map((s) =>
+                {this.state.serviceklage &&
                     <div className="Serviceklage">
+                        {this.state.serviceklage.erServiceklage && <div className="Advarsel"><AlertStripe type="advarsel">Det er allerede registrert en tilbakemelding på denne serviceklagen.</AlertStripe></div>}
                         <Serviceklage
-                            serviceklageId={s.serviceklageId}
-                            datoOpprettet={s.datoOpprettet}
-                            klagetype={s.klagetype}
-                            klagetekst={s.klagetekst}
-                            oenskerAaKontaktes={s.oenskerAaKontaktes ? "Ja" : "Nei"}
-                            erBehandlet={s.erBehandlet ? "Ja" : "Nei"}/>
-                        <Knapp onClick={() => this.velgServiceklage(s.serviceklageId)}>Registrer tilbakemelding</Knapp>
-                    </div>
-                )}
+                            klagenGjelderId={this.state.serviceklage.klagenGjelderId}
+                            paaVegneAv={this.state.serviceklage.paaVegneAv}
+                            datoOpprettet={this.state.serviceklage.datoOpprettet}
+                            klagetype={this.state.serviceklage.klagetype}
+                            klagetekst={this.state.serviceklage.klagetekst}
+                            erServiceklage={this.state.serviceklage.erServiceklage}
+                            gjelder={this.state.serviceklage.gjelder}
+                            utfall={this.state.serviceklage.utfall}
+                            svarmetode={this.state.serviceklage.svarmetode}/>
+                        <Knapp disabled={!!this.state.serviceklage.erServiceklage} onClick={() => this.velgServiceklage(this.state.serviceklage.journalpostId)}>Registrer tilbakemelding</Knapp>
+                    </div>}
             </div>
 
         )

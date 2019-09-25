@@ -4,28 +4,26 @@ import static no.nav.tilbakemeldingsmottak.service.pdf.PdfCreator.opprettPdf;
 
 import com.itextpdf.text.DocumentException;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.api.HentServiceklagerResponse;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
-import no.nav.tilbakemeldingsmottak.api.ServiceklageTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.OpprettJournalpostConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
-import no.nav.tilbakemeldingsmottak.consumer.oppgave.OpprettOppgaveConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
+import no.nav.tilbakemeldingsmottak.service.mappers.EndreOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.service.mappers.OpprettJournalpostRequestToMapper;
 import no.nav.tilbakemeldingsmottak.service.mappers.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.service.mappers.OpprettServiceklageRequestMapper;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -36,7 +34,8 @@ public class ServiceklageService {
     private OpprettJournalpostRequestToMapper opprettJournalpostRequestToMapper;
     private OpprettJournalpostConsumer opprettJournalpostConsumer;
     private OpprettOppgaveRequestToMapper opprettOppgaveRequestToMapper;
-    private OpprettOppgaveConsumer opprettOppgaveConsumer;
+    private OppgaveConsumer oppgaveConsumer;
+    private EndreOppgaveRequestToMapper endreOppgaveRequestToMapper;
 
     @Inject
     public ServiceklageService(ServiceklageRepository serviceklageRepository,
@@ -44,40 +43,46 @@ public class ServiceklageService {
                                OpprettJournalpostRequestToMapper opprettJournalpostRequestToMapper,
                                OpprettJournalpostConsumer opprettJournalpostConsumer,
                                OpprettOppgaveRequestToMapper opprettOppgaveRequestToMapper,
-                               OpprettOppgaveConsumer opprettOppgaveConsumer) {
+                               OppgaveConsumer oppgaveConsumer,
+                               EndreOppgaveRequestToMapper endreOppgaveRequestToMapper) {
         this.serviceklageRepository = serviceklageRepository;
         this.opprettServiceklageRequestMapper = opprettServiceklageRequestMapper;
         this.opprettJournalpostRequestToMapper = opprettJournalpostRequestToMapper;
         this.opprettJournalpostConsumer = opprettJournalpostConsumer;
         this.opprettOppgaveRequestToMapper = opprettOppgaveRequestToMapper;
-        this.opprettOppgaveConsumer = opprettOppgaveConsumer;
+        this.oppgaveConsumer = oppgaveConsumer;
+        this.endreOppgaveRequestToMapper = endreOppgaveRequestToMapper;
     }
 
-    public long opprettServiceklage(OpprettServiceklageRequest request, String authorizationHeader) throws FileNotFoundException , DocumentException {
+    public Serviceklage opprettServiceklage(OpprettServiceklageRequest request) throws DocumentException {
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request);
 
         byte[] fysiskDokument = opprettPdf(request);
 
         OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument);
-        OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo, authorizationHeader);
+        OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo);
 
         OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(serviceklage.getKlagenGjelderId(), request.getPaaVegneAv(), opprettJournalpostResponseTo);
-        opprettOppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo, authorizationHeader);
+        OpprettOppgaveResponseTo opprettOppgaveResponseTo = oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
 
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
+        serviceklage.setOppgaveId(opprettOppgaveResponseTo.getId());
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med serviceklageId={} persistert", serviceklage.getServiceklageId());
 
-        return serviceklage.getServiceklageId();
+        return serviceklage;
     }
 
-    public long registrerTilbakemelding(RegistrerTilbakemeldingRequest request, String serviceklageId)  {
-        Serviceklage serviceklage = serviceklageRepository.findById(Long.parseLong(serviceklageId))
-                .orElseThrow(() -> new ServiceklageIkkeFunnetException(String.format("Kunne ikke finne serviceklage med serviceklageId=%s", serviceklageId)));
+    public void registrerTilbakemelding(RegistrerTilbakemeldingRequest request, String journalpostId)  {
+        Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
+        if (serviceklage == null) {
+            throw new ServiceklageIkkeFunnetException(String.format("Kunne ikke finne serviceklage med journalpostId=%s", journalpostId));
+        }
 
         serviceklage.setErServiceklage(request.getErServiceklage());
         if (request.getErServiceklage().contains("Ja")) {
             serviceklage.setGjelder(null);
+            serviceklage.setKanal(request.getKanal());
             serviceklage.setPaaklagetEnhet(request.getPaaklagetEnhet());
             serviceklage.setBehandlendeEnhet(request.getBehandlendeEnhet());
             serviceklage.setYtelseTjeneste(request.getYtelseTjeneste());
@@ -86,6 +91,7 @@ public class ServiceklageService {
             serviceklage.setSvarmetode(String.join(",", request.getSvarmetode()));
         } else {
             serviceklage.setGjelder(request.getGjelder());
+            serviceklage.setKanal(null);
             serviceklage.setPaaklagetEnhet(null);
             serviceklage.setBehandlendeEnhet(null);
             serviceklage.setYtelseTjeneste(null);
@@ -95,26 +101,15 @@ public class ServiceklageService {
         }
 
         serviceklageRepository.save(serviceklage);
+
         log.info("Tilbakemelding registrert for serviceklage med serviceklageId={}", serviceklage.getServiceklageId());
 
-        return serviceklage.getServiceklageId();
+        HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(serviceklage.getOppgaveId());
+        EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
+        oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
     }
 
-    public HentServiceklagerResponse hentServiceklager(String brukerId) {
-        List<Serviceklage> serviceklager = serviceklageRepository.findAllByKlagenGjelderId(brukerId);
-        ArrayList<ServiceklageTo> serviceklageTos = serviceklager.stream().map(s ->
-                ServiceklageTo.builder()
-                        .serviceklageId(s.getServiceklageId())
-                        .datoOpprettet(s.getDatoOpprettet())
-                        .klagetype(s.getKlagetype())
-                        .klagetekst(s.getKlagetekst())
-                        .oenskerAaKontaktes(s.getOenskerAaKontaktes())
-                        .erBehandlet(s.getErServiceklage() != null)
-                        .build())
-                        .collect(Collectors.toCollection(ArrayList::new));
-
-        return HentServiceklagerResponse.builder()
-                .serviceklager(serviceklageTos)
-                .build();
+    public Serviceklage hentServiceklage(String journalpostId) {
+        return serviceklageRepository.findByJournalpostId(journalpostId);
     }
 }
