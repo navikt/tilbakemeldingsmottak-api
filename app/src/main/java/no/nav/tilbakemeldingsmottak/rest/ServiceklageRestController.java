@@ -3,7 +3,6 @@ package no.nav.tilbakemeldingsmottak.rest;
 import com.itextpdf.text.DocumentException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
-import no.nav.security.oidc.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
@@ -72,7 +71,6 @@ public class ServiceklageRestController {
 
     @Transactional
     @PutMapping(value = "/{journalpostId}/registrerTilbakemelding")
-    @Unprotected
     public ResponseEntity<RegistrerTilbakemeldingResponse> registrerTilbakemelding(@RequestBody RegistrerTilbakemeldingRequest request, @PathVariable String journalpostId) {
         try {
             registrerTilbakemeldingValidator.validateRequest(request);
@@ -93,7 +91,6 @@ public class ServiceklageRestController {
 
     @Transactional
     @GetMapping(value = "/{journalpostId}")
-    @Unprotected
     public ResponseEntity<Serviceklage> hentServiceklage(@PathVariable String journalpostId) {
         try {
             Serviceklage response = serviceklageService.hentServiceklage(journalpostId);
