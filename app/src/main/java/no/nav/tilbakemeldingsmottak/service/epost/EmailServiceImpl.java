@@ -19,7 +19,6 @@ public class EmailServiceImpl extends AbstractEmailService{
 
     @Override
     public void sendMail(MimeMessage message) throws MessagingException {
-        log.info("Sender mail til {} fra {}", message.getFrom(), message.getSender());
         emailSender.send(message);
     }
 }
