@@ -61,18 +61,7 @@ fasitResources:
       url: aktoerregister.identer.url
 
   exposed:
-  - alias: serviceklage
+  - alias: tilbakemeldingsmottak
     resourceType: restservice
-    path: /rest/serviceklage
-    description: Rest-tjeneste for å persistere serviceklager og tilbakemeldinger
-
-  - alias: ros
-    resourceType: restservice
-    path: /rest/ros
-    description: Rest-tjeneste for å sende ros
-
-  - alias: feil-og-mangler
-    resourceType: restservice
-    path: /rest/feil-og-mangler
-    description: Rest-tjeneste for å melde feil og mangler
-
+    path: /rest
+    description: Rest-tjenester for å opprette serviceklager, sende ros og melde feil/mangler
