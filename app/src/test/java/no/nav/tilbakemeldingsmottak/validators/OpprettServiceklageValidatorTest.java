@@ -6,8 +6,9 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRe
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
 import org.junit.jupiter.api.Test;
 
 class OpprettServiceklageValidatorTest {

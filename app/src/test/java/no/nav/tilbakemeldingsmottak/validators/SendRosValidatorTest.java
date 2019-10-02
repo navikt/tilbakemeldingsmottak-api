@@ -4,9 +4,10 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createSendRosRequest;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import no.nav.tilbakemeldingsmottak.api.HvemRosesType;
-import no.nav.tilbakemeldingsmottak.api.SendRosRequest;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
+import no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType;
+import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
+import no.nav.tilbakemeldingsmottak.rest.ros.validation.SendRosValidator;
 import org.junit.jupiter.api.Test;
 
 class SendRosValidatorTest {
