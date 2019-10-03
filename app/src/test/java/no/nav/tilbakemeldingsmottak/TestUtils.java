@@ -1,18 +1,20 @@
 package no.nav.tilbakemeldingsmottak;
 
-import static no.nav.tilbakemeldingsmottak.api.HvemRosesType.NAV_KONTAKTSENTER;
+import static no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType.NAV_KONTAKTSENTER;
 
-import no.nav.tilbakemeldingsmottak.api.Feiltype;
-import no.nav.tilbakemeldingsmottak.api.HvemRosesType;
-import no.nav.tilbakemeldingsmottak.api.Innmelder;
-import no.nav.tilbakemeldingsmottak.api.Klagetype;
-import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerRequest;
-import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.api.PaaVegneAvBedrift;
-import no.nav.tilbakemeldingsmottak.api.PaaVegneAvPerson;
-import no.nav.tilbakemeldingsmottak.api.PaaVegneAvType;
-import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
-import no.nav.tilbakemeldingsmottak.api.SendRosRequest;
+import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
+import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.Tidsrom;
+import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.Feiltype;
+import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
+import no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType;
+import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Innmelder;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvBedrift;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvPerson;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.RegistrerTilbakemeldingRequest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +46,8 @@ public class TestUtils {
     public static final HvemRosesType HVEM_ROSES_KONTOR = HvemRosesType.NAV_KONTOR;
     public static final String NAV_KONTOR = "NAV Evje og Hornnes - 0937";
 
+    public static final String FORNAVN = "Fred";
+    public static final String ETTERNAVN = "Buljo";
 
     public static final String ER_SERVICEKLAGE = "Ja (inkludert saker som også har andre elementer)";
     public static final String KANAL = "nav.no";
@@ -117,6 +121,15 @@ public class TestUtils {
                 .telefonnummer(TELEFONNUMMER)
                 .feiltype(FEILTYPE)
                 .melding(BESKRIVELSE_FEIL)
+                .build();
+    }
+
+    public static BestillSamtaleRequest createBestillSamtaleRequest() {
+        return BestillSamtaleRequest.builder()
+                .fornavn(FORNAVN)
+                .etternavn(ETTERNAVN)
+                .telefonnummer(TELEFONNUMMER)
+                .tidsrom(Tidsrom.FORMIDDAG)
                 .build();
     }
 

@@ -5,8 +5,8 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createSendRosRequestWithNav
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import no.nav.tilbakemeldingsmottak.api.SendRosRequest;
-import no.nav.tilbakemeldingsmottak.api.SendRosResponse;
+import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
+import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

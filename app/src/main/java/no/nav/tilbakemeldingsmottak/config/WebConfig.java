@@ -25,6 +25,9 @@ public class WebConfig implements WebMvcConfigurer {
 				.addPathPatterns("/rest/**");
 
         registry.addInterceptor(new TokenCheckInterceptor(oidcRequestContextHolder))
-                .addPathPatterns("/rest/serviceklage", "/rest/serviceklage/");
+                .addPathPatterns("/rest/serviceklage", "/rest/serviceklage/",
+						"/rest/ros**",
+						"/rest/feil-og-mangler**",
+						"/rest/bestilling-av-samtale**");
     }
 }

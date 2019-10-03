@@ -5,8 +5,9 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createRegistrerTilbakemeldi
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.RegistrerTilbakemeldingRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.RegistrerTilbakemeldingValidator;
 import org.junit.jupiter.api.Test;
 
 class RegistrerTilbakemeldingValidatorTest {
