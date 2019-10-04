@@ -46,6 +46,12 @@ fasitResources:
     propertyMap:
       url: NO_NAV_SECURITY_OIDC_ISSUER_AZUREAD_DISCOVERYURL
 
+  - alias: loginservice_oidc
+    resourceType: AzureOIDC
+    propertyMap:
+      discoveryUri: NO_NAV_SECURITY_OIDC_ISSUER_ISSO_DISCOVERYURL
+      clientId: LOGINSERVICE_ACCEPTED_AUDIENCE
+
   - alias: security-token-service-token
     resourceType: restservice
 
@@ -59,6 +65,9 @@ fasitResources:
     resourceType: restservice
     propertyMap:
       url: aktoerregister.identer.url
+
+  - alias: tilbakemeldingsmottakProperties
+    resourceType: applicationProperties
 
   exposed:
   - alias: tilbakemeldingsmottak
