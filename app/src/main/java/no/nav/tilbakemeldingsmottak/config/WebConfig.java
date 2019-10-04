@@ -20,10 +20,13 @@ public class WebConfig implements WebMvcConfigurer {
 		registry.addInterceptor(new MDCPopulationInterceptor())
 				.addPathPatterns("/rest/**");
 
-		registry.addInterceptor(tokenCheckInterceptor)
-				.addPathPatterns("/rest/serviceklage", "/rest/serviceklage/");
-
 		registry.addInterceptor(loginRedirectInterceptor)
 				.addPathPatterns("/", "/serviceklage/**");
-	}
+
+        registry.addInterceptor(tokenCheckInterceptor)
+                .addPathPatterns("/rest/serviceklage", "/rest/serviceklage/",
+						"/rest/ros**",
+						"/rest/feil-og-mangler**",
+						"/rest/bestilling-av-samtale**");
+    }
 }

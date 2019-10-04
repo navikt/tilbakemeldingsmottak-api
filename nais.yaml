@@ -72,6 +72,5 @@ fasitResources:
   exposed:
   - alias: tilbakemeldingsmottak
     resourceType: restservice
-    path: /rest/serviceklage
-    description: Rest-tjeneste for å persistere serviceklager og tilbakemeldinger
-
+    path: /rest
+    description: Rest-tjenester for å opprette serviceklager, sende ros og melde feil/mangler
