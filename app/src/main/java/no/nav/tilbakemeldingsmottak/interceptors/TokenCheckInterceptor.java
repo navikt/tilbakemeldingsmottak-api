@@ -1,22 +1,24 @@
 package no.nav.tilbakemeldingsmottak.interceptors;
 
 import com.nimbusds.jwt.SignedJWT;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.TokenContext;
 import no.nav.tilbakemeldingsmottak.config.MDCConstants;
+import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
+
 @Slf4j
+@Configuration
+@RequiredArgsConstructor
 public class TokenCheckInterceptor extends AbstractInterceptor {
 
-	private OIDCRequestContextHolder oidcRequestContextHolder;
-
-	public TokenCheckInterceptor(OIDCRequestContextHolder contextHolder) {
-		oidcRequestContextHolder = contextHolder;
-	}
+	private final OIDCRequestContextHolder oidcRequestContextHolder;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -40,7 +42,7 @@ public class TokenCheckInterceptor extends AbstractInterceptor {
 			}
 		}
 
-		TokenContext userToken = oidcRequestContextHolder.getOIDCValidationContext().getToken("azuread");
+		TokenContext userToken = oidcRequestContextHolder.getOIDCValidationContext().getToken(AZURE_ISSUER);
 		if (userToken != null) {
 			SignedJWT parsedUserToken = SignedJWT.parse(userToken.getIdToken());
 			String userId = parsedUserToken.getJWTClaimsSet().getSubject();

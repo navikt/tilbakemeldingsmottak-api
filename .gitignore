@@ -25,3 +25,6 @@ target
 /.nb-gradle/
 
 **/application-local.properties
+
+node_modules/
+web/src/main/resources/public

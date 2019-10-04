@@ -10,11 +10,8 @@ import java.util.UUID;
 @Slf4j
 public class MDCPopulationInterceptor extends AbstractInterceptor {
 
-
-	public MDCPopulationInterceptor() {}
-
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 		String callId = getHeaderValuesFromRequest(request, UUID.randomUUID().toString(),
 				"nav-callid", "nav-call-id", "x_callId", "callid");
 		addValueToMDC(callId, MDCConstants.MDC_CALL_ID);
