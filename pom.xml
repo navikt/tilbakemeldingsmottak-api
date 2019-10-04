@@ -14,7 +14,7 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>app</module>
-		<module>web</module>
+		<!--<module>web</module>-->
 	</modules>
 
 	<properties>
