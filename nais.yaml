@@ -47,8 +47,8 @@ fasitResources:
       url: NO_NAV_SECURITY_OIDC_ISSUER_AZUREAD_DISCOVERYURL
 
   - alias: loginservice_oidc
-  - resourceType: AzureOIDC
-  - propertyMap:
+    resourceType: AzureOIDC
+    propertyMap:
       discoveryUri: NO_NAV_SECURITY_OIDC_ISSUER_ISSO_DISCOVERYURL
       clientId: LOGINSERVICE_ACCEPTED_AUDIENCE
 
