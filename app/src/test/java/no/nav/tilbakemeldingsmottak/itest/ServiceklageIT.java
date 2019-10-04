@@ -20,17 +20,17 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRe
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createRegistrerTilbakemeldingRequest;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createRegistrerTilbakemeldingRequestNotServiceklage;
-import static no.nav.tilbakemeldingsmottak.api.PaaVegneAvType.ANNEN_PERSON;
-import static no.nav.tilbakemeldingsmottak.api.PaaVegneAvType.BEDRIFT;
-import static no.nav.tilbakemeldingsmottak.api.PaaVegneAvType.PRIVATPERSON;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType.ANNEN_PERSON;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType.BEDRIFT;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType.PRIVATPERSON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.api.OpprettServiceklageResponse;
-import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingRequest;
-import no.nav.tilbakemeldingsmottak.api.RegistrerTilbakemeldingResponse;
-import no.nav.tilbakemeldingsmottak.domain.Serviceklage;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.RegistrerTilbakemeldingRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.RegistrerTilbakemeldingResponse;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

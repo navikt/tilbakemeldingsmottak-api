@@ -4,8 +4,8 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createMeldFeilOgManglerRequ
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerRequest;
-import no.nav.tilbakemeldingsmottak.api.MeldFeilOgManglerResponse;
+import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
+import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

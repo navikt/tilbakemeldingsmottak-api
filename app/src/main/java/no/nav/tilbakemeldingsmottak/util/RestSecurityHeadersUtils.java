@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.util;
 
-import no.nav.tilbakemeldingsmottak.service.sts.STSTokenService;
+import no.nav.tilbakemeldingsmottak.rest.common.sts.STSTokenService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;

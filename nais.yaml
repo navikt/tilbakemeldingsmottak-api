@@ -46,6 +46,12 @@ fasitResources:
     propertyMap:
       url: NO_NAV_SECURITY_OIDC_ISSUER_AZUREAD_DISCOVERYURL
 
+  - alias: loginservice_oidc
+    resourceType: AzureOIDC
+    propertyMap:
+      discoveryUri: NO_NAV_SECURITY_OIDC_ISSUER_ISSO_DISCOVERYURL
+      clientId: LOGINSERVICE_ACCEPTED_AUDIENCE
+
   - alias: security-token-service-token
     resourceType: restservice
 
@@ -60,19 +66,11 @@ fasitResources:
     propertyMap:
       url: aktoerregister.identer.url
 
+  - alias: tilbakemeldingsmottakProperties
+    resourceType: applicationProperties
+
   exposed:
-  - alias: serviceklage
+  - alias: tilbakemeldingsmottak
     resourceType: restservice
-    path: /rest/serviceklage
-    description: Rest-tjeneste for å persistere serviceklager og tilbakemeldinger
-
-  - alias: ros
-    resourceType: restservice
-    path: /rest/ros
-    description: Rest-tjeneste for å sende ros
-
-  - alias: feil-og-mangler
-    resourceType: restservice
-    path: /rest/feil-og-mangler
-    description: Rest-tjeneste for å melde feil og mangler
-
+    path: /rest
+    description: Rest-tjenester for å opprette serviceklager, sende ros og melde feil/mangler
