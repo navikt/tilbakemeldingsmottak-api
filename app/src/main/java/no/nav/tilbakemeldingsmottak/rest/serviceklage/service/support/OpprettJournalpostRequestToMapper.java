@@ -9,6 +9,8 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Dokument;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.DokumentVariant;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.JournalpostType;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Sak;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Sakstype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
@@ -31,6 +33,9 @@ public class OpprettJournalpostRequestToMapper {
                         .id(request.getInnmelder().getPersonnummer())
                         .idType(request.getInnmelder().getPersonnummer() != null ? AvsenderMottakerIdType.FNR : null)
                         .navn(request.getInnmelder().getNavn())
+                        .build())
+                .sak(Sak.builder()
+                        .sakstype(Sakstype.GENERELL_SAK)
                         .build())
                 .bruker(mapBruker(request))
                 .journalpostType(JournalpostType.INNGAAENDE)
