@@ -40,7 +40,7 @@ import org.springframework.http.ResponseEntity;
 class ServiceklageIT extends AbstractIT {
 
     private static final String URL_SERVICEKLAGE = "/rest/serviceklage";
-    private static final String KLASSIFISER_SERVICEKLAGE = "klassifiserServiceklage";
+    private static final String KLASSIFISER_SERVICEKLAGE = "klassifiser";
 
     @Test
     void happyPathPrivatperson() {
