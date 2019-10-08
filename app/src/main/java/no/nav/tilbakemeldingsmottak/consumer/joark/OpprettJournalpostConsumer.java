@@ -31,6 +31,8 @@ public class OpprettJournalpostConsumer {
 	private final String journalpostUrl;
 	private final RestSecurityHeadersUtils restSecurityHeadersUtils;
 
+	private static final String FORSOEK_FERDIGSTILL = "?forsoekFerdigstill=true";
+
 	public OpprettJournalpostConsumer(RestTemplateBuilder restTemplateBuilder,
 									  @Value("${Journalpost_v1_url}") String journalpostUrl,
 									  ServiceuserAlias serviceuserAlias, RestSecurityHeadersUtils restSecurityHeadersUtils) {
@@ -55,7 +57,7 @@ public class OpprettJournalpostConsumer {
 
 			String opprettJournalpostUrl = journalpostUrl + "/journalpost/";
 
-			ResponseEntity<OpprettJournalpostResponseTo> response = restTemplate.exchange(opprettJournalpostUrl, HttpMethod.POST, requestEntity, OpprettJournalpostResponseTo.class);
+			ResponseEntity<OpprettJournalpostResponseTo> response = restTemplate.exchange(opprettJournalpostUrl + FORSOEK_FERDIGSTILL, HttpMethod.POST, requestEntity, OpprettJournalpostResponseTo.class);
 			if (log.isDebugEnabled()) {
 				log.debug("Journalpost med journalpostId={} opprettet", response.getBody().getJournalpostId());
 			}
