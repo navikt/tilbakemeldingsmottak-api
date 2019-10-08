@@ -152,7 +152,7 @@ public class TestUtils {
                 .build();
     }
 
-    public static KlassifiserServiceklageRequest createRegistrerTilbakemeldingRequest() {
+    public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequest() {
         return KlassifiserServiceklageRequest.builder()
                 .erServiceklage(ER_SERVICEKLAGE)
                 .kanal(KANAL)
@@ -165,7 +165,7 @@ public class TestUtils {
                 .build();
     }
 
-    public static KlassifiserServiceklageRequest createRegistrerTilbakemeldingRequestNotServiceklage() {
+    public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequestNotServiceklage() {
         return KlassifiserServiceklageRequest.builder()
                 .erServiceklage(NEI_ANNET)
                 .gjelder(GJELDER)

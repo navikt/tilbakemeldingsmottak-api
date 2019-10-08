@@ -1,7 +1,7 @@
 package no.nav.tilbakemeldingsmottak.validators;
 
-import static no.nav.tilbakemeldingsmottak.TestUtils.createRegistrerTilbakemeldingRequest;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createRegistrerTilbakemeldingRequestNotServiceklage;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequest;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequestNotServiceklage;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -17,19 +17,19 @@ class KlassifiserServiceklageValidatorTest {
 
     @Test
     void happyPathServiceklage() {
-        klassifiserServiceklageRequest = createRegistrerTilbakemeldingRequest();
+        klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
         klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest);
     }
 
     @Test
     void happyPathNotServiceklage() {
-        klassifiserServiceklageRequest = createRegistrerTilbakemeldingRequestNotServiceklage();
+        klassifiserServiceklageRequest = createKlassifiserServiceklageRequestNotServiceklage();
         klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest);
     }
 
     @Test
     void shouldThrowExceptionIfErServiceklageNotSet() {
-        klassifiserServiceklageRequest = createRegistrerTilbakemeldingRequest();
+        klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
         klassifiserServiceklageRequest.setErServiceklage(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest));
@@ -38,7 +38,7 @@ class KlassifiserServiceklageValidatorTest {
 
     @Test
     void shouldThrowExceptionIfKanalNotSet() {
-        klassifiserServiceklageRequest = createRegistrerTilbakemeldingRequest();
+        klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
         klassifiserServiceklageRequest.setKanal(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest));
@@ -47,7 +47,7 @@ class KlassifiserServiceklageValidatorTest {
 
     @Test
     void shouldThrowExceptionIfPaaklagetEnhetNotSet() {
-        klassifiserServiceklageRequest = createRegistrerTilbakemeldingRequest();
+        klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
         klassifiserServiceklageRequest.setPaaklagetEnhet(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest));
@@ -56,7 +56,7 @@ class KlassifiserServiceklageValidatorTest {
 
     @Test
     void shouldThrowExceptionIfBehandlendeEnhetNotSet() {
-        klassifiserServiceklageRequest = createRegistrerTilbakemeldingRequest();
+        klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
         klassifiserServiceklageRequest.setBehandlendeEnhet(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest));
@@ -65,7 +65,7 @@ class KlassifiserServiceklageValidatorTest {
 
     @Test
     void shouldThrowExceptionIfYtelseTjenesteNotSet() {
-        klassifiserServiceklageRequest = createRegistrerTilbakemeldingRequest();
+        klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
         klassifiserServiceklageRequest.setYtelseTjeneste(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest));
@@ -74,7 +74,7 @@ class KlassifiserServiceklageValidatorTest {
 
     @Test
     void shouldThrowExceptionIfTemaNotSet() {
-        klassifiserServiceklageRequest = createRegistrerTilbakemeldingRequest();
+        klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
         klassifiserServiceklageRequest.setTema(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest));
@@ -83,7 +83,7 @@ class KlassifiserServiceklageValidatorTest {
 
     @Test
     void shouldThrowExceptionIfUtfallNotSet() {
-        klassifiserServiceklageRequest = createRegistrerTilbakemeldingRequest();
+        klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
         klassifiserServiceklageRequest.setUtfall(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest));
@@ -92,7 +92,7 @@ class KlassifiserServiceklageValidatorTest {
 
     @Test
     void shouldThrowExceptionIfSvarmetodeNotSet() {
-        klassifiserServiceklageRequest = createRegistrerTilbakemeldingRequest();
+        klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
         klassifiserServiceklageRequest.setSvarmetode(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest));
@@ -101,7 +101,7 @@ class KlassifiserServiceklageValidatorTest {
 
     @Test
     void shouldThrowExceptionIfGjelderNotSet() {
-        klassifiserServiceklageRequest = createRegistrerTilbakemeldingRequestNotServiceklage();
+        klassifiserServiceklageRequest = createKlassifiserServiceklageRequestNotServiceklage();
         klassifiserServiceklageRequest.setGjelder(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest));

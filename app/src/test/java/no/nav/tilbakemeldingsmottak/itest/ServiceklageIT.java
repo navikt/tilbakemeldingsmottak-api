@@ -15,11 +15,11 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.SVARMETODE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.TEMA;
 import static no.nav.tilbakemeldingsmottak.TestUtils.UTFALL;
 import static no.nav.tilbakemeldingsmottak.TestUtils.YTELSE_TJENESTE;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequest;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequestNotServiceklage;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvBedrift;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvPerson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createRegistrerTilbakemeldingRequest;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createRegistrerTilbakemeldingRequestNotServiceklage;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType.ANNEN_PERSON;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType.BEDRIFT;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType.PRIVATPERSON;
@@ -100,12 +100,12 @@ class ServiceklageIT extends AbstractIT {
     }
 
     @Test
-    void happyPathRegistrerTilbakemelding() {
+    void happyPathKlassifiserServiceklage() {
         restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
 
         assertEquals(serviceklageRepository.count(), 1);
 
-        KlassifiserServiceklageRequest request = createRegistrerTilbakemeldingRequest();
+        KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
         ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID + "/" + KLASSIFISER_SERVICEKLAGE, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
 
@@ -123,12 +123,20 @@ class ServiceklageIT extends AbstractIT {
     }
 
     @Test
-    void happyPathRegistrerTilbakemeldingIkkeServiceklage() {
+    void shouldFailIfServiceklageNotFound() {
+        KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID + "/" + KLASSIFISER_SERVICEKLAGE, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void happyPathKlassifiserServiceklageIkkeServiceklage() {
         restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
 
         assertEquals(serviceklageRepository.count(), 1);
 
-        KlassifiserServiceklageRequest request = createRegistrerTilbakemeldingRequestNotServiceklage();
+        KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequestNotServiceklage();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
         ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID + "/" + KLASSIFISER_SERVICEKLAGE, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
 
@@ -139,21 +147,21 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getGjelder(), GJELDER);
     }
 
-//    @Test //todo: oppdater etter avklaringer med gosys ang tokens
-//    void happyPathHentServiceklage() {
-//        restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
-//        ResponseEntity<Serviceklage> response = restTemplate.getForEntity(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID, Serviceklage.class, createHeaders());
-//
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//
-//        Serviceklage serviceklage = response.getBody();
-//        assertNotNull(serviceklage.getServiceklageId());
-//        assertNotNull(serviceklage.getDatoOpprettet());
-//        assertEquals(serviceklage.getPaaVegneAv(), PRIVATPERSON.name());
-//        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
-//        assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
-//        assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
-//        assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
-//        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
-//    }
+    @Test
+    void happyPathHentServiceklage() {
+        restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
+        ResponseEntity<Serviceklage> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID, HttpMethod.GET, new HttpEntity<>(createHeaders()), Serviceklage.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Serviceklage serviceklage = response.getBody();
+        assertNotNull(serviceklage.getServiceklageId());
+        assertNotNull(serviceklage.getDatoOpprettet());
+        assertEquals(serviceklage.getPaaVegneAv(), PRIVATPERSON.name());
+        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
+        assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
+        assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
+        assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
+        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
+    }
 }

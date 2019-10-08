@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.io.FileNotFoundException;
 
 @Slf4j
 @Protected
@@ -46,7 +45,7 @@ public class ServiceklageRestController {
 
     @Transactional
     @PostMapping
-    public ResponseEntity<OpprettServiceklageResponse> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws FileNotFoundException, DocumentException {
+    public ResponseEntity<OpprettServiceklageResponse> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws DocumentException {
         try {
             opprettServiceklageValidator.validateRequest(request);
             Serviceklage serviceklage = serviceklageService.opprettServiceklage(request);
