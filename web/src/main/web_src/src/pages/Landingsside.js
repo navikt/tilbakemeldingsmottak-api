@@ -12,7 +12,7 @@ class Landingsside extends Component {
 
         return (
             <div className="Landingsside">
-                <AlertStripe type="suksess">Tilbakemeldingen er registrert</AlertStripe>
+                <AlertStripe type="suksess">Serviceklagen er klassifisert</AlertStripe>
             </div>
         )
 

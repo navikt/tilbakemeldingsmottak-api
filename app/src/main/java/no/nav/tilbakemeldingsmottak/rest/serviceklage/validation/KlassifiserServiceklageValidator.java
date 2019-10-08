@@ -1,14 +1,14 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.RegistrerTilbakemeldingRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 
-public class RegistrerTilbakemeldingValidator implements RequestValidator {
+public class KlassifiserServiceklageValidator implements RequestValidator {
 
     private static final String DERSOM_SERVICEKLAGE = " dersom klagen er en serviceklage";
     private static final String DERSOM_IKKE_SERVICEKLAGE = " dersom klagen ikke er en serviceklage";
 
-    public void validateRequest(RegistrerTilbakemeldingRequest request) {
+    public void validateRequest(KlassifiserServiceklageRequest request) {
         hasText(request.getErServiceklage(), "erServiceklage");
         if(request.getErServiceklage().contains("Ja")) {
             hasText(request.getKanal(), "kanal", DERSOM_SERVICEKLAGE);

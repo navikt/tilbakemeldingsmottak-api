@@ -5,14 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.RegistrerTilbakemeldingRequest;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.RegistrerTilbakemeldingResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.ServiceklageService;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.KlassifiserServiceklageValidator;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.RegistrerTilbakemeldingValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,13 +35,13 @@ public class ServiceklageRestController {
 
     private final ServiceklageService serviceklageService;
     private final OpprettServiceklageValidator opprettServiceklageValidator;
-    private final RegistrerTilbakemeldingValidator registrerTilbakemeldingValidator;
+    private final KlassifiserServiceklageValidator klassifiserServiceklageValidator;
 
     @Inject
     public ServiceklageRestController(final ServiceklageService serviceklageService) {
         this.serviceklageService = serviceklageService;
         this.opprettServiceklageValidator = new OpprettServiceklageValidator();
-        this.registrerTilbakemeldingValidator = new RegistrerTilbakemeldingValidator();
+        this.klassifiserServiceklageValidator = new KlassifiserServiceklageValidator();
     }
 
     @Transactional
@@ -70,20 +70,20 @@ public class ServiceklageRestController {
     }
 
     @Transactional
-    @PutMapping(value = "/{journalpostId}/registrerTilbakemelding")
-    public ResponseEntity<RegistrerTilbakemeldingResponse> registrerTilbakemelding(@RequestBody RegistrerTilbakemeldingRequest request, @PathVariable String journalpostId) {
+    @PutMapping(value = "/{journalpostId}/klassifiser")
+    public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request, @PathVariable String journalpostId) {
         try {
-            registrerTilbakemeldingValidator.validateRequest(request);
-            serviceklageService.registrerTilbakemelding(request, journalpostId);
+            klassifiserServiceklageValidator.validateRequest(request);
+            serviceklageService.klassifiserServiceklage(request, journalpostId);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(RegistrerTilbakemeldingResponse.builder().message("Registrert tilbakemelding på serviceklage med journalpostId=" + journalpostId).build());
+                    .body(KlassifiserServiceklageResponse.builder().message("Klassifisert serviceklage med journalpostId=" + journalpostId).build());
         } catch (AbstractTilbakemeldingsmottakFunctionalException e) {
-            log.warn("registrerTilbakemelding feilet funksjonelt. Feilmelding={}", e
+            log.warn("klassifiserServiceklage feilet funksjonelt. Feilmelding={}", e
                     .getMessage());
             throw e;
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
-            log.warn("registrerTilbakemelding feilet teknisk. Feilmelding={}", e
+            log.warn("klassifiserServiceklage feilet teknisk. Feilmelding={}", e
                     .getMessage());
             throw e;
         }

@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from "react";
 import RadioPanelGruppe from "nav-frontend-skjema/lib/radio-panel-gruppe";
-import "./Tilbakemelding.less"
+import "./Klassifisering.less"
 import Input from "nav-frontend-skjema/lib/input";
 import Textarea from "nav-frontend-skjema/lib/textarea";
 import CheckboksPanelGruppe from "nav-frontend-skjema/lib/checkboks-panel-gruppe";
@@ -11,7 +11,7 @@ import Modal from 'nav-frontend-modal';
 import AlertStripe from "nav-frontend-alertstriper";
 
 
-class Tilbakemelding extends Component {
+class Klassifisering extends Component {
 
     initState = {};
 
@@ -61,7 +61,7 @@ class Tilbakemelding extends Component {
         if ((this.state.erServiceklage.includes('Ja') && this.checkIsSet(this.state.paaklagetEnhet, this.state.behandlendeEnhet, this.state.ytelseTjeneste, this.state.tema, this.state.utfall, this.state.svarmetode))
             || (this.state.erServiceklage.includes('Nei') && this.checkIsSet(this.state.gjelder))) {
             try {
-                await ServiceklageApi.registrerTilbakemelding(this.journalpostId, this.state);
+                await ServiceklageApi.klassifiserServiceklage(this.journalpostId, this.state);
                 await this.setState({...this.state, submitting: false});
                 window.location = "/serviceklage/takk";
             } catch (error) {
@@ -87,8 +87,8 @@ class Tilbakemelding extends Component {
 
     render() {
         return (
-            <div className="Tilbakemelding">
-                <h1>Tilbakemeldingsskjema serviceklager</h1>
+            <div className="Klassifisering">
+                <h1>Klassifiser serviceklage</h1>
                 <form>
                     <div className="Skjemafelt">
                         <RadioPanelGruppe
@@ -299,10 +299,10 @@ class Tilbakemelding extends Component {
                         </Fragment>}
                     </div>
 
-                    <Hovedknapp spinner={this.state.submitting} htmlType="submit" onClick={this.onSubmit}>Send tilbakemelding</Hovedknapp>
+                    <Hovedknapp spinner={this.state.submitting} htmlType="submit" onClick={this.onSubmit}>Lagre</Hovedknapp>
 
                     {this.state.hasError &&
-                        <AlertStripe type="advarsel" className="Advarsel">Feil i kall til registrerTilbakemelding</AlertStripe>
+                        <AlertStripe type="advarsel" className="Advarsel">Feil i kall til klassifiserServiceklage</AlertStripe>
                     }
 
                     <Modal
@@ -324,4 +324,4 @@ class Tilbakemelding extends Component {
 
 }
 
-export default Tilbakemelding
+export default Klassifisering

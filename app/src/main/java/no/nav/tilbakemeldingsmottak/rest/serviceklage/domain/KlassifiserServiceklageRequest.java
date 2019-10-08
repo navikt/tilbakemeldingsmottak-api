@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class RegistrerTilbakemeldingRequest {
+public class KlassifiserServiceklageRequest {
 
     private String erServiceklage;
     private String gjelder;

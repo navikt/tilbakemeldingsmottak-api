@@ -26,10 +26,10 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvTy
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.RegistrerTilbakemeldingRequest;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.RegistrerTilbakemeldingResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
@@ -40,7 +40,7 @@ import org.springframework.http.ResponseEntity;
 class ServiceklageIT extends AbstractIT {
 
     private static final String URL_SERVICEKLAGE = "/rest/serviceklage";
-    private static final String REGISTRER_TILBAKEMELDING = "registrerTilbakemelding";
+    private static final String KLASSIFISER_SERVICEKLAGE = "klassifiserServiceklage";
 
     @Test
     void happyPathPrivatperson() {
@@ -105,9 +105,9 @@ class ServiceklageIT extends AbstractIT {
 
         assertEquals(serviceklageRepository.count(), 1);
 
-        RegistrerTilbakemeldingRequest request = createRegistrerTilbakemeldingRequest();
+        KlassifiserServiceklageRequest request = createRegistrerTilbakemeldingRequest();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-        ResponseEntity<RegistrerTilbakemeldingResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID + "/" + REGISTRER_TILBAKEMELDING, HttpMethod.PUT, requestEntity, RegistrerTilbakemeldingResponse.class);
+        ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID + "/" + KLASSIFISER_SERVICEKLAGE, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -128,9 +128,9 @@ class ServiceklageIT extends AbstractIT {
 
         assertEquals(serviceklageRepository.count(), 1);
 
-        RegistrerTilbakemeldingRequest request = createRegistrerTilbakemeldingRequestNotServiceklage();
+        KlassifiserServiceklageRequest request = createRegistrerTilbakemeldingRequestNotServiceklage();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-        ResponseEntity<RegistrerTilbakemeldingResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID + "/" + REGISTRER_TILBAKEMELDING, HttpMethod.PUT, requestEntity, RegistrerTilbakemeldingResponse.class);
+        ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID + "/" + KLASSIFISER_SERVICEKLAGE, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
