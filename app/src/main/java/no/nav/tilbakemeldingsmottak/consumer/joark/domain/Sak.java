@@ -6,6 +6,5 @@ import lombok.Value;
 @Value
 @Builder
 public class Sak {
-    private String arkivsaksnummer;
-    private Arkivsaksystem arkivsaksystem;
+    private Sakstype sakstype;
 }
