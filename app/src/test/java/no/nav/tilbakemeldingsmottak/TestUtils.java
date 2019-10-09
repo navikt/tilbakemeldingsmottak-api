@@ -10,11 +10,11 @@ import no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Innmelder;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvBedrift;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvPerson;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.RegistrerTilbakemeldingRequest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -152,8 +152,8 @@ public class TestUtils {
                 .build();
     }
 
-    public static RegistrerTilbakemeldingRequest createRegistrerTilbakemeldingRequest() {
-        return RegistrerTilbakemeldingRequest.builder()
+    public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequest() {
+        return KlassifiserServiceklageRequest.builder()
                 .erServiceklage(ER_SERVICEKLAGE)
                 .kanal(KANAL)
                 .paaklagetEnhet(PAAKLAGET_ENHET)
@@ -165,8 +165,8 @@ public class TestUtils {
                 .build();
     }
 
-    public static RegistrerTilbakemeldingRequest createRegistrerTilbakemeldingRequestNotServiceklage() {
-        return RegistrerTilbakemeldingRequest.builder()
+    public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequestNotServiceklage() {
+        return KlassifiserServiceklageRequest.builder()
                 .erServiceklage(NEI_ANNET)
                 .gjelder(GJELDER)
                 .build();

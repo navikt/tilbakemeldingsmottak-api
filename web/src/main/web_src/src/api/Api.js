@@ -18,6 +18,6 @@ const requests = {
 
 
 export const ServiceklageApi = {
-    registrerTilbakemelding: (journalpostId, payload) => requests.put(`/${journalpostId}/registrerTilbakemelding`, payload),
+    klassifiserServiceklage: (journalpostId, payload) => requests.put(`/${journalpostId}/klassifiser`, payload),
     hentServiceklage: (journalpostId) => requests.get(`/${journalpostId}`)
 };

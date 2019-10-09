@@ -14,8 +14,8 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveReques
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.RegistrerTilbakemeldingRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettJournalpostRequestToMapper;
@@ -73,7 +73,7 @@ public class ServiceklageService {
         return serviceklage;
     }
 
-    public void registrerTilbakemelding(RegistrerTilbakemeldingRequest request, String journalpostId)  {
+    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, String journalpostId)  {
         Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
         if (serviceklage == null) {
             throw new ServiceklageIkkeFunnetException(String.format("Kunne ikke finne serviceklage med journalpostId=%s", journalpostId));
@@ -102,7 +102,7 @@ public class ServiceklageService {
 
         serviceklageRepository.save(serviceklage);
 
-        log.info("Tilbakemelding registrert for serviceklage med serviceklageId={}", serviceklage.getServiceklageId());
+        log.info("Serviceklage med serviceklageId={} er klassifisert", serviceklage.getServiceklageId());
 
         HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(serviceklage.getOppgaveId());
         EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);

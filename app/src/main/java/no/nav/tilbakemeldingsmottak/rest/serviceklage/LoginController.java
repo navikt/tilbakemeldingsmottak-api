@@ -1,7 +1,9 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
+import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.config.Constants.REDIRECT_COOKIE;
+
 import com.nimbusds.jwt.SignedJWT;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.util.CookieUtils;
@@ -23,9 +25,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Optional;
-
-import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
-import static no.nav.tilbakemeldingsmottak.config.Constants.REDIRECT_COOKIE;
 
 /**
  * @author Ugur Alpay Cenar, Visma Consulting.

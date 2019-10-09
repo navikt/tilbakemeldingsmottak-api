@@ -30,7 +30,7 @@ class FrontPage extends Component {
     }
 
     velgServiceklage = (id) => {
-        window.location = "/serviceklage/tilbakemelding/" + id;
+        window.location = "/serviceklage/klassifiser/" + id;
     };
 
    onChange = (event) => {
@@ -55,7 +55,7 @@ class FrontPage extends Component {
 
                 {this.state.serviceklage &&
                     <div className="Serviceklage">
-                        {this.state.serviceklage.erServiceklage && <div className="Advarsel"><AlertStripe type="advarsel">Det er allerede registrert en tilbakemelding på denne serviceklagen.</AlertStripe></div>}
+                        {this.state.serviceklage.erServiceklage && <div className="Advarsel"><AlertStripe type="advarsel">Serviceklagen er allerede klassifisert.</AlertStripe></div>}
                         <Serviceklage
                             klagenGjelderId={this.state.serviceklage.klagenGjelderId}
                             paaVegneAv={this.state.serviceklage.paaVegneAv}
@@ -66,7 +66,7 @@ class FrontPage extends Component {
                             gjelder={this.state.serviceklage.gjelder}
                             utfall={this.state.serviceklage.utfall}
                             svarmetode={this.state.serviceklage.svarmetode}/>
-                        <Knapp disabled={!!this.state.serviceklage.erServiceklage} onClick={() => this.velgServiceklage(this.state.serviceklage.journalpostId)}>Registrer tilbakemelding</Knapp>
+                        <Knapp disabled={!!this.state.serviceklage.erServiceklage} onClick={() => this.velgServiceklage(this.state.serviceklage.journalpostId)}>Klassifiser</Knapp>
                     </div>}
             </div>
 

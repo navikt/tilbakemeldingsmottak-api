@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @Builder
-public class RegistrerTilbakemeldingResponse {
+public class KlassifiserServiceklageResponse {
     String message;
 }
