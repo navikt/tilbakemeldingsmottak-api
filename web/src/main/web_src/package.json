@@ -63,6 +63,7 @@
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "popper.js": "^1.12.9",
     "prop-types": "15.6.2",
+    "query-string": "6.8.3",
     "react": "16.6.0",
     "react-apollo": "2.5.2",
     "react-bootstrap": "0.32.1",

@@ -17,7 +17,7 @@ const devMode = process.env.NODE_ENV !== 'production';
 
 const outputDir = {
     development: 'dist/devOutput',
-    production: './../resources/public'
+    production: './../../../target/classes/public'
 };
 
 const statsOutputSettings = {
@@ -144,7 +144,7 @@ if (TARGET === 'build') {
             parallel: true
         }),
         new CompressionPlugin(),
-        new CleanWebpackPlugin(['dist'])].concat(webpackConfig.plugins).concat([
+        new CleanWebpackPlugin()].concat(webpackConfig.plugins).concat([
         new OptimizeCssAssetsPlugin({
             assetNameRegExp: /\.css$/g,
             cssProcessor: require('cssnano'),

@@ -40,7 +40,7 @@ import org.springframework.http.ResponseEntity;
 class ServiceklageIT extends AbstractIT {
 
     private static final String URL_SERVICEKLAGE = "/rest/serviceklage";
-    private static final String KLASSIFISER_SERVICEKLAGE = "klassifiser";
+    private static final String KLASSIFISER = "klassifiser";
 
     @Test
     void happyPathPrivatperson() {
@@ -107,7 +107,7 @@ class ServiceklageIT extends AbstractIT {
 
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-        ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID + "/" + KLASSIFISER_SERVICEKLAGE, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
+        ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + KLASSIFISER + "?journalpostId=" + JOURNALPOST_ID + "&oppgaveId=" , HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -126,7 +126,7 @@ class ServiceklageIT extends AbstractIT {
     void shouldFailIfServiceklageNotFound() {
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-        ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID + "/" + KLASSIFISER_SERVICEKLAGE, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
+        ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + KLASSIFISER + "?journalpostId=" + JOURNALPOST_ID + "&oppgaveId=" , HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
@@ -138,7 +138,7 @@ class ServiceklageIT extends AbstractIT {
 
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequestNotServiceklage();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-        ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID + "/" + KLASSIFISER_SERVICEKLAGE, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
+        ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + KLASSIFISER + "?journalpostId=" + JOURNALPOST_ID + "&oppgaveId=" , HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 

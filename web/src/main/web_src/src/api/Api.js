@@ -18,6 +18,6 @@ const requests = {
 
 
 export const ServiceklageApi = {
-    klassifiserServiceklage: (journalpostId, payload) => requests.put(`/${journalpostId}/klassifiser`, payload),
+    klassifiserServiceklage: (journalpostId, oppgaveId, payload) => requests.put(`/klassifiser?journalpostId=${journalpostId}&oppgaveId=${oppgaveId}`, payload),
     hentServiceklage: (journalpostId) => requests.get(`/${journalpostId}`)
 };

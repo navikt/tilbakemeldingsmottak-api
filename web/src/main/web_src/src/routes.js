@@ -7,7 +7,7 @@ import Landingsside from "./pages/Landingsside";
 const Routes = () => (
         <Switch>
             <Route exact path="/serviceklage/frontpage" component={FrontPage}/>
-            <Route exact path="/serviceklage/klassifiser/:journalpostId" component={Klassifisering}/>
+            <Route exact path="/serviceklage/klassifiser" component={Klassifisering}/>
             <Route exact path="/serviceklage/takk" component={Landingsside}/>
         </Switch>
 );

@@ -9,6 +9,7 @@ import Select from "nav-frontend-skjema/lib/select";
 import {ServiceklageApi} from "../api/Api";
 import Modal from 'nav-frontend-modal';
 import AlertStripe from "nav-frontend-alertstriper";
+import * as queryString from 'query-string';
 
 
 class Klassifisering extends Component {
@@ -17,7 +18,9 @@ class Klassifisering extends Component {
 
     constructor(props) {
         super(props);
-        this.journalpostId = props.match.params.journalpostId;
+        let params = queryString.parse(this.props.location.search);
+        this.journalpostId = params.journalpostId;
+        this.oppgaveId = params.oppgaveId;
         this.state = {
             erServiceklage: '',
             gjelder: '',
@@ -61,7 +64,7 @@ class Klassifisering extends Component {
         if ((this.state.erServiceklage.includes('Ja') && this.checkIsSet(this.state.paaklagetEnhet, this.state.behandlendeEnhet, this.state.ytelseTjeneste, this.state.tema, this.state.utfall, this.state.svarmetode))
             || (this.state.erServiceklage.includes('Nei') && this.checkIsSet(this.state.gjelder))) {
             try {
-                await ServiceklageApi.klassifiserServiceklage(this.journalpostId, this.state);
+                await ServiceklageApi.klassifiserServiceklage(this.journalpostId, this.oppgaveId, this.state);
                 await this.setState({...this.state, submitting: false});
                 window.location = "/serviceklage/takk";
             } catch (error) {

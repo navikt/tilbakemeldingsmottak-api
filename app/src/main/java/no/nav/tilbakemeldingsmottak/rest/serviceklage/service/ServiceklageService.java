@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
 import static no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfCreator.opprettPdf;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import com.itextpdf.text.DocumentException;
 import lombok.extern.slf4j.Slf4j;
@@ -73,7 +74,7 @@ public class ServiceklageService {
         return serviceklage;
     }
 
-    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, String journalpostId)  {
+    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, String journalpostId, String oppgaveId)  {
         Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
         if (serviceklage == null) {
             throw new ServiceklageIkkeFunnetException(String.format("Kunne ikke finne serviceklage med journalpostId=%s", journalpostId));
@@ -104,9 +105,12 @@ public class ServiceklageService {
 
         log.info("Serviceklage med serviceklageId={} er klassifisert", serviceklage.getServiceklageId());
 
-        HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(serviceklage.getOppgaveId());
-        EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
-        oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
+        if (isNotBlank(oppgaveId)) {
+            HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
+            EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
+            oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
+            log.info("Oppgave med oppgaveId={} er ferdigstilt", oppgaveId);
+        }
     }
 
     public Serviceklage hentServiceklage(String journalpostId) {

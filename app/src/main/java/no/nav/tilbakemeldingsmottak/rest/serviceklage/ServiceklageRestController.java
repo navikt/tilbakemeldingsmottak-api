@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
@@ -69,11 +70,13 @@ public class ServiceklageRestController {
     }
 
     @Transactional
-    @PutMapping(value = "/{journalpostId}/klassifiser")
-    public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request, @PathVariable String journalpostId) {
+    @PutMapping(value = "/klassifiser")
+    public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request,
+                                                                                   @RequestParam String journalpostId,
+                                                                                   @RequestParam(required = false) String oppgaveId) {
         try {
             klassifiserServiceklageValidator.validateRequest(request);
-            serviceklageService.klassifiserServiceklage(request, journalpostId);
+            serviceklageService.klassifiserServiceklage(request, journalpostId, oppgaveId);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(KlassifiserServiceklageResponse.builder().message("Klassifisert serviceklage med journalpostId=" + journalpostId).build());
