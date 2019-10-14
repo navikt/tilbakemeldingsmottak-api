@@ -6,7 +6,8 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const pkg = require('./package.json');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const CompressionPlugin = require('compression-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin')
+
 
 // Buildtype
 const TARGET = process.env.npm_lifecycle_event;
@@ -140,11 +141,10 @@ if (TARGET === 'build') {
         globalObject: 'this'
     }
     webpackConfig.plugins = [
-        new UglifyJsPlugin({
+        new TerserPlugin({
             parallel: true
         }),
-        new CompressionPlugin(),
-        new CleanWebpackPlugin()].concat(webpackConfig.plugins).concat([
+        new CompressionPlugin()].concat(webpackConfig.plugins).concat([
         new OptimizeCssAssetsPlugin({
             assetNameRegExp: /\.css$/g,
             cssProcessor: require('cssnano'),
