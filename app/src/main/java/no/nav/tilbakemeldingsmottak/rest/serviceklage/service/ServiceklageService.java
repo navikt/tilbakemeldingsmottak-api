@@ -38,6 +38,8 @@ public class ServiceklageService {
     private OppgaveConsumer oppgaveConsumer;
     private EndreOppgaveRequestToMapper endreOppgaveRequestToMapper;
 
+    private static final String FERDIGSTILT = "FERDIGSTILT";
+
     @Inject
     public ServiceklageService(ServiceklageRepository serviceklageRepository,
                                OpprettServiceklageRequestMapper opprettServiceklageRequestMapper,
@@ -115,9 +117,13 @@ public class ServiceklageService {
 
         if (isNotBlank(oppgaveId)) {
             HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
-            EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
-            oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
-            log.info("Oppgave med oppgaveId={} er ferdigstilt", oppgaveId);
+            if (!FERDIGSTILT.equals(hentOppgaveResponseTo.getStatus())) {
+                EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
+                oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
+                log.info("Ferdigstilt oppgave med oppgaveId={}", oppgaveId);
+            } else {
+                log.info("Oppgave med oppgaveId={} er allerede ferdigstilt");
+            }
         }
     }
 
