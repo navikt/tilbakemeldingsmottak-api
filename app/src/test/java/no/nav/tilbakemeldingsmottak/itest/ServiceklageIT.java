@@ -25,6 +25,7 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvTy
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType.PRIVATPERSON;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageResponse;
@@ -123,11 +124,31 @@ class ServiceklageIT extends AbstractIT {
     }
 
     @Test
-    void shouldFailIfServiceklageNotFound() {
+    void shouldCreateServiceklageIfServiceklageNotFound() {
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
         ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + KLASSIFISER + "?journalpostId=" + JOURNALPOST_ID + "&oppgaveId=" , HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
+        assertNotNull(serviceklage.getServiceklageId());
+        assertNotNull(serviceklage.getDatoOpprettet());
+        assertNull(serviceklage.getPaaVegneAv());
+        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
+        assertNull(serviceklage.getKlagetype());
+        assertNull(serviceklage.getKlagetekst());
+        assertNull(serviceklage.getOenskerAaKontaktes());
+        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
+
+        assertEquals(serviceklage.getErServiceklage(), ER_SERVICEKLAGE);
+        assertEquals(serviceklage.getPaaklagetEnhet(), PAAKLAGET_ENHET);
+        assertEquals(serviceklage.getKanal(), KANAL);
+        assertEquals(serviceklage.getBehandlendeEnhet(), BEHANDLENDE_ENHET);
+        assertEquals(serviceklage.getYtelseTjeneste(), YTELSE_TJENESTE);
+        assertEquals(serviceklage.getTema(), TEMA);
+        assertEquals(serviceklage.getUtfall(), UTFALL);
+        assertEquals(serviceklage.getSvarmetode(), SVARMETODE.get(0));
+
     }
 
     @Test

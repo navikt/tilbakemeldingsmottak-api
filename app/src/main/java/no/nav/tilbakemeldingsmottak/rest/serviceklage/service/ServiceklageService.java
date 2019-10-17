@@ -13,7 +13,6 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestT
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
-import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
@@ -25,6 +24,7 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettSer
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -77,7 +77,15 @@ public class ServiceklageService {
     public void klassifiserServiceklage(KlassifiserServiceklageRequest request, String journalpostId, String oppgaveId)  {
         Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
         if (serviceklage == null) {
-            throw new ServiceklageIkkeFunnetException(String.format("Kunne ikke finne serviceklage med journalpostId=%s", journalpostId));
+            serviceklage = new Serviceklage();
+            serviceklage.setJournalpostId(journalpostId);
+            serviceklage.setOppgaveId(oppgaveId);
+            serviceklage.setDatoOpprettet(LocalDateTime.now());
+            serviceklage.setKlagenGjelderId("01010096460");
+        } else {
+            if (!serviceklage.getOppgaveId().equals(oppgaveId)) {
+                serviceklage.setOppgaveId(oppgaveId);
+            }
         }
 
         serviceklage.setErServiceklage(request.getErServiceklage());
