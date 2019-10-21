@@ -18,7 +18,7 @@ public class FeilOgManglerService {
 
     private AbstractEmailService emailService;
 
-    @Value("${email_to_address}")
+    @Value("${email_nav_support_address}")
     private String emailToAddress;
     @Value("${email_from_address}")
     private String emailFromAddress;
