@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from "react";
 import RadioPanelGruppe from "nav-frontend-skjema/lib/radio-panel-gruppe";
-import "./Klassifisering.less"
+import "../pages/Klassifisering.less"
 import Input from "nav-frontend-skjema/lib/input";
 import Textarea from "nav-frontend-skjema/lib/textarea";
 import CheckboksPanelGruppe from "nav-frontend-skjema/lib/checkboks-panel-gruppe";

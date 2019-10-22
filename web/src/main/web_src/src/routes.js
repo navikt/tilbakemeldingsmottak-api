@@ -2,7 +2,7 @@ import React from 'react';
 import {Route, Switch} from 'react-router-dom';
 import FrontPage from "./pages/FrontPage";
 import Klassifisering from "./pages/Klassifisering";
-import Landingsside from "./pages/Landingsside";
+import Landingsside from "./components/Landingsside";
 
 const Routes = () => (
         <Switch>

@@ -1,8 +1,8 @@
 import React, {Component} from "react";
 import "./Klassifisering.less"
 import * as queryString from 'query-string';
-import Skjema from "./Skjema";
-import Dokument from "./Dokument";
+import Skjema from "../components/Skjema";
+import Dokument from "../components/Dokument";
 
 
 class Klassifisering extends Component {
