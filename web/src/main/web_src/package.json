@@ -74,6 +74,7 @@
     "react-data-menu": "1.1.1",
     "react-dom": "^16.4.2",
     "react-modal": "3.6.1",
+    "react-pdf": "4.1.0",
     "react-redux": "6.0.0",
     "react-router": "4.3.1",
     "react-router-dom": "4.3.1",
