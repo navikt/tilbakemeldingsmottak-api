@@ -1,25 +1,36 @@
 import RadioPanelGruppe from "nav-frontend-skjema/lib/radio-panel-gruppe";
-import React, {Component} from "react";
+import React, { Component } from "react";
 
 class RadioButtons extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-    constructor(props) {
-        super(props)
-    }
+  render() {
+    const { title, answers, value, onChange } = this.props;
+    const answerMap = this.props.answers.reduce(
+      (acc, answer) => ({
+        ...acc,
+        [answer.answer]: answer
+      }),
+      {}
+    );
 
-    render() {
-        return (
-            <div className="Skjemafelt">
-                <RadioPanelGruppe
-                    name={this.props.legend}
-                    legend={this.props.legend}
-                    radios={this.props.alternatives.map(alternative => ({label: alternative.answer, value: alternative.answer}))}
-                    checked={this.props.value}
-                    onChange={this.props.onChange}
-               />
-            </div>
-        )
-    }
+    return (
+      <div className="Skjemafelt">
+        <RadioPanelGruppe
+          name={title}
+          legend={title}
+          radios={answers.map(answer => ({
+            label: answer.answer,
+            value: answer.answer
+          }))}
+          checked={value && value.answer}
+          onChange={event => onChange(answerMap[event.target.value])}
+        />
+      </div>
+    );
+  }
 }
 
-export default RadioButtons
+export default RadioButtons;
