@@ -49,6 +49,7 @@ public class FeilOgManglerService {
 
         content.addParagraph("Navn", request.getNavn());
         content.addParagraph("Telefonnummer", request.getTelefonnummer());
+        content.addParagraph("Epost", request.getEpost());
         content.addParagraph("Hva slags feil", request.getFeiltype().text);
         content.addParagraph("Melding", request.getMelding());
 
