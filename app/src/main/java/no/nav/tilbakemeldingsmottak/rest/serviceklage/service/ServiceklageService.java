@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
 import static no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfCreator.opprettPdf;
+import static org.apache.cxf.common.util.CollectionUtils.isEmpty;
 
 import com.itextpdf.text.DocumentException;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +13,12 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestT
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
+import no.nav.tilbakemeldingsmottak.consumer.saf.SafJournalpostQueryService;
+import no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument.HentDokumentConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost;
 import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
@@ -36,6 +41,9 @@ public class ServiceklageService {
     private OpprettOppgaveRequestToMapper opprettOppgaveRequestToMapper;
     private OppgaveConsumer oppgaveConsumer;
     private EndreOppgaveRequestToMapper endreOppgaveRequestToMapper;
+    private SafJournalpostQueryService safJournalpostQueryService;
+    private HentDokumentConsumer hentDokumentConsumer;
+
 
     @Inject
     public ServiceklageService(ServiceklageRepository serviceklageRepository,
@@ -44,7 +52,9 @@ public class ServiceklageService {
                                OpprettJournalpostConsumer opprettJournalpostConsumer,
                                OpprettOppgaveRequestToMapper opprettOppgaveRequestToMapper,
                                OppgaveConsumer oppgaveConsumer,
-                               EndreOppgaveRequestToMapper endreOppgaveRequestToMapper) {
+                               EndreOppgaveRequestToMapper endreOppgaveRequestToMapper,
+                               SafJournalpostQueryService safJournalpostQueryService,
+                               HentDokumentConsumer hentDokumentConsumer) {
         this.serviceklageRepository = serviceklageRepository;
         this.opprettServiceklageRequestMapper = opprettServiceklageRequestMapper;
         this.opprettJournalpostRequestToMapper = opprettJournalpostRequestToMapper;
@@ -52,6 +62,8 @@ public class ServiceklageService {
         this.opprettOppgaveRequestToMapper = opprettOppgaveRequestToMapper;
         this.oppgaveConsumer = oppgaveConsumer;
         this.endreOppgaveRequestToMapper = endreOppgaveRequestToMapper;
+        this.safJournalpostQueryService = safJournalpostQueryService;
+        this.hentDokumentConsumer = hentDokumentConsumer;
     }
 
     public Serviceklage opprettServiceklage(OpprettServiceklageRequest request) throws DocumentException {
@@ -109,7 +121,22 @@ public class ServiceklageService {
         oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
     }
 
-    public Serviceklage hentServiceklage(String journalpostId) {
-        return serviceklageRepository.findByJournalpostId(journalpostId);
+    public HentServiceklageResponse hentServiceklage(String journalpostId, String authorizationHeader) {
+        Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
+        byte[] dokument = hentDokument(journalpostId, authorizationHeader);
+        return HentServiceklageResponse.builder()
+                .serviceklage(serviceklage)
+                .dokument(dokument)
+                .build();
+    }
+
+    public byte[] hentDokument(String journalpostId, String authorizationHeader) {
+        Journalpost journalpost = safJournalpostQueryService.hentJournalpost(journalpostId, authorizationHeader);
+        if (isEmpty(journalpost.getDokumenter())) {
+            return null;
+        }
+        Journalpost.DokumentInfo dokumentInfo = journalpost.getDokumenter().get(0);
+        hentDokumentConsumer.hentDokument(journalpostId, dokumentInfo.getDokumentInfoId(), dokumentInfo.getDokumentvarianter().get(0).getVariantformat().toString());
+        return null;
     }
 }
