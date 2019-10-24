@@ -60,8 +60,8 @@ public final class PdfCreator {
         }
 
         document.add(createParagraph("Klagetype", request.getKlagetype().text));
-        if (request.getKlagetype().equals(Klagetype.SAKSBEHANDLING) && StringUtils.isNotBlank(request.getYtelseTjeneste())) {
-            document.add(createParagraph("Ytelse/tjeneste", request.getYtelseTjeneste()));
+        if (request.getKlagetype().equals(Klagetype.LOKALT_NAV_KONTOR)) {
+            document.add(createParagraph("Gjelder økonomisk sosialhjelp/sosiale tjenester", request.getGjelderSosialhjelp().text));
         }
         document.add(createParagraph("Klagetekst", request.getKlagetekst()));
         document.add(createParagraph("Ønsker å kontaktes", request.getOenskerAaKontaktes() ? "Ja" : "Nei"));

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,16 @@ class OpprettServiceklageValidatorTest {
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
         assertTrue(thrown.getMessage().contains("klagetype er påkrevd"));
+    }
+
+    @Test
+    void shouldThrowExceptionIfGjelderSosialhjelpNotSetForLokaltkontor() {
+        opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
+        opprettServiceklageRequest.setKlagetype(Klagetype.LOKALT_NAV_KONTOR);
+        opprettServiceklageRequest.setGjelderSosialhjelp(null);
+        Exception thrown = assertThrows(InvalidRequestException.class,
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
+        assertTrue(thrown.getMessage().contains("gjelderSosialhjelp er påkrevd dersom klagetype=LOKALT_NAV_KONTOR"));
     }
 
     @Test

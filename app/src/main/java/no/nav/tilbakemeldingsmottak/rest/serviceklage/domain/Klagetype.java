@@ -1,10 +1,12 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.domain;
 
 public enum Klagetype {
-    SAKSBEHANDLING ("Saksbehandling av søknad"),
-    NAV_KONTOR ("NAV-kontor"),
     TELEFON ("Telefon"),
-    NAVNO ("nav.no"),
+    LOKALT_NAV_KONTOR ("Lokalt NAV-kontor"),
+    NAVNO ("NAV.no"),
+    SKRIFTLIG_KONTAKT_NETT ("Chat, meldinger, og annen skriftlig kontakt på nettsiden"),
+    BREV ("Brev"),
+    FLERE_KATEGORIER ("Gjelder flere kategorier"),
     ANNET ("Annet");
 
     public final String text;
