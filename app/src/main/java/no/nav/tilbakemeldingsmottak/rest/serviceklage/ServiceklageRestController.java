@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageResponse;
@@ -92,10 +93,10 @@ public class ServiceklageRestController {
     }
 
     @Transactional
-    @GetMapping(value = "/{journalpostId}")
-    public ResponseEntity<HentServiceklageResponse> hentServiceklage(@PathVariable String journalpostId, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    @GetMapping(value = "hentServiceklage/{journalpostId}")
+    public ResponseEntity<HentServiceklageResponse> hentServiceklage(@PathVariable String journalpostId) {
         try {
-            HentServiceklageResponse response = serviceklageService.hentServiceklage(journalpostId, authorizationHeader);
+            HentServiceklageResponse response = serviceklageService.hentServiceklage(journalpostId);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(response);
@@ -105,6 +106,25 @@ public class ServiceklageRestController {
             throw e;
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
             log.warn("hentServiceklage feilet teknisk. Feilmelding={}", e
+                    .getMessage());
+            throw e;
+        }
+    }
+
+    @Transactional
+    @GetMapping(value = "/hentDokument/{journalpostId}")
+    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String journalpostId, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        try {
+            HentDokumentResponse response = serviceklageService.hentDokument(journalpostId, authorizationHeader);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(response);
+        } catch (AbstractTilbakemeldingsmottakFunctionalException e) {
+            log.warn("hentDokument feilet funksjonelt. Feilmelding={}", e
+                    .getMessage());
+            throw e;
+        } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
+            log.warn("hentDokument feilet teknisk. Feilmelding={}", e
                     .getMessage());
             throw e;
         }

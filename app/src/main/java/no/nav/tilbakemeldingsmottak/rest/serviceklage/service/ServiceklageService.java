@@ -15,9 +15,13 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveReques
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.saf.SafJournalpostQueryService;
 import no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument.HentDokumentConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument.HentDokumentResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost;
+import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat;
+import no.nav.tilbakemeldingsmottak.exceptions.GyldigDokumentIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
@@ -121,22 +125,33 @@ public class ServiceklageService {
         oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
     }
 
-    public HentServiceklageResponse hentServiceklage(String journalpostId, String authorizationHeader) {
+    public HentServiceklageResponse hentServiceklage(String journalpostId) {
         Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
-        byte[] dokument = hentDokument(journalpostId, authorizationHeader);
         return HentServiceklageResponse.builder()
                 .serviceklage(serviceklage)
-                .dokument(dokument)
                 .build();
     }
 
-    public byte[] hentDokument(String journalpostId, String authorizationHeader) {
+    public HentDokumentResponse hentDokument(String journalpostId, String authorizationHeader) {
         Journalpost journalpost = safJournalpostQueryService.hentJournalpost(journalpostId, authorizationHeader);
+        Variantformat variantformat;
+        Journalpost.DokumentInfo dokumentInfo;
         if (isEmpty(journalpost.getDokumenter())) {
             return null;
+        } else {
+            dokumentInfo = journalpost.getDokumenter().get(0);
+            if (dokumentInfo.getDokumentvarianter().stream().anyMatch(d -> d.getVariantformat().equals(Variantformat.SLADDET))) {
+                variantformat = Variantformat.SLADDET;
+            } else if (dokumentInfo.getDokumentvarianter().stream().anyMatch(d -> d.getVariantformat().equals(Variantformat.ARKIV))) {
+                variantformat = Variantformat.ARKIV;
+            } else {
+                throw new GyldigDokumentIkkeFunnetException(String.format("Finner ikke gyldig dokument for journalpostId=%s", journalpostId));
+            }
         }
-        Journalpost.DokumentInfo dokumentInfo = journalpost.getDokumenter().get(0);
-        hentDokumentConsumer.hentDokument(journalpostId, dokumentInfo.getDokumentInfoId(), dokumentInfo.getDokumentvarianter().get(0).getVariantformat().toString());
-        return null;
+
+        HentDokumentResponseTo safHentDokumentResponseTo = hentDokumentConsumer.hentDokument(journalpostId, dokumentInfo.getDokumentInfoId(), variantformat.name());
+        return HentDokumentResponse.builder()
+                .dokument(safHentDokumentResponseTo.getDokument())
+                .build();
     }
 }

@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @Builder
-public class HentServiceklageResponse {
-    Serviceklage serviceklage;
+public class HentDokumentResponse {
+    byte[] dokument;
 }
