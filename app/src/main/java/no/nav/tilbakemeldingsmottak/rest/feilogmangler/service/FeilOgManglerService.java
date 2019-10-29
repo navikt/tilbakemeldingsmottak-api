@@ -18,7 +18,7 @@ public class FeilOgManglerService {
 
     private AbstractEmailService emailService;
 
-    @Value("${email_to_address}")
+    @Value("${email_nav_support_address}")
     private String emailToAddress;
     @Value("${email_from_address}")
     private String emailFromAddress;
@@ -49,6 +49,7 @@ public class FeilOgManglerService {
 
         content.addParagraph("Navn", request.getNavn());
         content.addParagraph("Telefonnummer", request.getTelefonnummer());
+        content.addParagraph("Epost", request.getEpost());
         content.addParagraph("Hva slags feil", request.getFeiltype().text);
         content.addParagraph("Melding", request.getMelding());
 
