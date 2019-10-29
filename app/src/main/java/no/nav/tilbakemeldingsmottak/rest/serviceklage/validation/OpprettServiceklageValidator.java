@@ -1,5 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype.LOKALT_NAV_KONTOR;
+
 import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
@@ -15,6 +17,9 @@ public class OpprettServiceklageValidator implements RequestValidator {
 
     public void validateRequest(OpprettServiceklageRequest request) {
         isNotNull(request.getKlagetype(), "klagetype");
+        if (LOKALT_NAV_KONTOR.equals(request.getKlagetype())) {
+            isNotNull(request.getGjelderSosialhjelp(), "gjelderSosialhjelp", " dersom klagetype=LOKALT_NAV_KONTOR");
+        }
         hasText(request.getKlagetekst(), "klagetekst");
         isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes");
         isNotNull(request.getPaaVegneAv(), "paaVegneAv");
@@ -39,7 +44,7 @@ public class OpprettServiceklageValidator implements RequestValidator {
 
         hasText(innmelder.getNavn(), "innmelder.navn");
         if (oenskerAaKontaktes) {
-            hasText(innmelder.getTelefonnummer(), "innmelder.telefonnummer", "dersom oenskerAaKontaktes=true");
+            hasText(innmelder.getTelefonnummer(), "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true");
         }
         if (paaVegneAv == PaaVegneAvType.PRIVATPERSON) {
             hasText(innmelder.getPersonnummer(), "innmelder.personnummer", " dersom paaVegneAv=PRIVATPERSON");
