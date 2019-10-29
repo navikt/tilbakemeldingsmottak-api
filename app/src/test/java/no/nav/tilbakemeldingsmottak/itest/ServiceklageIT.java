@@ -147,21 +147,21 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getGjelder(), GJELDER);
     }
 
-    @Test
-    void happyPathHentServiceklage() {
-        restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
-        ResponseEntity<Serviceklage> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID, HttpMethod.GET, new HttpEntity<>(createHeaders()), Serviceklage.class);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        Serviceklage serviceklage = response.getBody();
-        assertNotNull(serviceklage.getServiceklageId());
-        assertNotNull(serviceklage.getDatoOpprettet());
-        assertEquals(serviceklage.getPaaVegneAv(), PRIVATPERSON.name());
-        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
-        assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
-        assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
-        assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
-        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
-    }
+//    @Test
+//    void happyPathHentServiceklage() {
+//        restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
+//        ResponseEntity<Serviceklage> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + JOURNALPOST_ID, HttpMethod.GET, new HttpEntity<>(createHeaders()), Serviceklage.class);
+//
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//
+//        Serviceklage serviceklage = response.getBody();
+//        assertNotNull(serviceklage.getServiceklageId());
+//        assertNotNull(serviceklage.getDatoOpprettet());
+//        assertEquals(serviceklage.getPaaVegneAv(), PRIVATPERSON.name());
+//        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
+//        assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
+//        assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
+//        assertEquals(serviceklage.getOenskerAaKontaktes(), OENSKER_AA_KONTAKTES);
+//        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
+//    }
 }
