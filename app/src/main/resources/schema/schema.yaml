@@ -144,9 +144,9 @@ questions:
   - answer: c) Regler/rutiner/frister er brutt - NAV burde ivaretatt bruker bedre
     questions:
     - id: AARSAK
-      type: INPUT
+      type: TEXT
     - id: TILTAK
-      type: INPUT
+      type: TEXT
   - answer: d) Prøvd, men ikke klart å finne ut hva som har skjedd
 
 - id: SVARMETODE
