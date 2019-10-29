@@ -1,5 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.domain;
 
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionConstants.questionMap;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +13,7 @@ import java.util.List;
 @Builder
 public class Question {
     @NonNull
-    QuestionIdEnum id;
+    String id;
     QuestionType type;
     String emit;
     String next;
@@ -19,6 +21,6 @@ public class Question {
 
     @JsonProperty("text")
     public String getText() {
-        return this.id.text;
+        return questionMap.get(id);
     }
 }

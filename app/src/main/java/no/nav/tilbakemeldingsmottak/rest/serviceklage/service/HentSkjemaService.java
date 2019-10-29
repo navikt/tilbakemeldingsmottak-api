@@ -1,5 +1,10 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionConstants.FREMMET_DATO;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionConstants.INNSENDER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionConstants.KANAL;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionConstants.SVARMETODE;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +12,6 @@ import no.nav.tilbakemeldingsmottak.exceptions.SkjemaSerializationException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.DefaultAnswers;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionIdEnum;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -62,16 +66,16 @@ public class HentSkjemaService {
     private Map<String, String> mapDefaultAnswers(Serviceklage serviceklage) {
         Map<String, String> defaultAnswers = new HashMap<>();
         if (serviceklage.getDatoOpprettet() != null) {
-            defaultAnswers.put(QuestionIdEnum.FREMMET_DATO.name(), serviceklage.getDatoOpprettet().toString());
+            defaultAnswers.put(FREMMET_DATO, serviceklage.getDatoOpprettet().toString());
         }
         if (serviceklage.getPaaVegneAv() != null) {
-            defaultAnswers.put(QuestionIdEnum.INNSENDER.name(), serviceklage.getPaaVegneAv());
+            defaultAnswers.put(INNSENDER, serviceklage.getPaaVegneAv());
         }
         if (serviceklage.getKanal() != null) {
-            defaultAnswers.put(QuestionIdEnum.KANAL.name(), serviceklage.getKanal());
+            defaultAnswers.put(KANAL, serviceklage.getKanal());
         }
         if (serviceklage.getOenskerAaKontaktes() != null && !serviceklage.getOenskerAaKontaktes()) {
-            defaultAnswers.put(QuestionIdEnum.SVARMETODE.name(), "Bruker ikke bedt om svar");
+            defaultAnswers.put(SVARMETODE, "Bruker ikke bedt om svar");
         }
         return defaultAnswers;
     }
