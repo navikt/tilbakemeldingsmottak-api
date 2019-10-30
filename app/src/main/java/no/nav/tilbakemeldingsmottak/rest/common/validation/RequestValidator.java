@@ -24,4 +24,16 @@ public interface RequestValidator {
             throw new InvalidRequestException(String.format("%s er påkrevd%s", feltnavn, condition));
         }
     }
+
+    default void isNull(Object input, String feltnavn) {
+        isNull(input, feltnavn, "");
+    }
+
+    default void isNull(Object input, String feltnavn, String condition) {
+        if (input != null) {
+            throw new InvalidRequestException(String.format("%s kan ikke være satt%s", feltnavn, condition));
+        }
+    }
+
+
 }
