@@ -21,24 +21,6 @@ class SendRosValidatorTest {
     }
 
     @Test
-    void shouldThrowExceptionIfNavnNotSet() {
-        sendRosRequest = createSendRosRequest();
-        sendRosRequest.setNavn(null);
-        Exception thrown = assertThrows(InvalidRequestException.class,
-                () -> sendRosValidator.validateRequest(sendRosRequest));
-        assertTrue(thrown.getMessage().contains("navn er påkrevd"));
-    }
-
-    @Test
-    void shouldThrowExceptionIfTelefonnummerNotSet() {
-        sendRosRequest = createSendRosRequest();
-        sendRosRequest.setTelefonnummer(null);
-        Exception thrown = assertThrows(InvalidRequestException.class,
-                () -> sendRosValidator.validateRequest(sendRosRequest));
-        assertTrue(thrown.getMessage().contains("telefonnummer er påkrevd"));
-    }
-
-    @Test
     void shouldThrowExceptionIfHvemRosesNotSet() {
         sendRosRequest = createSendRosRequest();
         sendRosRequest.setHvemRoses(null);

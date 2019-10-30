@@ -2,7 +2,7 @@ package no.nav.tilbakemeldingsmottak.consumer.aktoer;
 
 import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import no.nav.tilbakemeldingsmottak.consumer.aktoer.domain.IdentInfoForAktoer;
-import no.nav.tilbakemeldingsmottak.exceptions.AktoerTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.aktoer.AktoerTechnicalException;
 import no.nav.tilbakemeldingsmottak.util.RestSecurityHeadersUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;

@@ -138,7 +138,6 @@ public class TestUtils {
     public static SendRosRequest createSendRosRequest() {
         return SendRosRequest.builder()
                 .navn(NAVN_INNMELDER)
-                .telefonnummer(TELEFONNUMMER)
                 .hvemRoses(HVEM_ROSES)
                 .melding(BESKRIVELSE_ROS)
                 .build();
@@ -147,7 +146,6 @@ public class TestUtils {
     public static SendRosRequest createSendRosRequestWithNavKontor() {
         return SendRosRequest.builder()
                 .navn(NAVN_INNMELDER)
-                .telefonnummer(TELEFONNUMMER)
                 .hvemRoses(HVEM_ROSES_KONTOR)
                 .navKontor(NAV_KONTOR)
                 .melding(BESKRIVELSE_ROS)
