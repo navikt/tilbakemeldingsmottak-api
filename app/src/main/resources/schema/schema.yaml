@@ -26,7 +26,7 @@ questions:
   - answer: Nei - annet
     questions:
     - id: BEHANDLES_SOM_SERVICEKLAGE_SPESIFISER
-      text: Angi dato bruker fremmet serviceklagen
+      text: Spesifiser
       type: TEXT
       next: none
 
