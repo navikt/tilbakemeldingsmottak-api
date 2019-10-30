@@ -4,8 +4,11 @@ import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
+import no.nav.security.oidc.context.OIDCRequestContextHolder;
+import no.nav.security.oidc.context.TokenContext;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.TilbakemeldingsmottakTechnicalException;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
@@ -19,7 +22,6 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserService
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.KlassifiserServiceklageValidator;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +29,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,6 +47,8 @@ public class ServiceklageRestController {
     private final HentDokumentService hentDokumentService;
     private final OpprettServiceklageValidator opprettServiceklageValidator = new OpprettServiceklageValidator();
     private final KlassifiserServiceklageValidator klassifiserServiceklageValidator = new KlassifiserServiceklageValidator();
+    private final OIDCRequestContextHolder oidcRequestContextHolder;
+
 
 
     @Transactional
@@ -114,9 +117,13 @@ public class ServiceklageRestController {
 
     @Transactional
     @GetMapping(value = "/hentdokument/{journalpostId}")
-    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String journalpostId, @RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String journalpostId) {
+        String token = oidcRequestContextHolder.getOIDCValidationContext().getFirstValidToken()
+                .map(TokenContext::getIdToken)
+                .orElseThrow(() -> new TilbakemeldingsmottakTechnicalException("Feil i tokenvalideringsrammeverk"));
+
         try {
-            HentDokumentResponse response = hentDokumentService.hentDokument(journalpostId, authorizationHeader);
+            HentDokumentResponse response = hentDokumentService.hentDokument(journalpostId, "Bearer " + token);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(response);
