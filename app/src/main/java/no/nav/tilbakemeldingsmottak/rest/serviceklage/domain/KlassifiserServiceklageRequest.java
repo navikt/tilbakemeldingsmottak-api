@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import java.util.List;
 @Builder
 public class KlassifiserServiceklageRequest {
 
+    @JsonProperty()
     private String erServiceklage;
     private String gjelder;
     private String kanal;

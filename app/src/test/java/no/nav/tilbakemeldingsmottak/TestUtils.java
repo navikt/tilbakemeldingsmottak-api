@@ -24,6 +24,7 @@ public class TestUtils {
     public static final String NAVN_INNMELDER = "Innmelder Innmeldersen";
     public static final String PERSONNUMMER = "01010096460";
     public static final String TELEFONNUMMER = "81549300";
+    public static final String EPOST = "innmelder@hotmail.com";
     public static final Boolean HAR_FULLMAKT = Boolean.TRUE;
     public static final String ROLLE = "Advokat";
 
@@ -119,6 +120,7 @@ public class TestUtils {
         return MeldFeilOgManglerRequest.builder()
                 .navn(NAVN_INNMELDER)
                 .telefonnummer(TELEFONNUMMER)
+                .epost(EPOST)
                 .feiltype(FEILTYPE)
                 .melding(BESKRIVELSE_FEIL)
                 .build();
@@ -136,7 +138,6 @@ public class TestUtils {
     public static SendRosRequest createSendRosRequest() {
         return SendRosRequest.builder()
                 .navn(NAVN_INNMELDER)
-                .telefonnummer(TELEFONNUMMER)
                 .hvemRoses(HVEM_ROSES)
                 .melding(BESKRIVELSE_ROS)
                 .build();
@@ -145,7 +146,6 @@ public class TestUtils {
     public static SendRosRequest createSendRosRequestWithNavKontor() {
         return SendRosRequest.builder()
                 .navn(NAVN_INNMELDER)
-                .telefonnummer(TELEFONNUMMER)
                 .hvemRoses(HVEM_ROSES_KONTOR)
                 .navKontor(NAV_KONTOR)
                 .melding(BESKRIVELSE_ROS)

@@ -18,7 +18,7 @@ public class BestillingAvSamtaleService {
 
     private AbstractEmailService emailService;
 
-    @Value("${email_to_address}")
+    @Value("${email_samisk_kontakt_address}")
     private String emailToAddress;
     @Value("${email_from_address}")
     private String emailFromAddress;

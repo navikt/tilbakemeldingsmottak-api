@@ -11,7 +11,7 @@ public class OpprettServiceklageRequest {
     private PaaVegneAvPerson paaVegneAvPerson;
     private PaaVegneAvBedrift paaVegneAvBedrift;
     private Klagetype klagetype;
-    private String ytelseTjeneste;
+    private GjelderSosialhjelpType gjelderSosialhjelp;
     private String klagetekst;
     private Boolean oenskerAaKontaktes;
 }

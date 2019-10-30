@@ -1,5 +1,8 @@
 package no.nav.tilbakemeldingsmottak.interceptors;
 
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.config.Constants.RESTSTS_ISSUER;
+
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
-
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class TokenCheckInterceptor extends AbstractInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		TokenContext consumerToken = oidcRequestContextHolder.getOIDCValidationContext().getToken("reststs");
+		TokenContext consumerToken = oidcRequestContextHolder.getOIDCValidationContext().getToken(RESTSTS_ISSUER);
 		if (consumerToken == null) {
 			String message = "Consumertoken må være satt";
 			log.warn(message);

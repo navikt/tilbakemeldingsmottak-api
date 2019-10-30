@@ -1,5 +1,6 @@
-package no.nav.tilbakemeldingsmottak.exceptions;
+package no.nav.tilbakemeldingsmottak.exceptions.oppgave;
 
+import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
