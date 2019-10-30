@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import { Document, Page } from "react-pdf";
 
-import samplePDF from "../test.pdf";
-console.log(samplePDF)
-
 export default class Dokument extends Component {
   state = {
     numPages: null,
