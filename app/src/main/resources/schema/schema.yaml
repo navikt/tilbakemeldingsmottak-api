@@ -28,7 +28,7 @@ questions:
     - id: BEHANDLES_SOM_SERVICEKLAGE_SPESIFISER
       text: Angi dato bruker fremmet serviceklagen
       type: TEXT
-    next: none
+      next: none
 
 - id: FREMMET_DATO
   text: Angi dato bruker fremmet serviceklagen
