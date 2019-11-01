@@ -6,7 +6,6 @@ import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerR
 public class MeldFeilOgManglerValidator implements RequestValidator {
 
     public void validateRequest(MeldFeilOgManglerRequest request) {
-        hasText(request.getNavn(), "navn");
         isNotNull(request.getOnskerKontakt(), "onskerKontakt");
         if (request.getOnskerKontakt()) {
             hasText(request.getEpost(), "epost", " dersom onskerKontakt=true");

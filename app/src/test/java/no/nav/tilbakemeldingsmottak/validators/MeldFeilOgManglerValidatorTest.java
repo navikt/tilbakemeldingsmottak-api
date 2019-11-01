@@ -20,15 +20,6 @@ class MeldFeilOgManglerValidatorTest {
     }
 
     @Test
-    void shouldThrowExceptionIfNavnNotSet() {
-        meldFeilOgManglerRequest = createMeldFeilOgManglerRequest();
-        meldFeilOgManglerRequest.setNavn(null);
-        Exception thrown = assertThrows(InvalidRequestException.class,
-                () -> meldFeilOgManglerValidator.validateRequest(meldFeilOgManglerRequest));
-        assertTrue(thrown.getMessage().contains("navn er påkrevd"));
-    }
-
-    @Test
     void shouldThrowExceptionIfOnskerKontaktTrueAndEpostNotSet() {
         meldFeilOgManglerRequest = createMeldFeilOgManglerRequest();
         meldFeilOgManglerRequest.setOnskerKontakt(true);
