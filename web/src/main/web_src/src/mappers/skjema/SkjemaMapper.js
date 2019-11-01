@@ -94,8 +94,8 @@ const normializeValues = questions =>
     };
   });
 
-export const SchemaMapper = schema => {
-  const questions = RouteMapper(schema.questions || []);
+export const SchemaMapper = schemaQuestions => {
+  const questions = RouteMapper(schemaQuestions || []);
   const sanizied = JSON.parse(
     JSON.stringify(questions, (key, val) => (val === null ? undefined : val))
   );
@@ -109,10 +109,10 @@ export const SchemaMapper = schema => {
   });
 };
 
-export const DefaultAnswersMapper = schema => {
-  const { answers } = schema.defaultAnswers || { answers: {} };
+export const DefaultAnswersMapper = defaultAnswers => {
+  const { answers } = defaultAnswers || { answers: {} };
   return {
-    ...schema.defaultAnswers,
+    ...defaultAnswers,
     answers: Object.entries(answers).reduce(
       (acc, [key, val]) => ({
         ...acc,
