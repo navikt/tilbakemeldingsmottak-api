@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class MeldFeilOgManglerRequest {
     private String navn;
-    private String telefonnummer;
+    private Boolean onskerKontakt;
     private String epost;
     private Feiltype feiltype;
     private String melding;

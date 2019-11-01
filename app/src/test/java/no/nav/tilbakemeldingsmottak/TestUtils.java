@@ -47,6 +47,7 @@ public class TestUtils {
 
     public static final Feiltype FEILTYPE = Feiltype.TEKNISK_FEIL;
     public static final String BESKRIVELSE_FEIL = "Det er en teknisk feil på nav.no";
+    private static final Boolean ONSKER_KONTAKT = Boolean.TRUE;
 
     public static final HvemRosesType HVEM_ROSES = NAV_KONTAKTSENTER;
     public static final String BESKRIVELSE_ROS = "Saksbehandleren var snill";
@@ -127,7 +128,7 @@ public class TestUtils {
     public static MeldFeilOgManglerRequest createMeldFeilOgManglerRequest() {
         return MeldFeilOgManglerRequest.builder()
                 .navn(NAVN_INNMELDER)
-                .telefonnummer(TELEFONNUMMER)
+                .onskerKontakt(ONSKER_KONTAKT)
                 .epost(EPOST)
                 .feiltype(FEILTYPE)
                 .melding(BESKRIVELSE_FEIL)
