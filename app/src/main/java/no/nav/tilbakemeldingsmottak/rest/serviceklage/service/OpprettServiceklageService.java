@@ -9,7 +9,6 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequ
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
-import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
@@ -56,10 +55,9 @@ public class OpprettServiceklageService {
         OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo);
 
         OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(serviceklage.getKlagenGjelderId(), request.getPaaVegneAv(), opprettJournalpostResponseTo);
-        OpprettOppgaveResponseTo opprettOppgaveResponseTo = oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
+        oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
 
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
-        serviceklage.setOppgaveId(opprettOppgaveResponseTo.getId());
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med serviceklageId={} persistert", serviceklage.getServiceklageId());
 

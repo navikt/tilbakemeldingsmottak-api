@@ -100,12 +100,13 @@ class OpprettServiceklageValidatorTest {
     }
 
     @Test
-    void shouldThrowExceptionIfInnmelderTelefonnummerNotSet() {
+    void shouldThrowExceptionIfInnmelderTelefonnummerNotSetAndOenskerAaKontaktesIsTrue() {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
+        opprettServiceklageRequest.setOenskerAaKontaktes(true);
         opprettServiceklageRequest.getInnmelder().setTelefonnummer(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("innmelder.telefonnummer er påkrevd"));
+        assertTrue(thrown.getMessage().contains("innmelder.telefonnummer er påkrevd dersom oenskerAaKontaktes=true"));
     }
 
     @Test
