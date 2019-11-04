@@ -30,7 +30,7 @@ class FrontPage extends Component {
     }
 
     velgServiceklage = (id) => {
-        window.location = "/serviceklage/klassifiser/" + id;
+        window.location = "/serviceklage/klassifiser?journalpostId=" + id;
     };
 
    onChange = (event) => {
