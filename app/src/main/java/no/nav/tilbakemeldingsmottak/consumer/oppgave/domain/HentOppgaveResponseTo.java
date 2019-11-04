@@ -14,4 +14,5 @@ public class HentOppgaveResponseTo {
     String prioritet;
     String oppgavetype;
     String journalpostId;
+    String status;
 }
