@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.TokenContext;
-import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.TilbakemeldingsmottakTechnicalException;
@@ -31,7 +30,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
@@ -50,8 +48,6 @@ public class ServiceklageRestController {
     private final OpprettServiceklageValidator opprettServiceklageValidator = new OpprettServiceklageValidator();
     private final KlassifiserServiceklageValidator klassifiserServiceklageValidator = new KlassifiserServiceklageValidator();
     private final OIDCRequestContextHolder oidcRequestContextHolder;
-    private final OppgaveConsumer oppgaveConsumer;
-
 
 
 
@@ -67,6 +63,7 @@ public class ServiceklageRestController {
                             .message("Serviceklage opprettet")
                             .serviceklageId(serviceklage.getServiceklageId().toString())
                             .journalpostId(serviceklage.getJournalpostId())
+                            .oppgaveId(serviceklage.getOppgaveId())
                             .build());
         } catch (AbstractTilbakemeldingsmottakFunctionalException e) {
             log.warn("opprettServiceklage feilet funksjonelt. Feilmelding={}", e
@@ -80,13 +77,11 @@ public class ServiceklageRestController {
     }
 
     @Transactional
-    @PutMapping(value = "/klassifiser")
-    public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request,
-                                                                                   @RequestParam String oppgaveId) {
+    @PutMapping(value = "/{journalpostId}/klassifiser")
+    public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request, @PathVariable String journalpostId) {
         try {
-            String journalpostId = oppgaveConsumer.hentOppgave(oppgaveId).getJournalpostId();
-            klassifiserServiceklageValidator.validateRequest(request, hentSkjemaService.hentSkjema(journalpostId));
-            klassifiserServiceklageService.klassifiserServiceklage(request, journalpostId, oppgaveId);
+            klassifiserServiceklageValidator.validateRequest(request);
+            klassifiserServiceklageService.klassifiserServiceklage(request, journalpostId);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(KlassifiserServiceklageResponse.builder().message("Klassifisert serviceklage med journalpostId=" + journalpostId).build());
@@ -102,7 +97,7 @@ public class ServiceklageRestController {
     }
 
     @Transactional
-    @GetMapping(value = "hentskjema/{journalpKlassifiserServiceklageValidatorTestostId}")
+    @GetMapping(value = "hentskjema/{journalpostId}")
     public ResponseEntity<HentSkjemaResponse> hentSkjema(@PathVariable String journalpostId) {
         try {
             HentSkjemaResponse response = hentSkjemaService.hentSkjema(journalpostId);
