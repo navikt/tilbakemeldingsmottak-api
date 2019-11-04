@@ -26,8 +26,8 @@ public class OpprettServiceklageRequestMapper {
                 .klagenGjelderId(findKlagenGjelderId(request))
                 .klagetyper(mapKlagetype(request.getKlagetyper()))
                 .klagetekst(request.getKlagetekst())
-                .svarmetode(request.getOenskerAaKontaktes() ? null : SVAR_IKKE_NOEDVENDIG_ANSWER)
-                .svarIkkeNoedvendig(request.getOenskerAaKontaktes() ? null : BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
+                .svarmetode(request.getOenskerAaKontaktes() != null && request.getOenskerAaKontaktes() ? null : SVAR_IKKE_NOEDVENDIG_ANSWER)
+                .svarIkkeNoedvendig(request.getOenskerAaKontaktes() != null && request.getOenskerAaKontaktes() ? null : BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
                 .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
                 .build();
     }

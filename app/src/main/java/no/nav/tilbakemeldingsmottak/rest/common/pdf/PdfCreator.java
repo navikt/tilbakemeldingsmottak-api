@@ -42,7 +42,7 @@ public final class PdfCreator {
         if (!isBlank(request.getInnmelder().getNavn())) {
             document.add(createParagraph("Navn til innmelder", request.getInnmelder().getNavn()));
         }
-        if (request.getOenskerAaKontaktes()) {
+        if (!isBlank(request.getInnmelder().getTelefonnummer())) {
             document.add(createParagraph("Telefonnummer til innmelder", request.getInnmelder().getTelefonnummer()));
         }
 
@@ -67,7 +67,9 @@ public final class PdfCreator {
             document.add(createParagraph("Gjelder økonomisk sosialhjelp/sosiale tjenester", request.getGjelderSosialhjelp().text));
         }
         document.add(createParagraph("Klagetekst", request.getKlagetekst()));
-        document.add(createParagraph("Ønsker å kontaktes", request.getOenskerAaKontaktes() ? "Ja" : "Nei"));
+        if (request.getOenskerAaKontaktes() != null) {
+            document.add(createParagraph("Ønsker å kontaktes", request.getOenskerAaKontaktes() ? "Ja" : "Nei"));
+        }
         document.add(createParagraph("Kanal", "Nav.no"));
 
         document.close();

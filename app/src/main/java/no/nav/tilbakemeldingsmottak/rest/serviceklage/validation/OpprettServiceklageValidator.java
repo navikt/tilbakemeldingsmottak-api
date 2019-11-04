@@ -58,7 +58,7 @@ public class OpprettServiceklageValidator implements RequestValidator {
         if (!request.getInnmelder().getHarFullmakt()) {
             isNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes", " dersom klagen er meldt inn på vegne av annen person uten fullmakt");
         }
-        if (request.getOenskerAaKontaktes()) {
+        if (request.getOenskerAaKontaktes() != null && request.getOenskerAaKontaktes()) {
             hasText(request.getInnmelder().getTelefonnummer(), "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true");
         }
 
