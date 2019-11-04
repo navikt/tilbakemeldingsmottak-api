@@ -40,6 +40,10 @@ public class OpprettServiceklageValidator implements RequestValidator {
     private void validatePaaVegneAvPrivatperson(OpprettServiceklageRequest request) {
         hasText(request.getInnmelder().getNavn(), "innmelder.navn", " dersom paaVegneAv=PRIVATPERSON");
         hasText(request.getInnmelder().getPersonnummer(), "innmelder.personnummer", " dersom paaVegneAv=PRIVATPERSON");
+        isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes", " dersom paaVegneAv=PRIVATPERSON");
+        if (request.getOenskerAaKontaktes()) {
+            hasText(request.getInnmelder().getTelefonnummer(), "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true");
+        }
 
         if (StringUtils.isNotBlank(MDC.get(MDCConstants.MDC_USER_ID))
                 && !request.getInnmelder().getPersonnummer().equals(MDC.get(MDCConstants.MDC_USER_ID))) {
@@ -69,7 +73,11 @@ public class OpprettServiceklageValidator implements RequestValidator {
         isNotNull(request.getPaaVegneAvBedrift(), "paaVegneAvBedrift", " dersom paaVegneAv=BEDRIFT");
         hasText(request.getPaaVegneAvBedrift().getNavn(), "paaVegneAvBedrift.navn");
         hasText(request.getPaaVegneAvBedrift().getOrganisasjonsnummer(), "paaVegneAvBedrift.organisasjonsnummer");
-        hasText(request.getPaaVegneAvBedrift().getPostadresse(), "paaVegneAvBedrift.postadresse");
-        hasText(request.getPaaVegneAvBedrift().getTelefonnummer(), "paaVegneAvBedrift.telefonnummer");
+        isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes", " dersom paaVegneAv=PRIVATPERSON");
+
+        if (request.getOenskerAaKontaktes()) {
+            hasText(request.getInnmelder().getNavn(), "innmelder.navn", " dersom paaVegneAv=BEDRIFT og oenskerAaKontaktes=true");
+            hasText(request.getInnmelder().getTelefonnummer(), "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true");
+        }
     }
 }
