@@ -22,7 +22,7 @@ vault:
   enabled: true
 fasitResources:
   used:
-  - alias: serviceklageDB
+  - alias: tilbakemeldingsmottak
     resourceType: datasource
     propertyMap:
       url: SPRING_DATASOURCE_URL
