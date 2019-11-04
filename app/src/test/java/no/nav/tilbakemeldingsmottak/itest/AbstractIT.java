@@ -48,7 +48,6 @@ public class AbstractIT {
     private int port = 2500;
 
     protected static final String JOURNALPOST_ID = "12345";
-    protected static final String OPPGAVE_ID = "12345678";
     protected static final String CONSUMER_ID = "srvtilbakemeldinge";
 
     @BeforeEach

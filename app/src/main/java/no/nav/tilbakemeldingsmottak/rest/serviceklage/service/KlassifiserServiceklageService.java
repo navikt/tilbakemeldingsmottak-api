@@ -1,19 +1,16 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
+import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 @Slf4j
@@ -24,48 +21,39 @@ public class KlassifiserServiceklageService {
     private final OppgaveConsumer oppgaveConsumer;
     private final EndreOppgaveRequestToMapper endreOppgaveRequestToMapper;
 
-    private static final String FERDIGSTILT = "FERDIGSTILT";
-    private static final String JA = "Ja";
-
-    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, String journalpostId, String oppgaveId)  {
-
+    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, String journalpostId)  {
         Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
         if (serviceklage == null) {
-            serviceklage = new Serviceklage();
-            serviceklage.setJournalpostId(journalpostId);
-            serviceklage.setOpprettetDato(LocalDateTime.now());
+            throw new ServiceklageIkkeFunnetException(String.format("Kunne ikke finne serviceklage med journalpostId=%s", journalpostId));
         }
 
-        KlassifiserServiceklageRequest.Answers answers = request.getAnswers();
-
-        serviceklage.setBehandlesSomServiceklage(answers.getBehandlesSomServiceklage());
-        serviceklage.setFremmetDato(LocalDateTime.parse(answers.getFremmetDato()));
-        serviceklage.setInnsender(answers.getInnsender());
-        serviceklage.setKanal(answers.getKanal());
-        serviceklage.setEnhetsnummerPaaklaget(answers.getEnhetsnummerPaaklaget());
-        serviceklage.setEnhetsnummerBehandlende(JA.equals(answers.getPaaklagetEnhetErBehandlende()) ?
-                answers.getEnhetsnummerPaaklaget() : answers.getEnhetsnummerBehandlende());
-        serviceklage.setGjelder(answers.getGjelder());
-        serviceklage.setYtelse(answers.getYtelse());
-        serviceklage.setTema(answers.getTema());
-        serviceklage.setVeiledning(answers.getVeiledning());
-        serviceklage.setUtfall(answers.getUtfall());
-        serviceklage.setSvarmetode(answers.getSvarmetode());
-        serviceklage.setSvarIkkeNoedvendig(answers.getSvarIkkeNoedvendig());
+        serviceklage.setErServiceklage(request.getErServiceklage());
+        if (request.getErServiceklage().contains("Ja")) {
+            serviceklage.setGjelder(null);
+            serviceklage.setKanal(request.getKanal());
+            serviceklage.setPaaklagetEnhet(request.getPaaklagetEnhet());
+            serviceklage.setBehandlendeEnhet(request.getBehandlendeEnhet());
+            serviceklage.setYtelseTjeneste(request.getYtelseTjeneste());
+            serviceklage.setTema(request.getTema());
+            serviceklage.setUtfall(request.getUtfall());
+            serviceklage.setSvarmetode(String.join(",", request.getSvarmetode()));
+        } else {
+            serviceklage.setGjelder(request.getGjelder());
+            serviceklage.setKanal(null);
+            serviceklage.setPaaklagetEnhet(null);
+            serviceklage.setBehandlendeEnhet(null);
+            serviceklage.setYtelseTjeneste(null);
+            serviceklage.setTema(null);
+            serviceklage.setUtfall(null);
+            serviceklage.setSvarmetode(null);
+        }
 
         serviceklageRepository.save(serviceklage);
 
         log.info("Serviceklage med serviceklageId={} er klassifisert", serviceklage.getServiceklageId());
 
-        if (isNotBlank(oppgaveId)) {
-            HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
-            if (!FERDIGSTILT.equals(hentOppgaveResponseTo.getStatus())) {
-                EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
-                oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
-                log.info("Ferdigstilt oppgave med oppgaveId={}", oppgaveId);
-            } else {
-                log.info("Oppgave med oppgaveId={} er allerede ferdigstilt");
-            }
-        }
+        HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(serviceklage.getOppgaveId());
+        EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
+        oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
     }
 }
