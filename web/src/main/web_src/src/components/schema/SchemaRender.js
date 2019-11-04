@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import SchemaQuestion from "./SchemaQuestion";
 
 export default class Render extends Component {

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import AlertStripe from "nav-frontend-alertstriper";
 
 import DateInput from "./questions/DateInput";

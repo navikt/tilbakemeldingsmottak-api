@@ -1,12 +1,9 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import Hovedknapp from "nav-frontend-knapper/lib/hovedknapp";
 import queryString from "query-string";
 import SchemaRender from "../components/schema/SchemaRender";
-import { ServiceklageApi } from "../api/Api";
-import {
-  SchemaMapper,
-  DefaultAnswersMapper
-} from "../mappers/skjema/SkjemaMapper";
+import {ServiceklageApi} from "../api/Api";
+import {DefaultAnswersMapper, SchemaMapper} from "../mappers/skjema/SkjemaMapper";
 import Dokument from "../components/Dokument";
 import "./Klassifisering.less";
 

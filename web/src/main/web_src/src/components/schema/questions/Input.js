@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Input as NavInput } from "nav-frontend-skjema";
+import React, {Component} from "react";
+import {Input as NavInput} from "nav-frontend-skjema";
 
 export default class Input extends Component {
   render() {
