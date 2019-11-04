@@ -24,6 +24,8 @@ import org.springframework.util.StreamUtils;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 public class TestUtils {
 
@@ -38,10 +40,8 @@ public class TestUtils {
 
     public static final String NAVN_BEDRIFT= "Bedrift AS";
     public static final String ORGANISASJONSNUMMER= "123456789";
-    public static final String POSTADRESSE= "Nedre Bedriftsgate 15A, 0168 OSLO";
-    public static final String TELEFONNUMMER_BEDRIFT= "12345678";
 
-    public static final Klagetype KLAGETYPE = Klagetype.NAVNO;
+    public static final List<Klagetype> KLAGETYPER = Collections.singletonList(Klagetype.NAVNO);
     public static final String KLAGETEKST = "Saksbehandleren var slem";
     public static final Boolean OENSKER_AA_KONTAKTES = Boolean.FALSE;
 
@@ -80,7 +80,7 @@ public class TestUtils {
                         .telefonnummer(TELEFONNUMMER)
                         .personnummer(PERSONNUMMER)
                         .build())
-                .klagetype(KLAGETYPE)
+                .klagetyper(KLAGETYPER)
                 .klagetekst(KLAGETEKST)
                 .oenskerAaKontaktes(OENSKER_AA_KONTAKTES)
                 .build();
@@ -99,7 +99,7 @@ public class TestUtils {
                         .navn(NAVN_PERSON)
                         .personnummer(PERSONNUMMER)
                         .build())
-                .klagetype(KLAGETYPE)
+                .klagetyper(KLAGETYPER)
                 .klagetekst(KLAGETEKST)
                 .oenskerAaKontaktes(OENSKER_AA_KONTAKTES)
                 .build();
@@ -116,10 +116,8 @@ public class TestUtils {
                 .paaVegneAvBedrift(PaaVegneAvBedrift.builder()
                         .navn(NAVN_BEDRIFT)
                         .organisasjonsnummer(ORGANISASJONSNUMMER)
-                        .postadresse(POSTADRESSE)
-                        .telefonnummer(TELEFONNUMMER_BEDRIFT)
                         .build())
-                .klagetype(KLAGETYPE)
+                .klagetyper(KLAGETYPER)
                 .klagetekst(KLAGETEKST)
                 .oenskerAaKontaktes(OENSKER_AA_KONTAKTES)
                 .build();

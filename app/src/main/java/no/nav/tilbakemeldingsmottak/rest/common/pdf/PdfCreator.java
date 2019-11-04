@@ -1,5 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.common.pdf;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -13,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 
 import java.io.ByteArrayOutputStream;
+import java.util.stream.Collectors;
 
 public final class PdfCreator {
 
@@ -31,12 +34,14 @@ public final class PdfCreator {
 
         document.open();
 
-        if (StringUtils.isBlank(MDC.get(MDCConstants.MDC_USER_ID))) {
+        if (isBlank(MDC.get(MDCConstants.MDC_USER_ID))) {
             document.add(createUinnloggetHeader());
             document.add(Chunk.NEWLINE);
         }
 
-        document.add(createParagraph("Navn til innmelder", request.getInnmelder().getNavn()));
+        if (!isBlank(request.getInnmelder().getNavn())) {
+            document.add(createParagraph("Navn til innmelder", request.getInnmelder().getNavn()));
+        }
         if (request.getOenskerAaKontaktes()) {
             document.add(createParagraph("Telefonnummer til innmelder", request.getInnmelder().getTelefonnummer()));
         }
@@ -55,12 +60,10 @@ public final class PdfCreator {
                 document.add(createParagraph("Innmelders rolle", request.getInnmelder().getRolle()));
                 document.add(createParagraph("Navn til forulempet bedrift", request.getPaaVegneAvBedrift().getNavn()));
                 document.add(createParagraph("Orgnr til forulempet bedrift", request.getPaaVegneAvBedrift().getOrganisasjonsnummer()));
-                document.add(createParagraph("Adresse til forulempet bedrift", request.getPaaVegneAvBedrift().getPostadresse()));
-                document.add(createParagraph("Telefonnummer til forulempet bedrift", request.getPaaVegneAvBedrift().getTelefonnummer()));
         }
 
-        document.add(createParagraph("Klagetype", request.getKlagetype().text));
-        if (request.getKlagetype().equals(Klagetype.LOKALT_NAV_KONTOR)) {
+        document.add(createParagraph("Klagetype", StringUtils.join(request.getKlagetyper().stream().map(k -> k.text).collect(Collectors.toList()), ", ")));
+        if (request.getKlagetyper().equals(Klagetype.LOKALT_NAV_KONTOR)) {
             document.add(createParagraph("Gjelder økonomisk sosialhjelp/sosiale tjenester", request.getGjelderSosialhjelp().text));
         }
         document.add(createParagraph("Klagetekst", request.getKlagetekst()));

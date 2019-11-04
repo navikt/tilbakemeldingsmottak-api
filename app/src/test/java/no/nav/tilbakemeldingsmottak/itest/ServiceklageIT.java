@@ -8,7 +8,7 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.GJELDER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.INNSENDER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.KANAL;
 import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETEKST;
-import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETYPE;
+import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETYPER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ORGANISASJONSNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.SVARMETODE;
@@ -55,7 +55,7 @@ class ServiceklageIT extends AbstractIT {
         assertNotNull(serviceklage.getOpprettetDato());
         assertEquals(serviceklage.getInnsender(), PaaVegneAvType.PRIVATPERSON.text);
         assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
-        assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
+        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getSvarmetode(), SVARMETODE);
         assertEquals(serviceklage.getSvarIkkeNoedvendig(), SVAR_IKKE_NOEDVENDIG);
@@ -75,7 +75,7 @@ class ServiceklageIT extends AbstractIT {
         assertNotNull(serviceklage.getOpprettetDato());
         assertEquals(serviceklage.getInnsender(), PaaVegneAvType.ANNEN_PERSON.text);
         assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
-        assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
+        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getSvarmetode(), SVARMETODE);
         assertEquals(serviceklage.getSvarIkkeNoedvendig(), SVAR_IKKE_NOEDVENDIG);
@@ -95,7 +95,7 @@ class ServiceklageIT extends AbstractIT {
         assertNotNull(serviceklage.getOpprettetDato());
         assertEquals(serviceklage.getInnsender(), PaaVegneAvType.BEDRIFT.text);
         assertEquals(serviceklage.getKlagenGjelderId(), ORGANISASJONSNUMMER);
-        assertEquals(serviceklage.getKlagetype(), KLAGETYPE.text);
+        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getSvarmetode(), SVARMETODE);
         assertEquals(serviceklage.getSvarIkkeNoedvendig(), SVAR_IKKE_NOEDVENDIG);
@@ -147,7 +147,7 @@ class ServiceklageIT extends AbstractIT {
         Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
         assertNotNull(serviceklage.getServiceklageId());
         assertNotNull(serviceklage.getOpprettetDato());
-        assertNull(serviceklage.getKlagetype());
+        assertNull(serviceklage.getKlagetyper());
         assertNull(serviceklage.getKlagetekst());
         assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
 

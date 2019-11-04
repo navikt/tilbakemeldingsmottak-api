@@ -4,11 +4,15 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
 
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class OpprettServiceklageRequestMapper {
@@ -20,12 +24,16 @@ public class OpprettServiceklageRequestMapper {
                 .fremmetDato(currentDateTime)
                 .innsender(request.getPaaVegneAv().text)
                 .klagenGjelderId(findKlagenGjelderId(request))
-                .klagetype(request.getKlagetype().text)
+                .klagetyper(mapKlagetype(request.getKlagetyper()))
                 .klagetekst(request.getKlagetekst())
                 .svarmetode(request.getOenskerAaKontaktes() ? null : SVAR_IKKE_NOEDVENDIG_ANSWER)
                 .svarIkkeNoedvendig(request.getOenskerAaKontaktes() ? null : BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
                 .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
                 .build();
+    }
+
+    private String mapKlagetype(List<Klagetype> klagetype) {
+        return StringUtils.join(klagetype.stream().map(k -> k.text).collect(Collectors.toList()), ", ");
     }
 
     private String findKlagenGjelderId(OpprettServiceklageRequest request) {

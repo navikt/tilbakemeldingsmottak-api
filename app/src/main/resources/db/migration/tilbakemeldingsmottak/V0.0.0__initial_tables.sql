@@ -3,7 +3,7 @@ CREATE TABLE serviceklage (
   JOURNALPOST_ID                    VARCHAR2(11) NOT NULL,
   OPPRETTET_DATO                    TIMESTAMP NOT NULL,
   KLAGEN_GJELDER_ID                 VARCHAR2(15),
-  KLAGETYPE                         VARCHAR2(100),
+  KLAGETYPER                        VARCHAR2(100),
   KLAGETEKST                        CLOB,
   BEHANDLES_SOM_SERVICEKLAGE        VARCHAR2(100),
   FREMMET_DATO                      TIMESTAMP,

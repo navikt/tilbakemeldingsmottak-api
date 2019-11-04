@@ -12,6 +12,8 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklage
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
+
 class OpprettServiceklageValidatorTest {
 
     private OpprettServiceklageRequest opprettServiceklageRequest;
@@ -38,20 +40,20 @@ class OpprettServiceklageValidatorTest {
     @Test
     void shouldThrowExceptionIfKlagetypeNotSet() {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
-        opprettServiceklageRequest.setKlagetype(null);
+        opprettServiceklageRequest.setKlagetyper(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("klagetype er påkrevd"));
+        assertTrue(thrown.getMessage().contains("klagetyper er påkrevd"));
     }
 
     @Test
     void shouldThrowExceptionIfGjelderSosialhjelpNotSetForLokaltkontor() {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
-        opprettServiceklageRequest.setKlagetype(Klagetype.LOKALT_NAV_KONTOR);
+        opprettServiceklageRequest.setKlagetyper(Collections.singletonList(Klagetype.LOKALT_NAV_KONTOR));
         opprettServiceklageRequest.setGjelderSosialhjelp(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("gjelderSosialhjelp er påkrevd dersom klagetype=LOKALT_NAV_KONTOR"));
+        assertTrue(thrown.getMessage().contains("gjelderSosialhjelp er påkrevd dersom klagetyper=LOKALT_NAV_KONTOR"));
     }
 
     @Test
@@ -173,6 +175,46 @@ class OpprettServiceklageValidatorTest {
     }
 
     @Test
+    void shouldThrowExceptionIfPaaVegneAvPersonAndOenskerAaKontaktesIsSetWithoutFullmakt() {
+        opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvPerson();
+        opprettServiceklageRequest.getInnmelder().setHarFullmakt(false);
+        opprettServiceklageRequest.setOenskerAaKontaktes(true);
+        Exception thrown = assertThrows(InvalidRequestException.class,
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
+        assertTrue(thrown.getMessage().contains("oenskerAaKontaktes kan ikke være satt dersom klagen er meldt inn på vegne av annen person uten fullmakt"));
+    }
+
+    @Test
+    void shouldThrowExceptionIfPaaVegneAvPersonAndInnmelderOenskerAaKontakesUtenOppgittTelefonnummer() {
+        opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvPerson();
+        opprettServiceklageRequest.setOenskerAaKontaktes(true);
+        opprettServiceklageRequest.getInnmelder().setTelefonnummer(null);
+        Exception thrown = assertThrows(InvalidRequestException.class,
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
+        assertTrue(thrown.getMessage().contains("innmelder.telefonnummer er påkrevd dersom oenskerAaKontaktes=true"));
+    }
+
+    @Test
+    void shouldThrowExceptionIfPaaVegneAvBedriftAndInnmelderOenskerAaKontakesUtenOppgittTelefonnummer() {
+        opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
+        opprettServiceklageRequest.setOenskerAaKontaktes(true);
+        opprettServiceklageRequest.getInnmelder().setTelefonnummer(null);
+        Exception thrown = assertThrows(InvalidRequestException.class,
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
+        assertTrue(thrown.getMessage().contains("innmelder.telefonnummer er påkrevd dersom oenskerAaKontaktes=true"));
+    }
+
+    @Test
+    void shouldThrowExceptionIfPaaVegneAvBedriftAndInnmelderOenskerAaKontakesUtenOppgittNavn() {
+        opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
+        opprettServiceklageRequest.setOenskerAaKontaktes(true);
+        opprettServiceklageRequest.getInnmelder().setNavn(null);
+        Exception thrown = assertThrows(InvalidRequestException.class,
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
+        assertTrue(thrown.getMessage().contains("innmelder.navn er påkrevd dersom paaVegneAv=BEDRIFT og oenskerAaKontaktes=true"));
+    }
+
+    @Test
     void shouldThrowExceptionIfPaaVegneAvBedriftNotSet() {
         opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
         opprettServiceklageRequest.setPaaVegneAvBedrift(null);
@@ -198,23 +240,4 @@ class OpprettServiceklageValidatorTest {
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
         assertTrue(thrown.getMessage().contains("paaVegneAvBedrift.organisasjonsnummer er påkrevd"));
     }
-
-    @Test
-    void shouldThrowExceptionIfPaaVegneAvBedriftPostadresseNotSet() {
-        opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
-        opprettServiceklageRequest.getPaaVegneAvBedrift().setPostadresse(null);
-        Exception thrown = assertThrows(InvalidRequestException.class,
-                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("paaVegneAvBedrift.postadresse er påkrevd"));
-    }
-
-    @Test
-    void shouldThrowExceptionIfPaaVegneAvBedriftTelefonnummerNotSet() {
-        opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
-        opprettServiceklageRequest.getPaaVegneAvBedrift().setTelefonnummer(null);
-        Exception thrown = assertThrows(InvalidRequestException.class,
-                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("paaVegneAvBedrift.telefonnummer er påkrevd"));
-    }
-
 }

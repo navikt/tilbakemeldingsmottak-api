@@ -28,22 +28,17 @@ public class OpprettServiceklageValidator implements RequestValidator {
     }
 
     private void validateCommonRequiredFields(OpprettServiceklageRequest request) {
+        isNotNull(request.getKlagetyper(), "klagetyper");
+        if (request.getKlagetyper().contains(LOKALT_NAV_KONTOR)) {
+            isNotNull(request.getGjelderSosialhjelp(), "gjelderSosialhjelp", " dersom klagetyper=LOKALT_NAV_KONTOR");
+        }
         isNotNull(request.getPaaVegneAv(), "paaVegneAv");
-        isNotNull(request.getKlagetype(), "klagetype");
         isNotNull(request.getInnmelder(), "innmelder");
-        if (LOKALT_NAV_KONTOR.equals(request.getKlagetype())) {
-            isNotNull(request.getGjelderSosialhjelp(), "gjelderSosialhjelp", " dersom klagetype=LOKALT_NAV_KONTOR");
-        }
         hasText(request.getKlagetekst(), "klagetekst");
-        isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes");
-        hasText(request.getInnmelder().getNavn(), "innmelder.navn");
-        if (request.getOenskerAaKontaktes()) {
-            hasText(request.getInnmelder().getTelefonnummer(), "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true");
-        }
-
     }
 
     private void validatePaaVegneAvPrivatperson(OpprettServiceklageRequest request) {
+        hasText(request.getInnmelder().getNavn(), "innmelder.navn", " dersom paaVegneAv=PRIVATPERSON");
         hasText(request.getInnmelder().getPersonnummer(), "innmelder.personnummer", " dersom paaVegneAv=PRIVATPERSON");
 
         if (StringUtils.isNotBlank(MDC.get(MDCConstants.MDC_USER_ID))
@@ -53,8 +48,15 @@ public class OpprettServiceklageValidator implements RequestValidator {
     }
 
     private void validatePaaVegneAvAnnenPerson(OpprettServiceklageRequest request) {
-        isNotNull(request.getInnmelder().getHarFullmakt(), "innmelder.harFullmakt", " dersom paaVegneAv=ANNEN_PERSON");
+        hasText(request.getInnmelder().getNavn(), "innmelder.navn", " dersom paaVegneAv=ANNEN_PERSON");
         hasText(request.getInnmelder().getRolle(), "innmelder.rolle", " dersom paaVegneAv=ANNEN_PERSON eller paaVegneAv=BEDRIFT");
+        isNotNull(request.getInnmelder().getHarFullmakt(), "innmelder.harFullmakt", " dersom paaVegneAv=ANNEN_PERSON");
+        if (!request.getInnmelder().getHarFullmakt()) {
+            isNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes", " dersom klagen er meldt inn på vegne av annen person uten fullmakt");
+        }
+        if (request.getOenskerAaKontaktes()) {
+            hasText(request.getInnmelder().getTelefonnummer(), "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true");
+        }
 
         isNotNull(request.getPaaVegneAvPerson(), "paaVegneAvPerson", " dersom paaVegneAv=ANNEN_PERSON");
         hasText(request.getPaaVegneAvPerson().getNavn(), "paaVegneAvPerson.navn");

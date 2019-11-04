@@ -3,6 +3,8 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.domain;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class OpprettServiceklageRequest {
@@ -10,7 +12,7 @@ public class OpprettServiceklageRequest {
     private Innmelder innmelder;
     private PaaVegneAvPerson paaVegneAvPerson;
     private PaaVegneAvBedrift paaVegneAvBedrift;
-    private Klagetype klagetype;
+    private List<Klagetype> klagetyper;
     private GjelderSosialhjelpType gjelderSosialhjelp;
     private String klagetekst;
     private Boolean oenskerAaKontaktes;
