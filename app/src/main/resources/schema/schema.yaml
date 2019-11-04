@@ -71,7 +71,7 @@ questions:
   text: Hva mener du serviceklagen gjelder?
   type: RADIO
   answers:
-  - answer: Gjelder en ytelse eller tjeneste
+  - answer: Gjelder én ytelse eller tjeneste
   - answer: Gjelder flere ting eller sammensatt situasjon
 
 - id: YTELSE

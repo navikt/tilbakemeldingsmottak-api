@@ -2,12 +2,16 @@ package no.nav.tilbakemeldingsmottak;
 
 import static no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType.NAV_KONTAKTSENTER;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import lombok.SneakyThrows;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.Tidsrom;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.Feiltype;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Innmelder;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
@@ -15,9 +19,11 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklage
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvBedrift;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvPerson;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
+import org.springframework.util.StreamUtils;
 
-import java.util.Arrays;
-import java.util.List;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 
 public class TestUtils {
 
@@ -37,10 +43,11 @@ public class TestUtils {
 
     public static final Klagetype KLAGETYPE = Klagetype.NAVNO;
     public static final String KLAGETEKST = "Saksbehandleren var slem";
-    public static final Boolean OENSKER_AA_KONTAKTES = Boolean.TRUE;
+    public static final Boolean OENSKER_AA_KONTAKTES = Boolean.FALSE;
 
     public static final Feiltype FEILTYPE = Feiltype.TEKNISK_FEIL;
     public static final String BESKRIVELSE_FEIL = "Det er en teknisk feil på nav.no";
+    private static final Boolean ONSKER_KONTAKT = Boolean.TRUE;
 
     public static final HvemRosesType HVEM_ROSES = NAV_KONTAKTSENTER;
     public static final String BESKRIVELSE_ROS = "Saksbehandleren var snill";
@@ -50,18 +57,20 @@ public class TestUtils {
     public static final String FORNAVN = "Fred";
     public static final String ETTERNAVN = "Buljo";
 
-    public static final String ER_SERVICEKLAGE = "Ja (inkludert saker som også har andre elementer)";
-    public static final String KANAL = "nav.no";
-    public static final String PAAKLAGET_ENHET = "1234";
-    public static final String BEHANDLENDE_ENHET = "4321";
-    public static final String YTELSE_TJENESTE = "Alderspensjon";
-    public static final String TEMA = "Saksbehandling og svartid";
-    public static final String UTFALL = "Bruker har ikke fått svar innen frist";
-    public static final List<String> SVARMETODE = Arrays.asList("Avtalt møte");
-
-    public static final String NEI_ANNET = "Nei - annet";
-    public static final String GJELDER = "Klagen gjelder noe annet";
-
+    public static final String BEHANDLES_SOM_SERVICEKLAGE = "Ja";
+    public static final String FREMMET_DATO = LocalDateTime.now().toString();
+    public static final String INNSENDER = "Bruker selv som privatperson";
+    public static final String KANAL = "Serviceklageskjema på nav.no";
+    public static final String PAAKLAGET_ENHET_ER_BEHANDLENDE = "Nei";
+    public static final String ENHETSNUMMER_PAAKLAGET = "1234";
+    public static final String ENHETSNUMMER_BEHANDLENDE = "4321";
+    public static final String GJELDER = "Gjelder én ytelse eller tjeneste";
+    public static final String YTELSE = "AAP - Arbeidsavklaringspenger";
+    public static final String TEMA = "Vente på NAV";
+    public static final String VENTE = "Saksbehandlingstid";
+    public static final String UTFALL = "a) Regler/rutiner/frister er fulgt - NAV har ivaretatt bruker godt";
+    public static final String SVARMETODE = "Svar ikke nødvendig";
+    public static final String SVAR_IKKE_NOEDVENDIG = "Bruker ikke bedt om svar";
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatperson() {
         return OpprettServiceklageRequest.builder()
@@ -118,8 +127,7 @@ public class TestUtils {
 
     public static MeldFeilOgManglerRequest createMeldFeilOgManglerRequest() {
         return MeldFeilOgManglerRequest.builder()
-                .navn(NAVN_INNMELDER)
-                .telefonnummer(TELEFONNUMMER)
+                .onskerKontakt(ONSKER_KONTAKT)
                 .epost(EPOST)
                 .feiltype(FEILTYPE)
                 .melding(BESKRIVELSE_FEIL)
@@ -137,7 +145,6 @@ public class TestUtils {
 
     public static SendRosRequest createSendRosRequest() {
         return SendRosRequest.builder()
-                .navn(NAVN_INNMELDER)
                 .hvemRoses(HVEM_ROSES)
                 .melding(BESKRIVELSE_ROS)
                 .build();
@@ -145,7 +152,6 @@ public class TestUtils {
 
     public static SendRosRequest createSendRosRequestWithNavKontor() {
         return SendRosRequest.builder()
-                .navn(NAVN_INNMELDER)
                 .hvemRoses(HVEM_ROSES_KONTOR)
                 .navKontor(NAV_KONTOR)
                 .melding(BESKRIVELSE_ROS)
@@ -154,22 +160,32 @@ public class TestUtils {
 
     public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequest() {
         return KlassifiserServiceklageRequest.builder()
-                .erServiceklage(ER_SERVICEKLAGE)
-                .kanal(KANAL)
-                .paaklagetEnhet(PAAKLAGET_ENHET)
-                .behandlendeEnhet(BEHANDLENDE_ENHET)
-                .ytelseTjeneste(YTELSE_TJENESTE)
-                .tema(TEMA)
-                .utfall(UTFALL)
-                .svarmetode(SVARMETODE)
+                .answers(KlassifiserServiceklageRequest.Answers.builder()
+                        .behandlesSomServiceklage(BEHANDLES_SOM_SERVICEKLAGE)
+                        .fremmetDato(FREMMET_DATO)
+                        .innsender(INNSENDER)
+                        .kanal(KANAL)
+                        .paaklagetEnhetErBehandlende(PAAKLAGET_ENHET_ER_BEHANDLENDE)
+                        .enhetsnummerPaaklaget(ENHETSNUMMER_PAAKLAGET)
+                        .enhetsnummerBehandlende(ENHETSNUMMER_BEHANDLENDE)
+                        .gjelder(GJELDER)
+                        .ytelse(YTELSE)
+                        .tema(TEMA)
+                        .vente(VENTE)
+                        .utfall(UTFALL)
+                        .svarmetode(SVARMETODE)
+                        .svarIkkeNoedvendig(SVAR_IKKE_NOEDVENDIG)
+                        .build()
+                    )
                 .build();
     }
 
-    public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequestNotServiceklage() {
-        return KlassifiserServiceklageRequest.builder()
-                .erServiceklage(NEI_ANNET)
-                .gjelder(GJELDER)
-                .build();
+    @SneakyThrows
+    public static HentSkjemaResponse createHentSkjemaResponse() {
+        InputStream schema = TestUtils.class.getClassLoader().getResourceAsStream("schema/schema.yaml");
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        String classpathSkjema = StreamUtils.copyToString(schema, Charset.forName("utf-8"));
+        return mapper.readValue(classpathSkjema, HentSkjemaResponse.class);
     }
 
 }

@@ -20,21 +20,13 @@ class MeldFeilOgManglerValidatorTest {
     }
 
     @Test
-    void shouldThrowExceptionIfNavnNotSet() {
+    void shouldThrowExceptionIfOnskerKontaktTrueAndEpostNotSet() {
         meldFeilOgManglerRequest = createMeldFeilOgManglerRequest();
-        meldFeilOgManglerRequest.setNavn(null);
+        meldFeilOgManglerRequest.setOnskerKontakt(true);
+        meldFeilOgManglerRequest.setEpost(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> meldFeilOgManglerValidator.validateRequest(meldFeilOgManglerRequest));
-        assertTrue(thrown.getMessage().contains("navn er påkrevd"));
-    }
-
-    @Test
-    void shouldThrowExceptionIfTelefonnummerNotSet() {
-        meldFeilOgManglerRequest = createMeldFeilOgManglerRequest();
-        meldFeilOgManglerRequest.setTelefonnummer(null);
-        Exception thrown = assertThrows(InvalidRequestException.class,
-                () -> meldFeilOgManglerValidator.validateRequest(meldFeilOgManglerRequest));
-        assertTrue(thrown.getMessage().contains("telefonnummer er påkrevd"));
+        assertTrue(thrown.getMessage().contains("epost er påkrevd dersom onskerKontakt=true"));
     }
 
     @Test

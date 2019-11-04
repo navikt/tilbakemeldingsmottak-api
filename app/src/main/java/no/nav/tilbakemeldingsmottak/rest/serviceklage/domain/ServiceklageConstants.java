@@ -1,6 +1,12 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.domain;
 
-public final class QuestionConstants {
+public final class ServiceklageConstants {
+    public static final String SERVICEKLAGE_ID = "SERVICEKLAGE_ID";
+    public static final String JOURNALPOST_ID = "JOURNALPOST_ID";
+    public static final String OPPRETTET_DATO = "OPPRETTET_DATO";
+    public static final String KLAGEN_GJELDER_ID = "KLAGEN_GJELDER_ID";
+    public static final String KLAGETYPE = "KLAGETYPE";
+    public static final String KLAGETEKST = "KLAGETEKST";
     public static final String BEHANDLES_SOM_SERVICEKLAGE = "BEHANDLES_SOM_SERVICEKLAGE";
     public static final String BEHANDLES_SOM_SERVICEKLAGE_SPESIFISER = "BEHANDLES_SOM_SERVICEKLAGE_SPESIFISER";
     public static final String FREMMET_DATO = "FREMMET_DATO";
@@ -24,4 +30,12 @@ public final class QuestionConstants {
     public static final String SVAR_IKKE_NOEDVENDIG = "SVAR_IKKE_NOEDVENDIG";
     public static final String SVARMETODE_SPESIFISER = "SVARMETODE_SPESIFISER";
     public static final String FERDIG_DATO = "FERDIG_DATO";
+
+    public static final String KLASSIFISERING_JSON = "KLASSIFISERING_JSON";
+    public static final String SCHEMA_VERSION = "SCHEMA_VERSION";
+    public static final String SVAR_IKKE_NOEDVENDIG_ANSWER = "Svar ikke nødvendig";
+    public static final String BRUKER_IKKE_BEDT_OM_SVAR_ANSWER = "Bruker ikke bedt om svar";
+    public static final String KANAL_SERVICEKLAGESKJEMA_ANSWER = "Serviceklageskjema på nav.no";
+    public static final String NONE = "none";
+
 }

@@ -47,9 +47,9 @@ public class FeilOgManglerService {
     private String createContent(MeldFeilOgManglerRequest request) {
         HtmlContent content = new HtmlContent();
 
-        content.addParagraph("Navn", request.getNavn());
-        content.addParagraph("Telefonnummer", request.getTelefonnummer());
-        content.addParagraph("Epost", request.getEpost());
+        if(request.getOnskerKontakt()) {
+            content.addParagraph("Innsender ønsker å kontaktes på epost", request.getEpost());
+        }
         content.addParagraph("Hva slags feil", request.getFeiltype().text);
         content.addParagraph("Melding", request.getMelding());
 

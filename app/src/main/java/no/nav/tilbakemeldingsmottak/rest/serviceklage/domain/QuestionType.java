@@ -5,5 +5,6 @@ public enum QuestionType {
     TEXT,
     INPUT,
     DATE,
-    SELECT
+    SELECT,
+    DATALIST
 }
