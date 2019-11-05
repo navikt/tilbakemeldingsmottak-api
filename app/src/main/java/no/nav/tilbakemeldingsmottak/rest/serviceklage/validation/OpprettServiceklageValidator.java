@@ -3,14 +3,26 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype.LOKALT_NAV_KONTOR;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
+import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.config.MDCConstants;
+import no.nav.tilbakemeldingsmottak.consumer.aktoer.AktoerConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
+import no.nav.tilbakemeldingsmottak.exceptions.aktoer.AktoerTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class OpprettServiceklageValidator implements RequestValidator {
+
+    private final EregConsumer eregConsumer;
+    private final AktoerConsumer aktoerConsumer;
 
     private static final int ENHETSNUMMER_LENGTH = 4;
 
@@ -52,6 +64,8 @@ public class OpprettServiceklageValidator implements RequestValidator {
                 && !request.getInnmelder().getPersonnummer().equals(MDC.get(MDCConstants.MDC_USER_ID))) {
             throw new InvalidRequestException("innmelder.personnummer samsvarer ikke med brukertoken");
         }
+
+        validateFnr(request.getInnmelder().getPersonnummer());
     }
 
     private void validatePaaVegneAvAnnenPerson(OpprettServiceklageRequest request) {
@@ -68,6 +82,8 @@ public class OpprettServiceklageValidator implements RequestValidator {
         isNotNull(request.getPaaVegneAvPerson(), "paaVegneAvPerson", " dersom paaVegneAv=ANNEN_PERSON");
         hasText(request.getPaaVegneAvPerson().getNavn(), "paaVegneAvPerson.navn");
         hasText(request.getPaaVegneAvPerson().getPersonnummer(), "paaVegneAvPerson.personnummer");
+
+        validateFnr(request.getPaaVegneAvPerson().getPersonnummer());
     }
 
     private void validatePaaVegneAvBedrift(OpprettServiceklageRequest request) {
@@ -86,6 +102,24 @@ public class OpprettServiceklageValidator implements RequestValidator {
         if (request.getOenskerAaKontaktes()) {
             hasText(request.getInnmelder().getNavn(), "innmelder.navn", " dersom paaVegneAv=BEDRIFT og oenskerAaKontaktes=true");
             hasText(request.getInnmelder().getTelefonnummer(), "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true");
+        }
+
+        validateOrgnr(request.getPaaVegneAvBedrift().getOrganisasjonsnummer());
+    }
+
+    private void validateFnr(String fnr) {
+        try {
+            aktoerConsumer.hentAktoerIdForIdent(fnr);
+        } catch (AktoerTechnicalException e) {
+            throw new InvalidRequestException("Ugyldig personnummer: " + fnr);
+        }
+    }
+
+    private void validateOrgnr(String orgnr) {
+        try {
+            eregConsumer.hentInfo(orgnr);
+        } catch (EregFunctionalException | EregTechnicalException e) {
+            throw new InvalidRequestException("Ugyldig organisasjonsnummer: " + orgnr);
         }
     }
 }

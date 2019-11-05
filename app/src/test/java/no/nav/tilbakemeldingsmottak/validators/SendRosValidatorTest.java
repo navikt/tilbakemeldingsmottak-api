@@ -8,20 +8,21 @@ import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
 import no.nav.tilbakemeldingsmottak.rest.ros.validation.SendRosValidator;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-class SendRosValidatorTest {
-    private SendRosRequest sendRosRequest;
+public class SendRosValidatorTest {
+
     private SendRosValidator sendRosValidator = new SendRosValidator();
+    private SendRosRequest sendRosRequest;
 
     @Test
-    void happyPath() {
+    public void happyPath() {
         sendRosRequest = createSendRosRequest();
         sendRosValidator.validateRequest(sendRosRequest);
     }
 
     @Test
-    void shouldThrowExceptionIfHvemRosesNotSet() {
+    public void shouldThrowExceptionIfHvemRosesNotSet() {
         sendRosRequest = createSendRosRequest();
         sendRosRequest.setHvemRoses(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
@@ -30,7 +31,7 @@ class SendRosValidatorTest {
     }
 
     @Test
-    void shouldThrowExceptionIfKontorNotSet() {
+    public void shouldThrowExceptionIfKontorNotSet() {
         sendRosRequest = createSendRosRequest();
         sendRosRequest.setHvemRoses(HvemRosesType.NAV_KONTOR);
         Exception thrown = assertThrows(InvalidRequestException.class,
@@ -39,7 +40,7 @@ class SendRosValidatorTest {
     }
 
     @Test
-    void shouldThrowExceptionIfMeldingNotSet() {
+    public void shouldThrowExceptionIfMeldingNotSet() {
         sendRosRequest = createSendRosRequest();
         sendRosRequest.setMelding(null);
         Exception thrown = assertThrows(InvalidRequestException.class,

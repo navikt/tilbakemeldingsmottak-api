@@ -73,6 +73,9 @@ fasitResources:
     propertyMap:
       url: aktoerregister.identer.url
 
+  - alias: "ereg.api"
+    resourceType: restservice
+
   - alias: tilbakemeldingsmottakProperties
     resourceType: applicationProperties
 

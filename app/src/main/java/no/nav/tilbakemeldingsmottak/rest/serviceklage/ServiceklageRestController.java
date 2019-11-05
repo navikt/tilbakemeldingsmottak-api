@@ -47,8 +47,8 @@ public class ServiceklageRestController {
     private final KlassifiserServiceklageService klassifiserServiceklageService;
     private final HentSkjemaService hentSkjemaService;
     private final HentDokumentService hentDokumentService;
-    private final OpprettServiceklageValidator opprettServiceklageValidator = new OpprettServiceklageValidator();
-    private final KlassifiserServiceklageValidator klassifiserServiceklageValidator = new KlassifiserServiceklageValidator();
+    private final OpprettServiceklageValidator opprettServiceklageValidator;
+    private final KlassifiserServiceklageValidator klassifiserServiceklageValidator;
     private final OIDCRequestContextHolder oidcRequestContextHolder;
     private final OppgaveConsumer oppgaveConsumer;
 

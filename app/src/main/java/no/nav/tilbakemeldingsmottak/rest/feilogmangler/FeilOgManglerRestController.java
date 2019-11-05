@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.feilogmangler;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 
@@ -23,16 +23,11 @@ import javax.transaction.Transactional;
 @RestController
 @RequestMapping("/rest/feil-og-mangler")
 @Slf4j
+@RequiredArgsConstructor
 public class FeilOgManglerRestController {
 
     private final FeilOgManglerService feilOgManglerService;
     private final MeldFeilOgManglerValidator meldFeilOgManglerValidator;
-
-    @Inject
-    public FeilOgManglerRestController(final FeilOgManglerService feilOgManglerService) {
-        this.feilOgManglerService = feilOgManglerService;
-        this.meldFeilOgManglerValidator = new MeldFeilOgManglerValidator();
-    }
 
     @Transactional
     @PostMapping
