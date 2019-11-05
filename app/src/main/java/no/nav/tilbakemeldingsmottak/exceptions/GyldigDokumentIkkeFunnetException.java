@@ -4,10 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
-public final class GyldigDokumentIkkeFunnetException extends TilbakemeldingsmottakFunctionalException {
-	public GyldigDokumentIkkeFunnetException() {
-		super();
-	}
+public final class GyldigDokumentIkkeFunnetException extends AbstractTilbakemeldingsmottakFunctionalException {
 
 	public GyldigDokumentIkkeFunnetException(String message) {
 		super(message);
