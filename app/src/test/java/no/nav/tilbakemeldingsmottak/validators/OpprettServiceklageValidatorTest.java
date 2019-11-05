@@ -240,4 +240,22 @@ class OpprettServiceklageValidatorTest {
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
         assertTrue(thrown.getMessage().contains("paaVegneAvBedrift.organisasjonsnummer er påkrevd"));
     }
+
+    @Test
+    void shouldThrowExceptionIfPaaVegneAvBedriftEnhetsnummerNotSet() {
+        opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
+        opprettServiceklageRequest.setEnhetsnummerPaaklaget(null);
+        Exception thrown = assertThrows(InvalidRequestException.class,
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
+        assertTrue(thrown.getMessage().contains("enhetsnummerPaaklaget er påkrevd dersom paaVegneAv=BEDRIFT"));
+    }
+
+    @Test
+    void shouldThrowExceptionIfPaaVegneAvBedriftEnhetsnummerWrongFormat() {
+        opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
+        opprettServiceklageRequest.setEnhetsnummerPaaklaget("123abc");
+        Exception thrown = assertThrows(InvalidRequestException.class,
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
+        assertTrue(thrown.getMessage().contains("enhetsnummerPaaklaget må ha fire siffer"));
+    }
 }

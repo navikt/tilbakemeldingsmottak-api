@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
@@ -29,6 +30,7 @@ public class OpprettServiceklageRequestMapper {
                 .svarmetode(request.getOenskerAaKontaktes() != null && request.getOenskerAaKontaktes() ? null : SVAR_IKKE_NOEDVENDIG_ANSWER)
                 .svarIkkeNoedvendig(request.getOenskerAaKontaktes() != null && request.getOenskerAaKontaktes() ? null : BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
                 .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
+                .enhetsnummerPaaklaget(!isBlank(request.getEnhetsnummerPaaklaget()) ? request.getEnhetsnummerPaaklaget() : null)
                 .build();
     }
 

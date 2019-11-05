@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype.LOKALT_NAV_KONTOR;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
@@ -10,6 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 
 public class OpprettServiceklageValidator implements RequestValidator {
+
+    private static final int ENHETSNUMMER_LENGTH = 4;
 
     public void validateRequest(OpprettServiceklageRequest request) {
         validateCommonRequiredFields(request);
@@ -73,7 +76,12 @@ public class OpprettServiceklageValidator implements RequestValidator {
         isNotNull(request.getPaaVegneAvBedrift(), "paaVegneAvBedrift", " dersom paaVegneAv=BEDRIFT");
         hasText(request.getPaaVegneAvBedrift().getNavn(), "paaVegneAvBedrift.navn");
         hasText(request.getPaaVegneAvBedrift().getOrganisasjonsnummer(), "paaVegneAvBedrift.organisasjonsnummer");
-        isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes", " dersom paaVegneAv=PRIVATPERSON");
+        isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes", " dersom paaVegneAv=BEDRIFT");
+        hasText(request.getEnhetsnummerPaaklaget(), "enhetsnummerPaaklaget", " dersom paaVegneAv=BEDRIFT");
+        if(!isNumeric(request.getEnhetsnummerPaaklaget()) && request.getEnhetsnummerPaaklaget().length() != ENHETSNUMMER_LENGTH) {
+            throw new InvalidRequestException("enhetsnummerPaaklaget må ha fire siffer");
+        }
+        hasText(request.getEnhetsnummerPaaklaget(), "enhetsnummerPaaklaget", " dersom paaVegneAv=BEDRIFT");
 
         if (request.getOenskerAaKontaktes()) {
             hasText(request.getInnmelder().getNavn(), "innmelder.navn", " dersom paaVegneAv=BEDRIFT og oenskerAaKontaktes=true");

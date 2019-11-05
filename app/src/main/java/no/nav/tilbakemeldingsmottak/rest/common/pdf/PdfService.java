@@ -62,8 +62,12 @@ public final class PdfService {
                 document.add(createParagraph("Orgnr til forulempet bedrift", request.getPaaVegneAvBedrift().getOrganisasjonsnummer()));
         }
 
+
+        if (!isBlank(request.getEnhetsnummerPaaklaget())) {
+            document.add(createParagraph("Påklaget enhet", request.getEnhetsnummerPaaklaget()));
+        }
         document.add(createParagraph("Klagetype", StringUtils.join(request.getKlagetyper().stream().map(k -> k.text).collect(Collectors.toList()), ", ")));
-        if (request.getKlagetyper().equals(Klagetype.LOKALT_NAV_KONTOR)) {
+        if (request.getKlagetyper().contains(Klagetype.LOKALT_NAV_KONTOR)) {
             document.add(createParagraph("Gjelder økonomisk sosialhjelp/sosiale tjenester", request.getGjelderSosialhjelp().text));
         }
         document.add(createParagraph("Klagetekst", request.getKlagetekst()));

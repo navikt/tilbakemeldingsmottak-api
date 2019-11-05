@@ -117,6 +117,7 @@ public class TestUtils {
                         .navn(NAVN_BEDRIFT)
                         .organisasjonsnummer(ORGANISASJONSNUMMER)
                         .build())
+                .enhetsnummerPaaklaget(ENHETSNUMMER_PAAKLAGET)
                 .klagetyper(KLAGETYPER)
                 .klagetekst(KLAGETEKST)
                 .oenskerAaKontaktes(OENSKER_AA_KONTAKTES)

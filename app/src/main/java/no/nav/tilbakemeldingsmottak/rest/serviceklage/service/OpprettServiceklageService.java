@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
-import static no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfCreator.opprettPdf;
+import static no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService.opprettPdf;
 
 import com.itextpdf.text.DocumentException;
 import lombok.extern.slf4j.Slf4j;
