@@ -8,7 +8,6 @@ import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import no.nav.tilbakemeldingsmottak.consumer.aktoer.AktoerConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
-import no.nav.tilbakemeldingsmottak.exceptions.aktoer.AktoerTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
@@ -108,9 +107,7 @@ public class OpprettServiceklageValidator implements RequestValidator {
     }
 
     private void validateFnr(String fnr) {
-        try {
-            aktoerConsumer.hentAktoerIdForIdent(fnr);
-        } catch (AktoerTechnicalException e) {
+        if (aktoerConsumer.hentAktoerIdForIdent(fnr).get(fnr).getIdenter() == null) {
             throw new InvalidRequestException("Ugyldig personnummer: " + fnr);
         }
     }
