@@ -17,13 +17,13 @@ import org.slf4j.MDC;
 import java.io.ByteArrayOutputStream;
 import java.util.stream.Collectors;
 
-public final class PdfCreator {
+public final class PdfService {
 
     private static Font regular = new Font(Font.FontFamily.HELVETICA, 14);
     private static Font bold = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
     private static Font boldUnderline = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD|Font.UNDERLINE);
 
-    private PdfCreator() {
+    private PdfService() {
     }
 
     public static byte[] opprettPdf(OpprettServiceklageRequest request) throws DocumentException {
