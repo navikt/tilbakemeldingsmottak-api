@@ -2,7 +2,8 @@ package no.nav.tilbakemeldingsmottak.consumer.sts;
 
 import static no.nav.tilbakemeldingsmottak.util.RestSecurityHeadersUtils.createHeadersWithBasicAuth;
 
-import no.nav.tilbakemeldingsmottak.exceptions.TilbakemeldingsmottakTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.sts.StsFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.sts.StsTechnicalException;
 import no.nav.tilbakemeldingsmottak.integration.fasit.ServiceuserAlias;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -36,10 +37,10 @@ public class STSRestConsumer {
 			return restTemplate.exchange(stsUrl + "?grant_type=client_credentials&scope=openid",  HttpMethod.GET, new HttpEntity<>(httpHeaders), STSResponse.class);
 		} catch (
 				HttpClientErrorException e) {
-			throw new TilbakemeldingsmottakTechnicalException(String.format("Kallet til STS feilet med status=%s feilmelding=%s.", e.getStatusCode(), e.getMessage()), e);
+			throw new StsTechnicalException(String.format("Kallet til STS feilet med status=%s feilmelding=%s.", e.getStatusCode(), e.getMessage()), e);
 		} catch (
 				HttpServerErrorException e) {
-			throw new TilbakemeldingsmottakTechnicalException(String.format("Kallet til STS feilet teknisk med status=%s feilmelding=%s", e
+			throw new StsFunctionalException(String.format("Kallet til STS feilet teknisk med status=%s feilmelding=%s", e
 					.getStatusCode(), e.getMessage()), e);
 		}
 	}

@@ -9,7 +9,7 @@ import no.nav.security.oidc.context.TokenContext;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
-import no.nav.tilbakemeldingsmottak.exceptions.TilbakemeldingsmottakTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.OidcContextException;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
@@ -123,11 +123,10 @@ public class ServiceklageRestController {
     @Transactional
     @GetMapping(value = "/hentdokument/{journalpostId}")
     public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String journalpostId) {
-        String token = oidcRequestContextHolder.getOIDCValidationContext().getFirstValidToken()
-                .map(TokenContext::getIdToken)
-                .orElseThrow(() -> new TilbakemeldingsmottakTechnicalException("Feil i tokenvalideringsrammeverk"));
-
         try {
+            String token = oidcRequestContextHolder.getOIDCValidationContext().getFirstValidToken()
+                    .map(TokenContext::getIdToken)
+                    .orElseThrow(() -> new OidcContextException("Finner ikke validert OIDC-token"));
             HentDokumentResponse response = hentDokumentService.hentDokument(journalpostId, "Bearer " + token);
             return ResponseEntity
                     .status(HttpStatus.OK)
