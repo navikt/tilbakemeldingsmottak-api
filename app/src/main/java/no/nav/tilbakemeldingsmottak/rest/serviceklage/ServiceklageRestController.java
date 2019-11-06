@@ -102,7 +102,7 @@ public class ServiceklageRestController {
     }
 
     @Transactional
-    @GetMapping(value = "hentskjema/{journalpKlassifiserServiceklageValidatorTestostId}")
+    @GetMapping(value = "hentskjema/{journalpostId}")
     public ResponseEntity<HentSkjemaResponse> hentSkjema(@PathVariable String journalpostId) {
         try {
             HentSkjemaResponse response = hentSkjemaService.hentSkjema(journalpostId);
