@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support;
 
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -27,8 +28,8 @@ public class OpprettServiceklageRequestMapper {
                 .klagenGjelderId(findKlagenGjelderId(request))
                 .klagetyper(mapKlagetype(request.getKlagetyper()))
                 .klagetekst(request.getKlagetekst())
-                .svarmetode(request.getOenskerAaKontaktes() != null && request.getOenskerAaKontaktes() ? null : SVAR_IKKE_NOEDVENDIG_ANSWER)
-                .svarIkkeNoedvendig(request.getOenskerAaKontaktes() != null && request.getOenskerAaKontaktes() ? null : BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
+                .svarmetode(mapSvarmetode(request.getOenskerAaKontaktes()))
+                .svarmetodeUtdypning(mapSvarmetodeUtdypning(request.getOenskerAaKontaktes()))
                 .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
                 .enhetsnummerPaaklaget(!isBlank(request.getEnhetsnummerPaaklaget()) ? request.getEnhetsnummerPaaklaget() : null)
                 .build();
@@ -36,6 +37,22 @@ public class OpprettServiceklageRequestMapper {
 
     private String mapKlagetype(List<Klagetype> klagetype) {
         return StringUtils.join(klagetype.stream().map(k -> k.text).collect(Collectors.toList()), ", ");
+    }
+
+    private String mapSvarmetode(Boolean oenskerAaKontaktes) {
+        if (oenskerAaKontaktes == null) {
+            return SVAR_IKKE_NOEDVENDIG_ANSWER;
+        } else {
+            return oenskerAaKontaktes ? null : SVAR_IKKE_NOEDVENDIG_ANSWER;
+        }
+    }
+
+    private String mapSvarmetodeUtdypning(Boolean oenskerAaKontaktes) {
+        if (oenskerAaKontaktes == null) {
+            return INNMELDER_MANGLER_FULLMAKT_ANSWER;
+        } else {
+            return oenskerAaKontaktes ? null : BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
+        }
     }
 
     private String findKlagenGjelderId(OpprettServiceklageRequest request) {

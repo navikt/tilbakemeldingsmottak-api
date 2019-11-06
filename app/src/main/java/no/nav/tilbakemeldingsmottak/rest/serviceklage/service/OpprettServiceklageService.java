@@ -9,8 +9,10 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequ
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettJournalpostRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
@@ -46,7 +48,7 @@ public class OpprettServiceklageService {
         this.oppgaveConsumer = oppgaveConsumer;
     }
 
-    public Serviceklage opprettServiceklage(OpprettServiceklageRequest request) throws DocumentException {
+    public OpprettServiceklageResponse opprettServiceklage(OpprettServiceklageRequest request) throws DocumentException {
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request);
 
         byte[] fysiskDokument = opprettPdf(request);
@@ -55,12 +57,17 @@ public class OpprettServiceklageService {
         OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo);
 
         OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(serviceklage.getKlagenGjelderId(), request.getPaaVegneAv(), opprettJournalpostResponseTo);
-        oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
+        OpprettOppgaveResponseTo opprettOppgaveResponseTo = oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
 
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med serviceklageId={} persistert", serviceklage.getServiceklageId());
 
-        return serviceklage;
+        return OpprettServiceklageResponse.builder()
+                .message("Serviceklage opprettet")
+                .serviceklageId(serviceklage.getServiceklageId().toString())
+                .journalpostId(serviceklage.getJournalpostId())
+                .oppgaveId(opprettOppgaveResponseTo.getId())
+                .build();
     }
 }

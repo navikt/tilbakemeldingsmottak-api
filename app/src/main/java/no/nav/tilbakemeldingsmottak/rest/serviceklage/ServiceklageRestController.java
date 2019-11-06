@@ -16,7 +16,6 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServicek
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.HentDokumentService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.HentSkjemaService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserServiceklageService;
@@ -60,14 +59,10 @@ public class ServiceklageRestController {
     public ResponseEntity<OpprettServiceklageResponse> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws DocumentException {
         try {
             opprettServiceklageValidator.validateRequest(request);
-            Serviceklage serviceklage = opprettServiceklageService.opprettServiceklage(request);
+            OpprettServiceklageResponse opprettServiceklageResponse = opprettServiceklageService.opprettServiceklage(request);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(OpprettServiceklageResponse.builder()
-                            .message("Serviceklage opprettet")
-                            .serviceklageId(serviceklage.getServiceklageId().toString())
-                            .journalpostId(serviceklage.getJournalpostId())
-                            .build());
+                    .body(opprettServiceklageResponse);
         } catch (AbstractTilbakemeldingsmottakFunctionalException e) {
             log.warn("opprettServiceklage feilet funksjonelt. Feilmelding={}", e
                     .getMessage());
