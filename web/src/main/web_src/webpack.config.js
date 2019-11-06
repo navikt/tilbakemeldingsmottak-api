@@ -45,7 +45,7 @@ const webpackConfig = {
     hot: true,
     proxy: {
       "/rest/serviceklage": {
-        target: "https://tilbakemeldingsmottak-q1.nais.preprod.local",
+        target: "http://localhost:8080",
         secure: false,
         changeOrigin: true
       }
