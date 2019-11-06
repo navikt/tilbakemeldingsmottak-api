@@ -12,7 +12,7 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETYPER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ORGANISASJONSNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.SVARMETODE;
-import static no.nav.tilbakemeldingsmottak.TestUtils.SVAR_IKKE_NOEDVENDIG;
+import static no.nav.tilbakemeldingsmottak.TestUtils.SVARMETODE_UTDYPNING;
 import static no.nav.tilbakemeldingsmottak.TestUtils.TEMA;
 import static no.nav.tilbakemeldingsmottak.TestUtils.UTFALL;
 import static no.nav.tilbakemeldingsmottak.TestUtils.YTELSE;
@@ -58,7 +58,7 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getSvarmetode(), SVARMETODE);
-        assertEquals(serviceklage.getSvarIkkeNoedvendig(), SVAR_IKKE_NOEDVENDIG);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), SVARMETODE_UTDYPNING);
         assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
     }
 
@@ -78,7 +78,7 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getSvarmetode(), SVARMETODE);
-        assertEquals(serviceklage.getSvarIkkeNoedvendig(), SVAR_IKKE_NOEDVENDIG);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), SVARMETODE_UTDYPNING);
         assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
     }
 
@@ -98,7 +98,7 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertEquals(serviceklage.getSvarmetode(), SVARMETODE);
-        assertEquals(serviceklage.getSvarIkkeNoedvendig(), SVAR_IKKE_NOEDVENDIG);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), SVARMETODE_UTDYPNING);
         assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
     }
 
@@ -134,7 +134,7 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getTema(), TEMA);
         assertEquals(serviceklage.getUtfall(), UTFALL);
         assertEquals(serviceklage.getSvarmetode(), SVARMETODE);
-        assertEquals(serviceklage.getSvarIkkeNoedvendig(), SVAR_IKKE_NOEDVENDIG);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), SVARMETODE_UTDYPNING);
     }
 
     @Test
@@ -162,6 +162,6 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getTema(), TEMA);
         assertEquals(serviceklage.getUtfall(), UTFALL);
         assertEquals(serviceklage.getSvarmetode(), SVARMETODE);
-        assertEquals(serviceklage.getSvarIkkeNoedvendig(), SVAR_IKKE_NOEDVENDIG);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), SVARMETODE_UTDYPNING);
     }
 }

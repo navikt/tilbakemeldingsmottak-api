@@ -38,6 +38,8 @@ public class KlassifiserServiceklageService {
 
         KlassifiserServiceklageRequest.Answers answers = request.getAnswers();
 
+        // TODO: Fiks der flere mulige spørsmål lagres i samme kolonne i DB (XXX_UTDYPNING)
+
         serviceklage.setBehandlesSomServiceklage(answers.getBehandlesSomServiceklage());
         serviceklage.setFremmetDato(LocalDateTime.parse(answers.getFremmetDato()));
         serviceklage.setInnsender(answers.getInnsender());
@@ -48,10 +50,9 @@ public class KlassifiserServiceklageService {
         serviceklage.setGjelder(answers.getGjelder());
         serviceklage.setYtelse(answers.getYtelse());
         serviceklage.setTema(answers.getTema());
-        serviceklage.setVeiledning(answers.getVeiledning());
         serviceklage.setUtfall(answers.getUtfall());
         serviceklage.setSvarmetode(answers.getSvarmetode());
-        serviceklage.setSvarIkkeNoedvendig(answers.getSvarIkkeNoedvendig());
+        serviceklage.setSvarmetodeUtdypning(answers.getSvarIkkeNoedvendig());
 
         serviceklageRepository.save(serviceklage);
 

@@ -79,8 +79,8 @@ public class HentSkjemaService {
         if (serviceklage.getSvarmetode() != null) {
             defaultAnswers.put(SVARMETODE, serviceklage.getSvarmetode());
         }
-        if (serviceklage.getSvarIkkeNoedvendig() != null) {
-            defaultAnswers.put(SVAR_IKKE_NOEDVENDIG, serviceklage.getSvarIkkeNoedvendig());
+        if (serviceklage.getSvarmetodeUtdypning() != null) {
+            defaultAnswers.put(SVAR_IKKE_NOEDVENDIG, serviceklage.getSvarmetodeUtdypning());
         }
         return defaultAnswers;
     }

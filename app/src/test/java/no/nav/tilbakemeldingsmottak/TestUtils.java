@@ -70,7 +70,7 @@ public class TestUtils {
     public static final String VENTE = "Saksbehandlingstid";
     public static final String UTFALL = "a) Regler/rutiner/frister er fulgt - NAV har ivaretatt bruker godt";
     public static final String SVARMETODE = "Svar ikke nødvendig";
-    public static final String SVAR_IKKE_NOEDVENDIG = "Bruker ikke bedt om svar";
+    public static final String SVARMETODE_UTDYPNING = "Bruker ikke bedt om svar";
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatperson() {
         return OpprettServiceklageRequest.builder()
@@ -173,7 +173,7 @@ public class TestUtils {
                         .vente(VENTE)
                         .utfall(UTFALL)
                         .svarmetode(SVARMETODE)
-                        .svarIkkeNoedvendig(SVAR_IKKE_NOEDVENDIG)
+                        .svarIkkeNoedvendig(SVARMETODE_UTDYPNING)
                         .build()
                     )
                 .build();
