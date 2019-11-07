@@ -1,6 +1,8 @@
 package no.nav.tilbakemeldingsmottak;
 
 import static no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType.NAV_KONTAKTSENTER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -72,8 +74,6 @@ public class TestUtils {
     public static final String TEMA = "Vente på NAV";
     public static final String VENTE = "Saksbehandlingstid";
     public static final String UTFALL = "a) Regler/rutiner/frister er fulgt - NAV har ivaretatt bruker godt";
-    public static final String SVARMETODE = "Svar ikke nødvendig";
-    public static final String SVARMETODE_UTDYPNING = "Bruker ikke bedt om svar";
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatperson() {
         return OpprettServiceklageRequest.builder()
@@ -121,6 +121,20 @@ public class TestUtils {
                         .organisasjonsnummer(ORGANISASJONSNUMMER)
                         .build())
                 .enhetsnummerPaaklaget(ENHETSNUMMER_PAAKLAGET)
+                .klagetyper(KLAGETYPER)
+                .klagetekst(KLAGETEKST)
+                .oenskerAaKontaktes(OENSKER_AA_KONTAKTES)
+                .build();
+    }
+
+    public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatpersonLokaltKontor() {
+        return OpprettServiceklageRequest.builder()
+                .paaVegneAv(PaaVegneAvType.PRIVATPERSON)
+                .innmelder(Innmelder.builder()
+                        .navn(NAVN_INNMELDER)
+                        .telefonnummer(TELEFONNUMMER)
+                        .personnummer(PERSONNUMMER)
+                        .build())
                 .klagetyper(KLAGETYPER)
                 .klagetekst(KLAGETEKST)
                 .oenskerAaKontaktes(OENSKER_AA_KONTAKTES)
@@ -175,8 +189,8 @@ public class TestUtils {
                         .tema(TEMA)
                         .vente(VENTE)
                         .utfall(UTFALL)
-                        .svarmetode(SVARMETODE)
-                        .svarIkkeNoedvendig(SVARMETODE_UTDYPNING)
+                        .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)
+                        .svarIkkeNoedvendig(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
                         .build()
                     )
                 .build();
@@ -198,4 +212,11 @@ public class TestUtils {
         return response;
     }
 
+    public static Map<String, IdentInfoForAktoer> createInvalidHentAktoerIdForIdentResponse(String fnr) {
+        Map<String, IdentInfoForAktoer> response = new HashMap<>();
+        response.put(fnr, IdentInfoForAktoer.builder()
+                .identer(null)
+                .build());
+        return response;
+    }
 }

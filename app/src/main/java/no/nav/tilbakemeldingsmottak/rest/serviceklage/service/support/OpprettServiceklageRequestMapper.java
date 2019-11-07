@@ -27,6 +27,7 @@ public class OpprettServiceklageRequestMapper {
                 .innsender(request.getPaaVegneAv().text)
                 .klagenGjelderId(findKlagenGjelderId(request))
                 .klagetyper(mapKlagetype(request.getKlagetyper()))
+                .gjelderSosialhjelp(request.getGjelderSosialhjelp().text)
                 .klagetekst(request.getKlagetekst())
                 .svarmetode(mapSvarmetode(request.getOenskerAaKontaktes()))
                 .svarmetodeUtdypning(mapSvarmetodeUtdypning(request.getOenskerAaKontaktes()))

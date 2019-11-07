@@ -11,8 +11,6 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETEKST;
 import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETYPER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ORGANISASJONSNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER;
-import static no.nav.tilbakemeldingsmottak.TestUtils.SVARMETODE;
-import static no.nav.tilbakemeldingsmottak.TestUtils.SVARMETODE_UTDYPNING;
 import static no.nav.tilbakemeldingsmottak.TestUtils.TEMA;
 import static no.nav.tilbakemeldingsmottak.TestUtils.UTFALL;
 import static no.nav.tilbakemeldingsmottak.TestUtils.YTELSE;
@@ -20,10 +18,15 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServicekla
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvBedrift;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvPerson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.GjelderSosialhjelpType;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
@@ -36,6 +39,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.transaction.TestTransaction;
+
+import java.util.Arrays;
 
 class ServiceklageIT extends AbstractIT {
 
@@ -52,14 +57,16 @@ class ServiceklageIT extends AbstractIT {
 
         Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
         assertNotNull(serviceklage.getServiceklageId());
+        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
         assertNotNull(serviceklage.getOpprettetDato());
-        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.PRIVATPERSON.text);
         assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
         assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
-        assertEquals(serviceklage.getSvarmetode(), SVARMETODE);
-        assertEquals(serviceklage.getSvarmetodeUtdypning(), SVARMETODE_UTDYPNING);
-        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
+        assertNotNull(serviceklage.getFremmetDato());
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.PRIVATPERSON.text);
+        assertEquals(serviceklage.getKanal(), KANAL);
+        assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
     }
 
     @Test
@@ -72,14 +79,16 @@ class ServiceklageIT extends AbstractIT {
 
         Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
         assertNotNull(serviceklage.getServiceklageId());
+        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
         assertNotNull(serviceklage.getOpprettetDato());
-        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.ANNEN_PERSON.text);
         assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
         assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
-        assertEquals(serviceklage.getSvarmetode(), SVARMETODE);
-        assertEquals(serviceklage.getSvarmetodeUtdypning(), SVARMETODE_UTDYPNING);
-        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
+        assertNotNull(serviceklage.getFremmetDato());
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.ANNEN_PERSON.text);
+        assertEquals(serviceklage.getKanal(), KANAL);
+        assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
     }
 
     @Test
@@ -92,14 +101,109 @@ class ServiceklageIT extends AbstractIT {
 
         Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
         assertNotNull(serviceklage.getServiceklageId());
+        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
         assertNotNull(serviceklage.getOpprettetDato());
-        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.BEDRIFT.text);
         assertEquals(serviceklage.getKlagenGjelderId(), ORGANISASJONSNUMMER);
         assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
-        assertEquals(serviceklage.getSvarmetode(), SVARMETODE);
-        assertEquals(serviceklage.getSvarmetodeUtdypning(), SVARMETODE_UTDYPNING);
+        assertNotNull(serviceklage.getFremmetDato());
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.BEDRIFT.text);
+        assertEquals(serviceklage.getKanal(), KANAL);
+        assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
+    }
+
+    @Test
+    void happyPathOenskerAaKontaktes() {
+        OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
+        request.setOenskerAaKontaktes(true);
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
+        assertNotNull(serviceklage.getServiceklageId());
+        assertNotNull(serviceklage.getOpprettetDato());
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.PRIVATPERSON.text);
+        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
+        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
+        assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
+        assertEquals(serviceklage.getSvarmetode(), null);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), null);
         assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
+    }
+
+    @Test
+    void happyPathInnsenderManglerFullmakt() {
+        OpprettServiceklageRequest request = createOpprettServiceklageRequestPaaVegneAvPerson();
+        request.getInnmelder().setHarFullmakt(false);
+        request.setOenskerAaKontaktes(null);
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
+        assertNotNull(serviceklage.getServiceklageId());
+        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
+        assertNotNull(serviceklage.getOpprettetDato());
+        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
+        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
+        assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
+        assertNotNull(serviceklage.getFremmetDato());
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.ANNEN_PERSON.text);
+        assertEquals(serviceklage.getKanal(), KANAL);
+        assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), INNMELDER_MANGLER_FULLMAKT_ANSWER);
+    }
+
+    @Test
+    void happyPathFlereKlagetyper() {
+        OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
+        request.setKlagetyper(Arrays.asList(Klagetype.BREV, Klagetype.TELEFON));
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
+        assertNotNull(serviceklage.getServiceklageId());
+        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
+        assertNotNull(serviceklage.getOpprettetDato());
+        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
+        assertEquals(serviceklage.getKlagetyper(), Klagetype.BREV.text + ", " + Klagetype.TELEFON.text);
+        assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
+        assertNotNull(serviceklage.getFremmetDato());
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.PRIVATPERSON.text);
+        assertEquals(serviceklage.getKanal(), KANAL);
+        assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
+    }
+
+    @Test
+    void happyPathLokaltKontor() {
+        OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
+        request.setKlagetyper(Arrays.asList(Klagetype.LOKALT_NAV_KONTOR));
+        request.setGjelderSosialhjelp(GjelderSosialhjelpType.JA);
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
+        assertNotNull(serviceklage.getServiceklageId());
+        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
+        assertNotNull(serviceklage.getOpprettetDato());
+        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
+        assertEquals(serviceklage.getKlagetyper(), Klagetype.LOKALT_NAV_KONTOR.text);
+        assertEquals(serviceklage.getGjelderSosialhjelp(), GjelderSosialhjelpType.JA.text);
+        assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
+        assertNotNull(serviceklage.getFremmetDato());
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.PRIVATPERSON.text);
+        assertEquals(serviceklage.getKanal(), KANAL);
+        assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
     }
 
     @Test
@@ -133,8 +237,8 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getYtelse(), YTELSE);
         assertEquals(serviceklage.getTema(), TEMA);
         assertEquals(serviceklage.getUtfall(), UTFALL);
-        assertEquals(serviceklage.getSvarmetode(), SVARMETODE);
-        assertEquals(serviceklage.getSvarmetodeUtdypning(), SVARMETODE_UTDYPNING);
+        assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
     }
 
     @Test
@@ -161,7 +265,7 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getYtelse(), YTELSE);
         assertEquals(serviceklage.getTema(), TEMA);
         assertEquals(serviceklage.getUtfall(), UTFALL);
-        assertEquals(serviceklage.getSvarmetode(), SVARMETODE);
-        assertEquals(serviceklage.getSvarmetodeUtdypning(), SVARMETODE_UTDYPNING);
+        assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
+        assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
     }
 }

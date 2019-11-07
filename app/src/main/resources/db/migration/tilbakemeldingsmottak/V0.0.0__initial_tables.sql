@@ -4,6 +4,7 @@ CREATE TABLE serviceklage (
   OPPRETTET_DATO                              TIMESTAMP NOT NULL,
   KLAGEN_GJELDER_ID                           VARCHAR2(15),
   KLAGETYPER                                  VARCHAR2(200),
+  GJELDER_SOSIALHJELP                         VARCHAR2(100),
   KLAGETEKST                                  CLOB,
   BEHANDLES_SOM_SERVICEKLAGE                  VARCHAR2(100),
   BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING        VARCHAR2(2000),

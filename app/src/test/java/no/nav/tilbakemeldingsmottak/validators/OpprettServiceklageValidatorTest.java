@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.validators;
 
 import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createHentAktoerIdForIdentResponse;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createInvalidHentAktoerIdForIdentResponse;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvBedrift;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvPerson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.when;
 import no.nav.tilbakemeldingsmottak.consumer.aktoer.AktoerConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
+import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
@@ -278,5 +280,23 @@ public class OpprettServiceklageValidatorTest {
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
         assertTrue(thrown.getMessage().contains("enhetsnummerPaaklaget må ha fire siffer"));
+    }
+
+    @Test
+    public void shouldThrowExceptionIfPersonnummerNotValid() {
+        when(aktoerConsumer.hentAktoerIdForIdent(anyString())).thenReturn(createInvalidHentAktoerIdForIdentResponse(PERSONNUMMER));
+        opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
+        Exception thrown = assertThrows(InvalidRequestException.class,
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
+        assertTrue(thrown.getMessage().contains("Oppgitt personnummer er ikke gyldig"));
+    }
+
+    @Test
+    public void shouldThrowExceptionIfOrganisasjonsnummerNotValid() {
+        when(eregConsumer.hentInfo(anyString())).thenThrow(EregFunctionalException.class);
+        opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
+        Exception thrown = assertThrows(InvalidRequestException.class,
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
+        assertTrue(thrown.getMessage().contains("Oppgitt organisasjonsnummer er ikke gyldig"));
     }
 }
