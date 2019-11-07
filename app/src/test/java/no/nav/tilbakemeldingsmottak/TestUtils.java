@@ -5,6 +5,7 @@ import static no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType.NAV_KON
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.SneakyThrows;
+import no.nav.tilbakemeldingsmottak.consumer.aktoer.domain.IdentInfoForAktoer;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.Tidsrom;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.Feiltype;
@@ -25,7 +26,9 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TestUtils {
 
@@ -185,6 +188,14 @@ public class TestUtils {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         String classpathSkjema = StreamUtils.copyToString(schema, Charset.forName("utf-8"));
         return mapper.readValue(classpathSkjema, HentSkjemaResponse.class);
+    }
+
+    public static Map<String, IdentInfoForAktoer> createHentAktoerIdForIdentResponse(String fnr) {
+        Map<String, IdentInfoForAktoer> response = new HashMap<>();
+        response.put(fnr, IdentInfoForAktoer.builder()
+                .identer(Collections.singletonList(IdentInfoForAktoer.IdentInfo.builder().build()))
+                .build());
+        return response;
     }
 
 }

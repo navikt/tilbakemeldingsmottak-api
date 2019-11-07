@@ -1,5 +1,7 @@
 package no.nav.tilbakemeldingsmottak.validators;
 
+import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createHentAktoerIdForIdentResponse;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvBedrift;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvPerson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
@@ -22,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
-import java.util.HashMap;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OpprettServiceklageValidatorTest {
@@ -36,7 +37,7 @@ public class OpprettServiceklageValidatorTest {
     @Before
     public void setup() {
         when(eregConsumer.hentInfo(anyString())).thenReturn("");
-        when(aktoerConsumer.hentAktoerIdForIdent(anyString())).thenReturn(new HashMap<>());
+        when(aktoerConsumer.hentAktoerIdForIdent(anyString())).thenReturn(createHentAktoerIdForIdentResponse(PERSONNUMMER));
     }
 
     @Test
