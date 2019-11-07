@@ -46,7 +46,7 @@ public class TestUtils {
     public static final String NAVN_BEDRIFT= "Bedrift AS";
     public static final String ORGANISASJONSNUMMER= "123456789";
 
-    public static final List<Klagetype> KLAGETYPER = Collections.singletonList(Klagetype.NAVS_DIGITALE_TJENESTER);
+    public static final List<Klagetype> KLAGETYPER = Collections.singletonList(Klagetype.NAV_DIGITALE_TJENESTER);
     public static final String KLAGETEKST = "Saksbehandleren var slem";
     public static final Boolean OENSKER_AA_KONTAKTES = Boolean.FALSE;
 
