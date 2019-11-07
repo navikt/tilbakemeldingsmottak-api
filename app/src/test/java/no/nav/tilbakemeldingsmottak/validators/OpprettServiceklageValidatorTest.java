@@ -18,6 +18,7 @@ import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
+import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +27,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OpprettServiceklageValidatorTest {
@@ -34,12 +36,14 @@ public class OpprettServiceklageValidatorTest {
 
     @Mock EregConsumer eregConsumer;
     @Mock AktoerConsumer aktoerConsumer;
+    @Mock OidcUtils oidcUtils;
     @InjectMocks OpprettServiceklageValidator opprettServiceklageValidator;
 
     @Before
     public void setup() {
         when(eregConsumer.hentInfo(anyString())).thenReturn("");
         when(aktoerConsumer.hentAktoerIdForIdent(anyString())).thenReturn(createHentAktoerIdForIdentResponse(PERSONNUMMER));
+        when(oidcUtils.getSubjectForIssuer(anyString())).thenReturn(Optional.empty());
     }
 
     @Test
