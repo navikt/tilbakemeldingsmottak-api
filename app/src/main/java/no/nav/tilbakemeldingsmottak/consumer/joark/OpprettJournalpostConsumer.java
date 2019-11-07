@@ -52,7 +52,7 @@ public class OpprettJournalpostConsumer {
 
 			HttpHeaders headers = restSecurityHeadersUtils.createOidcHeaders();
 			headers.set("Nav-Callid", MDC.get(MDC_CALL_ID));
-			headers.set("Nav-Consumerid", MDC.get(MDC_CALL_ID));
+			headers.set("Nav-Consumer-Id", MDC.get(MDC_CALL_ID));
 
 			HttpEntity<OpprettJournalpostRequestTo> requestEntity = new HttpEntity<>(opprettJournalpostRequestTo, headers);
 

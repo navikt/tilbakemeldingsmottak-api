@@ -27,9 +27,6 @@ public class RestConfig {
 				.basicAuthentication(serviceuserAlias.getUsername(), serviceuserAlias.getPassword())
 				.interceptors((request, body, execution)->{
 					request.getHeaders().add(MDCConstants.MDC_CALL_ID, MDC.get(MDCConstants.MDC_CALL_ID));
-
-					String userId = MDC.get(MDCConstants.MDC_USER_ID);
-					request.getHeaders().add(MDCConstants.MDC_USER_ID, userId == null ? "UKJENT" : userId);
 					return execution.execute(request, body);
 				})
 				.setConnectTimeout(Duration.ofSeconds(10))

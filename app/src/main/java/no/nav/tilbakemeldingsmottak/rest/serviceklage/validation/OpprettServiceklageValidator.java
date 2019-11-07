@@ -1,10 +1,10 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype.LOKALT_NAV_KONTOR;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import no.nav.tilbakemeldingsmottak.consumer.aktoer.AktoerConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
@@ -12,9 +12,10 @@ import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.MDC;
+import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -22,9 +23,10 @@ public class OpprettServiceklageValidator implements RequestValidator {
 
     private final EregConsumer eregConsumer;
     private final AktoerConsumer aktoerConsumer;
+    private final OidcUtils oidcUtils;
 
     private static final int ENHETSNUMMER_LENGTH = 4;
-
+    private static final String LOGIN_SELVBETJENING_ISSUER = AZURE_ISSUER;
     public void validateRequest(OpprettServiceklageRequest request) {
         validateCommonRequiredFields(request);
 
@@ -57,11 +59,6 @@ public class OpprettServiceklageValidator implements RequestValidator {
         isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes", " dersom paaVegneAv=PRIVATPERSON");
         if (request.getOenskerAaKontaktes()) {
             hasText(request.getInnmelder().getTelefonnummer(), "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true");
-        }
-
-        if (StringUtils.isNotBlank(MDC.get(MDCConstants.MDC_USER_ID))
-                && !request.getInnmelder().getPersonnummer().equals(MDC.get(MDCConstants.MDC_USER_ID))) {
-            throw new InvalidRequestException("innmelder.personnummer samsvarer ikke med brukertoken");
         }
 
         validateFnr(request.getInnmelder().getPersonnummer());
@@ -107,16 +104,25 @@ public class OpprettServiceklageValidator implements RequestValidator {
     }
 
     private void validateFnr(String fnr) {
+        // Valider at fnr eksisterer
         if (aktoerConsumer.hentAktoerIdForIdent(fnr).get(fnr).getIdenter() == null) {
-            throw new InvalidRequestException("Ugyldig personnummer: " + fnr);
+            throw new InvalidRequestException("Oppgitt personnummer er ikke gyldig");
+        }
+
+        // Valider at fnr i token matcher fnr i request
+        Optional<String> subject = oidcUtils.getSubjectForIssuer(LOGIN_SELVBETJENING_ISSUER);
+        if (subject.isPresent()
+                && !fnr.equals(subject.get())) {
+            throw new InvalidRequestException("innmelder.personnummer samsvarer ikke med brukertoken");
         }
     }
 
     private void validateOrgnr(String orgnr) {
+        // Valider at orgnr eksisterer
         try {
             eregConsumer.hentInfo(orgnr);
         } catch (EregFunctionalException | EregTechnicalException e) {
-            throw new InvalidRequestException("Ugyldig organisasjonsnummer: " + orgnr);
+            throw new InvalidRequestException("Oppgitt organisasjonsnummer er ikke gyldig");
         }
     }
 }

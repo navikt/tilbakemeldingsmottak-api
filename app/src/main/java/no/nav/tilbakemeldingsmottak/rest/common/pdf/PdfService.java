@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.common.pdf;
 
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.itextpdf.text.Chunk;
@@ -8,25 +9,27 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
-import no.nav.tilbakemeldingsmottak.config.MDCConstants;
+import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.MDC;
+import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.util.stream.Collectors;
 
+@Component
+@RequiredArgsConstructor
 public final class PdfService {
 
-    private static Font regular = new Font(Font.FontFamily.HELVETICA, 14);
-    private static Font bold = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
-    private static Font boldUnderline = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD|Font.UNDERLINE);
+    private Font regular = new Font(Font.FontFamily.HELVETICA, 14);
+    private Font bold = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
+    private Font boldUnderline = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD|Font.UNDERLINE);
 
-    private PdfService() {
-    }
+    private final OidcUtils oidcUtils;
 
-    public static byte[] opprettPdf(OpprettServiceklageRequest request) throws DocumentException {
+    public byte[] opprettPdf(OpprettServiceklageRequest request) throws DocumentException {
         Document document = new Document();
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -34,7 +37,7 @@ public final class PdfService {
 
         document.open();
 
-        if (isBlank(MDC.get(MDCConstants.MDC_USER_ID))) {
+        if (!oidcUtils.getSubjectForIssuer(AZURE_ISSUER).isPresent()) {
             document.add(createUinnloggetHeader());
             document.add(Chunk.NEWLINE);
         }
@@ -81,14 +84,14 @@ public final class PdfService {
         return stream.toByteArray();
     }
 
-    private static Paragraph createParagraph(String fieldname, String content) {
+    private Paragraph createParagraph(String fieldname, String content) {
         Paragraph p = new Paragraph();
         p.add(new Chunk(fieldname + ": ", bold));
         p.add(new Chunk(content, regular));
         return p;
     }
 
-    private static Paragraph createUinnloggetHeader() {
+    private Paragraph createUinnloggetHeader() {
         Paragraph p = new Paragraph();
         p.add(new Chunk("OBS! Klagen er sendt inn uinnlogget", boldUnderline));
         return p;
