@@ -32,7 +32,6 @@ public class RosService {
 
     public void sendRos(SendRosRequest request) throws MessagingException {
         sendEmail(request);
-        log.info("Ros sendt");
     }
 
     private void sendEmail(SendRosRequest request) throws MessagingException {
@@ -42,8 +41,10 @@ public class RosService {
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
         helper.setTo(emailToAddress);
         helper.setFrom(emailFromAddress);
-        helper.setSubject("Ros mottatt");
+        helper.setSubject("Ros sendt inn via skjema på nav.no");
         emailService.sendMail(message);
+
+        log.info("Ros videresendt til " + emailToAddress);
     }
 
     private String createContent(SendRosRequest request) {
