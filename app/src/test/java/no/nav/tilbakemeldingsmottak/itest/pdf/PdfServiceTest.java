@@ -1,11 +1,13 @@
 package no.nav.tilbakemeldingsmottak.itest.pdf;
 
+import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvBedrift;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvPerson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatpersonLokaltKontor;
 import static no.nav.tilbakemeldingsmottak.TestUtils.getStringFromByteArrayPdf;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -51,6 +53,7 @@ public class PdfServiceTest {
         String content = getStringFromByteArrayPdf(pdf);
 
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
+        assertTrue(content.contains("OBS! Klagen er sendt inn uinnlogget"));
     }
 
     @Test
@@ -60,6 +63,7 @@ public class PdfServiceTest {
         String content = getStringFromByteArrayPdf(pdf);
 
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
+        assertTrue(content.contains("OBS! Klagen er sendt inn uinnlogget"));
     }
 
     @Test
@@ -69,6 +73,7 @@ public class PdfServiceTest {
         String content = getStringFromByteArrayPdf(pdf);
 
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
+        assertTrue(content.contains("OBS! Klagen er sendt inn uinnlogget"));
     }
 
     @Test
@@ -80,6 +85,7 @@ public class PdfServiceTest {
         String content = getStringFromByteArrayPdf(pdf);
 
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
+        assertTrue(content.contains("OBS! Klagen er sendt inn uinnlogget"));
     }
 
     @Test
@@ -89,6 +95,18 @@ public class PdfServiceTest {
         String content = getStringFromByteArrayPdf(pdf);
 
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
+        assertTrue(content.contains("OBS! Klagen er sendt inn uinnlogget"));
+    }
+
+    @Test
+    public void happyPathInnlogget() throws DocumentException, IOException {
+        when(oidcUtils.getSubjectForIssuer(anyString())).thenReturn(Optional.of(PERSONNUMMER));
+        opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
+        byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
+        String content = getStringFromByteArrayPdf(pdf);
+
+        assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
+        assertFalse(content.contains("OBS! Klagen er sendt inn uinnlogget"));
     }
 
     private void assertPdfContainsContentFromRequest(OpprettServiceklageRequest request, String content) {

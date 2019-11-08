@@ -52,7 +52,6 @@ public class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         opprettServiceklageValidator.validateRequest(opprettServiceklageRequest);
     }
-
     @Test
     public void happyPathPaaVegneAvPerson() {
         opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvPerson();
@@ -62,6 +61,13 @@ public class OpprettServiceklageValidatorTest {
     @Test
     public void happyPathPaaVegneAvBedrift() {
         opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
+        opprettServiceklageValidator.validateRequest(opprettServiceklageRequest);
+    }
+
+    @Test
+    public void happyPathInnlogget() {
+        when(oidcUtils.getSubjectForIssuer(anyString())).thenReturn(Optional.of(PERSONNUMMER));
+        opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         opprettServiceklageValidator.validateRequest(opprettServiceklageRequest);
     }
 
@@ -303,5 +309,14 @@ public class OpprettServiceklageValidatorTest {
         Exception thrown = assertThrows(InvalidIdentException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
         assertTrue(thrown.getMessage().contains("Oppgitt organisasjonsnummer er ikke gyldig"));
+    }
+
+    @Test
+    public void shouldThrowExceptionIfPersonnummerDoesntMatchTokenIdent() {
+        when(oidcUtils.getSubjectForIssuer(anyString())).thenReturn(Optional.of("12345678901"));
+        opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
+        Exception thrown = assertThrows(InvalidRequestException.class,
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
+        assertTrue(thrown.getMessage().contains("innmelder.personnummer samsvarer ikke med brukertoken"));
     }
 }
