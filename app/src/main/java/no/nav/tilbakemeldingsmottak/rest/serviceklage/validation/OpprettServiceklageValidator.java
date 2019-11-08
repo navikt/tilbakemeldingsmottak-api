@@ -61,7 +61,8 @@ public class OpprettServiceklageValidator implements RequestValidator {
             hasText(request.getInnmelder().getTelefonnummer(), "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true");
         }
 
-        validateFnr(request.getInnmelder().getPersonnummer());
+        validateFnrExists(request.getInnmelder().getPersonnummer());
+        validateRequestFnrMatchesTokenFnr(request.getInnmelder().getPersonnummer());
     }
 
     private void validatePaaVegneAvAnnenPerson(OpprettServiceklageRequest request) {
@@ -79,7 +80,7 @@ public class OpprettServiceklageValidator implements RequestValidator {
         hasText(request.getPaaVegneAvPerson().getNavn(), "paaVegneAvPerson.navn");
         hasText(request.getPaaVegneAvPerson().getPersonnummer(), "paaVegneAvPerson.personnummer");
 
-        validateFnr(request.getPaaVegneAvPerson().getPersonnummer());
+        validateFnrExists(request.getPaaVegneAvPerson().getPersonnummer());
     }
 
     private void validatePaaVegneAvBedrift(OpprettServiceklageRequest request) {
@@ -100,29 +101,28 @@ public class OpprettServiceklageValidator implements RequestValidator {
             hasText(request.getInnmelder().getTelefonnummer(), "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true");
         }
 
-        validateOrgnr(request.getPaaVegneAvBedrift().getOrganisasjonsnummer());
+        validateOrgnrExists(request.getPaaVegneAvBedrift().getOrganisasjonsnummer());
     }
 
-    private void validateFnr(String fnr) {
-        // Valider at fnr eksisterer
+    private void validateFnrExists(String fnr) {
         if (aktoerConsumer.hentAktoerIdForIdent(fnr).get(fnr).getIdenter() == null) {
             throw new InvalidRequestException("Oppgitt personnummer er ikke gyldig");
         }
-
-        // Valider at fnr i token matcher fnr i request
-        Optional<String> subject = oidcUtils.getSubjectForIssuer(LOGIN_SELVBETJENING_ISSUER);
-        if (subject.isPresent()
-                && !fnr.equals(subject.get())) {
-            throw new InvalidRequestException("innmelder.personnummer samsvarer ikke med brukertoken");
-        }
     }
 
-    private void validateOrgnr(String orgnr) {
-        // Valider at orgnr eksisterer
+    private void validateOrgnrExists(String orgnr) {
         try {
             eregConsumer.hentInfo(orgnr);
         } catch (EregFunctionalException | EregTechnicalException e) {
             throw new InvalidRequestException("Oppgitt organisasjonsnummer er ikke gyldig");
+        }
+    }
+
+    private void validateRequestFnrMatchesTokenFnr(String fnr) {
+        Optional<String> subject = oidcUtils.getSubjectForIssuer(LOGIN_SELVBETJENING_ISSUER);
+        if (subject.isPresent()
+                && !fnr.equals(subject.get())) {
+            throw new InvalidRequestException("innmelder.personnummer samsvarer ikke med brukertoken");
         }
     }
 }

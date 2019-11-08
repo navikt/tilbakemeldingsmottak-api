@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.common.pdf;
 
 import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.itextpdf.text.Chunk;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 public final class PdfService {
 
     private Font regular = new Font(Font.FontFamily.HELVETICA, 14);
-    private Font bold = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
+    private Font bold = new  Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
     private Font boldUnderline = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD|Font.UNDERLINE);
 
     private final OidcUtils oidcUtils;
@@ -42,11 +43,10 @@ public final class PdfService {
             document.add(Chunk.NEWLINE);
         }
 
+        document.add(createParagraph("Kanal", KANAL_SERVICEKLAGESKJEMA_ANSWER));
+
         if (!isBlank(request.getInnmelder().getNavn())) {
             document.add(createParagraph("Navn til innmelder", request.getInnmelder().getNavn()));
-        }
-        if (!isBlank(request.getInnmelder().getTelefonnummer())) {
-            document.add(createParagraph("Telefonnummer til innmelder", request.getInnmelder().getTelefonnummer()));
         }
 
         switch (request.getPaaVegneAv()) {
@@ -77,7 +77,9 @@ public final class PdfService {
         if (request.getOenskerAaKontaktes() != null) {
             document.add(createParagraph("Ønsker å kontaktes", request.getOenskerAaKontaktes() ? "Ja" : "Nei"));
         }
-        document.add(createParagraph("Kanal", "Nav.no"));
+        if (!isBlank(request.getInnmelder().getTelefonnummer())) {
+            document.add(createParagraph("Telefonnummer til innmelder", request.getInnmelder().getTelefonnummer()));
+        }
 
         document.close();
 
