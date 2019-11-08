@@ -7,6 +7,7 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.consumer.aktoer.AktoerConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
+import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
@@ -106,7 +107,7 @@ public class OpprettServiceklageValidator implements RequestValidator {
 
     private void validateFnrExists(String fnr) {
         if (aktoerConsumer.hentAktoerIdForIdent(fnr).get(fnr).getIdenter() == null) {
-            throw new InvalidRequestException("Oppgitt personnummer er ikke gyldig");
+            throw new InvalidIdentException("Oppgitt personnummer er ikke gyldig");
         }
     }
 
@@ -114,7 +115,7 @@ public class OpprettServiceklageValidator implements RequestValidator {
         try {
             eregConsumer.hentInfo(orgnr);
         } catch (EregFunctionalException | EregTechnicalException e) {
-            throw new InvalidRequestException("Oppgitt organisasjonsnummer er ikke gyldig");
+            throw new InvalidIdentException("Oppgitt organisasjonsnummer er ikke gyldig");
         }
     }
 

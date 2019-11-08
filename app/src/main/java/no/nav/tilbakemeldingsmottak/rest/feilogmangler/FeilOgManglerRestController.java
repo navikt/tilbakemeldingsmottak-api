@@ -44,7 +44,7 @@ public class FeilOgManglerRestController {
             throw e;
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
             log.warn("meldFeilOgMangler feilet teknisk. Feilmelding={}", e
-                    .getMessage());
+                    .getMessage(), e);
             throw e;
         }
     }

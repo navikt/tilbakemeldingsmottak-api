@@ -44,7 +44,7 @@ public class RosRestController {
             throw e;
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
             log.warn("sendRos feilet teknisk. Feilmelding={}", e
-                    .getMessage());
+                    .getMessage(), e);
             throw e;
         }
     }

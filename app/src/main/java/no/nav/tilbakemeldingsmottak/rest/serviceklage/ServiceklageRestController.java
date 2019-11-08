@@ -1,5 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
+import static no.nav.tilbakemeldingsmottak.util.ErrorResponseUtils.createOpprettServiceklageErrorResponse;
+
 import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +11,7 @@ import no.nav.security.oidc.context.TokenContext;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.OidcContextException;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
@@ -52,8 +55,6 @@ public class ServiceklageRestController {
     private final OppgaveConsumer oppgaveConsumer;
 
 
-
-
     @Transactional
     @PostMapping
     public ResponseEntity<OpprettServiceklageResponse> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws DocumentException {
@@ -63,14 +64,18 @@ public class ServiceklageRestController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(opprettServiceklageResponse);
+        } catch (InvalidIdentException e) {
+            log.warn("opprettServiceklage feilet funksjonelt. Feilmelding={}", e
+                    .getMessage());
+            return createOpprettServiceklageErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (AbstractTilbakemeldingsmottakFunctionalException e) {
             log.warn("opprettServiceklage feilet funksjonelt. Feilmelding={}", e
                     .getMessage());
-            throw e;
+            return createOpprettServiceklageErrorResponse(HttpStatus.BAD_REQUEST, "Oi, noe gikk galt!");
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
             log.warn("opprettServiceklage feilet teknisk. Feilmelding={}", e
-                    .getMessage());
-            throw e;
+                    .getMessage(), e);
+            return createOpprettServiceklageErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Oi, noe gikk galt!");
         }
     }
 
@@ -91,7 +96,7 @@ public class ServiceklageRestController {
             throw e;
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
             log.warn("klassifiserServiceklage feilet teknisk. Feilmelding={}", e
-                    .getMessage());
+                    .getMessage(), e);
             throw e;
         }
     }
@@ -110,7 +115,7 @@ public class ServiceklageRestController {
             throw e;
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
             log.warn("hentSkjema feilet teknisk. Feilmelding={}", e
-                    .getMessage());
+                    .getMessage(), e);
             throw e;
         }
     }
@@ -132,7 +137,7 @@ public class ServiceklageRestController {
             throw e;
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
             log.warn("hentDokument feilet teknisk. Feilmelding={}", e
-                    .getMessage());
+                    .getMessage(), e);
             throw e;
         }
     }
