@@ -2,10 +2,13 @@ package no.nav.tilbakemeldingsmottak;
 
 import static no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType.NAV_KONTAKTSENTER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import lombok.SneakyThrows;
 import no.nav.tilbakemeldingsmottak.consumer.aktoer.domain.IdentInfoForAktoer;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
@@ -14,6 +17,7 @@ import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.Feiltype;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.GjelderSosialhjelpType;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Innmelder;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
@@ -24,6 +28,7 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvPerson;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
 import org.springframework.util.StreamUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
@@ -47,6 +52,7 @@ public class TestUtils {
     public static final String ORGANISASJONSNUMMER= "123456789";
 
     public static final List<Klagetype> KLAGETYPER = Collections.singletonList(Klagetype.NAV_DIGITALE_TJENESTER);
+    public static final List<Klagetype> KLAGETYPER_NAV_KONTOR = Collections.singletonList(Klagetype.LOKALT_NAV_KONTOR);
     public static final String KLAGETEKST = "Saksbehandleren var slem";
     public static final Boolean OENSKER_AA_KONTAKTES = Boolean.FALSE;
 
@@ -65,7 +71,6 @@ public class TestUtils {
     public static final String BEHANDLES_SOM_SERVICEKLAGE = "Ja";
     public static final String FREMMET_DATO = LocalDateTime.now().toString();
     public static final String INNSENDER = "Bruker selv som privatperson";
-    public static final String KANAL = "Serviceklageskjema på nav.no";
     public static final String PAAKLAGET_ENHET_ER_BEHANDLENDE = "Nei";
     public static final String ENHETSNUMMER_PAAKLAGET = "1234";
     public static final String ENHETSNUMMER_BEHANDLENDE = "4321";
@@ -135,7 +140,8 @@ public class TestUtils {
                         .telefonnummer(TELEFONNUMMER)
                         .personnummer(PERSONNUMMER)
                         .build())
-                .klagetyper(KLAGETYPER)
+                .klagetyper(KLAGETYPER_NAV_KONTOR)
+                .gjelderSosialhjelp(GjelderSosialhjelpType.JA)
                 .klagetekst(KLAGETEKST)
                 .oenskerAaKontaktes(OENSKER_AA_KONTAKTES)
                 .build();
@@ -180,7 +186,7 @@ public class TestUtils {
                         .behandlesSomServiceklage(BEHANDLES_SOM_SERVICEKLAGE)
                         .fremmetDato(FREMMET_DATO)
                         .innsender(INNSENDER)
-                        .kanal(KANAL)
+                        .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
                         .paaklagetEnhetErBehandlende(PAAKLAGET_ENHET_ER_BEHANDLENDE)
                         .enhetsnummerPaaklaget(ENHETSNUMMER_PAAKLAGET)
                         .enhetsnummerBehandlende(ENHETSNUMMER_BEHANDLENDE)
@@ -218,5 +224,15 @@ public class TestUtils {
                 .identer(null)
                 .build());
         return response;
+    }
+
+    public static String getStringFromByteArrayPdf(byte[] bytes) throws IOException {
+        PdfReader reader = new PdfReader(bytes);
+        int numPages = reader.getNumberOfPages();
+        StringBuilder s = new StringBuilder();
+        for (int i = 1; i <= numPages; i++) {
+            s.append(PdfTextExtractor.getTextFromPage(reader, i));
+        }
+        return s.toString();
     }
 }
