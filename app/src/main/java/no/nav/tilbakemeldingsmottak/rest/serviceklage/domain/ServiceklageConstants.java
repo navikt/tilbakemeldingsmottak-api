@@ -42,7 +42,7 @@ public final class ServiceklageConstants {
     public static final String SCHEMA_VERSION = "SCHEMA_VERSION";
     public static final String SVAR_IKKE_NOEDVENDIG_ANSWER = "Svar ikke nødvendig";
     public static final String BRUKER_IKKE_BEDT_OM_SVAR_ANSWER = "Bruker ikke bedt om svar";
-    public static final String INNMELDER_MANGLER_FULLMAKT_ANSWER = "Nei, innsender har ikke fullmakt på vegne av bruker";
+    public static final String INNMELDER_MANGLER_FULLMAKT_ANSWER = "Innmelder har ikke fullmakt på vegne av bruker";
     public static final String KANAL_SERVICEKLAGESKJEMA_ANSWER = "Serviceklageskjema på nav.no";
     public static final String NONE = "none";
 
