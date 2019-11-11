@@ -26,6 +26,6 @@ CREATE TABLE serviceklage (
   SVARMETODE                                  VARCHAR2(100),
   SVARMETODE_UTDYPNING                        VARCHAR2(2000),
   AVSLUTTET_DATO                              TIMESTAMP,
-  SCHEMA_VERSION                              NUMBER,
+  SKJEMA_VERSJON                              NUMBER,
   KLASSIFISERING_JSON                         CLOB
 );
