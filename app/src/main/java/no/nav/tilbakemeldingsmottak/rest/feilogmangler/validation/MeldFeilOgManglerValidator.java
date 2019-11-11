@@ -5,7 +5,7 @@ import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerR
 import org.springframework.stereotype.Component;
 
 @Component
-public class MeldFeilOgManglerValidator implements RequestValidator {
+public class MeldFeilOgManglerValidator extends RequestValidator {
 
     public void validateRequest(MeldFeilOgManglerRequest request) {
         isNotNull(request.getOnskerKontakt(), "onskerKontakt");

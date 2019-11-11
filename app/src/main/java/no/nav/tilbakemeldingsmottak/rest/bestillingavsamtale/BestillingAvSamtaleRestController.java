@@ -2,8 +2,6 @@ package no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
-import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleResponse;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.service.BestillingAvSamtaleService;
@@ -38,20 +36,10 @@ public class BestillingAvSamtaleRestController {
     @Transactional
     @PostMapping
     public ResponseEntity<BestillSamtaleResponse> sendRos(@RequestBody BestillSamtaleRequest request) throws MessagingException {
-        try {
             bestillSamtaleValidator.validateRequest(request);
             bestillingAvSamtaleService.bestillSamtale(request);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(BestillSamtaleResponse.builder().message("Samtale bestilt").build());
-        } catch (AbstractTilbakemeldingsmottakFunctionalException e) {
-            log.warn("bestillSamtale feilet funksjonelt. Feilmelding={}", e
-                    .getMessage());
-            throw e;
-        } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
-            log.warn("bestillSamtale feilet teknisk. Feilmelding={}", e
-                    .getMessage(), e);
-            throw e;
-        }
     }
 }

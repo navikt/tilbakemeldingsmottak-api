@@ -11,6 +11,7 @@ import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
+import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
@@ -20,11 +21,13 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class OpprettServiceklageValidator implements RequestValidator {
+public class OpprettServiceklageValidator extends RequestValidator {
 
     private final EregConsumer eregConsumer;
     private final AktoerConsumer aktoerConsumer;
     private final OidcUtils oidcUtils;
+    private final PersonnummerValidator personnummerValidator;
+
 
     private static final int ENHETSNUMMER_LENGTH = 4;
     private static final String LOGIN_SELVBETJENING_ISSUER = AZURE_ISSUER;
@@ -62,7 +65,7 @@ public class OpprettServiceklageValidator implements RequestValidator {
             hasText(request.getInnmelder().getTelefonnummer(), "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true");
         }
 
-        validateFnrExists(request.getInnmelder().getPersonnummer());
+        validateFnr(request.getInnmelder().getPersonnummer());
         validateRequestFnrMatchesTokenFnr(request.getInnmelder().getPersonnummer());
     }
 
@@ -81,7 +84,7 @@ public class OpprettServiceklageValidator implements RequestValidator {
         hasText(request.getPaaVegneAvPerson().getNavn(), "paaVegneAvPerson.navn");
         hasText(request.getPaaVegneAvPerson().getPersonnummer(), "paaVegneAvPerson.personnummer");
 
-        validateFnrExists(request.getPaaVegneAvPerson().getPersonnummer());
+        validateFnr(request.getPaaVegneAvPerson().getPersonnummer());
     }
 
     private void validatePaaVegneAvBedrift(OpprettServiceklageRequest request) {
@@ -102,20 +105,24 @@ public class OpprettServiceklageValidator implements RequestValidator {
             hasText(request.getInnmelder().getTelefonnummer(), "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true");
         }
 
-        validateOrgnrExists(request.getPaaVegneAvBedrift().getOrganisasjonsnummer());
+        validateOrgnr(request.getPaaVegneAvBedrift().getOrganisasjonsnummer());
     }
 
-    private void validateFnrExists(String fnr) {
+    private void validateFnr(String fnr) {
+        personnummerValidator.validate(fnr);
+
         if (aktoerConsumer.hentAktoerIdForIdent(fnr).get(fnr).getIdenter() == null) {
-            throw new InvalidIdentException("Oppgitt personnummer er ikke gyldig");
+            /* Ikke InvalidIdentException, da denne feilmeldingen ikke skal returneres av sikkerhetshensyn.
+            InvalidRequestException vil kun returnere en generisk feilmelding (Bad request). **/
+            throw new InvalidRequestException("Personnummer ikke funnet");
         }
     }
 
-    private void validateOrgnrExists(String orgnr) {
+    private void validateOrgnr(String orgnr) {
         try {
             eregConsumer.hentInfo(orgnr);
         } catch (EregFunctionalException | EregTechnicalException e) {
-            throw new InvalidIdentException("Oppgitt organisasjonsnummer er ikke gyldig");
+            throw new InvalidIdentException("Organisasjonsnummer ikke funnet");
         }
     }
 

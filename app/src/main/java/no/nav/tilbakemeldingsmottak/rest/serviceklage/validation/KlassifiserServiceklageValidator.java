@@ -17,7 +17,8 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class KlassifiserServiceklageValidator implements RequestValidator {
+public class KlassifiserServiceklageValidator extends RequestValidator {
+
 
     public void validateRequest(KlassifiserServiceklageRequest request, HentSkjemaResponse hentSkjemaResponse) {
         ObjectMapper m = new ObjectMapper();

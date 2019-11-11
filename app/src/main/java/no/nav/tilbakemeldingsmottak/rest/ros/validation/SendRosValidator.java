@@ -7,7 +7,7 @@ import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SendRosValidator implements RequestValidator {
+public class SendRosValidator extends RequestValidator {
 
     public void validateRequest(SendRosRequest request) {
         isNotNull(request.getHvemRoses(), "hvemRoses");

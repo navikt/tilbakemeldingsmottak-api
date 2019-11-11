@@ -3,7 +3,7 @@ package no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.validation;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 
-public class BestillSamtaleValidator implements RequestValidator {
+public class BestillSamtaleValidator extends RequestValidator {
 
     public void validateRequest(BestillSamtaleRequest request) {
         hasText(request.getFornavn(), "fornavn");
