@@ -13,19 +13,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.Optional;
 
 @RestControllerAdvice
 @Slf4j
 public class ControllerAdvice {
-
-    private String getExceptionStacktrace(Exception ex) {
-        StringWriter writer = new StringWriter();
-        ex.printStackTrace(new PrintWriter(writer));
-        return writer.getBuffer().toString();
-    }
 
     private HttpStatus getHttpStatus(Exception ex) {
         return Optional.ofNullable(AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class))
@@ -36,7 +28,7 @@ public class ControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> technicalExceptionHandler(HttpServletRequest request, Exception ex) {
         HttpStatus status = getHttpStatus(ex);
-        log.error("Feil i kall til " + request.getRequestURI() + ":\n" + getExceptionStacktrace(ex));
+        log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
         return ResponseEntity.status(status).body(ErrorResponse.builder()
                 .message(status.getReasonPhrase())
                 .build());
@@ -44,7 +36,7 @@ public class ControllerAdvice {
 
     @ExceptionHandler(value = {JsonParseException.class, InvalidRequestException.class})
     public ResponseEntity<ErrorResponse> validationExceptionHandler(HttpServletRequest request, Exception ex) {
-        log.warn("Feil i kall til " + request.getRequestURI() + ":\n" + getExceptionStacktrace(ex));
+        log.warn("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
                 .message(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .build());
@@ -52,7 +44,7 @@ public class ControllerAdvice {
 
     @ExceptionHandler(InvalidIdentException.class)
     public ResponseEntity<ErrorResponse> invalidIdentExceptionHandler(HttpServletRequest request, InvalidIdentException ex) {
-        log.warn("Feil i kall til " + request.getRequestURI() + ":\n" + getExceptionStacktrace(ex));
+        log.warn("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
                 .message(ex.getMessage())
                 .build());
