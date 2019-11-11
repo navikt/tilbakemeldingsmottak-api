@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { default as NavTextArea } from "nav-frontend-skjema/lib/textarea";
+import React, {Component} from "react";
+import {default as NavTextArea} from "nav-frontend-skjema/lib/textarea";
 
 export default class TextArea extends Component {
   render() {

@@ -2,6 +2,8 @@ package no.nav.tilbakemeldingsmottak.interceptors;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.config.MDCConstants;
+import org.slf4j.MDC;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,5 +23,10 @@ public class MDCPopulationInterceptor extends AbstractInterceptor {
 		addValueToMDC(consumerId, MDCConstants.MDC_CONSUMER_ID);
 
 		return true;
+	}
+
+	@Override
+	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+		MDC.clear();
 	}
 }

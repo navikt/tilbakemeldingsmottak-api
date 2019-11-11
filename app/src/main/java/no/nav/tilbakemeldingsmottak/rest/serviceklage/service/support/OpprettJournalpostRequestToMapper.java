@@ -1,6 +1,8 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support;
 
-import no.nav.tilbakemeldingsmottak.config.MDCConstants;
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
+
+import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.AvsenderMottaker;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.AvsenderMottakerIdType;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Bruker;
@@ -12,11 +14,11 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequ
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Sak;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Sakstype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.MDC;
+import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class OpprettJournalpostRequestToMapper {
 
     private static final String TEMA_SER = "SER";
@@ -26,6 +28,8 @@ public class OpprettJournalpostRequestToMapper {
     private static final String JOURNALFOERENDE_ENHET = "9999";
     private static final String FILTYPE_PDFA = "PDFA";
     private static final String VARIANTFORMAT_ARKIV = "ARKIV";
+
+    private final OidcUtils oidcUtils;
 
     public OpprettJournalpostRequestTo map(OpprettServiceklageRequest request, byte[] fysiskDokument) {
         OpprettJournalpostRequestTo opprettJournalpostRequestTo = OpprettJournalpostRequestTo.builder()
@@ -42,7 +46,7 @@ public class OpprettJournalpostRequestToMapper {
                 .journalfoerendeEnhet(JOURNALFOERENDE_ENHET)
                 .tema(TEMA_SER)
                 .tittel(TITTEL_SERVICEKLAGE)
-                .kanal(StringUtils.isNotBlank(MDC.get(MDCConstants.MDC_USER_ID)) ? KANAL_NAV_NO : KANAL_NAV_NO_UINNLOGGET)
+                .kanal(oidcUtils.getSubjectForIssuer(AZURE_ISSUER).isPresent() ? KANAL_NAV_NO : KANAL_NAV_NO_UINNLOGGET)
                 .build();
 
         opprettJournalpostRequestTo.getDokumenter().add(buildDokument(fysiskDokument));

@@ -1,9 +1,10 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionConstants.FREMMET_DATO;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionConstants.INNSENDER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionConstants.KANAL;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionConstants.SVARMETODE;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.FREMMET_DATO;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNSENDER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVARMETODE;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -34,10 +35,11 @@ public class HentSkjemaService {
 
     private static final String MESSAGE = "Feltet ble fylt ut under registrering av serviceklage";
     private static final String SCHEMA_PATH = "classpath:schema/schema.yaml";
+    private static final Charset CHARSET = Charset.forName("utf-8");
 
     public HentSkjemaService(@Value(SCHEMA_PATH) Resource schema, ServiceklageRepository serviceklageRepository) throws IOException {
         mapper.findAndRegisterModules();
-        this.classpathSkjema = StreamUtils.copyToString(schema.getInputStream(), Charset.defaultCharset());
+        this.classpathSkjema = StreamUtils.copyToString(schema.getInputStream(), CHARSET);
         this.serviceklageRepository = serviceklageRepository;
     }
 
@@ -65,17 +67,20 @@ public class HentSkjemaService {
 
     private Map<String, String> mapDefaultAnswers(Serviceklage serviceklage) {
         Map<String, String> defaultAnswers = new HashMap<>();
-        if (serviceklage.getDatoOpprettet() != null) {
-            defaultAnswers.put(FREMMET_DATO, serviceklage.getDatoOpprettet().toString());
+        if (serviceklage.getOpprettetDato() != null) {
+            defaultAnswers.put(FREMMET_DATO, serviceklage.getFremmetDato().toString());
         }
-        if (serviceklage.getPaaVegneAv() != null) {
-            defaultAnswers.put(INNSENDER, serviceklage.getPaaVegneAv());
+        if (serviceklage.getInnsender() != null) {
+            defaultAnswers.put(INNSENDER, serviceklage.getInnsender());
         }
         if (serviceklage.getKanal() != null) {
             defaultAnswers.put(KANAL, serviceklage.getKanal());
         }
-        if (serviceklage.getOenskerAaKontaktes() != null && !serviceklage.getOenskerAaKontaktes()) {
-            defaultAnswers.put(SVARMETODE, "Bruker ikke bedt om svar");
+        if (serviceklage.getSvarmetode() != null) {
+            defaultAnswers.put(SVARMETODE, serviceklage.getSvarmetode());
+        }
+        if (serviceklage.getSvarmetodeUtdypning() != null) {
+            defaultAnswers.put(SVAR_IKKE_NOEDVENDIG, serviceklage.getSvarmetodeUtdypning());
         }
         return defaultAnswers;
     }

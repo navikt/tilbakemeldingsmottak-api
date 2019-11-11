@@ -50,7 +50,7 @@ public class BestillingAvSamtaleRestController {
             throw e;
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
             log.warn("bestillSamtale feilet teknisk. Feilmelding={}", e
-                    .getMessage());
+                    .getMessage(), e);
             throw e;
         }
     }

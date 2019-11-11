@@ -1,13 +1,24 @@
 package no.nav.tilbakemeldingsmottak;
 
 import static no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType.NAV_KONTAKTSENTER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.parser.PdfTextExtractor;
+import lombok.SneakyThrows;
+import no.nav.tilbakemeldingsmottak.consumer.aktoer.domain.IdentInfoForAktoer;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.Tidsrom;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.Feiltype;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.GjelderSosialhjelpType;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Innmelder;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
@@ -15,9 +26,16 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklage
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvBedrift;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvPerson;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
+import org.springframework.util.StreamUtils;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TestUtils {
 
@@ -32,12 +50,11 @@ public class TestUtils {
 
     public static final String NAVN_BEDRIFT= "Bedrift AS";
     public static final String ORGANISASJONSNUMMER= "123456789";
-    public static final String POSTADRESSE= "Nedre Bedriftsgate 15A, 0168 OSLO";
-    public static final String TELEFONNUMMER_BEDRIFT= "12345678";
 
-    public static final Klagetype KLAGETYPE = Klagetype.NAVNO;
+    public static final List<Klagetype> KLAGETYPER = Collections.singletonList(Klagetype.NAV_DIGITALE_TJENESTER);
+    public static final List<Klagetype> KLAGETYPER_NAV_KONTOR = Collections.singletonList(Klagetype.LOKALT_NAV_KONTOR);
     public static final String KLAGETEKST = "Saksbehandleren var slem";
-    public static final Boolean OENSKER_AA_KONTAKTES = Boolean.TRUE;
+    public static final Boolean OENSKER_AA_KONTAKTES = Boolean.FALSE;
 
     public static final Feiltype FEILTYPE = Feiltype.TEKNISK_FEIL;
     public static final String BESKRIVELSE_FEIL = "Det er en teknisk feil på nav.no";
@@ -51,18 +68,17 @@ public class TestUtils {
     public static final String FORNAVN = "Fred";
     public static final String ETTERNAVN = "Buljo";
 
-    public static final String ER_SERVICEKLAGE = "Ja (inkludert saker som også har andre elementer)";
-    public static final String KANAL = "nav.no";
-    public static final String PAAKLAGET_ENHET = "1234";
-    public static final String BEHANDLENDE_ENHET = "4321";
-    public static final String YTELSE_TJENESTE = "Alderspensjon";
-    public static final String TEMA = "Saksbehandling og svartid";
-    public static final String UTFALL = "Bruker har ikke fått svar innen frist";
-    public static final List<String> SVARMETODE = Arrays.asList("Avtalt møte");
-
-    public static final String NEI_ANNET = "Nei - annet";
-    public static final String GJELDER = "Klagen gjelder noe annet";
-
+    public static final String BEHANDLES_SOM_SERVICEKLAGE = "Ja";
+    public static final String FREMMET_DATO = LocalDateTime.now().toString();
+    public static final String INNSENDER = "Bruker selv som privatperson";
+    public static final String PAAKLAGET_ENHET_ER_BEHANDLENDE = "Nei";
+    public static final String ENHETSNUMMER_PAAKLAGET = "1234";
+    public static final String ENHETSNUMMER_BEHANDLENDE = "4321";
+    public static final String GJELDER = "Gjelder én ytelse eller tjeneste";
+    public static final String YTELSE = "AAP - Arbeidsavklaringspenger";
+    public static final String TEMA = "Vente på NAV";
+    public static final String VENTE = "Saksbehandlingstid";
+    public static final String UTFALL = "a) Regler/rutiner/frister er fulgt - NAV har ivaretatt bruker godt";
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatperson() {
         return OpprettServiceklageRequest.builder()
@@ -72,7 +88,7 @@ public class TestUtils {
                         .telefonnummer(TELEFONNUMMER)
                         .personnummer(PERSONNUMMER)
                         .build())
-                .klagetype(KLAGETYPE)
+                .klagetyper(KLAGETYPER)
                 .klagetekst(KLAGETEKST)
                 .oenskerAaKontaktes(OENSKER_AA_KONTAKTES)
                 .build();
@@ -91,7 +107,7 @@ public class TestUtils {
                         .navn(NAVN_PERSON)
                         .personnummer(PERSONNUMMER)
                         .build())
-                .klagetype(KLAGETYPE)
+                .klagetyper(KLAGETYPER)
                 .klagetekst(KLAGETEKST)
                 .oenskerAaKontaktes(OENSKER_AA_KONTAKTES)
                 .build();
@@ -108,10 +124,24 @@ public class TestUtils {
                 .paaVegneAvBedrift(PaaVegneAvBedrift.builder()
                         .navn(NAVN_BEDRIFT)
                         .organisasjonsnummer(ORGANISASJONSNUMMER)
-                        .postadresse(POSTADRESSE)
-                        .telefonnummer(TELEFONNUMMER_BEDRIFT)
                         .build())
-                .klagetype(KLAGETYPE)
+                .enhetsnummerPaaklaget(ENHETSNUMMER_PAAKLAGET)
+                .klagetyper(KLAGETYPER)
+                .klagetekst(KLAGETEKST)
+                .oenskerAaKontaktes(OENSKER_AA_KONTAKTES)
+                .build();
+    }
+
+    public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatpersonLokaltKontor() {
+        return OpprettServiceklageRequest.builder()
+                .paaVegneAv(PaaVegneAvType.PRIVATPERSON)
+                .innmelder(Innmelder.builder()
+                        .navn(NAVN_INNMELDER)
+                        .telefonnummer(TELEFONNUMMER)
+                        .personnummer(PERSONNUMMER)
+                        .build())
+                .klagetyper(KLAGETYPER_NAV_KONTOR)
+                .gjelderSosialhjelp(GjelderSosialhjelpType.JA)
                 .klagetekst(KLAGETEKST)
                 .oenskerAaKontaktes(OENSKER_AA_KONTAKTES)
                 .build();
@@ -152,22 +182,57 @@ public class TestUtils {
 
     public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequest() {
         return KlassifiserServiceklageRequest.builder()
-                .erServiceklage(ER_SERVICEKLAGE)
-                .kanal(KANAL)
-                .paaklagetEnhet(PAAKLAGET_ENHET)
-                .behandlendeEnhet(BEHANDLENDE_ENHET)
-                .ytelseTjeneste(YTELSE_TJENESTE)
-                .tema(TEMA)
-                .utfall(UTFALL)
-                .svarmetode(SVARMETODE)
+                .answers(KlassifiserServiceklageRequest.Answers.builder()
+                        .behandlesSomServiceklage(BEHANDLES_SOM_SERVICEKLAGE)
+                        .fremmetDato(FREMMET_DATO)
+                        .innsender(INNSENDER)
+                        .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
+                        .paaklagetEnhetErBehandlende(PAAKLAGET_ENHET_ER_BEHANDLENDE)
+                        .enhetsnummerPaaklaget(ENHETSNUMMER_PAAKLAGET)
+                        .enhetsnummerBehandlende(ENHETSNUMMER_BEHANDLENDE)
+                        .gjelder(GJELDER)
+                        .ytelse(YTELSE)
+                        .tema(TEMA)
+                        .vente(VENTE)
+                        .utfall(UTFALL)
+                        .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)
+                        .svarIkkeNoedvendig(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
+                        .build()
+                    )
                 .build();
     }
 
-    public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequestNotServiceklage() {
-        return KlassifiserServiceklageRequest.builder()
-                .erServiceklage(NEI_ANNET)
-                .gjelder(GJELDER)
-                .build();
+    @SneakyThrows
+    public static HentSkjemaResponse createHentSkjemaResponse() {
+        InputStream schema = TestUtils.class.getClassLoader().getResourceAsStream("schema/schema.yaml");
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        String classpathSkjema = StreamUtils.copyToString(schema, Charset.forName("utf-8"));
+        return mapper.readValue(classpathSkjema, HentSkjemaResponse.class);
     }
 
+    public static Map<String, IdentInfoForAktoer> createHentAktoerIdForIdentResponse(String fnr) {
+        Map<String, IdentInfoForAktoer> response = new HashMap<>();
+        response.put(fnr, IdentInfoForAktoer.builder()
+                .identer(Collections.singletonList(IdentInfoForAktoer.IdentInfo.builder().build()))
+                .build());
+        return response;
+    }
+
+    public static Map<String, IdentInfoForAktoer> createInvalidHentAktoerIdForIdentResponse(String fnr) {
+        Map<String, IdentInfoForAktoer> response = new HashMap<>();
+        response.put(fnr, IdentInfoForAktoer.builder()
+                .identer(null)
+                .build());
+        return response;
+    }
+
+    public static String getStringFromByteArrayPdf(byte[] bytes) throws IOException {
+        PdfReader reader = new PdfReader(bytes);
+        int numPages = reader.getNumberOfPages();
+        StringBuilder s = new StringBuilder();
+        for (int i = 1; i <= numPages; i++) {
+            s.append(PdfTextExtractor.getTextFromPage(reader, i));
+        }
+        return s.toString();
+    }
 }

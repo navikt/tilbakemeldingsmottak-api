@@ -2,7 +2,9 @@ package no.nav.tilbakemeldingsmottak.rest.feilogmangler.validation;
 
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MeldFeilOgManglerValidator implements RequestValidator {
 
     public void validateRequest(MeldFeilOgManglerRequest request) {

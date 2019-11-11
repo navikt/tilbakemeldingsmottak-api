@@ -1,5 +1,7 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument;
 
+import static no.nav.tilbakemeldingsmottak.consumer.saf.util.HttpHeadersUtil.createAuthHeaderFromToken;
+
 import no.nav.tilbakemeldingsmottak.consumer.sts.STSRestConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentFunctionalException;
@@ -7,9 +9,7 @@ import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentTechnicalExcep
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
@@ -43,9 +43,9 @@ public class HentDokumentConsumer implements HentDokument {
 	}
 
 	@Retryable(include = AbstractTilbakemeldingsmottakTechnicalException.class, backoff = @Backoff(delay = 3, multiplier = 500))
-	public HentDokumentResponseTo hentDokument(String journalpostId, String dokumentInfoId, String variantFormat) {
+	public HentDokumentResponseTo hentDokument(String journalpostId, String dokumentInfoId, String variantFormat, String token) {
 		try {
-			HttpEntity entity = new HttpEntity<>(createAuthorizationHeader());
+			HttpEntity entity = new HttpEntity<>(createAuthHeaderFromToken(token));
 			byte[] dokument = restTemplate.exchange(this.hentDokumentUrl + "/{journalpostId}/{dokumentInfoId}/{variantFormat}", HttpMethod.GET, entity, byte[].class, journalpostId, dokumentInfoId, variantFormat).getBody();
 
 			return mapResponse(dokument, journalpostId, dokumentInfoId, variantFormat);
@@ -69,12 +69,4 @@ public class HentDokumentConsumer implements HentDokument {
 					.getMessage()), e);
 		}
 	}
-
-	private HttpHeaders createAuthorizationHeader() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + stsRestConsumer.getServiceuserOIDCToken().getBody().getAccessToken());
-		return headers;
-	}
-
 }

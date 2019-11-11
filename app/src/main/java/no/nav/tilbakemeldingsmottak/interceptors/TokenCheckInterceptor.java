@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.interceptors;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.config.Constants.RESTSTS_ISSUER;
 
 import com.nimbusds.jwt.SignedJWT;
@@ -42,14 +41,6 @@ public class TokenCheckInterceptor extends AbstractInterceptor {
 				return false;
 			}
 		}
-
-		TokenContext userToken = oidcRequestContextHolder.getOIDCValidationContext().getToken(AZURE_ISSUER);
-		if (userToken != null) {
-			SignedJWT parsedUserToken = SignedJWT.parse(userToken.getIdToken());
-			String userId = parsedUserToken.getJWTClaimsSet().getSubject();
-			addValueToMDC(userId, MDCConstants.MDC_USER_ID);
-		}
-
 		return true;
 	}
 }

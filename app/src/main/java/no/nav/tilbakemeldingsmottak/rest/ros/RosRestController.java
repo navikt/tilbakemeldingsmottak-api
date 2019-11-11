@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.ros;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 
@@ -23,17 +23,11 @@ import javax.transaction.Transactional;
 @Protected
 @RestController
 @RequestMapping("/rest/ros")
+@RequiredArgsConstructor
 public class RosRestController {
 
     private final RosService rosService;
     private final SendRosValidator sendRosValidator;
-
-
-    @Inject
-    public RosRestController(final RosService rosService) {
-        this.rosService = rosService;
-        this.sendRosValidator = new SendRosValidator();
-    }
 
     @Transactional
     @PostMapping
@@ -50,7 +44,7 @@ public class RosRestController {
             throw e;
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
             log.warn("sendRos feilet teknisk. Feilmelding={}", e
-                    .getMessage());
+                    .getMessage(), e);
             throw e;
         }
     }
