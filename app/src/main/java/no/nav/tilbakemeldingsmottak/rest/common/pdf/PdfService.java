@@ -60,7 +60,9 @@ public final class PdfService {
                 document.add(createParagraph("Personnummer til forulempet person", request.getPaaVegneAvPerson().getPersonnummer()));
                 break;
             case BEDRIFT:
-                document.add(createParagraph("Innmelders rolle", request.getInnmelder().getRolle()));
+                if (!isBlank(request.getInnmelder().getRolle())) {
+                    document.add(createParagraph("Innmelders rolle", request.getInnmelder().getRolle()));
+                }
                 document.add(createParagraph("Navn til forulempet bedrift", request.getPaaVegneAvBedrift().getNavn()));
                 document.add(createParagraph("Orgnr til forulempet bedrift", request.getPaaVegneAvBedrift().getOrganisasjonsnummer()));
         }

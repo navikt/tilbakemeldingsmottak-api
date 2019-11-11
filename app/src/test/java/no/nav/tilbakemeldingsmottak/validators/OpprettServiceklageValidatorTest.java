@@ -16,6 +16,7 @@ import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
+import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
@@ -38,6 +39,7 @@ public class OpprettServiceklageValidatorTest {
     @Mock EregConsumer eregConsumer;
     @Mock AktoerConsumer aktoerConsumer;
     @Mock OidcUtils oidcUtils;
+    @Mock PersonnummerValidator personnummerValidator;
     @InjectMocks OpprettServiceklageValidator opprettServiceklageValidator;
 
     @Before
@@ -169,16 +171,7 @@ public class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest.getInnmelder().setRolle(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("innmelder.rolle er påkrevd dersom paaVegneAv=ANNEN_PERSON eller paaVegneAv=BEDRIFT"));
-    }
-
-    @Test
-    public void shouldThrowExceptionIfRolleNotSetforPaaVegneAvBedrift() {
-        opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
-        opprettServiceklageRequest.getInnmelder().setRolle(null);
-        Exception thrown = assertThrows(InvalidRequestException.class,
-                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("innmelder.rolle er påkrevd dersom paaVegneAv=ANNEN_PERSON eller paaVegneAv=BEDRIFT"));
+        assertTrue(thrown.getMessage().contains("innmelder.rolle er påkrevd dersom paaVegneAv=ANNEN_PERSON"));
     }
 
     @Test
@@ -297,9 +290,9 @@ public class OpprettServiceklageValidatorTest {
     public void shouldThrowExceptionIfPersonnummerNotValid() {
         when(aktoerConsumer.hentAktoerIdForIdent(anyString())).thenReturn(createInvalidHentAktoerIdForIdentResponse(PERSONNUMMER));
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
-        Exception thrown = assertThrows(InvalidIdentException.class,
+        Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("Oppgitt personnummer er ikke gyldig"));
+        assertTrue(thrown.getMessage().contains("Personnummer ikke funnet"));
     }
 
     @Test
@@ -308,7 +301,7 @@ public class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
         Exception thrown = assertThrows(InvalidIdentException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("Oppgitt organisasjonsnummer er ikke gyldig"));
+        assertTrue(thrown.getMessage().contains("Organisasjonsnummer ikke funnet"));
     }
 
     @Test
