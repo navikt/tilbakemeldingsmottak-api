@@ -43,7 +43,7 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(value = {JsonParseException.class, InvalidRequestException.class})
-    public ResponseEntity<ErrorResponse> validationExceptionHandler(HttpServletRequest request, JsonParseException ex) {
+    public ResponseEntity<ErrorResponse> validationExceptionHandler(HttpServletRequest request, Exception ex) {
         log.warn("Feil i kall til " + request.getRequestURI() + ":\n" + getExceptionStacktrace(ex));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
                 .message(HttpStatus.BAD_REQUEST.getReasonPhrase())
@@ -51,7 +51,7 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(InvalidIdentException.class)
-    public ResponseEntity<ErrorResponse> invalidIdentExceptionHandler(HttpServletRequest request, JsonParseException ex) {
+    public ResponseEntity<ErrorResponse> invalidIdentExceptionHandler(HttpServletRequest request, InvalidIdentException ex) {
         log.warn("Feil i kall til " + request.getRequestURI() + ":\n" + getExceptionStacktrace(ex));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
                 .message(ex.getMessage())
