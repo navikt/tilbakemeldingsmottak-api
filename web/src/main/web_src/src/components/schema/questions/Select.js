@@ -27,8 +27,8 @@ export default class Select extends Component {
 
     return (
         <NavSelect
-          {...properties}
           label=""
+          {...properties}
           onChange={event =>
             emit({
               ...optionsMap[event.target.value].emitValues,

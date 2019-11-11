@@ -6,8 +6,8 @@ export default class Input extends Component {
     const { emit, emitValues, properties } = this.props;
     return (
         <NavInput
-          {...(properties || {})}
           label=""
+          {...(properties || {})}
           onChange={event =>
             emit({ ...emitValues, answer: event.target.value })
           }

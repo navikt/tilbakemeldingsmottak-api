@@ -1,13 +1,15 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import AlertStripe from "nav-frontend-alertstriper";
 
+import {UPDATE_ANSWER} from "../../store/actions"
 import DateInput from "./questions/DateInput";
 import Input from "./questions/Input";
 import RadioButtons from "./questions/RadioButtons";
 import Select from "./questions/Select";
 import TextArea from "./questions/TextArea";
 
-export default class SchemaQuestion extends Component {
+class SchemaQuestion extends Component {
   static propTypes = {};
 
   static typemap = {
@@ -55,13 +57,11 @@ export default class SchemaQuestion extends Component {
     };
   }
 
-  createComponent() {
+  createComponent(question) {
     const {
-      question,
       questionIndex,
       answerIndex,
       answers,
-      updateAnswer
     } = this.props;
 
     const Component = SchemaQuestion.typemap[question.type];
@@ -80,7 +80,7 @@ export default class SchemaQuestion extends Component {
             {...question}
             index={questionIndex}
             value={val}
-            emit={value => updateAnswer(value, answerIndex)}
+            emit={value => this.props.actions.updateAnswer(value, answerIndex)}
           />
         </div>
         {this.createAlert(answerIndex)}
@@ -90,13 +90,14 @@ export default class SchemaQuestion extends Component {
 
   render() {
     const {
-      question,
+      questions,
       questionIndex,
       answerIndex,
       answers,
       defaultAnswers,
-      updateAnswer
     } = this.props;
+
+    const question = questions[questionIndex]
 
     if (question.id && defaultAnswers.answers[question.id]) {
       if (answers.length <= answerIndex) {
@@ -107,11 +108,38 @@ export default class SchemaQuestion extends Component {
           ),
           default: true
         };
-        setTimeout(() => updateAnswer(values, answerIndex), 0);
+        setTimeout(() => this.props.actions.updateAnswer(values, answerIndex), 0);
       }
       return <div key={questionIndex} />;
     } else {
-      return this.createComponent();
+      return this.createComponent(question);
     }
   }
 }
+
+
+const mapStateToProps = state => {
+  return {
+    defaultAnswers: state.klassifiseringReducer.defaultAnswers,
+    questions: state.klassifiseringReducer.questions,
+    answers: state.klassifiseringReducer.answers
+  };
+};
+
+function mapDispatchToProps(dispatch) {
+  return {
+      actions: {
+          updateAnswer: (value, index) => {
+              dispatch({
+                  type: UPDATE_ANSWER,
+                  value, index
+              })
+          }
+      }
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SchemaQuestion);

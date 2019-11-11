@@ -24,9 +24,9 @@ class RadioButtons extends Component {
 
     return (
         <RadioPanelGruppe
-          {...properties}
           name={text}
           legend=""
+          {...properties}
           radios={radios}
           checked={value && value.answer}
           onChange={event =>
