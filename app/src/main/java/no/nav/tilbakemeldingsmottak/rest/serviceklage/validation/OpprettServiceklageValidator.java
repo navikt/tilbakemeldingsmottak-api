@@ -71,7 +71,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
 
     private void validatePaaVegneAvAnnenPerson(OpprettServiceklageRequest request) {
         hasText(request.getInnmelder().getNavn(), "innmelder.navn", " dersom paaVegneAv=ANNEN_PERSON");
-        hasText(request.getInnmelder().getRolle(), "innmelder.rolle", " dersom paaVegneAv=ANNEN_PERSON eller paaVegneAv=BEDRIFT");
+        hasText(request.getInnmelder().getRolle(), "innmelder.rolle", " dersom paaVegneAv=ANNEN_PERSON");
         isNotNull(request.getInnmelder().getHarFullmakt(), "innmelder.harFullmakt", " dersom paaVegneAv=ANNEN_PERSON");
         if (!request.getInnmelder().getHarFullmakt()) {
             isNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes", " dersom klagen er meldt inn på vegne av annen person uten fullmakt");
@@ -88,8 +88,6 @@ public class OpprettServiceklageValidator extends RequestValidator {
     }
 
     private void validatePaaVegneAvBedrift(OpprettServiceklageRequest request) {
-        hasText(request.getInnmelder().getRolle(), "innmelder.rolle", " dersom paaVegneAv=ANNEN_PERSON eller paaVegneAv=BEDRIFT");
-
         isNotNull(request.getPaaVegneAvBedrift(), "paaVegneAvBedrift", " dersom paaVegneAv=BEDRIFT");
         hasText(request.getPaaVegneAvBedrift().getNavn(), "paaVegneAvBedrift.navn");
         hasText(request.getPaaVegneAvBedrift().getOrganisasjonsnummer(), "paaVegneAvBedrift.organisasjonsnummer");
