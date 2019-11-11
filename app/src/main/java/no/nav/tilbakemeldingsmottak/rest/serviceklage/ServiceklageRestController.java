@@ -1,21 +1,24 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
+import static no.nav.tilbakemeldingsmottak.util.ErrorResponseUtils.createOpprettServiceklageErrorResponse;
+
 import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
 import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.security.oidc.context.TokenContext;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
-import no.nav.tilbakemeldingsmottak.exceptions.TilbakemeldingsmottakTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
+import no.nav.tilbakemeldingsmottak.exceptions.OidcContextException;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.HentDokumentService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.HentSkjemaService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserServiceklageService;
@@ -30,6 +33,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
@@ -45,10 +49,10 @@ public class ServiceklageRestController {
     private final KlassifiserServiceklageService klassifiserServiceklageService;
     private final HentSkjemaService hentSkjemaService;
     private final HentDokumentService hentDokumentService;
-    private final OpprettServiceklageValidator opprettServiceklageValidator = new OpprettServiceklageValidator();
-    private final KlassifiserServiceklageValidator klassifiserServiceklageValidator = new KlassifiserServiceklageValidator();
+    private final OpprettServiceklageValidator opprettServiceklageValidator;
+    private final KlassifiserServiceklageValidator klassifiserServiceklageValidator;
     private final OIDCRequestContextHolder oidcRequestContextHolder;
-
+    private final OppgaveConsumer oppgaveConsumer;
 
 
     @Transactional
@@ -56,32 +60,33 @@ public class ServiceklageRestController {
     public ResponseEntity<OpprettServiceklageResponse> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws DocumentException {
         try {
             opprettServiceklageValidator.validateRequest(request);
-            Serviceklage serviceklage = opprettServiceklageService.opprettServiceklage(request);
+            OpprettServiceklageResponse opprettServiceklageResponse = opprettServiceklageService.opprettServiceklage(request);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(OpprettServiceklageResponse.builder()
-                            .message("Serviceklage opprettet")
-                            .serviceklageId(serviceklage.getServiceklageId().toString())
-                            .journalpostId(serviceklage.getJournalpostId())
-                            .oppgaveId(serviceklage.getOppgaveId())
-                            .build());
+                    .body(opprettServiceklageResponse);
+        } catch (InvalidIdentException e) {
+            log.warn("opprettServiceklage feilet funksjonelt. Feilmelding={}", e
+                    .getMessage());
+            return createOpprettServiceklageErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (AbstractTilbakemeldingsmottakFunctionalException e) {
             log.warn("opprettServiceklage feilet funksjonelt. Feilmelding={}", e
                     .getMessage());
-            throw e;
+            return createOpprettServiceklageErrorResponse(HttpStatus.BAD_REQUEST, "Oi, noe gikk galt!");
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
             log.warn("opprettServiceklage feilet teknisk. Feilmelding={}", e
-                    .getMessage());
-            throw e;
+                    .getMessage(), e);
+            return createOpprettServiceklageErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Oi, noe gikk galt!");
         }
     }
 
     @Transactional
-    @PutMapping(value = "/{journalpostId}/klassifiser")
-    public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request, @PathVariable String journalpostId) {
+    @PutMapping(value = "/klassifiser")
+    public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request,
+                                                                                   @RequestParam String oppgaveId) {
         try {
-            klassifiserServiceklageValidator.validateRequest(request);
-            klassifiserServiceklageService.klassifiserServiceklage(request, journalpostId);
+            String journalpostId = oppgaveConsumer.hentOppgave(oppgaveId).getJournalpostId();
+            klassifiserServiceklageValidator.validateRequest(request, hentSkjemaService.hentSkjema(journalpostId));
+            klassifiserServiceklageService.klassifiserServiceklage(request, journalpostId, oppgaveId);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(KlassifiserServiceklageResponse.builder().message("Klassifisert serviceklage med journalpostId=" + journalpostId).build());
@@ -91,7 +96,7 @@ public class ServiceklageRestController {
             throw e;
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
             log.warn("klassifiserServiceklage feilet teknisk. Feilmelding={}", e
-                    .getMessage());
+                    .getMessage(), e);
             throw e;
         }
     }
@@ -110,7 +115,7 @@ public class ServiceklageRestController {
             throw e;
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
             log.warn("hentSkjema feilet teknisk. Feilmelding={}", e
-                    .getMessage());
+                    .getMessage(), e);
             throw e;
         }
     }
@@ -118,11 +123,10 @@ public class ServiceklageRestController {
     @Transactional
     @GetMapping(value = "/hentdokument/{journalpostId}")
     public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String journalpostId) {
-        String token = oidcRequestContextHolder.getOIDCValidationContext().getFirstValidToken()
-                .map(TokenContext::getIdToken)
-                .orElseThrow(() -> new TilbakemeldingsmottakTechnicalException("Feil i tokenvalideringsrammeverk"));
-
         try {
+            String token = oidcRequestContextHolder.getOIDCValidationContext().getFirstValidToken()
+                    .map(TokenContext::getIdToken)
+                    .orElseThrow(() -> new OidcContextException("Finner ikke validert OIDC-token"));
             HentDokumentResponse response = hentDokumentService.hentDokument(journalpostId, "Bearer " + token);
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -133,7 +137,7 @@ public class ServiceklageRestController {
             throw e;
         } catch (AbstractTilbakemeldingsmottakTechnicalException e) {
             log.warn("hentDokument feilet teknisk. Feilmelding={}", e
-                    .getMessage());
+                    .getMessage(), e);
             throw e;
         }
     }

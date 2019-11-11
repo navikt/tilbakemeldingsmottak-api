@@ -30,21 +30,6 @@ public class RosIT extends AbstractIT {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertTrue(message.getContent().toString().contains(request.getNavn()));
-        assertTrue(message.getContent().toString().contains(request.getHvemRoses().text));
-        assertTrue(message.getContent().toString().contains(request.getMelding()));
-    }
-
-    @Test
-    void happyPathWithoutNavn() throws MessagingException, IOException {
-        SendRosRequest request = createSendRosRequest();
-        request.setNavn(null);
-        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-        ResponseEntity<SendRosResponse> response = restTemplate.exchange(URL_ROS, HttpMethod.POST, requestEntity, SendRosResponse.class);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        MimeMessage message = smtpServer.getReceivedMessages()[0];
         assertTrue(message.getContent().toString().contains(request.getHvemRoses().text));
         assertTrue(message.getContent().toString().contains(request.getMelding()));
     }
@@ -58,7 +43,6 @@ public class RosIT extends AbstractIT {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertTrue(message.getContent().toString().contains(request.getNavn()));
         assertTrue(message.getContent().toString().contains(request.getHvemRoses().text));
         assertTrue(message.getContent().toString().contains(request.getNavKontor()));
         assertTrue(message.getContent().toString().contains(request.getMelding()));

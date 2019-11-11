@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Document, Page } from "react-pdf";
+import React, {Component} from "react";
+import {Document, Page} from "react-pdf";
 
 export default class Dokument extends Component {
   state = {

@@ -1,5 +1,5 @@
 import RadioPanelGruppe from "nav-frontend-skjema/lib/radio-panel-gruppe";
-import React, { Component } from "react";
+import React, {Component} from "react";
 
 class RadioButtons extends Component {
   constructor(props) {

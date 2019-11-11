@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.ros.service;
 
 import static no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType.NAV_KONTOR;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.AbstractEmailService;
@@ -33,7 +32,6 @@ public class RosService {
 
     public void sendRos(SendRosRequest request) throws MessagingException {
         sendEmail(request);
-        log.info("Ros sendt");
     }
 
     private void sendEmail(SendRosRequest request) throws MessagingException {
@@ -43,16 +41,15 @@ public class RosService {
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
         helper.setTo(emailToAddress);
         helper.setFrom(emailFromAddress);
-        helper.setSubject("Ros mottatt");
+        helper.setSubject("Ros sendt inn via skjema på nav.no");
         emailService.sendMail(message);
+
+        log.info("Ros videresendt til " + emailToAddress);
     }
 
     private String createContent(SendRosRequest request) {
         HtmlContent content = new HtmlContent();
 
-        if (!isBlank(request.getNavn())) {
-            content.addParagraph("Navn", request.getNavn());
-        }
         content.addParagraph("Hvem roses", request.getHvemRoses().text);
         if(NAV_KONTOR.equals(request.getHvemRoses())) {
             content.addParagraph("NAV-kontor", request.getNavKontor());

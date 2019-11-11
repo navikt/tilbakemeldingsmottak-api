@@ -2,7 +2,9 @@ package no.nav.tilbakemeldingsmottak.rest.common.validation;
 
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface RequestValidator {
 
     default void hasText(String input, String feltnavn) {

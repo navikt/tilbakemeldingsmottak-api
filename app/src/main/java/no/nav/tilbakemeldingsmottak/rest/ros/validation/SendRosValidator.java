@@ -4,7 +4,9 @@ import static no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType.NAV_KON
 
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SendRosValidator implements RequestValidator {
 
     public void validateRequest(SendRosRequest request) {

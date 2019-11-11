@@ -1,5 +1,7 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.graphql;
 
+import static no.nav.tilbakemeldingsmottak.consumer.saf.util.HttpHeadersUtil.createAuthHeaderFromToken;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -9,13 +11,11 @@ import no.nav.tilbakemeldingsmottak.exceptions.saf.MarshalGraphqlRequestToJsonTe
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostIkkeFunnetFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostQueryTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostQueryUnauthorizedException;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.ValidationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -31,7 +31,6 @@ import java.time.Duration;
 @Slf4j
 public class SafGraphqlConsumer {
 
-	private static final String OIDC_TOKEN_PREFIX = "Bearer";
 	private final RestTemplate restTemplate;
 	private final String graphQLurl;
 
@@ -67,17 +66,6 @@ public class SafGraphqlConsumer {
 			throw new SafJournalpostQueryTechnicalException(String.format("Tjenesten SAF (graphQL) feilet med status: %s, feilmelding: %s", e
 					.getStatusCode(), e.getMessage()), e);
 		}
-	}
-
-	private HttpHeaders createAuthHeaderFromToken(String authorizationHeader) {
-		HttpHeaders headers = new HttpHeaders();
-		if (authorizationHeader == null || !OIDC_TOKEN_PREFIX.equalsIgnoreCase(authorizationHeader.split(" ")[0])) {
-			throw new ValidationException("Authorization header må være på formen Bearer {token}");
-		}
-
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add(HttpHeaders.AUTHORIZATION, OIDC_TOKEN_PREFIX + " " + authorizationHeader.split(" ")[1]);
-		return headers;
 	}
 
 	private String requestToJson(GraphQLRequest graphQLRequest) {

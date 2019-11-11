@@ -30,7 +30,6 @@ public class BestillingAvSamtaleService {
 
     public void bestillSamtale(BestillSamtaleRequest request) throws MessagingException {
         sendEmail(request);
-        log.info("Ros sendt");
     }
 
     private void sendEmail(BestillSamtaleRequest request) throws MessagingException {
@@ -40,8 +39,10 @@ public class BestillingAvSamtaleService {
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
         helper.setTo(emailToAddress);
         helper.setFrom(emailFromAddress);
-        helper.setSubject("Bestilling av samtale");
+        helper.setSubject("Bestilling av samtale mottatt via skjema på nav.no");
         emailService.sendMail(message);
+
+        log.info("Bestilling av samtale vidersendt til " + emailToAddress);
     }
 
     private String createContent(BestillSamtaleRequest request) {

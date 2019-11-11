@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Select as NavSelect } from "nav-frontend-skjema";
+import React, {Component} from "react";
+import {Select as NavSelect} from "nav-frontend-skjema";
 
 export default class Select extends Component {
   constructor(props) {

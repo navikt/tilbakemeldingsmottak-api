@@ -56,7 +56,7 @@ public class OppgaveConsumer {
 
             ResponseEntity<OpprettOppgaveResponseTo> response = restTemplate.exchange(oppgaveUrl, HttpMethod.POST, requestEntity, OpprettOppgaveResponseTo.class);
             if (log.isDebugEnabled()) {
-                log.debug("Oppgave opprettet");
+                log.debug("Oppgave med oppgaveId={} opprettet", response.getBody().getId());
             }
             return response.getBody();
         } catch (HttpClientErrorException e) {

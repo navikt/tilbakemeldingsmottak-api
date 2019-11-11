@@ -46,7 +46,7 @@ public class HentDokumentService {
             }
         }
 
-        HentDokumentResponseTo safHentDokumentResponseTo = hentDokumentConsumer.hentDokument(journalpostId, dokumentInfo.getDokumentInfoId(), variantformat.name());
+        HentDokumentResponseTo safHentDokumentResponseTo = hentDokumentConsumer.hentDokument(journalpostId, dokumentInfo.getDokumentInfoId(), variantformat.name(), authorizationHeader);
         return HentDokumentResponse.builder()
                 .dokument(safHentDokumentResponseTo.getDokument())
                 .build();
