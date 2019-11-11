@@ -32,7 +32,7 @@ public class ControllerAdvice {
                 .map(ResponseStatus::code)
                 .orElse(HttpStatus.INTERNAL_SERVER_ERROR);
 
-        log.warn("Feil i kall til " + request.getRequestURI() + ":\n" + getExceptionStacktrace(ex));
+        log.error("Feil i kall til " + request.getRequestURI() + ":\n" + getExceptionStacktrace(ex));
         return ResponseEntity.status(status).body(ErrorResponse.builder().message(status.getReasonPhrase()).build());
     }
 
