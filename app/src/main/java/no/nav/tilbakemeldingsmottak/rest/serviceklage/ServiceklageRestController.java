@@ -73,7 +73,7 @@ public class ServiceklageRestController {
     }
 
     @Transactional
-    @GetMapping(value = "hentskjema/{journalpostId}")
+    @GetMapping(value = "/hentskjema/{journalpostId}")
     public ResponseEntity<HentSkjemaResponse> hentSkjema(@PathVariable String journalpostId) {
         HentSkjemaResponse response = hentSkjemaService.hentSkjema(journalpostId);
         return ResponseEntity
