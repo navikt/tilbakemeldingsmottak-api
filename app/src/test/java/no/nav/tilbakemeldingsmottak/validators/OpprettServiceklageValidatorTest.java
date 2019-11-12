@@ -290,9 +290,9 @@ public class OpprettServiceklageValidatorTest {
     public void shouldThrowExceptionIfPersonnummerNotValid() {
         when(aktoerConsumer.hentAktoerIdForIdent(anyString())).thenReturn(createInvalidHentAktoerIdForIdentResponse(PERSONNUMMER));
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
-        Exception thrown = assertThrows(InvalidRequestException.class,
+        Exception thrown = assertThrows(InvalidIdentException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("Personnummer ikke funnet"));
+        assertTrue(thrown.getMessage().contains("Feil i validering av personnummer"));
     }
 
     @Test
@@ -301,7 +301,7 @@ public class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
         Exception thrown = assertThrows(InvalidIdentException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("Organisasjonsnummer ikke funnet"));
+        assertTrue(thrown.getMessage().contains("Feil i validering av organisasjonsnummer"));
     }
 
     @Test
