@@ -79,6 +79,7 @@ public class Serviceklage {
     private String gjelderSosialhjelp;
 
     @Column(name = KLAGETEKST)
+    @Size(max = 20000)
     private String klagetekst;
 
     @Column(name = BEHANDLES_SOM_SERVICEKLAGE)
@@ -117,6 +118,7 @@ public class Serviceklage {
     private String gjelder;
 
     @Column(name = BESKRIVELSE)
+    @Size(max = 20000)
     private String beskrivelse;
 
     @Column(name = YTELSE)
@@ -152,11 +154,12 @@ public class Serviceklage {
     private String svarmetodeUtdypning;
 
     @Column(name = AVSLUTTET_DATO)
-    private String avsluttetDato;
+    private LocalDateTime avsluttetDato;
 
     @Column(name = SKJEMA_VERSJON)
     private Long skjemaVersjon;
 
     @Column(name = KLASSIFISERING_JSON)
+    @Size(max = 40000)
     private String klassifiseringJson;
 }

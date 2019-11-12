@@ -110,9 +110,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
         personnummerValidator.validate(fnr);
 
         if (aktoerConsumer.hentAktoerIdForIdent(fnr).get(fnr).getIdenter() == null) {
-            /* Ikke InvalidIdentException, da denne feilmeldingen ikke skal returneres av sikkerhetshensyn.
-            InvalidRequestException vil kun returnere en generisk feilmelding (Bad request). **/
-            throw new InvalidRequestException("Personnummer ikke funnet");
+            throw new InvalidIdentException("Feil i validering av personnummer");
         }
     }
 
@@ -120,7 +118,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
         try {
             eregConsumer.hentInfo(orgnr);
         } catch (EregFunctionalException | EregTechnicalException e) {
-            throw new InvalidIdentException("Organisasjonsnummer ikke funnet");
+            throw new InvalidIdentException("Feil i validering av organisasjonsnummer");
         }
     }
 
