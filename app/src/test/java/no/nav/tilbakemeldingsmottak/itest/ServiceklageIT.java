@@ -34,6 +34,7 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklage
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -266,5 +267,14 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getUtfall(), UTFALL);
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
+    }
+
+    @Test
+    void shouldFailIfKlagetekstTooLarge() {
+        OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
+        request.setKlagetekst(RandomStringUtils.randomAlphabetic(50000));
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 }
