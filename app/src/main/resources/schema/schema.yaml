@@ -8,7 +8,7 @@ questions:
   - answer: Ja
   - answer: Ja, men inneholder også andre elementer
     questions:
-    - id: BEHANDLES_SOM_SERVICEKLAGE_SPESIFISER
+    - id: BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING
       text: Spesifiser
       type: TEXT
   - answer: Nei, innsender har ikke fullmakt på vegne av bruker
@@ -25,7 +25,7 @@ questions:
     next: none
   - answer: Nei - annet
     questions:
-    - id: BEHANDLES_SOM_SERVICEKLAGE_SPESIFISER
+    - id: BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING
       text: Spesifiser
       type: TEXT
       next: none
@@ -51,6 +51,12 @@ questions:
   - answer: Annen skriftlig kanal fra bruker
   - answer: Muntlig fra bruker
   - answer: Annet
+    questions:
+    - id: KANAL_UTDYPNING
+      text: Spesifiser
+      type: TEXT
+      next: none
+
 
 - id: PAAKLAGET_ENHET_ER_BEHANDLENDE
   text: Er klagen behandlet i enheten det klages på?
@@ -73,6 +79,10 @@ questions:
   answers:
   - answer: Gjelder én ytelse eller tjeneste
   - answer: Gjelder flere ting eller sammensatt situasjon
+
+- id: BESKRIVELSE
+  text: Gi en kort beskrivelse av serviceklagen
+  type: TEXT
 
 - id: YTELSE
   text: Hvilken ytelse mm. er mest relevant for serviceklagen?
@@ -149,7 +159,7 @@ questions:
   - answer: NAV-ansattes oppførsel
   - answer: Annet
     questions:
-    - id: TEMA_SPESIFISER
+    - id: TEMA_UTDYPNING
       text: Spesifiser
       type: INPUT
 
@@ -187,6 +197,6 @@ questions:
       - answer: Bruker ikke bedt om svar
       - answer: Annet
         questions:
-        - id: SVARMETODE_SPESIFISER
+        - id: SVARMETODE_UTDYPNING
           text: Spesifiser
           type: TEXT

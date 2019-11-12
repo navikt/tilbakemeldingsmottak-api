@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import lombok.RequiredArgsConstructor;
@@ -26,33 +27,36 @@ public class KlassifiserServiceklageService {
 
     private static final String FERDIGSTILT = "FERDIGSTILT";
     private static final String JA = "Ja";
+    private static final String ANNET= "Annet";
 
     public void klassifiserServiceklage(KlassifiserServiceklageRequest request, String journalpostId, String oppgaveId)  {
 
         Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
         if (serviceklage == null) {
-            serviceklage = new Serviceklage();
-            serviceklage.setJournalpostId(journalpostId);
-            serviceklage.setOpprettetDato(LocalDateTime.now());
+            serviceklage = createNewServiceklage(journalpostId);
         }
 
         KlassifiserServiceklageRequest.Answers answers = request.getAnswers();
 
-        // TODO: Fiks der flere mulige spørsmål lagres i samme kolonne i DB (XXX_UTDYPNING)
-
         serviceklage.setBehandlesSomServiceklage(answers.getBehandlesSomServiceklage());
+        serviceklage.setBehandlesSomServiceklageUtdypning(answers.getBehandlesSomServiceklageUtdypning());
         serviceklage.setFremmetDato(LocalDateTime.parse(answers.getFremmetDato()));
         serviceklage.setInnsender(answers.getInnsender());
         serviceklage.setKanal(answers.getKanal());
+        serviceklage.setKanal(answers.getKanalUtdypning());
         serviceklage.setEnhetsnummerPaaklaget(answers.getEnhetsnummerPaaklaget());
         serviceklage.setEnhetsnummerBehandlende(JA.equals(answers.getPaaklagetEnhetErBehandlende()) ?
                 answers.getEnhetsnummerPaaklaget() : answers.getEnhetsnummerBehandlende());
         serviceklage.setGjelder(answers.getGjelder());
+        serviceklage.setBeskrivelse(answers.getBeskrivelse());
         serviceklage.setYtelse(answers.getYtelse());
         serviceklage.setTema(answers.getTema());
+        serviceklage.setTemaUtdypning(mapTemaUtdypning(answers));
         serviceklage.setUtfall(answers.getUtfall());
+        serviceklage.setAarsak(answers.getAarsak());
+        serviceklage.setTiltak(answers.getTiltak());
         serviceklage.setSvarmetode(answers.getSvarmetode());
-        serviceklage.setSvarmetodeUtdypning(answers.getSvarIkkeNoedvendig());
+        serviceklage.setSvarmetodeUtdypning(mapSvarmetodeUtdypning(answers));
 
         serviceklageRepository.save(serviceklage);
 
@@ -67,6 +71,41 @@ public class KlassifiserServiceklageService {
             } else {
                 log.info("Oppgave med oppgaveId={} er allerede ferdigstilt");
             }
+        }
+    }
+
+    private Serviceklage createNewServiceklage(String journalpostId) {
+        Serviceklage serviceklage = new Serviceklage();
+        serviceklage.setJournalpostId(journalpostId);
+        serviceklage.setOpprettetDato(LocalDateTime.now());
+        return serviceklage;
+    }
+
+    private String mapTemaUtdypning(KlassifiserServiceklageRequest.Answers answers) {
+        if (!isBlank(answers.getVente())) {
+            return answers.getVente();
+        } else if (!isBlank(answers.getTilgjengelighet())) {
+            return answers.getTilgjengelighet();
+        } else if (!isBlank(answers.getInformasjon())) {
+            return answers.getInformasjon();
+        } else if (!isBlank(answers.getVeiledning())) {
+            return answers.getVeiledning();
+        } else if (!isBlank(answers.getTemaUtdypning())) {
+            return answers.getTemaUtdypning();
+        } else {
+            return null;
+        }
+    }
+
+    private String mapSvarmetodeUtdypning(KlassifiserServiceklageRequest.Answers answers) {
+        if (!isBlank(answers.getSvarIkkeNoedvendig())) {
+            if (answers.getSvarIkkeNoedvendig().equals(ANNET)) {
+                return answers.getSvarmetodeUtdypning();
+            } else {
+                return answers.getSvarIkkeNoedvendig();
+            }
+        } else{
+            return null;
         }
     }
 }
