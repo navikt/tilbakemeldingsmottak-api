@@ -1,6 +1,8 @@
 package no.nav.tilbakemeldingsmottak.consumer.oppgave;
 
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
@@ -10,6 +12,7 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRespon
 import no.nav.tilbakemeldingsmottak.exceptions.joark.OpprettJournalpostFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveTechnicalException;
 import no.nav.tilbakemeldingsmottak.integration.fasit.ServiceuserAlias;
+import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.util.RestSecurityHeadersUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +46,7 @@ public class OppgaveConsumer {
                 .basicAuthentication(serviceuserAlias.getUsername(), serviceuserAlias.getPassword()).build();
     }
 
+    @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "opprettOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public OpprettOppgaveResponseTo opprettOppgave(OpprettOppgaveRequestTo opprettOppgaveRequestTo) {
         if (log.isDebugEnabled()) {
             log.debug("Oppretter oppgave");
@@ -68,6 +72,7 @@ public class OppgaveConsumer {
         }
     }
 
+    @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "endreOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public String endreOppgave(EndreOppgaveRequestTo endreOppgaveRequestTo) {
         if (log.isDebugEnabled()) {
             log.debug("Lukker oppgave");
@@ -92,6 +97,7 @@ public class OppgaveConsumer {
         }
     }
 
+    @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public HentOppgaveResponseTo hentOppgave(String oppgaveId) {
         if (log.isDebugEnabled()) {
             log.debug("Henter oppgave med id={}", oppgaveId);

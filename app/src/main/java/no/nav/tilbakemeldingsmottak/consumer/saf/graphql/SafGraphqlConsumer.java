@@ -1,6 +1,8 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.graphql;
 
 import static no.nav.tilbakemeldingsmottak.consumer.saf.util.HttpHeadersUtil.createAuthHeaderFromToken;
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +13,7 @@ import no.nav.tilbakemeldingsmottak.exceptions.saf.MarshalGraphqlRequestToJsonTe
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostIkkeFunnetFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostQueryTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostQueryUnauthorizedException;
+import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -44,6 +47,7 @@ public class SafGraphqlConsumer {
 		this.graphQLurl = graphQLurl;
 	}
 
+	@Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "safJournalpostquery"}, percentiles = {0.5, 0.95}, histogram = true)
 	@Retryable(include = SafJournalpostQueryTechnicalException.class, maxAttempts = 3, backoff = @Backoff(delay = 500))
 	public SafJournalpostTo performQuery(GraphQLRequest graphQLRequest, String authorizationHeader) {
 
