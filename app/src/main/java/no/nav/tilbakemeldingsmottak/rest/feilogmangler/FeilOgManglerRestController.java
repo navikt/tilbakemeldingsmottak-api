@@ -1,8 +1,12 @@
 package no.nav.tilbakemeldingsmottak.rest.feilogmangler;
 
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
+import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerResponse;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.service.FeilOgManglerService;
@@ -29,6 +33,7 @@ public class FeilOgManglerRestController {
 
     @Transactional
     @PostMapping
+    @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "meldFeilOgMangler"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<MeldFeilOgManglerResponse> meldFeilOgMangler(@RequestBody MeldFeilOgManglerRequest request) throws MessagingException {
             meldFeilOgManglerValidator.validateRequest(request);
             feilOgManglerService.meldFeilOgMangler(request);
