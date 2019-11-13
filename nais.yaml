@@ -20,6 +20,9 @@ resources:
     memory: 1024Mi
 vault:
   enabled: true
+prometheus:
+  enabled: true
+  path: /internal/metrics
 fasitResources:
   used:
   - alias: tilbakemeldingsmottak
