@@ -1,11 +1,14 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument;
 
 import static no.nav.tilbakemeldingsmottak.consumer.saf.util.HttpHeadersUtil.createAuthHeaderFromToken;
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 import no.nav.tilbakemeldingsmottak.consumer.sts.STSRestConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentTechnicalException;
+import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -42,6 +45,7 @@ public class HentDokumentConsumer implements HentDokument {
 				.build();
 	}
 
+	@Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
 	@Retryable(include = AbstractTilbakemeldingsmottakTechnicalException.class, backoff = @Backoff(delay = 3, multiplier = 500))
 	public HentDokumentResponseTo hentDokument(String journalpostId, String dokumentInfoId, String variantFormat, String token) {
 		try {

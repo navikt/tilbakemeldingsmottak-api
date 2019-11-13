@@ -1,8 +1,12 @@
 package no.nav.tilbakemeldingsmottak.consumer.aktoer;
 
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
+
 import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import no.nav.tilbakemeldingsmottak.consumer.aktoer.domain.IdentInfoForAktoer;
 import no.nav.tilbakemeldingsmottak.exceptions.aktoer.AktoerTechnicalException;
+import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.util.RestSecurityHeadersUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +37,7 @@ public class AktoerConsumer {
 		this.restSecurityHeadersUtils = restSecurityHeadersUtils;
 	}
 
+	@Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentAktoerIdForIdent"}, percentiles = {0.5, 0.95}, histogram = true)
 	@Retryable(include = AktoerTechnicalException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000, multiplier = 2))
 	public Map<String, IdentInfoForAktoer>  hentAktoerIdForIdent(String ident) {
 		try {

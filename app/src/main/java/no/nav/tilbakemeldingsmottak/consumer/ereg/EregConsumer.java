@@ -2,9 +2,12 @@ package no.nav.tilbakemeldingsmottak.consumer.ereg;
 
 import static java.lang.String.format;
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
+import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -37,6 +40,7 @@ public class EregConsumer implements Ereg {
 		this.eregApiUrl = eregApiUrl;
 	}
 
+	@Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "eregHentInfo"}, percentiles = {0.5, 0.95}, histogram = true)
 	public String hentInfo(String orgnr) {
 		try {
 			final String orgnrTrimmed = orgnr.trim();
