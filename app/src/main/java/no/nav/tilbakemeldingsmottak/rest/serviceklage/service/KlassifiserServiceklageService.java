@@ -2,12 +2,14 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
+import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
@@ -36,27 +38,7 @@ public class KlassifiserServiceklageService {
             serviceklage = createNewServiceklage(journalpostId);
         }
 
-        KlassifiserServiceklageRequest.Answers answers = request.getAnswers();
-
-        serviceklage.setBehandlesSomServiceklage(answers.getBehandlesSomServiceklage());
-        serviceklage.setBehandlesSomServiceklageUtdypning(answers.getBehandlesSomServiceklageUtdypning());
-        serviceklage.setFremmetDato(LocalDateTime.parse(answers.getFremmetDato()));
-        serviceklage.setInnsender(answers.getInnsender());
-        serviceklage.setKanal(answers.getKanal());
-        serviceklage.setKanal(answers.getKanalUtdypning());
-        serviceklage.setEnhetsnummerPaaklaget(answers.getEnhetsnummerPaaklaget());
-        serviceklage.setEnhetsnummerBehandlende(JA.equals(answers.getPaaklagetEnhetErBehandlende()) ?
-                answers.getEnhetsnummerPaaklaget() : answers.getEnhetsnummerBehandlende());
-        serviceklage.setGjelder(answers.getGjelder());
-        serviceklage.setBeskrivelse(answers.getBeskrivelse());
-        serviceklage.setYtelse(answers.getYtelse());
-        serviceklage.setTema(answers.getTema());
-        serviceklage.setTemaUtdypning(mapTemaUtdypning(answers));
-        serviceklage.setUtfall(answers.getUtfall());
-        serviceklage.setAarsak(answers.getAarsak());
-        serviceklage.setTiltak(answers.getTiltak());
-        serviceklage.setSvarmetode(answers.getSvarmetode());
-        serviceklage.setSvarmetodeUtdypning(mapSvarmetodeUtdypning(answers));
+        updateServiceklage(serviceklage, request.getAnswers());
 
         serviceklageRepository.save(serviceklage);
 
@@ -79,6 +61,28 @@ public class KlassifiserServiceklageService {
         serviceklage.setJournalpostId(journalpostId);
         serviceklage.setOpprettetDato(LocalDateTime.now());
         return serviceklage;
+    }
+
+    private void updateServiceklage(Serviceklage serviceklage, KlassifiserServiceklageRequest.Answers answers) {
+        serviceklage.setBehandlesSomServiceklage(answers.getBehandlesSomServiceklage());
+        serviceklage.setBehandlesSomServiceklageUtdypning(answers.getBehandlesSomServiceklageUtdypning());
+        serviceklage.setFremmetDato(LocalDateTime.parse(answers.getFremmetDato()));
+        serviceklage.setInnsender(answers.getInnsender());
+        serviceklage.setKanal(answers.getKanal());
+        serviceklage.setKanal(answers.getKanalUtdypning());
+        serviceklage.setEnhetsnummerPaaklaget(extractEnhetsnummer(answers.getEnhetsnummerPaaklaget()));
+        serviceklage.setEnhetsnummerBehandlende(JA.equals(answers.getPaaklagetEnhetErBehandlende()) ?
+                answers.getEnhetsnummerPaaklaget() : extractEnhetsnummer(answers.getEnhetsnummerBehandlende()));
+        serviceklage.setGjelder(answers.getGjelder());
+        serviceklage.setBeskrivelse(answers.getBeskrivelse());
+        serviceklage.setYtelse(answers.getYtelse());
+        serviceklage.setTema(answers.getTema());
+        serviceklage.setTemaUtdypning(mapTemaUtdypning(answers));
+        serviceklage.setUtfall(answers.getUtfall());
+        serviceklage.setAarsak(answers.getAarsak());
+        serviceklage.setTiltak(answers.getTiltak());
+        serviceklage.setSvarmetode(answers.getSvarmetode());
+        serviceklage.setSvarmetodeUtdypning(mapSvarmetodeUtdypning(answers));
     }
 
     private String mapTemaUtdypning(KlassifiserServiceklageRequest.Answers answers) {
@@ -107,5 +111,16 @@ public class KlassifiserServiceklageService {
         } else{
             return null;
         }
+    }
+
+    private String extractEnhetsnummer(String enhet) {
+        int l = enhet.trim().length();
+        if (l >= 4) {
+            String enhetsnummer = enhet.trim().substring(l-4);
+            if (isNumeric(enhetsnummer)) {
+                return enhetsnummer;
+            }
+        }
+        throw new InvalidRequestException("Klarer ikke å hente ut enhetsnummer for enhet=" + enhet);
     }
 }

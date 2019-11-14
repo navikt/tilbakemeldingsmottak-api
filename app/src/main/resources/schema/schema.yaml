@@ -57,21 +57,20 @@ questions:
       type: TEXT
       next: none
 
-
 - id: PAAKLAGET_ENHET_ER_BEHANDLENDE
   text: Er klagen behandlet i enheten det klages på?
   type: RADIO
   answers:
   - answer: Ja
   - answer: Nei
+    questions:
+    - id: ENHETSNUMMER_BEHANDLENDE
+      text: Angi enhetsnummer til enheten som behandler klagen
+      type: DATALIST
 
 - id: ENHETSNUMMER_PAAKLAGET
   text: Angi enhetsnummer til enheten det klages på
-  type: INPUT
-
-- id: ENHETSNUMMER_BEHANDLENDE
-  text: Angi enhetsnummer til enheten som behandler klagen
-  type: INPUT
+  type: DATALIST
 
 - id: GJELDER
   text: Hva mener du serviceklagen gjelder?
