@@ -28,6 +28,7 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,23 +118,18 @@ public class HentSkjemaService {
                 .collect(Collectors.toList());
     }
 
-    private Optional<Question> getQuestionById(List<Question> questions, String questionId) {
-
-        for (Question question : questions) {
-            if (questionId.equalsIgnoreCase(question.getId())) {
-                return Optional.of(question);
-            }
-            if (question.getAnswers() != null) {
-                for (Answer answer: question.getAnswers()) {
-                    if (answer.getQuestions() != null) {
-                        Optional<Question> optional = getQuestionById(answer.getQuestions(), questionId);
-                        if (optional.isPresent()) {
-                            return optional;
-                        }
-                    }
-                }
-            }
+    private Optional<Question> getQuestionById(List<Question> questions, String id) {
+        return questions.stream()
+                .map(question -> id.equals(question.getId())
+                        ? Optional.of(question)
+                        : Optional.ofNullable(question.getAnswers()).orElse(Collections.emptyList()).stream()
+                        .filter(answer -> answer.getQuestions() != null)
+                        .map(answer -> getQuestionById(answer.getQuestions(), id))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .findAny())
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
         }
-        return Optional.empty();
-    }
 }
