@@ -214,6 +214,15 @@ class ServiceklageIT extends AbstractIT {
     }
 
     @Test
+    void shouldFailIfKlagetekstTooLarge() {
+        OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
+        request.setKlagetekst(RandomStringUtils.randomAlphabetic(50000));
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
     @SneakyThrows
     void happyPathKlassifiserServiceklage() {
         restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
@@ -286,14 +295,5 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
         assertEquals(serviceklage.getKlassifiseringJson(), objectMapper.writeValueAsString(request));
-    }
-
-    @Test
-    void shouldFailIfKlagetekstTooLarge() {
-        OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
-        request.setKlagetekst(RandomStringUtils.randomAlphabetic(50000));
-        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 }
