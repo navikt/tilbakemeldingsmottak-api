@@ -1,15 +1,12 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, {Component} from "react";
+import {connect} from "react-redux";
 import Hovedknapp from "nav-frontend-knapper/lib/hovedknapp";
 import queryString from "query-string";
 import SchemaRender from "../components/schema/SchemaRender";
-import { ServiceklageApi } from "../api/Api";
-import {
-  SchemaMapper,
-  DefaultAnswersMapper
-} from "../mappers/skjema/SkjemaMapper";
+import {ServiceklageApi} from "../api/Api";
+import {DefaultAnswersMapper, SchemaMapper} from "../mappers/skjema/SkjemaMapper";
 import Dokument from "../components/Dokument";
-import { UPDATE_SCHEMA, RESET_KLASSIFISERING } from "../store/actions";
+import {RESET_KLASSIFISERING, UPDATE_SCHEMA} from "../store/actions";
 import "./Klassifisering.less";
 
 class Klassifisering extends Component {
@@ -28,7 +25,7 @@ class Klassifisering extends Component {
     this.props.actions.resetKlassifisering();
     ServiceklageApi.hentKlassifiseringSkjema(this.journalpostId).then(res => {
       this.props.actions.updateSchema({
-        defaultAnswers: DefaultAnswersMapper(res.data.defaultAnswers),
+        defaultAnswers: DefaultAnswersMapper(res.data.defaultAnswers) || {answers: {}},
         questions: SchemaMapper(res.data.questions)
       });
     });
@@ -42,8 +39,15 @@ class Klassifisering extends Component {
   }
 
   submitAnswers() {
-    const { answers } = this.props.status;
-    ServiceklageApi.klassifiserKlage(answers);
+    const { status, defaultAnswers } = this.props;
+    const answers = {
+        ...status.answers,
+        ...Object.entries(defaultAnswers.answers || {}).reduce((acc, [key, {answer}]) => ({
+            ...acc,
+            [key]: answer
+        }), {})
+    };
+    ServiceklageApi.klassifiser(this.oppgaveId, answers);
   }
 
   render() {
@@ -74,6 +78,7 @@ class Klassifisering extends Component {
 const mapStateToProps = state => {
   return {
     answers: state.klassifiseringReducer.answers,
+    defaultAnswers: state.klassifiseringReducer.defaultAnswers,
     status: state.klassifiseringReducer.status
   };
 };
