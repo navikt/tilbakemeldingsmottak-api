@@ -30,6 +30,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.GjelderSosialhjelpType;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
@@ -52,6 +54,7 @@ class ServiceklageIT extends AbstractIT {
 
     private static final String URL_SERVICEKLAGE = "/rest/serviceklage";
     private static final String KLASSIFISER = "klassifiser";
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void happyPathPrivatperson() {
@@ -211,6 +214,7 @@ class ServiceklageIT extends AbstractIT {
     }
 
     @Test
+    @SneakyThrows
     void happyPathKlassifiserServiceklage() {
         restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
 
@@ -247,9 +251,11 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getTiltak(), TILTAK);
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
+        assertEquals(serviceklage.getKlassifiseringJson(), objectMapper.writeValueAsString(request));
     }
 
     @Test
+    @SneakyThrows
     void shouldCreateServiceklageIfServiceklageNotFound() {
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
@@ -279,6 +285,7 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getTiltak(), TILTAK);
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
+        assertEquals(serviceklage.getKlassifiseringJson(), objectMapper.writeValueAsString(request));
     }
 
     @Test

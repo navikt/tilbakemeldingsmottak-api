@@ -4,12 +4,15 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
+import no.nav.tilbakemeldingsmottak.exceptions.RequestParsingException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
@@ -29,7 +32,7 @@ public class KlassifiserServiceklageService {
 
     private static final String FERDIGSTILT = "FERDIGSTILT";
     private static final String JA = "Ja";
-    private static final String ANNET= "Annet";
+    private static final String ANNET = "Annet";
 
     public void klassifiserServiceklage(KlassifiserServiceklageRequest request, String journalpostId, String oppgaveId)  {
 
@@ -85,6 +88,11 @@ public class KlassifiserServiceklageService {
         serviceklage.setSvarmetode(request.getSvarmetode());
         serviceklage.setSvarmetodeUtdypning(mapSvarmetodeUtdypning(request));
         serviceklage.setAvsluttetDato(LocalDateTime.now());
+        try {
+            serviceklage.setKlassifiseringJson(new ObjectMapper().writeValueAsString(request));
+        } catch (JsonProcessingException e) {
+            throw new RequestParsingException("Kan ikke konvertere klassifiseringsrequest til JSON-string");
+        }
     }
 
     private String mapTemaUtdypning(KlassifiserServiceklageRequest request) {
