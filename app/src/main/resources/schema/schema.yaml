@@ -55,7 +55,6 @@ questions:
     - id: KANAL_UTDYPNING
       text: Spesifiser
       type: TEXT
-      next: none
 
 - id: PAAKLAGET_ENHET_ER_BEHANDLENDE
   text: Er klagen behandlet i enheten det klages på?

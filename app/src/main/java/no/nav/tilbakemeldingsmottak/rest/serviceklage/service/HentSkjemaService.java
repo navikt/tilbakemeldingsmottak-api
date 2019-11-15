@@ -7,6 +7,7 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVARMETODE;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG;
+import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
@@ -19,7 +20,6 @@ import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Answer;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.DefaultAnswers;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -28,11 +28,9 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -118,18 +116,4 @@ public class HentSkjemaService {
                 .collect(Collectors.toList());
     }
 
-    private Optional<Question> getQuestionById(List<Question> questions, String id) {
-        return questions.stream()
-                .map(question -> id.equals(question.getId())
-                        ? Optional.of(question)
-                        : Optional.ofNullable(question.getAnswers()).orElse(Collections.emptyList()).stream()
-                        .filter(answer -> answer.getQuestions() != null)
-                        .map(answer -> getQuestionById(answer.getQuestions(), id))
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .findAny())
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst();
-        }
 }

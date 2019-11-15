@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createNorg2Response;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
@@ -97,6 +98,10 @@ public class AbstractIT {
                     .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
                     .withBodyFile("aktoer/aktoerResponse.json")));
 
+        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/norg2/enhet"))
+                .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
+                        .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(createNorg2Response())));
     }
 
     @AfterEach

@@ -1,7 +1,9 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.NONE;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
@@ -11,10 +13,13 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServicek
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class KlassifiserServiceklageValidator extends RequestValidator {
@@ -22,7 +27,12 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
 
     public void validateRequest(KlassifiserServiceklageRequest request, HentSkjemaResponse hentSkjemaResponse) {
         ObjectMapper m = new ObjectMapper();
-        Map<String, String> answersMap = m.convertValue(request.getAnswers(), Map.class);
+
+        Map<String, String> answersMap = m.convertValue(request, new TypeReference<Map<String, String>>(){})
+                .entrySet().stream()
+                .filter(entry -> entry.getValue() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
 
         validateQuestions(hentSkjemaResponse.getQuestions(), answersMap);
         if (hentSkjemaResponse.getDefaultAnswers() != null) {
@@ -35,67 +45,62 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
                 validateDefaultAnswer(questionId, defaultAnswer, answersMap.get(questionId)));
     }
 
-    private void validateQuestions(List<Question> questions, Map<String, String> answersMap) {
+    private boolean validateQuestions(List<Question> questions, Map<String, String> answersMap) {
         for (Question question : questions) {
             String answered = answersMap.get(question.getId());
             switch (question.getType()) {
                 case RADIO:
-                     validateRadio(question, answersMap.get(question.getId()));
-                    break;
+                case SELECT:
+                case DATALIST:
+                    validateMultichoice(question, answersMap.get(question.getId()));
+                     break;
                 case TEXT:
-                    validateText(question, answersMap.get(question.getId()));
-                    break;
                 case INPUT:
-                    validateInput(question, answersMap.get(question.getId()));
+                    validateText(question, answersMap.get(question.getId()));
                     break;
                 case DATE:
                     validateDate(question, answersMap.get(question.getId()));
                     break;
-                case SELECT:
-                    validateSelect(question, answersMap.get(question.getId()));
-                    break;
-                case DATALIST:
-                    validateDatalist(question, answersMap.get(question.getId()));
-                    break;
+
             }
             if (NONE.equals(question.getNext())) {
-                return;
+                return false;
             }
 
-            Optional.ofNullable(question.getAnswers()).orElse(Collections.emptyList())
+            boolean shouldContinue = Optional.ofNullable(question.getAnswers()).orElse(Collections.emptyList())
                     .stream()
                     .filter(a -> a.getAnswer().equals(answered))
                     .findFirst()
-                    .ifPresent(chosenAnswer -> {
-                        List<Question> subQuestions = chosenAnswer.getQuestions();
-                        if (subQuestions != null) {
-                            validateQuestions(subQuestions, answersMap);
-                        }
-                    });
+                    .map(chosenAnswer ->
+                            chosenAnswer.getQuestions() == null || validateQuestions(chosenAnswer.getQuestions(), answersMap))
+                    .orElse(true);
 
+            if (!shouldContinue) {
+                break;
+            }
         }
+        return true;
     }
 
-    private void validateRadio(Question question, String answer) {
+    private void validateMultichoice(Question question, String answer) {
         if (question.getAnswers().stream().noneMatch(a -> a.getAnswer().equals(answer))) {
-            throw new InvalidRequestException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig %s %s %s %s", question.getId(),
-                    answer, question.getAnswers().get(0), question.getAnswers().get(1), question.getAnswers().get(2)));
+            throw new InvalidRequestException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId()));
         }
     }
 
     private void validateText(Question question, String answer) {
-    }
-
-    private void validateInput(Question question, String answer) {
+        if (isBlank(answer)) {
+            throw new InvalidRequestException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId()));
+        }
     }
 
     private void validateDate(Question question, String answer) {
-    }
-
-    private void validateSelect(Question question, String answer) {
-    }
-
-    private void validateDatalist(Question question, String answer) {
+        validateText(question, answer);
+        try {
+            LocalDateTime.parse(answer);
+        } catch (DateTimeParseException e) {
+            throw new InvalidRequestException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId()));
+        }
     }
 
     private void validateDefaultAnswer(String id, String defaultAnswer, String submittedAnswer) {

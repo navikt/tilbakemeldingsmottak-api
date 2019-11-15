@@ -29,4 +29,10 @@ public class OidcUtils {
         }
     }
 
+    public String getFirstValidToken() {
+        return oidcRequestContextHolder.getOIDCValidationContext().getFirstValidToken()
+                .map(TokenContext::getIdToken)
+                .orElseThrow(() -> new OidcContextException("Finner ikke validert OIDC-token"));
+    }
+
 }

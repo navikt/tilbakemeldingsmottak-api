@@ -33,84 +33,76 @@ import lombok.Data;
 @Builder
 public class KlassifiserServiceklageRequest {
 
-    private Answers answers;
+    @JsonProperty(BEHANDLES_SOM_SERVICEKLAGE)
+    private String behandlesSomServiceklage;
 
-    @Data
-    @Builder
-    public static class Answers {
-        @JsonProperty(BEHANDLES_SOM_SERVICEKLAGE)
-        private String behandlesSomServiceklage;
+    @JsonProperty(BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING)
+    private String behandlesSomServiceklageUtdypning;
 
-        @JsonProperty(BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING)
-        private String behandlesSomServiceklageUtdypning;
+    @JsonProperty(FREMMET_DATO)
+    private String fremmetDato;
 
-        @JsonProperty(FREMMET_DATO)
-        private String fremmetDato;
+    @JsonProperty(INNSENDER)
+    private String innsender;
 
-        @JsonProperty(INNSENDER)
-        private String innsender;
+    @JsonProperty(KANAL)
+    private String kanal;
 
-        @JsonProperty(KANAL)
-        private String kanal;
+    @JsonProperty(KANAL_UTDYPNING)
+    private String kanalUtdypning;
 
-        @JsonProperty(KANAL_UTDYPNING)
-        private String kanalUtdypning;
+    @JsonProperty(PAAKLAGET_ENHET_ER_BEHANDLENDE)
+    private String paaklagetEnhetErBehandlende;
 
-        @JsonProperty(PAAKLAGET_ENHET_ER_BEHANDLENDE)
-        private String paaklagetEnhetErBehandlende;
+    @JsonProperty(ENHETSNUMMER_PAAKLAGET)
+    private String enhetsnummerPaaklaget;
 
-        @JsonProperty(ENHETSNUMMER_PAAKLAGET)
-        private String enhetsnummerPaaklaget;
+    @JsonProperty(ENHETSNUMMER_BEHANDLENDE)
+    private String enhetsnummerBehandlende;
 
-        @JsonProperty(ENHETSNUMMER_BEHANDLENDE)
-        private String enhetsnummerBehandlende;
+    @JsonProperty(GJELDER)
+    private String gjelder;
 
-        @JsonProperty(GJELDER)
-        private String gjelder;
+    @JsonProperty(BESKRIVELSE)
+    private String beskrivelse;
 
-        @JsonProperty(BESKRIVELSE)
-        private String beskrivelse;
+    @JsonProperty(YTELSE)
+    private String ytelse;
 
-        @JsonProperty(YTELSE)
-        private String ytelse;
+    @JsonProperty(TEMA)
+    private String tema;
 
-        @JsonProperty(TEMA)
-        private String tema;
+    @JsonProperty(VENTE)
+    private String vente;
 
-        @JsonProperty(VENTE)
-        private String vente;
+    @JsonProperty(TILGJENGELIGHET)
+    private String tilgjengelighet;
 
-        @JsonProperty(TILGJENGELIGHET)
-        private String tilgjengelighet;
+    @JsonProperty(INFORMASJON)
+    private String informasjon;
 
-        @JsonProperty(INFORMASJON)
-        private String informasjon;
+    @JsonProperty(VEILEDNING)
+    private String veiledning;
 
-        @JsonProperty(VEILEDNING)
-        private String veiledning;
+    @JsonProperty(TEMA_UTDYPNING)
+    private String temaUtdypning;
 
-        @JsonProperty(TEMA_UTDYPNING)
-        private String temaUtdypning;
+    @JsonProperty(UTFALL)
+    private String utfall;
 
-        @JsonProperty(UTFALL)
-        private String utfall;
+    @JsonProperty(AARSAK)
+    private String aarsak;
 
-        @JsonProperty(AARSAK)
-        private String aarsak;
+    @JsonProperty(TILTAK)
+    private String tiltak;
 
-        @JsonProperty(TILTAK)
-        private String tiltak;
+    @JsonProperty(SVARMETODE)
+    private String svarmetode;
 
-        @JsonProperty(SVARMETODE)
-        private String svarmetode;
+    @JsonProperty(SVARMETODE_UTDYPNING)
+    private String svarmetodeUtdypning;
 
-        @JsonProperty(SVARMETODE_UTDYPNING)
-        private String svarmetodeUtdypning;
-
-        @JsonProperty(SVAR_IKKE_NOEDVENDIG)
-        private String svarIkkeNoedvendig;
-
-    }
-
+    @JsonProperty(SVAR_IKKE_NOEDVENDIG)
+    private String svarIkkeNoedvendig;
 
 }

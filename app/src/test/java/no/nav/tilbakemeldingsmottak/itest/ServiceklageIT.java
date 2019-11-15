@@ -1,17 +1,21 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
+import static no.nav.tilbakemeldingsmottak.TestUtils.AARSAK;
 import static no.nav.tilbakemeldingsmottak.TestUtils.BEHANDLES_SOM_SERVICEKLAGE;
-import static no.nav.tilbakemeldingsmottak.TestUtils.ENHETSNUMMER_BEHANDLENDE;
-import static no.nav.tilbakemeldingsmottak.TestUtils.ENHETSNUMMER_PAAKLAGET;
+import static no.nav.tilbakemeldingsmottak.TestUtils.BESKRIVELSE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.FREMMET_DATO;
 import static no.nav.tilbakemeldingsmottak.TestUtils.GJELDER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.INNSENDER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETEKST;
 import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETYPER;
+import static no.nav.tilbakemeldingsmottak.TestUtils.NAV_ENHETSNR_1;
+import static no.nav.tilbakemeldingsmottak.TestUtils.NAV_ENHETSNR_2;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ORGANISASJONSNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.TEMA;
+import static no.nav.tilbakemeldingsmottak.TestUtils.TILTAK;
 import static no.nav.tilbakemeldingsmottak.TestUtils.UTFALL;
+import static no.nav.tilbakemeldingsmottak.TestUtils.VENTE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.YTELSE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequest;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvBedrift;
@@ -214,7 +218,7 @@ class ServiceklageIT extends AbstractIT {
         String fremmetDato = serviceklageRepository.findAll().iterator().next().getFremmetDato().toString();
 
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
-        request.getAnswers().setFremmetDato(fremmetDato);
+        request.setFremmetDato(fremmetDato);
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
         ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + OPPGAVE_ID, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
 
@@ -231,12 +235,16 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getFremmetDato().toString(), fremmetDato);
         assertEquals(serviceklage.getInnsender(), INNSENDER);
         assertEquals(serviceklage.getKanal(), KANAL_SERVICEKLAGESKJEMA_ANSWER);
-        assertEquals(serviceklage.getEnhetsnummerPaaklaget(), ENHETSNUMMER_PAAKLAGET);
-        assertEquals(serviceklage.getEnhetsnummerBehandlende(), ENHETSNUMMER_BEHANDLENDE);
+        assertEquals(serviceklage.getEnhetsnummerPaaklaget(), NAV_ENHETSNR_1);
+        assertEquals(serviceklage.getEnhetsnummerBehandlende(), NAV_ENHETSNR_2);
         assertEquals(serviceklage.getGjelder(), GJELDER);
+        assertEquals(serviceklage.getBeskrivelse(), BESKRIVELSE);
         assertEquals(serviceklage.getYtelse(), YTELSE);
         assertEquals(serviceklage.getTema(), TEMA);
+        assertEquals(serviceklage.getTemaUtdypning(), VENTE);
         assertEquals(serviceklage.getUtfall(), UTFALL);
+        assertEquals(serviceklage.getAarsak(), AARSAK);
+        assertEquals(serviceklage.getTiltak(), TILTAK);
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
     }
@@ -259,12 +267,16 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getFremmetDato().toString(), FREMMET_DATO);
         assertEquals(serviceklage.getInnsender(), INNSENDER);
         assertEquals(serviceklage.getKanal(), KANAL_SERVICEKLAGESKJEMA_ANSWER);
-        assertEquals(serviceklage.getEnhetsnummerPaaklaget(), ENHETSNUMMER_PAAKLAGET);
-        assertEquals(serviceklage.getEnhetsnummerBehandlende(), ENHETSNUMMER_BEHANDLENDE);
+        assertEquals(serviceklage.getEnhetsnummerPaaklaget(), NAV_ENHETSNR_1);
+        assertEquals(serviceklage.getEnhetsnummerBehandlende(), NAV_ENHETSNR_2);
         assertEquals(serviceklage.getGjelder(), GJELDER);
+        assertEquals(serviceklage.getBeskrivelse(), BESKRIVELSE);
         assertEquals(serviceklage.getYtelse(), YTELSE);
         assertEquals(serviceklage.getTema(), TEMA);
+        assertEquals(serviceklage.getTemaUtdypning(), VENTE);
         assertEquals(serviceklage.getUtfall(), UTFALL);
+        assertEquals(serviceklage.getAarsak(), AARSAK);
+        assertEquals(serviceklage.getTiltak(), TILTAK);
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
     }

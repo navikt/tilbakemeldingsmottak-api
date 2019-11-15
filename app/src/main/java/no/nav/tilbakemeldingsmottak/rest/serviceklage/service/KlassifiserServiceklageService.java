@@ -38,7 +38,7 @@ public class KlassifiserServiceklageService {
             serviceklage = createNewServiceklage(journalpostId);
         }
 
-        updateServiceklage(serviceklage, request.getAnswers());
+        updateServiceklage(serviceklage, request);
 
         serviceklageRepository.save(serviceklage);
 
@@ -63,50 +63,52 @@ public class KlassifiserServiceklageService {
         return serviceklage;
     }
 
-    private void updateServiceklage(Serviceklage serviceklage, KlassifiserServiceklageRequest.Answers answers) {
-        serviceklage.setBehandlesSomServiceklage(answers.getBehandlesSomServiceklage());
-        serviceklage.setBehandlesSomServiceklageUtdypning(answers.getBehandlesSomServiceklageUtdypning());
-        serviceklage.setFremmetDato(LocalDateTime.parse(answers.getFremmetDato()));
-        serviceklage.setInnsender(answers.getInnsender());
-        serviceklage.setKanal(answers.getKanal());
-        serviceklage.setKanal(answers.getKanalUtdypning());
-        serviceklage.setEnhetsnummerPaaklaget(extractEnhetsnummer(answers.getEnhetsnummerPaaklaget()));
-        serviceklage.setEnhetsnummerBehandlende(JA.equals(answers.getPaaklagetEnhetErBehandlende()) ?
-                answers.getEnhetsnummerPaaklaget() : extractEnhetsnummer(answers.getEnhetsnummerBehandlende()));
-        serviceklage.setGjelder(answers.getGjelder());
-        serviceklage.setBeskrivelse(answers.getBeskrivelse());
-        serviceklage.setYtelse(answers.getYtelse());
-        serviceklage.setTema(answers.getTema());
-        serviceklage.setTemaUtdypning(mapTemaUtdypning(answers));
-        serviceklage.setUtfall(answers.getUtfall());
-        serviceklage.setAarsak(answers.getAarsak());
-        serviceklage.setTiltak(answers.getTiltak());
-        serviceklage.setSvarmetode(answers.getSvarmetode());
-        serviceklage.setSvarmetodeUtdypning(mapSvarmetodeUtdypning(answers));
+    private void updateServiceklage(Serviceklage serviceklage, KlassifiserServiceklageRequest request) {
+        serviceklage.setBehandlesSomServiceklage(request.getBehandlesSomServiceklage());
+        serviceklage.setBehandlesSomServiceklageUtdypning(request.getBehandlesSomServiceklageUtdypning());
+        serviceklage.setFremmetDato(LocalDateTime.parse(request.getFremmetDato()));
+        serviceklage.setInnsender(request.getInnsender());
+        serviceklage.setKanal(request.getKanal());
+        serviceklage.setKanalUtdypning(request.getKanalUtdypning());
+        serviceklage.setEnhetsnummerPaaklaget(extractEnhetsnummer(request.getEnhetsnummerPaaklaget()));
+        serviceklage.setEnhetsnummerBehandlende(JA.equals(request.getPaaklagetEnhetErBehandlende()) ?
+                extractEnhetsnummer(request.getEnhetsnummerPaaklaget()) :
+                extractEnhetsnummer(request.getEnhetsnummerBehandlende()));
+        serviceklage.setGjelder(request.getGjelder());
+        serviceklage.setBeskrivelse(request.getBeskrivelse());
+        serviceklage.setYtelse(request.getYtelse());
+        serviceklage.setTema(request.getTema());
+        serviceklage.setTemaUtdypning(mapTemaUtdypning(request));
+        serviceklage.setUtfall(request.getUtfall());
+        serviceklage.setAarsak(request.getAarsak());
+        serviceklage.setTiltak(request.getTiltak());
+        serviceklage.setSvarmetode(request.getSvarmetode());
+        serviceklage.setSvarmetodeUtdypning(mapSvarmetodeUtdypning(request));
+        serviceklage.setAvsluttetDato(LocalDateTime.now());
     }
 
-    private String mapTemaUtdypning(KlassifiserServiceklageRequest.Answers answers) {
-        if (!isBlank(answers.getVente())) {
-            return answers.getVente();
-        } else if (!isBlank(answers.getTilgjengelighet())) {
-            return answers.getTilgjengelighet();
-        } else if (!isBlank(answers.getInformasjon())) {
-            return answers.getInformasjon();
-        } else if (!isBlank(answers.getVeiledning())) {
-            return answers.getVeiledning();
-        } else if (!isBlank(answers.getTemaUtdypning())) {
-            return answers.getTemaUtdypning();
+    private String mapTemaUtdypning(KlassifiserServiceklageRequest request) {
+        if (!isBlank(request.getVente())) {
+            return request.getVente();
+        } else if (!isBlank(request.getTilgjengelighet())) {
+            return request.getTilgjengelighet();
+        } else if (!isBlank(request.getInformasjon())) {
+            return request.getInformasjon();
+        } else if (!isBlank(request.getVeiledning())) {
+            return request.getVeiledning();
+        } else if (!isBlank(request.getTemaUtdypning())) {
+            return request.getTemaUtdypning();
         } else {
             return null;
         }
     }
 
-    private String mapSvarmetodeUtdypning(KlassifiserServiceklageRequest.Answers answers) {
-        if (!isBlank(answers.getSvarIkkeNoedvendig())) {
-            if (answers.getSvarIkkeNoedvendig().equals(ANNET)) {
-                return answers.getSvarmetodeUtdypning();
+    private String mapSvarmetodeUtdypning(KlassifiserServiceklageRequest request) {
+        if (!isBlank(request.getSvarIkkeNoedvendig())) {
+            if (request.getSvarIkkeNoedvendig().equals(ANNET)) {
+                return request.getSvarmetodeUtdypning();
             } else {
-                return answers.getSvarIkkeNoedvendig();
+                return request.getSvarIkkeNoedvendig();
             }
         } else{
             return null;
@@ -114,6 +116,9 @@ public class KlassifiserServiceklageService {
     }
 
     private String extractEnhetsnummer(String enhet) {
+        if (isBlank(enhet)) {
+            return null;
+        }
         int l = enhet.trim().length();
         if (l >= 4) {
             String enhetsnummer = enhet.trim().substring(l-4);
