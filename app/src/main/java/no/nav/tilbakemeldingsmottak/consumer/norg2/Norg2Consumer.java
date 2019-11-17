@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.consumer.norg2;
 
 import static java.lang.String.format;
+import static no.nav.tilbakemeldingsmottak.config.cache.CacheConfig.NORG2_CACHE;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
@@ -11,6 +12,7 @@ import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -44,6 +46,7 @@ public class Norg2Consumer {
 
 	@Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentEnheter"}, percentiles = {0.5, 0.95}, histogram = true)
 	@Retryable(include = HentEnheterTechnicalException.class, backoff = @Backoff(delay = 1000))
+	@Cacheable(NORG2_CACHE)
 	public List<Enhet> hentEnheter() {
 		try {
 			return restTemplate.exchange(norg2Url + "/enhet",

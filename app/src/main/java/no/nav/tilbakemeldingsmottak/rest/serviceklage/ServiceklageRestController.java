@@ -7,7 +7,6 @@ import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
-import no.nav.security.oidc.context.OIDCRequestContextHolder;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
@@ -48,7 +47,6 @@ public class ServiceklageRestController {
     private final HentDokumentService hentDokumentService;
     private final OpprettServiceklageValidator opprettServiceklageValidator;
     private final KlassifiserServiceklageValidator klassifiserServiceklageValidator;
-    private final OIDCRequestContextHolder oidcRequestContextHolder;
     private final OppgaveConsumer oppgaveConsumer;
 
 
