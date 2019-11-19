@@ -1,5 +1,5 @@
 import React from "react";
-import { Input as NavInput } from "nav-frontend-skjema";
+import {Input as NavInput} from "nav-frontend-skjema";
 import Question from "./QuestionComponent"
 
 export default class Input extends Question {

@@ -1,4 +1,4 @@
-import { RESET_KLASSIFISERING, UPDATE_ANSWER, UPDATE_SCHEMA } from "./actions";
+import {RESET_KLASSIFISERING, UPDATE_ANSWER, UPDATE_SCHEMA} from "./actions";
 
 const updateRenderAnswers = (answers, value, index) => {
   const prevAnswers = index === 0 ? [] : answers.slice(0, index);

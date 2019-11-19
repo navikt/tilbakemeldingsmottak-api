@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import AlertStripe from "nav-frontend-alertstriper";
 
-import { UPDATE_ANSWER } from "../../store/actions";
+import {UPDATE_ANSWER} from "../../store/actions";
 import DateInput from "./questions/DateInput";
 import Input from "./questions/Input";
 import RadioButtons from "./questions/RadioButtons";
