@@ -1,7 +1,8 @@
-import React, {Component} from "react";
+import React from "react";
 import {Select as NavSelect} from "nav-frontend-skjema";
+import Question from "./QuestionComponent"
 
-export default class Select extends Component {
+export default class Select extends Question {
   constructor(props) {
     super(props);
     this.optionsMap = this.props.answers.reduce(

@@ -1,7 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 import Select from "react-select";
+import Question from "./QuestionComponent"
 
-export default class DataList extends Component {
+export default class DataList extends Question {
   constructor(props) {
     super(props);
     this.options = this.props.answers.map((answer, index) => ({

@@ -18,6 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 @Component
@@ -44,6 +46,8 @@ public final class PdfService {
         }
 
         document.add(createParagraph("Kanal", KANAL_SERVICEKLAGESKJEMA_ANSWER));
+
+        document.add(createParagraph("Dato fremmet", LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
 
         if (!isBlank(request.getInnmelder().getNavn())) {
             document.add(createParagraph("Navn til innmelder", request.getInnmelder().getNavn()));

@@ -16,7 +16,14 @@ const filterQuestion = question => {
 
 const filterQuestionRenderProperties = question => {
   return {
-    ...filterObjectKeys(question, ["text", "type", "index", "id"]),
+    ...filterObjectKeys(question, [
+      "text",
+      "type",
+      "index",
+      "id",
+      "optional",
+      "banner"
+    ]),
     properties: question.properties || {}
   };
 };
@@ -77,8 +84,15 @@ const normializeValues = questions =>
   questions.map(question => {
     return {
       ...question,
-      ...(typeof question.emit === "string"
-        ? { emit: { message: question.emit, type: "info" } }
+      ...(question.emit
+        ? typeof question.emit === "string"
+          ? { emit: { message: question.emit, type: "info" } }
+          : { emit: question.emit }
+        : {}),
+      ...(question.banner
+        ? typeof question.banner === "string"
+          ? { banner: { message: question.banner, type: "info" } }
+          : { banner: question.banner }
         : {}),
       ...(question.answers
         ? {

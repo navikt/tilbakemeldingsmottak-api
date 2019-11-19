@@ -5,6 +5,7 @@ import SchemaQuestion from "./SchemaQuestion";
 class Render extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       answers: []
     };
@@ -18,18 +19,18 @@ class Render extends Component {
     let questions = this.props.answers
       .reduce((acc, answer) => [...acc, answer.next], [1])
       .filter(next => next && next !== "none")
-      .map(next => next - 1);
+      .map(next => next - 1)
+      .filter(questionIndex => this.props.questions.length > questionIndex);
+
     return (
       <>
-        {questions
-          .filter(questionIndex => this.props.questions.length > questionIndex)
-          .map((questionIndex, answerIndex) => (
-            <SchemaQuestion
-              key={questionIndex}
-              questionIndex={questionIndex}
-              answerIndex={answerIndex}
-            />
-          ))}
+        {questions.map((questionIndex, answerIndex) => (
+          <SchemaQuestion
+            key={questionIndex}
+            questionIndex={questionIndex}
+            answerIndex={answerIndex}
+          />
+        ))}
         <div
           ref={el => {
             this.el = el;
@@ -40,7 +41,6 @@ class Render extends Component {
   }
 }
 
-
 const mapStateToProps = state => {
   return {
     questions: state.klassifiseringReducer.questions,
@@ -49,10 +49,7 @@ const mapStateToProps = state => {
 };
 
 function mapDispatchToProps(dispatch) {
-  return {}
+  return {};
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Render);
+export default connect(mapStateToProps, mapDispatchToProps)(Render);

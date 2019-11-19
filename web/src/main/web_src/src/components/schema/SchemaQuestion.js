@@ -2,18 +2,20 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import AlertStripe from "nav-frontend-alertstriper";
 
-import {UPDATE_ANSWER} from "../../store/actions"
+import { UPDATE_ANSWER } from "../../store/actions";
 import DateInput from "./questions/DateInput";
 import Input from "./questions/Input";
 import RadioButtons from "./questions/RadioButtons";
 import Select from "./questions/Select";
 import TextArea from "./questions/TextArea";
 import DataList from "./questions/DataList"
+import Checkbox from "./questions/Checkbox";
 
 class SchemaQuestion extends Component {
   static propTypes = {};
 
   static typemap = {
+    checkbox: Checkbox,
     date: DateInput,
     input: Input,
     radio: RadioButtons,
@@ -46,6 +48,16 @@ class SchemaQuestion extends Component {
     }
   }
 
+  createBanner(banner) {
+    return (
+      <>
+        {banner && (
+          <AlertStripe type={SchemaQuestion.alertmap[banner.type]}>{banner.message}</AlertStripe>
+        )}
+      </>
+    );
+  }
+
   getAnswerEmitValues(question, defaultAnswer) {
     return {
       ...(question.answers
@@ -60,11 +72,7 @@ class SchemaQuestion extends Component {
   }
 
   createComponent(question) {
-    const {
-      questionIndex,
-      answerIndex,
-      answers,
-    } = this.props;
+    const { questionIndex, answerIndex, answers } = this.props;
 
     const Component = SchemaQuestion.typemap[question.type];
     const val = answers.length > answerIndex ? answers[answerIndex] : {};
@@ -78,11 +86,31 @@ class SchemaQuestion extends Component {
       <div key={questionIndex}>
         <div className="Skjemafelt">
           <legend className="skjema__legend">{`${questionNumber}) ${question.text}`}</legend>
+          {this.createBanner(question.banner)}
           <Component
             {...question}
             index={questionIndex}
             value={val}
-            emit={value => this.props.actions.updateAnswer(value, answerIndex)}
+            onInit={() =>
+              question.optional &&
+              this.props.actions.updateAnswer(
+                {
+                  ...question.emitValues,
+                  answer: null,
+                  optional: question.optional
+                },
+                answerIndex
+              )
+            }
+            emit={value =>
+              this.props.actions.updateAnswer(
+                {
+                  ...value,
+                  optional: question.optional
+                },
+                answerIndex
+              )
+            }
           />
         </div>
         {this.createAlert(answerIndex)}
@@ -96,10 +124,10 @@ class SchemaQuestion extends Component {
       questionIndex,
       answerIndex,
       answers,
-      defaultAnswers,
+      defaultAnswers
     } = this.props;
 
-    const question = questions[questionIndex]
+    const question = questions[questionIndex];
 
     if (question.id && defaultAnswers.answers[question.id]) {
       if (answers.length <= answerIndex) {
@@ -110,7 +138,10 @@ class SchemaQuestion extends Component {
           ),
           default: true
         };
-        setTimeout(() => this.props.actions.updateAnswer(values, answerIndex), 0);
+        setTimeout(
+          () => this.props.actions.updateAnswer(values, answerIndex),
+          0
+        );
       }
       return <div key={questionIndex} />;
     } else {
@@ -118,7 +149,6 @@ class SchemaQuestion extends Component {
     }
   }
 }
-
 
 const mapStateToProps = state => {
   return {
@@ -130,18 +160,16 @@ const mapStateToProps = state => {
 
 function mapDispatchToProps(dispatch) {
   return {
-      actions: {
-          updateAnswer: (value, index) => {
-              dispatch({
-                  type: UPDATE_ANSWER,
-                  value, index
-              })
-          }
+    actions: {
+      updateAnswer: (value, index) => {
+        dispatch({
+          type: UPDATE_ANSWER,
+          value,
+          index
+        });
       }
-  }
+    }
+  };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SchemaQuestion);
+export default connect(mapStateToProps, mapDispatchToProps)(SchemaQuestion);
