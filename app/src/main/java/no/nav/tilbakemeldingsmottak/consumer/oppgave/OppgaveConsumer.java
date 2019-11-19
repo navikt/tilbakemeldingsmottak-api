@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.oppgave;
 
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
-import static no.nav.tilbakemeldingsmottak.config.cache.CacheConfig.OPPGAVE_CACHE;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
@@ -18,7 +17,6 @@ import no.nav.tilbakemeldingsmottak.util.RestSecurityHeadersUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -99,7 +97,6 @@ public class OppgaveConsumer {
         }
     }
 
-    @Cacheable(OPPGAVE_CACHE)
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public HentOppgaveResponseTo hentOppgave(String oppgaveId) {
         if (log.isDebugEnabled()) {
