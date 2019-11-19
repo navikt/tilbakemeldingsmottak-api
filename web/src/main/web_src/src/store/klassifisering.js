@@ -2,7 +2,7 @@ import { RESET_KLASSIFISERING, UPDATE_ANSWER, UPDATE_SCHEMA } from "./actions";
 
 const updateRenderAnswers = (answers, value, index) => {
   const prevAnswers = index === 0 ? [] : answers.slice(0, index);
-  return (value.answer == null || value.answer == undefined
+  return ((value.answer == null || value.answer == undefined) && !value.optional
     ? prevAnswers
     : [
         ...prevAnswers,
@@ -63,7 +63,12 @@ export default (state = initialState, action) => {
     case UPDATE_ANSWER:
       return {
         ...state,
-        ...updateAnswers(state.answers, state.questions, action.value, action.index)
+        ...updateAnswers(
+          state.answers,
+          state.questions,
+          action.value,
+          action.index
+        )
       };
     case RESET_KLASSIFISERING:
       return { ...state, ...initialState };
