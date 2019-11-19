@@ -110,6 +110,13 @@ questions:
   - answer: Annet
   - answer: Uspesifisert
 
+- id: RELATERT
+  text: Huk av dersom serviceklagen er relatert til:
+  type: CHECKBOX
+  answers:
+  - answer: EØS-saken
+  - answer: Åpningstider på NAV-kontoret
+
 - id: TEMA
   text: Hva gjelder serviceklagen?
   type: RADIO

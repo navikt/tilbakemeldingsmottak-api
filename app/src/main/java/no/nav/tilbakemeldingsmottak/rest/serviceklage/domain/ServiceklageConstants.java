@@ -19,6 +19,7 @@ public final class ServiceklageConstants {
     public static final String GJELDER = "GJELDER";
     public static final String YTELSE = "YTELSE";
     public static final String TEMA = "TEMA";
+    public static final String RELATERT = "RELATERT";
     public static final String VENTE = "VENTE";
     public static final String TILGJENGELIGHET = "TILGJENGELIGHET";
     public static final String INFORMASJON = "INFORMASJON";
