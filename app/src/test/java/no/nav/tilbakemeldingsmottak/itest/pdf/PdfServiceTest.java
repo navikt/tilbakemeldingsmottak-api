@@ -30,6 +30,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,6 +115,7 @@ public class PdfServiceTest {
         assertKlagetyper(request.getKlagetyper(), content);
         assertTrue(content.replace("\n", "").contains(request.getKlagetekst()));
         assertTrue(content.contains(KANAL_SERVICEKLAGESKJEMA_ANSWER));
+        assertTrue(content.contains(LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
         assertTrue(content.contains(request.getOenskerAaKontaktes() ?
                 "Ønsker å kontaktes: Ja" : "Ønsker å kontaktes: Nei"));
 
