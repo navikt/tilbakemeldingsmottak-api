@@ -15,6 +15,10 @@ import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import lombok.SneakyThrows;
 import no.nav.tilbakemeldingsmottak.consumer.aktoer.domain.IdentInfoForAktoer;
 import no.nav.tilbakemeldingsmottak.consumer.norg2.Enhet;
+import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.DataJournalpost;
+import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo;
+import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJsonJournalpost;
+import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.Tidsrom;
@@ -108,6 +112,10 @@ public class TestUtils {
     public static final String UTFALL = "a) Regler/rutiner/frister er fulgt - NAV har ivaretatt bruker godt";
     public static final String AARSAK = "Service har vært dårlig";
     public static final String TILTAK = "Gi bedre service";
+
+    public static final String DOKUMENT_INFO_ID = "dokumentInfoId";
+
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatperson() {
         return OpprettServiceklageRequest.builder()
@@ -282,7 +290,33 @@ public class TestUtils {
                 Enhet.builder().enhetNr(NAV_ENHETSNR_5).navn(NAV_ENHETSNAVN_5).status(NAV_ENHET_STATUS).build()
         );
 
-        return new ObjectMapper().writeValueAsString(enheter);
+        return objectMapper.writeValueAsString(enheter);
+    }
+
+    @SneakyThrows
+    public static String createSafGraphqlResponse() {
+        SafJournalpostTo safJournalpostTo = SafJournalpostTo.builder()
+                .dokumenter(Collections.singletonList(SafJournalpostTo.DokumentInfo.builder()
+                        .dokumentInfoId(DOKUMENT_INFO_ID)
+                        .dokumentvarianter(Arrays.asList(
+                                SafJournalpostTo.Dokumentvariant.builder()
+                                        .variantformat(Variantformat.ARKIV.name())
+                                        .saksbehandlerHarTilgang(true)
+                                        .build(),
+                                SafJournalpostTo.Dokumentvariant.builder()
+                                        .variantformat(Variantformat.SLADDET.name())
+                                        .saksbehandlerHarTilgang(true)
+                                        .build()))
+                        .build()))
+                .build();
+
+        DataJournalpost dataJournalpost = new DataJournalpost();
+        dataJournalpost.setJournalpost(safJournalpostTo);
+
+        SafJsonJournalpost safJsonJournalpost = new SafJsonJournalpost();
+        safJsonJournalpost.setData(dataJournalpost);
+
+        return objectMapper.writeValueAsString(safJsonJournalpost);
     }
 
     public static String getStringFromByteArrayPdf(byte[] bytes) throws IOException {

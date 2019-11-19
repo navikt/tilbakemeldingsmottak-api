@@ -33,6 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.GjelderSosialhjelpType;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageResponse;
@@ -40,6 +42,7 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklage
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
@@ -54,6 +57,8 @@ class ServiceklageIT extends AbstractIT {
 
     private static final String URL_SERVICEKLAGE = "/rest/serviceklage";
     private static final String KLASSIFISER = "klassifiser";
+    private static final String HENT_SKJEMA = "hentskjema";
+    private static final String HENT_DOKUMENT = "hentdokument";
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
@@ -295,5 +300,45 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
         assertEquals(serviceklage.getKlassifiseringJson(), objectMapper.writeValueAsString(request));
+    }
+
+    @Test
+    void happyPathHentSkjema() {
+        restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
+
+        assertEquals(serviceklageRepository.count(), 1);
+        String fremmetDato = serviceklageRepository.findAll().iterator().next().getFremmetDato().toString();
+
+        KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
+        request.setFremmetDato(fremmetDato);
+        ResponseEntity<HentSkjemaResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + HENT_SKJEMA + "/" + JOURNALPOST_ID, HttpMethod.GET, new HttpEntity<>(createHeaders()), HentSkjemaResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+        TestTransaction.start();
+
+        HentSkjemaResponse hentSkjemaResponse = response.getBody();
+        assertEquals(hentSkjemaResponse.getDefaultAnswers().getAnswers().get(ServiceklageConstants.FREMMET_DATO), fremmetDato);
+        assertEquals(hentSkjemaResponse.getDefaultAnswers().getAnswers().get(ServiceklageConstants.INNSENDER), INNSENDER);
+        assertEquals(hentSkjemaResponse.getDefaultAnswers().getAnswers().get(ServiceklageConstants.KANAL), KANAL_SERVICEKLAGESKJEMA_ANSWER);
+        assertEquals(hentSkjemaResponse.getDefaultAnswers().getAnswers().get(ServiceklageConstants.SVARMETODE), SVAR_IKKE_NOEDVENDIG_ANSWER);
+        assertEquals(hentSkjemaResponse.getDefaultAnswers().getAnswers().get(ServiceklageConstants.SVAR_IKKE_NOEDVENDIG), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
+    }
+
+    @Test
+    @SneakyThrows
+    void happyPathHentDokument() {
+        restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
+
+        assertEquals(serviceklageRepository.count(), 1);
+        String fremmetDato = serviceklageRepository.findAll().iterator().next().getFremmetDato().toString();
+
+        KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
+        request.setFremmetDato(fremmetDato);
+        ResponseEntity<HentDokumentResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + JOURNALPOST_ID, HttpMethod.GET, new HttpEntity<>(createHeaders()), HentDokumentResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 }

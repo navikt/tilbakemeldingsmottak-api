@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.itest;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createNorg2Response;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createSafGraphqlResponse;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
@@ -102,6 +103,21 @@ public class AbstractIT {
                 .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
                         .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(createNorg2Response())));
+
+        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/norg2/enhet"))
+                .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
+                        .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(createNorg2Response())));
+
+        WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/safgraphql"))
+                .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
+                        .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(createSafGraphqlResponse())));
+
+        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/hentdokument/.*/.*/.*"))
+                .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
+                        .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody("{}")));
     }
 
     @AfterEach
