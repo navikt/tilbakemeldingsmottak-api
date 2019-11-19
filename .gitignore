@@ -28,3 +28,5 @@ target
 
 node_modules/
 web/src/main/resources/public
+
+package-lock.json

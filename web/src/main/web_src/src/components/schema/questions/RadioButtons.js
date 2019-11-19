@@ -1,7 +1,8 @@
 import RadioPanelGruppe from "nav-frontend-skjema/lib/radio-panel-gruppe";
-import React, {Component} from "react";
+import React from "react";
+import Question from "./QuestionComponent"
 
-class RadioButtons extends Component {
+class RadioButtons extends Question {
   constructor(props) {
     super(props);
     this.answerMap = this.props.answers.reduce(
@@ -15,6 +16,10 @@ class RadioButtons extends Component {
       label: answer.answer,
       value: answer.answer
     }));
+  }
+
+  componentDidMount() {
+    this.props.onInit()
   }
 
   render() {
