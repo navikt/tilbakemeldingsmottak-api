@@ -17,6 +17,7 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServicekla
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvBedrift;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvPerson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatpersonLokaltKontor;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
@@ -25,6 +26,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import lombok.SneakyThrows;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageResponse;
@@ -40,6 +42,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.transaction.TestTransaction;
 
+import javax.mail.internet.MimeMessage;
 import java.util.Arrays;
 
 class ServiceklageIT extends AbstractIT {
@@ -181,28 +184,19 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
     }
 
-//    @Test
-//    void happyPathLokaltKontor() {
-//        OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatpersonLokaltKontor();
-//        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-//        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
-//
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//
-//        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
-//        assertNotNull(serviceklage.getServiceklageId());
-//        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
-//        assertNotNull(serviceklage.getOpprettetDato());
-//        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
-//        assertEquals(serviceklage.getKlagetyper(), Klagetype.LOKALT_NAV_KONTOR.text);
-//        assertEquals(serviceklage.getGjelderSosialhjelp(), GjelderSosialhjelpType.JA.text);
-//        assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
-//        assertNotNull(serviceklage.getFremmetDato());
-//        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.PRIVATPERSON.text);
-//        assertEquals(serviceklage.getKanal(), KANAL_SERVICEKLAGESKJEMA_ANSWER);
-//        assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
-//        assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
-//    }
+    @Test
+    @SneakyThrows
+    void happyPathLokaltKontor() {
+        OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatpersonLokaltKontor();
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals(serviceklageRepository.count(), 0);
+
+        MimeMessage message = smtpServer.getReceivedMessages()[0];
+    }
 
     @Test
     void happyPathKlassifiserServiceklage() {

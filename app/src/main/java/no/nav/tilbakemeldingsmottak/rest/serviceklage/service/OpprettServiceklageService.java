@@ -22,12 +22,16 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettJou
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettServiceklageRequestMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
 @Service
@@ -91,16 +95,24 @@ public class OpprettServiceklageService {
     }
 
     private void sendEmail(byte[] fysiskDokument) throws MessagingException {
+        MimeBodyPart textBodyPart = new MimeBodyPart();
+        textBodyPart.setText("Feilsendt klage ligger vedlagt.");
+
+        DataSource dataSource = new ByteArrayDataSource(fysiskDokument, "application/pdf");
+        MimeBodyPart pdfBodyPart = new MimeBodyPart();
+        pdfBodyPart.setDataHandler(new DataHandler(dataSource));
+        pdfBodyPart.setFileName("klage.pdf");
+
+        MimeMultipart content = new MimeMultipart();
+        content.addBodyPart(textBodyPart);
+        content.addBodyPart(pdfBodyPart);
+
         MimeMessage message = emailService.getEmailSender().createMimeMessage();
         message.setHeader("Content-Encoding", "UTF-8");
-        message.setContent("Feilsendt klage ligger vedlagt.", "text/html; charset=UTF-8");
-        MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
-        helper.setTo(emailToAddress);
-        helper.setFrom(emailFromAddress);
-        helper.setSubject("Kommunal klage mottatt via serviceklageskjema på nav.no");
-
-        DataSource attachment = new ByteArrayDataSource(fysiskDokument, "application/pdf");
-        helper.addAttachment("Innsendt klage", attachment);
+        message.setSender(new InternetAddress(emailToAddress));
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress(emailFromAddress));
+        message.setSubject("Kommunal klage mottatt via serviceklageskjema på nav.no");
+        message.setContent(content);
 
         emailService.sendMail(message);
     }
