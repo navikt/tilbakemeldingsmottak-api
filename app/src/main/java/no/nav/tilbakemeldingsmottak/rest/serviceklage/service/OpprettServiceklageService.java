@@ -24,6 +24,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OpprettServiceklageService {
 
+    @Value("${email_nav_support_address}")
+    private String emailToAddress;
+    @Value("${email_from_address}")
+    private String emailFromAddress;
+
     private final ServiceklageRepository serviceklageRepository;
     private final OpprettServiceklageRequestMapper opprettServiceklageRequestMapper;
     private final OpprettJournalpostRequestToMapper opprettJournalpostRequestToMapper;
@@ -36,6 +41,14 @@ public class OpprettServiceklageService {
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request);
 
         byte[] fysiskDokument = pdfService.opprettPdf(request);
+
+        if (request.getKlagetyper().contains(Klagetype.LOKALT_NAV_KONTOR) &&
+                GjelderSosialhjelpType.JA.equals(request.getGjelderSosialhjelp())) {
+            behandleKommunalKlage(fysiskDokument);
+            return OpprettServiceklageResponse.builder()
+                    .message("Klagen er en kommunal klage, videresendt på mail til " + emailToAddress)
+                    .build();
+        }
 
         OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument);
         OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo);
