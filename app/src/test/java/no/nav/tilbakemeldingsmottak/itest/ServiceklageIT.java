@@ -23,6 +23,9 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.SUBJECT_JOURNALPOST_FEILET;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.SUBJECT_KOMMUNAL_KLAGE;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.SUBJECT_OPPGAVE_FEILET;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -188,7 +191,8 @@ class ServiceklageIT extends AbstractIT {
     }
 
     @Test
-    void happyPathLokaltKontor() {
+    @SneakyThrows
+    void happyPathKommunalKlage() {
         OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatpersonLokaltKontor();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
@@ -198,7 +202,7 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklageRepository.count(), 0);
 
         MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertNotNull(message);
+        assertEquals(message.getSubject(), SUBJECT_KOMMUNAL_KLAGE);
     }
 
     @Test
@@ -215,6 +219,7 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklageRepository.count(), 0);
 
         MimeMessage message = smtpServer.getReceivedMessages()[0];
+        assertEquals(message.getSubject(), SUBJECT_JOURNALPOST_FEILET);
 
         assertEquals("Feil ved opprettelse av journalpost, klage videresendt til " + message.getRecipients(Message.RecipientType.TO)[0], response.getBody().getMessage());
     }
@@ -233,6 +238,8 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklageRepository.count(), 1);
 
         MimeMessage message = smtpServer.getReceivedMessages()[0];
+        assertEquals(message.getSubject(), SUBJECT_OPPGAVE_FEILET);
+
         assertEquals("Feil ved opprettelse av oppgave, journalpostId videresendt til " + message.getRecipients(Message.RecipientType.TO)[0], response.getBody().getMessage());
     }
     @Test
