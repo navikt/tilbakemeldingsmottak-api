@@ -222,7 +222,7 @@ class ServiceklageIT extends AbstractIT {
     @Test
     @SneakyThrows
     void happyPathOpprettOppgaveFeil() {
-        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/OPPGAVE/[0-9]*")).willReturn(aResponse().withStatus(500)));
+        WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/OPPGAVE")).willReturn(aResponse().withStatus(500)));
 
         OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());

@@ -21,6 +21,7 @@ import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageMailException;
 import no.nav.tilbakemeldingsmottak.exceptions.joark.OpprettJournalpostFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.joark.OpprettJournalpostTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveTechnicalException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.AbstractEmailService;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
@@ -118,7 +119,7 @@ public class OpprettServiceklageService {
         try {
             OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(id, paaVegneAvType, opprettJournalpostResponseTo);
             return oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
-        } catch (OpprettOppgaveFunctionalException | OpprettJournalpostTechnicalException e) {
+        } catch (OpprettOppgaveFunctionalException | OpprettOppgaveTechnicalException e) {
             sendEmail(SUBJECT_OPPGAVE_FEILET,
                     TEXT_OPPGAVE_FEILET + opprettJournalpostResponseTo.getJournalpostId());
             throw new EksterntKallException("Feil ved opprettelse av oppgave, journalpostId videresendt til " + emailToAddress);
