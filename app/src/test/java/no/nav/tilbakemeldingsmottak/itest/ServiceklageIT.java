@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static no.nav.tilbakemeldingsmottak.TestUtils.BEHANDLES_SOM_SERVICEKLAGE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ENHETSNUMMER_BEHANDLENDE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ENHETSNUMMER_PAAKLAGET;
@@ -22,11 +23,15 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.SUBJECT_JOURNALPOST_FEILET;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.SUBJECT_KOMMUNAL_KLAGE;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.SUBJECT_OPPGAVE_FEILET;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.GjelderSosialhjelpType;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import lombok.SneakyThrows;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageResponse;
@@ -42,6 +47,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.transaction.TestTransaction;
 
+import javax.mail.Message;
+import javax.mail.internet.MimeMessage;
 import java.util.Arrays;
 
 class ServiceklageIT extends AbstractIT {
@@ -184,28 +191,57 @@ class ServiceklageIT extends AbstractIT {
     }
 
     @Test
-    void happyPathLokaltKontor() {
+    @SneakyThrows
+    void happyPathKommunalKlage() {
         OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatpersonLokaltKontor();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
-        assertNotNull(serviceklage.getServiceklageId());
-        assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
-        assertNotNull(serviceklage.getOpprettetDato());
-        assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
-        assertEquals(serviceklage.getKlagetyper(), Klagetype.LOKALT_NAV_KONTOR.text);
-        assertEquals(serviceklage.getGjelderSosialhjelp(), GjelderSosialhjelpType.JA.text);
-        assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
-        assertNotNull(serviceklage.getFremmetDato());
-        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.PRIVATPERSON.text);
-        assertEquals(serviceklage.getKanal(), KANAL_SERVICEKLAGESKJEMA_ANSWER);
-        assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
-        assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
+        assertEquals(serviceklageRepository.count(), 0);
+
+        MimeMessage message = smtpServer.getReceivedMessages()[0];
+        assertEquals(message.getSubject(), SUBJECT_KOMMUNAL_KLAGE);
     }
 
+    @Test
+    @SneakyThrows
+    void happyPathOpprettJournalpostFeil() {
+        WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/OPPRETT_JOURNALPOST/journalpost/")).willReturn(aResponse().withStatus(500)));
+
+                OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals(serviceklageRepository.count(), 0);
+
+        MimeMessage message = smtpServer.getReceivedMessages()[0];
+        assertEquals(message.getSubject(), SUBJECT_JOURNALPOST_FEILET);
+
+        assertEquals("Feil ved opprettelse av journalpost, klage videresendt til " + message.getRecipients(Message.RecipientType.TO)[0], response.getBody().getMessage());
+    }
+
+    @Test
+    @SneakyThrows
+    void happyPathOpprettOppgaveFeil() {
+        WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/OPPGAVE")).willReturn(aResponse().withStatus(500)));
+
+        OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals(serviceklageRepository.count(), 1);
+
+        MimeMessage message = smtpServer.getReceivedMessages()[0];
+        assertEquals(message.getSubject(), SUBJECT_OPPGAVE_FEILET);
+
+        assertEquals("Feil ved opprettelse av oppgave, journalpostId videresendt til " + message.getRecipients(Message.RecipientType.TO)[0], response.getBody().getMessage());
+    }
     @Test
     void happyPathKlassifiserServiceklage() {
         restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);

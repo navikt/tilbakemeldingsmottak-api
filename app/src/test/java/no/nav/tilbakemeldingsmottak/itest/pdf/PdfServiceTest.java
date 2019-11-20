@@ -10,6 +10,7 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 import com.itextpdf.text.DocumentException;
@@ -22,12 +23,12 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvPerson;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -35,21 +36,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-@RunWith(MockitoJUnitRunner.class)
-public class PdfServiceTest {
+@ExtendWith(MockitoExtension.class)
+class PdfServiceTest {
 
     private OpprettServiceklageRequest opprettServiceklageRequest;
 
     @Mock OidcUtils oidcUtils;
     @InjectMocks PdfService pdfService;
 
-    @Before
-    public void setup() {
-        when(oidcUtils.getSubjectForIssuer(anyString())).thenReturn(Optional.empty());
+    @BeforeEach
+    void setup() {
+        lenient().when(oidcUtils.getSubjectForIssuer(anyString())).thenReturn(Optional.empty());
     }
 
     @Test
-    public void happyPathPrivatperson() throws DocumentException, IOException {
+    void happyPathPrivatperson() throws DocumentException, IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
         String content = getStringFromByteArrayPdf(pdf);
@@ -59,7 +60,7 @@ public class PdfServiceTest {
     }
 
     @Test
-    public void happyPathAnnenPerson() throws DocumentException, IOException {
+    void happyPathAnnenPerson() throws DocumentException, IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvPerson();
         byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
         String content = getStringFromByteArrayPdf(pdf);
@@ -69,7 +70,7 @@ public class PdfServiceTest {
     }
 
     @Test
-    public void happyPathBedrift() throws DocumentException, IOException {
+    void happyPathBedrift() throws DocumentException, IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
         byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
         String content = getStringFromByteArrayPdf(pdf);
@@ -79,7 +80,7 @@ public class PdfServiceTest {
     }
 
     @Test
-    public void happyPathMultipageKlagetekst() throws DocumentException, IOException {
+    void happyPathMultipageKlagetekst() throws DocumentException, IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         String langKlagetekst = RandomStringUtils.randomAlphabetic(10000);
         opprettServiceklageRequest.setKlagetekst(langKlagetekst);
@@ -91,7 +92,7 @@ public class PdfServiceTest {
     }
 
     @Test
-    public void happyPathLokaltKontor() throws DocumentException, IOException {
+    void happyPathLokaltKontor() throws DocumentException, IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatpersonLokaltKontor();
         byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
         String content = getStringFromByteArrayPdf(pdf);
@@ -101,7 +102,7 @@ public class PdfServiceTest {
     }
 
     @Test
-    public void happyPathInnlogget() throws DocumentException, IOException {
+    void happyPathInnlogget() throws DocumentException, IOException {
         when(oidcUtils.getSubjectForIssuer(anyString())).thenReturn(Optional.of(PERSONNUMMER));
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
