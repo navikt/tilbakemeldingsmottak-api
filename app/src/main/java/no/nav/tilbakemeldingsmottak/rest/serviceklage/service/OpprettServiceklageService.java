@@ -52,7 +52,7 @@ import javax.mail.util.ByteArrayDataSource;
 @RequiredArgsConstructor
 public class OpprettServiceklageService {
 
-    @Value("${email_nav_support_address}")
+    @Value("${email_serviceklage_address}")
     private String emailToAddress;
     @Value("${email_from_address}")
     private String emailFromAddress;
