@@ -109,8 +109,8 @@ public class OpprettServiceklageService {
 
         MimeMessage message = emailService.getEmailSender().createMimeMessage();
         message.setHeader("Content-Encoding", "UTF-8");
-        message.setSender(new InternetAddress(emailToAddress));
-        message.setRecipient(Message.RecipientType.TO, new InternetAddress(emailFromAddress));
+        message.setSender(new InternetAddress(emailFromAddress));
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress(emailToAddress));
         message.setSubject("Kommunal klage mottatt via serviceklageskjema på nav.no");
         message.setContent(content);
 
