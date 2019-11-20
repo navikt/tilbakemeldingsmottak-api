@@ -1,5 +1,12 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.SUBJECT_JOURNALPOST_FEILET;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.SUBJECT_KOMMUNAL_KLAGE;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.SUBJECT_OPPGAVE_FEILET;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.TEXT_JOURNALPOST_FEILET;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.TEXT_KOMMUNAL_KLAGE;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.TEXT_OPPGAVE_FEILET;
+
 import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +16,11 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResp
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
-import no.nav.tilbakemeldingsmottak.exceptions.KommunalKlageVideresendingException;
+import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
+import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageMailException;
+import no.nav.tilbakemeldingsmottak.exceptions.joark.OpprettJournalpostFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.joark.OpprettJournalpostTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveFunctionalException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.AbstractEmailService;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
@@ -17,6 +28,7 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.GjelderSosialhjelpT
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettJournalpostRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
@@ -58,25 +70,24 @@ public class OpprettServiceklageService {
 
         byte[] fysiskDokument = pdfService.opprettPdf(request);
 
-        if (request.getKlagetyper().contains(Klagetype.LOKALT_NAV_KONTOR) &&
-                GjelderSosialhjelpType.JA.equals(request.getGjelderSosialhjelp())) {
-            behandleKommunalKlage(fysiskDokument);
+        if (isKommunalKlage(request)) {
+            sendEmail(SUBJECT_KOMMUNAL_KLAGE,
+                    TEXT_KOMMUNAL_KLAGE,
+                    fysiskDokument);
             return OpprettServiceklageResponse.builder()
                     .message("Klagen er en kommunal klage, videresendt på mail til " + emailToAddress)
                     .build();
         }
 
-        OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument);
-        OpprettJournalpostResponseTo opprettJournalpostResponseTo = opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo);
+        OpprettJournalpostResponseTo opprettJournalpostResponseTo = forsoekOpprettJournalpost(request, fysiskDokument);
         log.info("Journalpost med journalpostId={} opprettet", opprettJournalpostResponseTo.getJournalpostId());
-
-        OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(serviceklage.getKlagenGjelderId(), request.getPaaVegneAv(), opprettJournalpostResponseTo);
-        OpprettOppgaveResponseTo opprettOppgaveResponseTo = oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
-        log.info("Oppgave med oppgaveId={} opprettet", opprettOppgaveResponseTo.getId());
 
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med serviceklageId={} persistert", serviceklage.getServiceklageId());
+
+        OpprettOppgaveResponseTo opprettOppgaveResponseTo = forsoekOpprettOppgave(serviceklage.getKlagenGjelderId(), request.getPaaVegneAv(), opprettJournalpostResponseTo);
+        log.info("Oppgave med oppgaveId={} opprettet", opprettOppgaveResponseTo.getId());
 
         return OpprettServiceklageResponse.builder()
                 .message("Serviceklage opprettet")
@@ -86,34 +97,64 @@ public class OpprettServiceklageService {
                 .build();
     }
 
-    private void behandleKommunalKlage(byte[] fysiskDokument) {
+    private boolean isKommunalKlage(OpprettServiceklageRequest request) {
+        return request.getKlagetyper().contains(Klagetype.LOKALT_NAV_KONTOR) &&
+                GjelderSosialhjelpType.JA.equals(request.getGjelderSosialhjelp());
+    }
+
+    private OpprettJournalpostResponseTo forsoekOpprettJournalpost(OpprettServiceklageRequest request, byte[] fysiskDokument) {
         try {
-            sendEmail(fysiskDokument);
-        } catch (MessagingException e) {
-            throw new KommunalKlageVideresendingException("Kan ikke videresende kommunal klage");
+            OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument);
+            return opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo);
+        } catch (OpprettJournalpostFunctionalException | OpprettJournalpostTechnicalException e) {
+            sendEmail(SUBJECT_JOURNALPOST_FEILET,
+                    TEXT_JOURNALPOST_FEILET,
+                    fysiskDokument);
+            throw new EksterntKallException("Feil ved opprettelse av journalpost, klage videresendt til " + emailToAddress);
         }
     }
 
-    private void sendEmail(byte[] fysiskDokument) throws MessagingException {
-        MimeBodyPart textBodyPart = new MimeBodyPart();
-        textBodyPart.setText("Feilsendt klage ligger vedlagt.");
+    private OpprettOppgaveResponseTo forsoekOpprettOppgave(String id, PaaVegneAvType paaVegneAvType, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
+        try {
+            OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(id, paaVegneAvType, opprettJournalpostResponseTo);
+            return oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
+        } catch (OpprettOppgaveFunctionalException | OpprettJournalpostTechnicalException e) {
+            sendEmail(SUBJECT_OPPGAVE_FEILET,
+                    TEXT_OPPGAVE_FEILET + opprettJournalpostResponseTo.getJournalpostId());
+            throw new EksterntKallException("Feil ved opprettelse av oppgave, journalpostId videresendt til " + emailToAddress);
+        }
+    }
 
-        DataSource dataSource = new ByteArrayDataSource(fysiskDokument, "application/pdf");
-        MimeBodyPart pdfBodyPart = new MimeBodyPart();
-        pdfBodyPart.setDataHandler(new DataHandler(dataSource));
-        pdfBodyPart.setFileName("klage.pdf");
+    private void sendEmail(String subject, String text, byte[] fysiskDokument) {
+        try {
+            MimeBodyPart textBodyPart = new MimeBodyPart();
+            textBodyPart.setText(text);
 
-        MimeMultipart content = new MimeMultipart();
-        content.addBodyPart(textBodyPart);
-        content.addBodyPart(pdfBodyPart);
+            MimeMultipart content = new MimeMultipart();
+            content.addBodyPart(textBodyPart);
 
-        MimeMessage message = emailService.getEmailSender().createMimeMessage();
-        message.setHeader("Content-Encoding", "UTF-8");
-        message.setSender(new InternetAddress(emailFromAddress));
-        message.setRecipient(Message.RecipientType.TO, new InternetAddress(emailToAddress));
-        message.setSubject("Kommunal klage mottatt via serviceklageskjema på nav.no");
-        message.setContent(content);
+            if (fysiskDokument != null) {
+                DataSource dataSource = new ByteArrayDataSource(fysiskDokument, "application/pdf");
+                MimeBodyPart pdfBodyPart = new MimeBodyPart();
+                pdfBodyPart.setDataHandler(new DataHandler(dataSource));
+                pdfBodyPart.setFileName("klage.pdf");
+                content.addBodyPart(pdfBodyPart);
+            }
 
-        emailService.sendMail(message);
+            MimeMessage message = emailService.getEmailSender().createMimeMessage();
+            message.setHeader("Content-Encoding", "UTF-8");
+            message.setSender(new InternetAddress(emailFromAddress));
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(emailToAddress));
+            message.setSubject(subject);
+            message.setContent(content);
+
+            emailService.sendMail(message);
+        } catch (MessagingException e) {
+            throw new ServiceklageMailException("Kan ikke sende mail");
+        }
+    }
+
+    private void sendEmail(String subject, String text) {
+        sendEmail(subject, text, null);
     }
 }

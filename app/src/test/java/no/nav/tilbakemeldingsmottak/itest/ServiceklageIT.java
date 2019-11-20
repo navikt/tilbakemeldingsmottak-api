@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static no.nav.tilbakemeldingsmottak.TestUtils.BEHANDLES_SOM_SERVICEKLAGE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ENHETSNUMMER_BEHANDLENDE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ENHETSNUMMER_PAAKLAGET;
@@ -26,6 +27,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
 import lombok.SneakyThrows;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
@@ -42,6 +44,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.transaction.TestTransaction;
 
+import javax.mail.Message;
 import javax.mail.internet.MimeMessage;
 import java.util.Arrays;
 
@@ -185,7 +188,6 @@ class ServiceklageIT extends AbstractIT {
     }
 
     @Test
-    @SneakyThrows
     void happyPathLokaltKontor() {
         OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatpersonLokaltKontor();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
@@ -196,8 +198,43 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklageRepository.count(), 0);
 
         MimeMessage message = smtpServer.getReceivedMessages()[0];
+        assertNotNull(message);
     }
 
+    @Test
+    @SneakyThrows
+    void happyPathOpprettJournalpostFeil() {
+        WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/OPPRETT_JOURNALPOST/journalpost/")).willReturn(aResponse().withStatus(500)));
+
+                OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals(serviceklageRepository.count(), 0);
+
+        MimeMessage message = smtpServer.getReceivedMessages()[0];
+
+        assertEquals("Feil ved opprettelse av journalpost, klage videresendt til " + message.getRecipients(Message.RecipientType.TO)[0], response.getBody().getMessage());
+    }
+
+    @Test
+    @SneakyThrows
+    void happyPathOpprettOppgaveFeil() {
+        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/OPPGAVE/[0-9]*")).willReturn(aResponse().withStatus(500)));
+
+        OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals(serviceklageRepository.count(), 1);
+
+        MimeMessage message = smtpServer.getReceivedMessages()[0];
+        assertEquals("Feil ved opprettelse av oppgave, journalpostId videresendt til " + message.getRecipients(Message.RecipientType.TO)[0], response.getBody().getMessage());
+    }
     @Test
     void happyPathKlassifiserServiceklage() {
         restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);

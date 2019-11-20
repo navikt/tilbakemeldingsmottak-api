@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-public class KommunalKlageVideresendingException extends AbstractTilbakemeldingsmottakTechnicalException {
+public class ServiceklageMailException extends AbstractTilbakemeldingsmottakTechnicalException {
 
-	public KommunalKlageVideresendingException(String message) {
+	public ServiceklageMailException(String message) {
 		super(message);
 	}
 }
