@@ -72,11 +72,9 @@ public class OpprettServiceklageService {
         byte[] fysiskDokument = pdfService.opprettPdf(request);
 
         if (isKommunalKlage(request)) {
-//            sendEmail(SUBJECT_KOMMUNAL_KLAGE,
-//                    TEXT_KOMMUNAL_KLAGE,
-//                    fysiskDokument);
             sendEmail(SUBJECT_KOMMUNAL_KLAGE,
-                    TEXT_KOMMUNAL_KLAGE);
+                    TEXT_KOMMUNAL_KLAGE,
+                    fysiskDokument);
             log.info("Klagen er en kommunal klage, videresendt på mail til " + emailToAddress);
             return OpprettServiceklageResponse.builder()
                     .message("Klagen er en kommunal klage, videresendt på mail til " + emailToAddress)
