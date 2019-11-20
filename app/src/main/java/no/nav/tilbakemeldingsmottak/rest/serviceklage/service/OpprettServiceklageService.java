@@ -9,15 +9,26 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResp
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
+import no.nav.tilbakemeldingsmottak.exceptions.KommunalKlageVideresendingException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
+import no.nav.tilbakemeldingsmottak.rest.common.epost.AbstractEmailService;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.GjelderSosialhjelpType;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettJournalpostRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettServiceklageRequestMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import javax.activation.DataSource;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.mail.util.ByteArrayDataSource;
 
 @Service
 @Slf4j
@@ -36,6 +47,7 @@ public class OpprettServiceklageService {
     private final OpprettOppgaveRequestToMapper opprettOppgaveRequestToMapper;
     private final OppgaveConsumer oppgaveConsumer;
     private final PdfService pdfService;
+    private final AbstractEmailService emailService;
 
     public OpprettServiceklageResponse opprettServiceklage(OpprettServiceklageRequest request) throws DocumentException {
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request);
@@ -68,5 +80,28 @@ public class OpprettServiceklageService {
                 .journalpostId(serviceklage.getJournalpostId())
                 .oppgaveId(opprettOppgaveResponseTo.getId())
                 .build();
+    }
+
+    private void behandleKommunalKlage(byte[] fysiskDokument) {
+        try {
+            sendEmail(fysiskDokument);
+        } catch (MessagingException e) {
+            throw new KommunalKlageVideresendingException("Kan ikke videresende kommunal klage");
+        }
+    }
+
+    private void sendEmail(byte[] fysiskDokument) throws MessagingException {
+        MimeMessage message = emailService.getEmailSender().createMimeMessage();
+        message.setHeader("Content-Encoding", "UTF-8");
+        message.setContent("Feilsendt klage ligger vedlagt.", "text/html; charset=UTF-8");
+        MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
+        helper.setTo(emailToAddress);
+        helper.setFrom(emailFromAddress);
+        helper.setSubject("Kommunal klage mottatt via serviceklageskjema på nav.no");
+
+        DataSource attachment = new ByteArrayDataSource(fysiskDokument, "application/pdf");
+        helper.addAttachment("Innsendt klage", attachment);
+
+        emailService.sendMail(message);
     }
 }
