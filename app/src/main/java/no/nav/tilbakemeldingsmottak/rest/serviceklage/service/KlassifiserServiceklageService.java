@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,6 +18,7 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
@@ -34,7 +34,9 @@ public class KlassifiserServiceklageService {
     private static final String JA = "Ja";
     private static final String ANNET = "Annet";
 
-    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, String journalpostId, String oppgaveId)  {
+    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo)  {
+
+        String journalpostId = hentOppgaveResponseTo.getJournalpostId();
 
         Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
         if (serviceklage == null) {
@@ -47,15 +49,12 @@ public class KlassifiserServiceklageService {
 
         log.info("Serviceklage med serviceklageId={} er klassifisert", serviceklage.getServiceklageId());
 
-        if (isNotBlank(oppgaveId)) {
-            HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
-            if (!FERDIGSTILT.equals(hentOppgaveResponseTo.getStatus())) {
-                EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
-                oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
-                log.info("Ferdigstilt oppgave med oppgaveId={}", oppgaveId);
-            } else {
-                log.info("Oppgave med oppgaveId={} er allerede ferdigstilt");
-            }
+        if (!FERDIGSTILT.equals(hentOppgaveResponseTo.getStatus())) {
+            EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
+            oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
+            log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
+        } else {
+            log.info("Oppgave med oppgaveId={} er allerede ferdigstilt");
         }
     }
 

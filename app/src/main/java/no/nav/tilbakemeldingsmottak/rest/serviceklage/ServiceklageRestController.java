@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
@@ -68,20 +69,21 @@ public class ServiceklageRestController {
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "klassifiserServiceklage"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request,
                                                                                    @RequestParam String oppgaveId) {
-        String journalpostId = oppgaveConsumer.hentOppgave(oppgaveId).getJournalpostId();
-        klassifiserServiceklageValidator.validateRequest(request, hentSkjemaService.hentSkjema(journalpostId));
-        klassifiserServiceklageService.klassifiserServiceklage(request, journalpostId, oppgaveId);
+        HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
+        klassifiserServiceklageValidator.validateRequest(request, hentSkjemaService.hentSkjema(hentOppgaveResponseTo.getJournalpostId()));
+        klassifiserServiceklageService.klassifiserServiceklage(request, hentOppgaveResponseTo);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(KlassifiserServiceklageResponse.builder()
-                        .message("Klassifisert serviceklage med journalpostId=" + journalpostId)
+                        .message("Klassifisert serviceklage med journalpostId=" + hentOppgaveResponseTo.getJournalpostId())
                         .build());
     }
 
     @Transactional
-    @GetMapping(value = "/hentskjema/{journalpostId}")
+    @GetMapping(value = "/hentskjema/{oppgaveId}")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentSkjema"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<HentSkjemaResponse> hentSkjema(@PathVariable String journalpostId) {
+    public ResponseEntity<HentSkjemaResponse> hentSkjema(@PathVariable String oppgaveId) {
+        String journalpostId = oppgaveConsumer.hentOppgave(oppgaveId).getJournalpostId();
         HentSkjemaResponse response = hentSkjemaService.hentSkjema(journalpostId);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -89,9 +91,10 @@ public class ServiceklageRestController {
     }
 
     @Transactional
-    @GetMapping(value = "/hentdokument/{journalpostId}")
+    @GetMapping(value = "/hentdokument/{oppgaveId}")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String journalpostId) {
+    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId) {
+        String journalpostId = oppgaveConsumer.hentOppgave(oppgaveId).getJournalpostId();
 //        HentDokumentResponse response = hentDokumentService.hentDokument(journalpostId);
         return ResponseEntity
                 .status(HttpStatus.OK)

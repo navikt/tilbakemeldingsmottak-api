@@ -44,8 +44,7 @@ export const ServiceklageApi = {
       `/klassifiser?oppgaveId=${oppgaveId}`,
       payload
     ),
-  hentServiceklage: journalpostId => requests.get(`/${journalpostId}`),
-  hentKlassifiseringSkjema: journalpostId =>
-    requests.get(`/hentskjema/${journalpostId}`),
-  hentDokument: journalpostId => requests.get(`/hentdokument/${journalpostId}`),
+  hentKlassifiseringSkjema: oppgaveId =>
+    requests.get(`/hentskjema/${oppgaveId}`),
+  hentDokument: oppgaveId => requests.get(`/hentdokument/${oppgaveId}`),
 };

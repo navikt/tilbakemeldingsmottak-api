@@ -13,7 +13,6 @@ class Klassifisering extends Component {
   constructor(props) {
     super(props);
     let params = queryString.parse((this.props.location || {}).search);
-    this.journalpostId = params.journalpostId || props.journalpostId;
     this.oppgaveId = params.oppgaveId || props.oppgaveId;
     this.state = {
       pdf: null,
@@ -23,14 +22,14 @@ class Klassifisering extends Component {
 
   componentDidMount() {
     this.props.actions.resetKlassifisering();
-    ServiceklageApi.hentKlassifiseringSkjema(this.journalpostId).then(res => {
+    ServiceklageApi.hentKlassifiseringSkjema(this.oppgaveId).then(res => {
       this.props.actions.updateSchema({
         defaultAnswers: DefaultAnswersMapper(res.data.defaultAnswers) || {answers: {}},
         questions: SchemaMapper(res.data.questions)
       });
     });
 
-    ServiceklageApi.hentDokument(this.journalpostId)
+    ServiceklageApi.hentDokument(this.oppgaveId)
       .then(res => {
         const dataUri = `data:application/pdf;base64,${res.data.dokument}`;
         this.setState({ ...this.state, pdf: dataUri });
