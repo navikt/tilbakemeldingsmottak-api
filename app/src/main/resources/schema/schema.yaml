@@ -181,6 +181,9 @@ questions:
     - id: TEMA_UTDYPNING
       text: Spesifiser
       type: INPUT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
 
 - id: UTFALL
   text: Hva er utfallet av serviceklagen?
