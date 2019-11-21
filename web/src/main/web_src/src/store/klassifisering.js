@@ -2,7 +2,7 @@ import {RESET_KLASSIFISERING, UPDATE_ANSWER, UPDATE_SCHEMA} from "./actions";
 
 const updateRenderAnswers = (answers, value, index) => {
   const prevAnswers = index === 0 ? [] : answers.slice(0, index);
-  return ((value.answer == null || value.answer == undefined) && !value.optional
+  return ((value.answer == null || value.answer === "" ) && !value.optional
     ? prevAnswers
     : [
         ...prevAnswers,

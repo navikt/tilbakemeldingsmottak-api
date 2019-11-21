@@ -13,8 +13,9 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServicek
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -52,14 +53,17 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
                 case RADIO:
                 case SELECT:
                 case DATALIST:
-                    validateMultichoice(question, answersMap.get(question.getId()));
+                    validateMultichoice(question, answered);
                      break;
                 case TEXT:
                 case INPUT:
-                    validateText(question, answersMap.get(question.getId()));
+                    validateText(question, answered);
                     break;
                 case DATE:
-                    validateDate(question, answersMap.get(question.getId()));
+                    validateDate(question, answered);
+                    break;
+                case CHECKBOX:
+                    Arrays.stream(answered.split(",")).forEach(a -> validateMultichoice(question, a));
                     break;
 
             }
@@ -97,7 +101,7 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
     private void validateDate(Question question, String answer) {
         validateText(question, answer);
         try {
-            LocalDateTime.parse(answer);
+            LocalDate.parse(answer);
         } catch (DateTimeParseException e) {
             throw new InvalidRequestException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId()));
         }

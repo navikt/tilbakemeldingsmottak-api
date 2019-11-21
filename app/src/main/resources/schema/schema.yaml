@@ -11,6 +11,9 @@ questions:
     - id: BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING
       text: Spesifiser
       type: TEXT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
   - answer: Nei, innsender har ikke fullmakt på vegne av bruker
     emit: Du må skrive til innsender at serviceklagen ikke kan besvares fordi fullmakt mangler
     next: none
@@ -29,6 +32,9 @@ questions:
       text: Spesifiser
       type: TEXT
       next: none
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
 
 - id: FREMMET_DATO
   text: Angi dato bruker fremmet serviceklagen
@@ -55,6 +61,9 @@ questions:
     - id: KANAL_UTDYPNING
       text: Spesifiser
       type: TEXT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
 
 - id: PAAKLAGET_ENHET_ER_BEHANDLENDE
   text: Er klagen behandlet i enheten det klages på?
@@ -81,11 +90,15 @@ questions:
 - id: BESKRIVELSE
   text: Gi en kort beskrivelse av serviceklagen
   type: TEXT
+  banner:
+    message: Unngå sensitive personopplysninger
+    type: WARN
 
 - id: YTELSE
   text: Hvilken ytelse mm. er mest relevant for serviceklagen?
   type: SELECT
   answers:
+  - answer: ''
   - answer: AFP - Avtalefestet pensjon
   - answer: Alderspensjon
   - answer: AAP - Arbeidsavklaringspenger
@@ -113,6 +126,7 @@ questions:
 - id: RELATERT
   text: Huk av dersom serviceklagen er relatert til
   type: CHECKBOX
+  optional: true
   answers:
   - answer: EØS-saken
   - answer: Åpningstider på NAV-kontoret
@@ -179,9 +193,15 @@ questions:
     - id: AARSAK
       text: Hva er, etter din mening, de bakenforliggende årsakene?
       type: TEXT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
     - id: TILTAK
       text: Hvordan kan NAV hindre at det samme skjer igjen, etter din mening?
       type: TEXT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
   - answer: d) Prøvd, men ikke klart å finne ut hva som har skjedd
 
 - id: SVARMETODE
@@ -205,3 +225,6 @@ questions:
         - id: SVARMETODE_UTDYPNING
           text: Spesifiser
           type: TEXT
+          banner:
+            message: Unngå sensitive personopplysninger
+            type: WARN

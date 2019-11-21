@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
-import no.nav.tilbakemeldingsmottak.exceptions.OidcContextException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
@@ -93,9 +92,9 @@ public class ServiceklageRestController {
     @GetMapping(value = "/hentdokument/{journalpostId}")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String journalpostId) {
-        HentDokumentResponse response = hentDokumentService.hentDokument(journalpostId);
+//        HentDokumentResponse response = hentDokumentService.hentDokument(journalpostId);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(response);
+                .body(null);
     }
 }
