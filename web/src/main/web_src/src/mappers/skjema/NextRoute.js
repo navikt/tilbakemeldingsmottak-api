@@ -7,7 +7,7 @@ const findIndexOfNestedArray = (routeArray, array) => {
 };
 
 const getChildRoute = ({ answerIndex, route, routeArray }) => {
-  if (!answerIndex) {
+  if (answerIndex < 0) {
     return -1;
   }
   return findIndexOfNestedArray(routeArray, [...route, answerIndex]);
