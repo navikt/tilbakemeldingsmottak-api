@@ -69,7 +69,7 @@ public class KlassifiserServiceklageService {
     private void updateServiceklage(Serviceklage serviceklage, KlassifiserServiceklageRequest request) {
         serviceklage.setBehandlesSomServiceklage(request.getBehandlesSomServiceklage());
         serviceklage.setBehandlesSomServiceklageUtdypning(request.getBehandlesSomServiceklageUtdypning());
-        serviceklage.setFremmetDato(LocalDateTime.parse(request.getFremmetDato()));
+        serviceklage.setFremmetDato(LocalDate.parse(request.getFremmetDato()));
         serviceklage.setInnsender(request.getInnsender());
         serviceklage.setKanal(request.getKanal());
         serviceklage.setKanalUtdypning(request.getKanalUtdypning());

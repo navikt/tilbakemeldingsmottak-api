@@ -41,7 +41,7 @@ import org.springframework.util.StreamUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -101,12 +101,13 @@ public class TestUtils {
     public static final String ETTERNAVN = "Buljo";
 
     public static final String BEHANDLES_SOM_SERVICEKLAGE = "Ja";
-    public static final String FREMMET_DATO = LocalDateTime.now().toString();
+    public static final String FREMMET_DATO = LocalDate.now().toString();
     public static final String INNSENDER = "Bruker selv som privatperson";
     public static final String PAAKLAGET_ENHET_ER_BEHANDLENDE = "Nei";
     public static final String GJELDER = "Gjelder én ytelse eller tjeneste";
     public static final String BESKRIVELSE = "Bruker klager på service";
     public static final String YTELSE = "AAP - Arbeidsavklaringspenger";
+    public static final String RELATERT = "EØS-saken,Åpningstider på NAV-kontoret";
     public static final String TEMA = "Vente på NAV";
     public static final String VENTE = "Saksbehandlingstid";
     public static final String UTFALL = "a) Regler/rutiner/frister er fulgt - NAV har ivaretatt bruker godt";
@@ -229,6 +230,7 @@ public class TestUtils {
                 .gjelder(GJELDER)
                 .beskrivelse(BESKRIVELSE)
                 .ytelse(YTELSE)
+                .relatert(RELATERT)
                 .tema(TEMA)
                 .vente(VENTE)
                 .utfall(UTFALL)

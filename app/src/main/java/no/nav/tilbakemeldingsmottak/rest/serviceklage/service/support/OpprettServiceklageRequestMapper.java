@@ -23,7 +23,7 @@ public class OpprettServiceklageRequestMapper {
         LocalDateTime currentDateTime = LocalDateTime.now();
         return Serviceklage.builder()
                 .opprettetDato(currentDateTime)
-                .fremmetDato(currentDateTime)
+                .fremmetDato(currentDateTime.toLocalDate())
                 .innsender(request.getPaaVegneAv().text)
                 .klagenGjelderId(findKlagenGjelderId(request))
                 .klagetyper(mapKlagetype(request.getKlagetyper()))
