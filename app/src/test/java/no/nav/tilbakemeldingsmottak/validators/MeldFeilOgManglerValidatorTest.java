@@ -7,21 +7,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.validation.MeldFeilOgManglerValidator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class MeldFeilOgManglerValidatorTest {
+class MeldFeilOgManglerValidatorTest {
     
     private MeldFeilOgManglerValidator meldFeilOgManglerValidator = new MeldFeilOgManglerValidator();
     private MeldFeilOgManglerRequest meldFeilOgManglerRequest;
 
     @Test
-    public void happyPath() {
+    void happyPath() {
         meldFeilOgManglerRequest = createMeldFeilOgManglerRequest();
         meldFeilOgManglerValidator.validateRequest(meldFeilOgManglerRequest);
     }
 
     @Test
-    public void shouldThrowExceptionIfOnskerKontaktTrueAndEpostNotSet() {
+    void shouldThrowExceptionIfOnskerKontaktTrueAndEpostNotSet() {
         meldFeilOgManglerRequest = createMeldFeilOgManglerRequest();
         meldFeilOgManglerRequest.setOnskerKontakt(true);
         meldFeilOgManglerRequest.setEpost(null);
@@ -31,7 +31,7 @@ public class MeldFeilOgManglerValidatorTest {
     }
 
     @Test
-    public void shouldThrowExceptionIfFeiltypeNotSet() {
+    void shouldThrowExceptionIfFeiltypeNotSet() {
         meldFeilOgManglerRequest = createMeldFeilOgManglerRequest();
         meldFeilOgManglerRequest.setFeiltype(null);
         Exception thrown = assertThrows(InvalidRequestException.class,
@@ -40,7 +40,7 @@ public class MeldFeilOgManglerValidatorTest {
     }
 
     @Test
-    public void shouldThrowExceptionIfMeldingNotSet() {
+    void shouldThrowExceptionIfMeldingNotSet() {
         meldFeilOgManglerRequest = createMeldFeilOgManglerRequest();
         meldFeilOgManglerRequest.setMelding(null);
         Exception thrown = assertThrows(InvalidRequestException.class,

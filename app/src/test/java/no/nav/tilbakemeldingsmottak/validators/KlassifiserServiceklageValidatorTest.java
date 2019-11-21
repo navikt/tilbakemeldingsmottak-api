@@ -5,15 +5,15 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServicekla
 
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.KlassifiserServiceklageValidator;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class KlassifiserServiceklageValidatorTest {
+class KlassifiserServiceklageValidatorTest {
 
     private KlassifiserServiceklageValidator klassifiserServiceklageValidator = new KlassifiserServiceklageValidator();
     private KlassifiserServiceklageRequest klassifiserServiceklageRequest;
 
     @Test
-    public void happyPathServiceklage() {
+    void happyPathServiceklage() {
         klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
         klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest, createHentSkjemaResponse());
     }

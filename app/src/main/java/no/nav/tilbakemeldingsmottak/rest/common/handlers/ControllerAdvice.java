@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.rest.common.handlers;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse;
@@ -23,6 +24,15 @@ public class ControllerAdvice {
         return Optional.ofNullable(AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class))
                 .map(ResponseStatus::code)
                 .orElse(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(EksterntKallException.class)
+    public ResponseEntity<ErrorResponse> eksterntKallExceptionHandler(HttpServletRequest request, Exception ex) {
+        HttpStatus status = HttpStatus.OK;
+        log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
+        return ResponseEntity.status(status).body(ErrorResponse.builder()
+                .message(ex.getMessage())
+                .build());
     }
 
     @ExceptionHandler(Exception.class)

@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
+import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
+import no.nav.tilbakemeldingsmottak.exceptions.OidcContextException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
@@ -50,10 +52,11 @@ public class ServiceklageRestController {
     private final OppgaveConsumer oppgaveConsumer;
 
 
-    @Transactional
+    @Transactional(dontRollbackOn = EksterntKallException.class)
     @PostMapping
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "opprettServiceklage"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<OpprettServiceklageResponse> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws DocumentException {
+        log.info("Mottatt serviceklage via skjema på nav.no");
         opprettServiceklageValidator.validateRequest(request);
         OpprettServiceklageResponse opprettServiceklageResponse = opprettServiceklageService.opprettServiceklage(request);
         return ResponseEntity
