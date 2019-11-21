@@ -11,6 +11,7 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
+import no.nav.tilbakemeldingsmottak.exceptions.OppgaveAlleredeFerdigstiltException;
 import no.nav.tilbakemeldingsmottak.exceptions.RequestParsingException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
@@ -36,8 +37,12 @@ public class KlassifiserServiceklageService {
 
     public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo)  {
 
-        String journalpostId = hentOppgaveResponseTo.getJournalpostId();
+        if (FERDIGSTILT.equals(hentOppgaveResponseTo.getStatus())) {
+            throw new OppgaveAlleredeFerdigstiltException(String.format("Oppgave med oppgaveId=%s er allerede ferdigstilt",
+                    hentOppgaveResponseTo.getId()));
+        }
 
+        String journalpostId = hentOppgaveResponseTo.getJournalpostId();
         Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
         if (serviceklage == null) {
             serviceklage = createNewServiceklage(journalpostId);
@@ -49,13 +54,9 @@ public class KlassifiserServiceklageService {
 
         log.info("Serviceklage med serviceklageId={} er klassifisert", serviceklage.getServiceklageId());
 
-        if (!FERDIGSTILT.equals(hentOppgaveResponseTo.getStatus())) {
-            EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
-            oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
-            log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
-        } else {
-            log.info("Oppgave med oppgaveId={} er allerede ferdigstilt");
-        }
+        EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
+        oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
+        log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
     }
 
     private Serviceklage createNewServiceklage(String journalpostId) {

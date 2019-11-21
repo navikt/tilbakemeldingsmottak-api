@@ -92,7 +92,7 @@ public class Serviceklage {
     private String behandlesSomServiceklageUtdypning;
 
     @Column(name = FREMMET_DATO)
-    private LocalDateTime fremmetDato;
+    private LocalDate fremmetDato;
 
     @Column(name = INNSENDER)
     @Size(max = 100)
