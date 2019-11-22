@@ -10,6 +10,7 @@ import java.util.Optional;
 @NoArgsConstructor
 public final class SkjemaUtils {
 
+    // OBS: Hvis flere spørsmål har samme id, returneres kun det første
     public static Optional<Question> getQuestionById(List<Question> questions, String id) {
         return questions.stream()
                 .map(question -> id.equals(question.getId())
