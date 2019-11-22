@@ -27,9 +27,9 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.SUBJECT_JOURNALPOST_FEILET;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.SUBJECT_KOMMUNAL_KLAGE;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.MailConstants.SUBJECT_OPPGAVE_FEILET;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService.SUBJECT_JOURNALPOST_FEILET;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService.SUBJECT_KOMMUNAL_KLAGE;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService.SUBJECT_OPPGAVE_FEILET;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -214,6 +214,8 @@ class ServiceklageIT extends AbstractIT {
 
         MimeMessage message = smtpServer.getReceivedMessages()[0];
         assertEquals(message.getSubject(), SUBJECT_KOMMUNAL_KLAGE);
+        assertEquals(message.getSender().toString(), "srvtilbakemeldings@preprod.local");
+        assertEquals(message.getRecipients(Message.RecipientType.TO)[0].toString(), "nav.serviceklager@preprod.local");
     }
 
     @Test
@@ -231,6 +233,8 @@ class ServiceklageIT extends AbstractIT {
 
         MimeMessage message = smtpServer.getReceivedMessages()[0];
         assertEquals(message.getSubject(), SUBJECT_JOURNALPOST_FEILET);
+        assertEquals(message.getSender().toString(), "srvtilbakemeldings@preprod.local");
+        assertEquals(message.getRecipients(Message.RecipientType.TO)[0].toString(), "nav.serviceklager@preprod.local");
 
         assertEquals("Feil ved opprettelse av journalpost, klage videresendt til " + message.getRecipients(Message.RecipientType.TO)[0], response.getBody().getMessage());
     }
@@ -250,6 +254,8 @@ class ServiceklageIT extends AbstractIT {
 
         MimeMessage message = smtpServer.getReceivedMessages()[0];
         assertEquals(message.getSubject(), SUBJECT_OPPGAVE_FEILET);
+        assertEquals(message.getSender().toString(), "srvtilbakemeldings@preprod.local");
+        assertEquals(message.getRecipients(Message.RecipientType.TO)[0].toString(), "nav.serviceklager@preprod.local");
 
         assertEquals("Feil ved opprettelse av oppgave, journalpostId videresendt til " + message.getRecipients(Message.RecipientType.TO)[0], response.getBody().getMessage());
     }
