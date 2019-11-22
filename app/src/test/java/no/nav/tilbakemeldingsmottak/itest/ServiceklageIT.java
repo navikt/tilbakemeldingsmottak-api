@@ -4,11 +4,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static no.nav.tilbakemeldingsmottak.TestUtils.AARSAK;
 import static no.nav.tilbakemeldingsmottak.TestUtils.BEHANDLES_SOM_SERVICEKLAGE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.BESKRIVELSE;
+import static no.nav.tilbakemeldingsmottak.TestUtils.FORVALTNINGSKLAGE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.FREMMET_DATO;
 import static no.nav.tilbakemeldingsmottak.TestUtils.GJELDER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.INNSENDER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETEKST;
 import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETYPER;
+import static no.nav.tilbakemeldingsmottak.TestUtils.KOMMUNAL_KLAGE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.NAV_ENHETSNR_1;
 import static no.nav.tilbakemeldingsmottak.TestUtils.NAV_ENHETSNR_2;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ORGANISASJONSNUMMER;
@@ -19,6 +21,8 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.UTFALL;
 import static no.nav.tilbakemeldingsmottak.TestUtils.VENTE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.YTELSE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequest;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequestForvaltningsklage;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequestKommunalKlage;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvBedrift;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvPerson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
@@ -27,6 +31,8 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserServiceklageService.SUBJECT_FORVALTNINGSKLAGE_KLASSIFISER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserServiceklageService.SUBJECT_KOMMUNAL_KLAGE_KLASSIFISER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService.SUBJECT_JOURNALPOST_FEILET;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService.SUBJECT_KOMMUNAL_KLAGE;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService.SUBJECT_OPPGAVE_FEILET;
@@ -307,6 +313,68 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
         assertEquals(serviceklage.getKlassifiseringJson(), objectMapper.writeValueAsString(request));
+    }
+
+    @Test
+    @SneakyThrows
+    void happyPathKlassifiserKommunalKlage() {
+        restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
+
+        assertEquals(serviceklageRepository.count(), 1);
+        String fremmetDato = serviceklageRepository.findAll().iterator().next().getFremmetDato().toString();
+
+        KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequestKommunalKlage();
+        request.setFremmetDato(fremmetDato);
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + OPPGAVE_ID, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+        TestTransaction.start();
+
+        assertEquals(serviceklageRepository.count(), 1);
+        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
+
+        assertEquals(serviceklage.getBehandlesSomServiceklage(), KOMMUNAL_KLAGE);
+        assertEquals(serviceklage.getKlassifiseringJson(), objectMapper.writeValueAsString(request));
+
+        MimeMessage message = smtpServer.getReceivedMessages()[0];
+        assertEquals(message.getSubject(), SUBJECT_KOMMUNAL_KLAGE_KLASSIFISER);
+        assertEquals(message.getSender().toString(), "srvtilbakemeldings@preprod.local");
+        assertEquals(message.getRecipients(Message.RecipientType.TO)[0].toString(), "nav.serviceklager@preprod.local");
+    }
+
+    @Test
+    @SneakyThrows
+    void happyPathKlassifiserForvaltningsklage() {
+        restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
+
+        assertEquals(serviceklageRepository.count(), 1);
+        String fremmetDato = serviceklageRepository.findAll().iterator().next().getFremmetDato().toString();
+
+        KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequestForvaltningsklage();
+        request.setFremmetDato(fremmetDato);
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + OPPGAVE_ID, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+        TestTransaction.start();
+
+        assertEquals(serviceklageRepository.count(), 1);
+        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
+
+        assertEquals(serviceklage.getBehandlesSomServiceklage(), FORVALTNINGSKLAGE);
+        assertEquals(serviceklage.getKlassifiseringJson(), objectMapper.writeValueAsString(request));
+
+        MimeMessage message = smtpServer.getReceivedMessages()[0];
+        assertEquals(message.getSubject(), SUBJECT_FORVALTNINGSKLAGE_KLASSIFISER);
+        assertEquals(message.getSender().toString(), "srvtilbakemeldings@preprod.local");
+        assertEquals(message.getRecipients(Message.RecipientType.TO)[0].toString(), "nav.serviceklager@preprod.local");
     }
 
     @Test

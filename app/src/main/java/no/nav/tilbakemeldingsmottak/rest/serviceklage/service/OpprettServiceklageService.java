@@ -3,7 +3,7 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.consumer.joark.OpprettJournalpostConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.joark.JournalpostConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
@@ -37,7 +37,7 @@ public class OpprettServiceklageService {
     private final ServiceklageRepository serviceklageRepository;
     private final OpprettServiceklageRequestMapper opprettServiceklageRequestMapper;
     private final OpprettJournalpostRequestToMapper opprettJournalpostRequestToMapper;
-    private final OpprettJournalpostConsumer opprettJournalpostConsumer;
+    private final JournalpostConsumer journalpostConsumer;
     private final OpprettOppgaveRequestToMapper opprettOppgaveRequestToMapper;
     private final OppgaveConsumer oppgaveConsumer;
     private final PdfService pdfService;
@@ -94,7 +94,7 @@ public class OpprettServiceklageService {
     private OpprettJournalpostResponseTo forsoekOpprettJournalpost(OpprettServiceklageRequest request, byte[] fysiskDokument) {
         try {
             OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument);
-            return opprettJournalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo);
+            return journalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo);
         } catch (OpprettJournalpostFunctionalException | OpprettJournalpostTechnicalException e) {
             mailHelper.sendEmail(fromAddress, toAddress, SUBJECT_JOURNALPOST_FEILET, TEXT_JOURNALPOST_FEILET, fysiskDokument);
             throw new EksterntKallException("Feil ved opprettelse av journalpost, klage videresendt til " + toAddress);

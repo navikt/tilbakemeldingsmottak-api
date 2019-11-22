@@ -11,6 +11,7 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.DefaultAnswers;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionType;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 @Component
 public class KlassifiserServiceklageValidator extends RequestValidator {
 
-
     public void validateRequest(KlassifiserServiceklageRequest request, HentSkjemaResponse hentSkjemaResponse) {
         ObjectMapper m = new ObjectMapper();
 
@@ -33,7 +33,6 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
                 .entrySet().stream()
                 .filter(entry -> entry.getValue() != null)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
 
         validateQuestions(hentSkjemaResponse.getQuestions(), answersMap);
         if (hentSkjemaResponse.getDefaultAnswers() != null) {
@@ -65,12 +64,12 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
                 case CHECKBOX:
                     Arrays.stream(answered.split(",")).forEach(a -> validateMultichoice(question, a));
                     break;
-
             }
-            if (NONE.equals(question.getNext())) {
+            if (isFinalQuestion(question, answered)) {
                 return false;
             }
 
+            // Valider sub-spørsmål rekursivt
             boolean shouldContinue = Optional.ofNullable(question.getAnswers()).orElse(Collections.emptyList())
                     .stream()
                     .filter(a -> a.getAnswer().equals(answered))
@@ -113,4 +112,14 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
         }
     }
 
+    private boolean isFinalQuestion(Question question, String answered) {
+        return NONE.equals(question.getNext()) ||
+                (question.getType() != QuestionType.CHECKBOX &&
+                        question.getAnswers() != null &&
+                        NONE.equals(question.getAnswers().stream()
+                            .filter(a -> a.getAnswer().equals(answered))
+                            .findFirst()
+                            .orElseThrow(() -> new InvalidRequestException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId())))
+                            .getNext()));
+    }
 }

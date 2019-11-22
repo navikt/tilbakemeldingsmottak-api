@@ -15,16 +15,14 @@ questions:
         message: Unngå sensitive personopplysninger
         type: WARN
   - answer: Nei, innsender har ikke fullmakt på vegne av bruker
-    emit: Du må skrive til innsender at serviceklagen ikke kan besvares fordi fullmakt mangler
     next: none
   - answer: Nei, serviceklagen gjelder kommunale tjenester eller ytelser
-    emit: Serviceklagen kan ikke behandles i denne løsningen. Overfør til kommunalt NAV kontor.(se rutine)
+    emit: Journalposten feilregistreres og klagen videresendes på mail til nav.serviceklager@nav.no
     next: none
   - answer: Nei - en forvaltningsklage
-    emit: Du må endre journalføringen og sørge for at riktig instans får forvaltningsklagen til behandling.
+    emit: Journalposten feilregistreres og klagen videresendes på mail til nav.serviceklager@nav.no
     next: none
   - answer: Nei - en beskjed til NAV
-    emit: Du må endre journalføringen og sørge for at riktig instans får dokumentet til behandling.
     next: none
   - answer: Nei - annet
     questions:

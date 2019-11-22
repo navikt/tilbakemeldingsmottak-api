@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.tilbakemeldingsmottak.consumer.joark.JournalpostConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
@@ -17,6 +18,8 @@ import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,40 +32,67 @@ public class KlassifiserServiceklageService {
 
     private final ServiceklageRepository serviceklageRepository;
     private final OppgaveConsumer oppgaveConsumer;
+    private final JournalpostConsumer journalpostConsumer;
     private final EndreOppgaveRequestToMapper endreOppgaveRequestToMapper;
+    private final ServiceklageMailHelper mailHelper;
+    private final HentDokumentService hentDokumentService;
+
+    @Value("${email_serviceklage_address}")
+    private String toAddress;
+    @Value("${email_from_address}")
+    private String fromAddress;
+
+    private static final String KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser";
+    private static final String FORVALTNINGSKLAGE = "Nei - en forvaltningsklage";
+
+    public static final String SUBJECT_KOMMUNAL_KLAGE_KLASSIFISER = "Serviceklage markert som kommunal klage av saksbehandler";
+    public static final String TEXT_KOMMUNAL_KLAGE_KLASSIFISER = "En kommunal klage har blitt feilaktig innsendt som serviceklage. Journalposten har blitt feilregistrert og oppgaven lukket. Klagen ligger vedlagt.";
+    public static final String SUBJECT_FORVALTNINGSKLAGE_KLASSIFISER = "Serviceklage markert som forvaltningsklage av saksbehandler";
+    public static final String TEXT_FORVALTNINGSKLAGE_KLASSIFISER= "En forvaltningsklage har blitt feilaktig innsendt som serviceklage. Journalposten har blitt feilregistrert og oppgaven lukket. Klagen ligger vedlagt.";
 
     private static final String FERDIGSTILT = "FERDIGSTILT";
     private static final String JA = "Ja";
     private static final String ANNET = "Annet";
 
     public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo)  {
+        assertIkkeFerdigstilt(hentOppgaveResponseTo);
 
+        if (KOMMUNAL_KLAGE.equals(request.getBehandlesSomServiceklage())) {
+            handterFeilsendtKlage(hentOppgaveResponseTo, SUBJECT_KOMMUNAL_KLAGE_KLASSIFISER, TEXT_KOMMUNAL_KLAGE_KLASSIFISER);
+        } else if (FORVALTNINGSKLAGE.equals(request.getBehandlesSomServiceklage())) {
+            handterFeilsendtKlage(hentOppgaveResponseTo, SUBJECT_FORVALTNINGSKLAGE_KLASSIFISER, TEXT_FORVALTNINGSKLAGE_KLASSIFISER);
+        }
+
+        Serviceklage serviceklage = getOrCreateServiceklage(hentOppgaveResponseTo.getJournalpostId());
+        updateServiceklage(serviceklage, request);
+        serviceklageRepository.save(serviceklage);
+        log.info("Serviceklage med serviceklageId={} er klassifisert", serviceklage.getServiceklageId());
+
+        ferdigstillOppgave(hentOppgaveResponseTo);
+        log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
+    }
+
+    private void assertIkkeFerdigstilt(HentOppgaveResponseTo hentOppgaveResponseTo) {
         if (FERDIGSTILT.equals(hentOppgaveResponseTo.getStatus())) {
             throw new OppgaveAlleredeFerdigstiltException(String.format("Oppgave med oppgaveId=%s er allerede ferdigstilt",
                     hentOppgaveResponseTo.getId()));
         }
-
-        String journalpostId = hentOppgaveResponseTo.getJournalpostId();
-        Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
-        if (serviceklage == null) {
-            serviceklage = createNewServiceklage(journalpostId);
-        }
-
-        updateServiceklage(serviceklage, request);
-
-        serviceklageRepository.save(serviceklage);
-
-        log.info("Serviceklage med serviceklageId={} er klassifisert", serviceklage.getServiceklageId());
-
-        EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
-        oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
-        log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
     }
 
-    private Serviceklage createNewServiceklage(String journalpostId) {
-        Serviceklage serviceklage = new Serviceklage();
-        serviceklage.setJournalpostId(journalpostId);
-        serviceklage.setOpprettetDato(LocalDateTime.now());
+    private void handterFeilsendtKlage(HentOppgaveResponseTo hentOppgaveResponseTo, String subject, String text) {
+        String journalpostId = hentOppgaveResponseTo.getJournalpostId();
+        byte[] fysiskDokument = hentDokumentService.hentDokument(journalpostId).getDokument();
+        mailHelper.sendEmail(fromAddress, toAddress, subject, text, fysiskDokument);
+        journalpostConsumer.feilregistrerSakstilknytning(journalpostId);
+    }
+
+    private Serviceklage getOrCreateServiceklage(String journalpostId) {
+        Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
+        if (serviceklage == null) {
+            serviceklage = new Serviceklage();
+            serviceklage.setJournalpostId(journalpostId);
+            serviceklage.setOpprettetDato(LocalDateTime.now());
+        }
         return serviceklage;
     }
 
@@ -93,6 +123,11 @@ public class KlassifiserServiceklageService {
         } catch (JsonProcessingException e) {
             throw new RequestParsingException("Kan ikke konvertere klassifiseringsrequest til JSON-string");
         }
+    }
+
+    private void ferdigstillOppgave(HentOppgaveResponseTo hentOppgaveResponseTo) {
+        EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
+        oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
     }
 
     private String mapTemaUtdypning(KlassifiserServiceklageRequest request) {
