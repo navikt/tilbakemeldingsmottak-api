@@ -4,6 +4,7 @@ import static no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType.NAV_KON
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.ENHETSNUMMER_PAAKLAGET;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
 import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
@@ -27,6 +28,7 @@ import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerR
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Answer;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.DefaultAnswers;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.GjelderSosialhjelpType;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Innmelder;
@@ -110,9 +112,12 @@ public class TestUtils {
     public static final String RELATERT = "EØS-saken,Åpningstider på NAV-kontoret";
     public static final String TEMA = "Vente på NAV";
     public static final String VENTE = "Saksbehandlingstid";
-    public static final String UTFALL = "a) Regler/rutiner/frister er fulgt - NAV har ivaretatt bruker godt";
+    public static final String UTFALL = "b) Regler/rutiner/frister er fulgt men NAV burde ivaretatt bruker bedre";
     public static final String AARSAK = "Service har vært dårlig";
     public static final String TILTAK = "Gi bedre service";
+
+    public static final String BEHANDLES_IKKE_SOM_SERVICEKLAGE = "Nei - annet";
+    public static final String BEHANDLES_IKKE_SOM_SERVICEKLAGE_UTDYPNING = "Det er ikke en serviceklage";
 
     public static final String DOKUMENT_INFO_ID = "dokumentInfoId";
 
@@ -241,6 +246,13 @@ public class TestUtils {
                 .build();
     }
 
+    public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequestIkkeServiceklage() {
+        return KlassifiserServiceklageRequest.builder()
+                .behandlesSomServiceklage(BEHANDLES_IKKE_SOM_SERVICEKLAGE)
+                .behandlesSomServiceklageUtdypning(BEHANDLES_IKKE_SOM_SERVICEKLAGE_UTDYPNING)
+                .build();
+    }
+
     @SneakyThrows
     public static HentSkjemaResponse createHentSkjemaResponse() {
         InputStream schema = TestUtils.class.getClassLoader().getResourceAsStream("schema/schema.yaml");
@@ -265,6 +277,15 @@ public class TestUtils {
         return response;
     }
 
+    public static HentSkjemaResponse createHentSkjemaResponseWithDefaultAnswers() {
+        HentSkjemaResponse response = createHentSkjemaResponse();
+        Map<String, String> answers = new HashMap<>();
+        answers.put(KANAL, KANAL_SERVICEKLAGESKJEMA_ANSWER);
+        response.setDefaultAnswers(DefaultAnswers.builder()
+                .answers(answers)
+                .build());
+        return response;
+    }
 
     public static Map<String, IdentInfoForAktoer> createHentAktoerIdForIdentResponse(String fnr) {
         Map<String, IdentInfoForAktoer> response = new HashMap<>();

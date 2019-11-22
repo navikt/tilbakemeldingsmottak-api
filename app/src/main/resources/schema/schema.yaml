@@ -191,6 +191,19 @@ questions:
   answers:
   - answer: a) Regler/rutiner/frister er fulgt - NAV har ivaretatt bruker godt
   - answer: b) Regler/rutiner/frister er fulgt men NAV burde ivaretatt bruker bedre
+    questions:
+    - id: AARSAK
+      text: Hva er, etter din mening, de bakenforliggende årsakene?
+      type: TEXT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
+    - id: TILTAK
+      text: Hvordan kan NAV hindre at det samme skjer igjen, etter din mening?
+      type: TEXT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
   - answer: c) Regler/rutiner/frister er brutt - NAV burde ivaretatt bruker bedre
     questions:
     - id: AARSAK
