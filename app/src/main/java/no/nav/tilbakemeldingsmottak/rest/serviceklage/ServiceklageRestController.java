@@ -95,9 +95,9 @@ public class ServiceklageRestController {
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId) {
         String journalpostId = oppgaveConsumer.hentOppgave(oppgaveId).getJournalpostId();
-//        HentDokumentResponse response = hentDokumentService.hentDokument(journalpostId);
+        HentDokumentResponse response = hentDokumentService.hentDokument(journalpostId);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(null);
+                .body(response);
     }
 }

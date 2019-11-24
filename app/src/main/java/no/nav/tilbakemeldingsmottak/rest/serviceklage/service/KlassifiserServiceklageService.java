@@ -83,7 +83,7 @@ public class KlassifiserServiceklageService {
         String journalpostId = hentOppgaveResponseTo.getJournalpostId();
         byte[] fysiskDokument = hentDokumentService.hentDokument(journalpostId).getDokument();
         mailHelper.sendEmail(fromAddress, toAddress, subject, text, fysiskDokument);
-        journalpostConsumer.feilregistrerSakstilknytning(journalpostId);
+//        journalpostConsumer.feilregistrerSakstilknytning(journalpostId);
     }
 
     private Serviceklage getOrCreateServiceklage(String journalpostId) {
