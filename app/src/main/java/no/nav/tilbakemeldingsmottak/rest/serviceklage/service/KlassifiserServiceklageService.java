@@ -58,8 +58,10 @@ public class KlassifiserServiceklageService {
         assertIkkeFerdigstilt(hentOppgaveResponseTo);
 
         if (KOMMUNAL_KLAGE.equals(request.getBehandlesSomServiceklage())) {
+            log.info("Klagen har blitt markert som en kommunal klage. Journalposten feilregistreres og klagen videresendes til {}.", toAddress);
             handterFeilsendtKlage(hentOppgaveResponseTo, SUBJECT_KOMMUNAL_KLAGE_KLASSIFISER, TEXT_KOMMUNAL_KLAGE_KLASSIFISER);
         } else if (FORVALTNINGSKLAGE.equals(request.getBehandlesSomServiceklage())) {
+            log.info("Klagen har blitt markert som en forvaltningsklage. Journalposten feilregistreres og klagen videresendes til {}.", toAddress);
             handterFeilsendtKlage(hentOppgaveResponseTo, SUBJECT_FORVALTNINGSKLAGE_KLASSIFISER, TEXT_FORVALTNINGSKLAGE_KLASSIFISER);
         }
 
