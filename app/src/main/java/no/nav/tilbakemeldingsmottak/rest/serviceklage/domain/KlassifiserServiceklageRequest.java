@@ -70,6 +70,9 @@ public class KlassifiserServiceklageRequest {
     @JsonProperty(YTELSE)
     private String ytelse;
 
+    @JsonProperty(RELATERT)
+    private String relatert;
+
     @JsonProperty(TEMA)
     private String tema;
 
@@ -88,9 +91,6 @@ public class KlassifiserServiceklageRequest {
     @JsonProperty(TEMA_UTDYPNING)
     private String temaUtdypning;
 
-    @JsonProperty(RELATERT)
-    private String relatert;
-
     @JsonProperty(UTFALL)
     private String utfall;
 
@@ -103,10 +103,10 @@ public class KlassifiserServiceklageRequest {
     @JsonProperty(SVARMETODE)
     private String svarmetode;
 
-    @JsonProperty(SVARMETODE_UTDYPNING)
-    private String svarmetodeUtdypning;
-
     @JsonProperty(SVAR_IKKE_NOEDVENDIG)
     private String svarIkkeNoedvendig;
+
+    @JsonProperty(SVARMETODE_UTDYPNING)
+    private String svarmetodeUtdypning;
 
 }

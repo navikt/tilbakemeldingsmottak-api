@@ -51,7 +51,7 @@ questions:
   type: RADIO
   answers:
   - answer: Serviceklageskjema på nav.no
-  - answer: Digital kanal på NAV.no
+  - answer: Digital kanal på nav.no
   - answer: Annen skriftlig kanal fra bruker
   - answer: Muntlig fra bruker
   - answer: Annet
