@@ -56,7 +56,6 @@ public class OpprettServiceklageService {
     private String fromAddress;
 
     public OpprettServiceklageResponse opprettServiceklage(OpprettServiceklageRequest request) throws DocumentException {
-        Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request);
 
         byte[] fysiskDokument = pdfService.opprettPdf(request);
 
@@ -71,6 +70,7 @@ public class OpprettServiceklageService {
         OpprettJournalpostResponseTo opprettJournalpostResponseTo = forsoekOpprettJournalpost(request, fysiskDokument);
         log.info("Journalpost med journalpostId={} opprettet", opprettJournalpostResponseTo.getJournalpostId());
 
+        Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request);
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med serviceklageId={} persistert", serviceklage.getServiceklageId());
