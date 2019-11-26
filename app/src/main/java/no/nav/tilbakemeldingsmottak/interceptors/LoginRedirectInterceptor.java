@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.interceptors;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.config.Constants.DOKLOGIN_ISSUER;
 import static no.nav.tilbakemeldingsmottak.config.Constants.REDIRECT_COOKIE;
 
 import com.nimbusds.jwt.SignedJWT;
@@ -30,7 +30,7 @@ public class LoginRedirectInterceptor extends AbstractInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 							 HttpServletResponse response, Object handler) throws Exception {
-		TokenContext token = oidcRequestContextHolder.getOIDCValidationContext().getToken(LOGINSERVICE_ISSUER);
+		TokenContext token = oidcRequestContextHolder.getOIDCValidationContext().getToken(DOKLOGIN_ISSUER);
 		if (token == null) {
 			response.addCookie(CookieUtils.createSessionCookie(REDIRECT_COOKIE, request.getRequestURI(), true));
 			response.sendRedirect(loginserviceUrl);

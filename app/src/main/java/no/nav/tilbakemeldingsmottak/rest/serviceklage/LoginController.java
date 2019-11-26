@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.config.Constants.DOKLOGIN_ISSUER;
 import static no.nav.tilbakemeldingsmottak.config.Constants.REDIRECT_COOKIE;
 
 import com.nimbusds.jwt.SignedJWT;
@@ -73,7 +73,7 @@ public class LoginController {
 		}
 		SignedJWT.parse(token);
 
-		response.addCookie(CookieUtils.createSessionCookie(LOGINSERVICE_ISSUER + "-idtoken", token, true));
+		response.addCookie(CookieUtils.createSessionCookie(DOKLOGIN_ISSUER + "-idtoken", token, true));
 		return ResponseEntity.status(HttpStatus.FOUND)
 				.header("location", "/login")
 				.build();
