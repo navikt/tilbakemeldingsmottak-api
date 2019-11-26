@@ -11,6 +11,8 @@ import no.nav.tilbakemeldingsmottak.exceptions.OidcContextException;
 import no.nav.tilbakemeldingsmottak.util.CookieUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.server.ServletServerHttpRequest;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +34,8 @@ public class LoginRedirectInterceptor extends AbstractInterceptor {
 							 HttpServletResponse response, Object handler) throws Exception {
 		TokenContext token = oidcRequestContextHolder.getOIDCValidationContext().getToken(DOKLOGIN_ISSUER);
 		if (token == null) {
-			response.addCookie(CookieUtils.createSessionCookie(REDIRECT_COOKIE, request.getRequestURI(), true));
+		    String redirect = UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(request)).build().toUriString();
+            response.addCookie(CookieUtils.createSessionCookie(REDIRECT_COOKIE, redirect, true));
 			response.sendRedirect(loginserviceUrl);
 			return false;
 		}
