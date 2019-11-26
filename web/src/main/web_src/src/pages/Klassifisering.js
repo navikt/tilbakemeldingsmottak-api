@@ -47,6 +47,7 @@ class Klassifisering extends Component {
         }), {})
     };
     ServiceklageApi.klassifiser(this.oppgaveId, answers);
+    window.location = "/serviceklage/takk";
   }
 
   render() {

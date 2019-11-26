@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Optional;
 
 /**
@@ -34,17 +32,7 @@ public class LoginController {
 	public String redirect(HttpServletRequest request, HttpServletResponse response) {
 		Optional<Cookie> redirectCookie = CookieUtils.findCookie(request.getCookies(), REDIRECT_COOKIE);
 		if (redirectCookie.isPresent()) {
-			try {
-				URI uri = new URI(redirectCookie.get().getValue());
-				if (uri.isAbsolute()) {
-					throw new URISyntaxException(uri.toString(), "Value of redirect cookie is an absolute url");
-				}
-			} catch (URISyntaxException e) {
-				log.warn("Invalid redirect cookie", e);
-				redirectCookie = Optional.empty();
-			} finally {
-				response.addCookie(CookieUtils.createSessionClearingCookie(REDIRECT_COOKIE, true));
-			}
+			response.addCookie(CookieUtils.createSessionClearingCookie(REDIRECT_COOKIE, true));
 		}
 		return "redirect:" + redirectCookie
 				.map(Cookie::getValue)
