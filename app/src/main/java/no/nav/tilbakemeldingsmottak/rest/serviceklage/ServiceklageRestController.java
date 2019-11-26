@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
+import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertIkkeFerdigstilt;
 
 import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +71,8 @@ public class ServiceklageRestController {
     public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request,
                                                                                    @RequestParam String oppgaveId) {
         HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
+        assertIkkeFerdigstilt(hentOppgaveResponseTo);
+
         klassifiserServiceklageValidator.validateRequest(request, hentSkjemaService.hentSkjema(hentOppgaveResponseTo.getJournalpostId()));
         klassifiserServiceklageService.klassifiserServiceklage(request, hentOppgaveResponseTo);
         return ResponseEntity
@@ -83,8 +86,10 @@ public class ServiceklageRestController {
     @GetMapping(value = "/hentskjema/{oppgaveId}")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentSkjema"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<HentSkjemaResponse> hentSkjema(@PathVariable String oppgaveId) {
-        String journalpostId = oppgaveConsumer.hentOppgave(oppgaveId).getJournalpostId();
-        HentSkjemaResponse response = hentSkjemaService.hentSkjema(journalpostId);
+        HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
+        assertIkkeFerdigstilt(hentOppgaveResponseTo);
+
+        HentSkjemaResponse response = hentSkjemaService.hentSkjema(hentOppgaveResponseTo.getJournalpostId());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
@@ -94,8 +99,10 @@ public class ServiceklageRestController {
     @GetMapping(value = "/hentdokument/{oppgaveId}")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId) {
-        String journalpostId = oppgaveConsumer.hentOppgave(oppgaveId).getJournalpostId();
-        HentDokumentResponse response = hentDokumentService.hentDokument(journalpostId);
+        HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
+        assertIkkeFerdigstilt(hentOppgaveResponseTo);
+
+        HentDokumentResponse response = hentDokumentService.hentDokument(hentOppgaveResponseTo.getJournalpostId());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);

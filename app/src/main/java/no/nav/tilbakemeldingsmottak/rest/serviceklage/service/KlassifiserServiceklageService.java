@@ -12,7 +12,6 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
-import no.nav.tilbakemeldingsmottak.exceptions.OppgaveAlleredeFerdigstiltException;
 import no.nav.tilbakemeldingsmottak.exceptions.RequestParsingException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
@@ -50,13 +49,10 @@ public class KlassifiserServiceklageService {
     public static final String SUBJECT_FORVALTNINGSKLAGE_KLASSIFISER = "Serviceklage markert som forvaltningsklage av saksbehandler";
     public static final String TEXT_FORVALTNINGSKLAGE_KLASSIFISER= "En forvaltningsklage har blitt feilaktig innsendt som serviceklage. Journalposten har blitt feilregistrert og oppgaven lukket. Klagen ligger vedlagt.";
 
-    private static final String FERDIGSTILT = "FERDIGSTILT";
     private static final String JA = "Ja";
     private static final String ANNET = "Annet";
 
     public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo)  {
-        assertIkkeFerdigstilt(hentOppgaveResponseTo);
-
         if (KOMMUNAL_KLAGE.equals(request.getBehandlesSomServiceklage())) {
             log.info("Klagen har blitt markert som en kommunal klage. Journalposten feilregistreres og klagen videresendes til {}.", toAddress);
             handterFeilsendtKlage(hentOppgaveResponseTo, SUBJECT_KOMMUNAL_KLAGE_KLASSIFISER, TEXT_KOMMUNAL_KLAGE_KLASSIFISER);
@@ -74,18 +70,11 @@ public class KlassifiserServiceklageService {
         log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
     }
 
-    private void assertIkkeFerdigstilt(HentOppgaveResponseTo hentOppgaveResponseTo) {
-        if (FERDIGSTILT.equals(hentOppgaveResponseTo.getStatus())) {
-            throw new OppgaveAlleredeFerdigstiltException(String.format("Oppgave med oppgaveId=%s er allerede ferdigstilt",
-                    hentOppgaveResponseTo.getId()));
-        }
-    }
-
     private void handterFeilsendtKlage(HentOppgaveResponseTo hentOppgaveResponseTo, String subject, String text) {
         String journalpostId = hentOppgaveResponseTo.getJournalpostId();
         byte[] fysiskDokument = hentDokumentService.hentDokument(journalpostId).getDokument();
         mailHelper.sendEmail(fromAddress, toAddress, subject, text, fysiskDokument);
-//        journalpostConsumer.feilregistrerSakstilknytning(journalpostId);
+        journalpostConsumer.feilregistrerSakstilknytning(journalpostId);
     }
 
     private Serviceklage getOrCreateServiceklage(String journalpostId) {
