@@ -12,7 +12,6 @@ import java.util.List;
 public class Answer {
 
     String answer;
-    String id;
     String emit;
     String next;
     List<Question> questions;
