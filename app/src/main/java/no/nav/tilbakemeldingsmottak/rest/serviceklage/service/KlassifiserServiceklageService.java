@@ -45,9 +45,9 @@ public class KlassifiserServiceklageService {
     private static final String FORVALTNINGSKLAGE = "Nei - en forvaltningsklage";
 
     public static final String SUBJECT_KOMMUNAL_KLAGE_KLASSIFISER = "Serviceklage markert som kommunal klage av saksbehandler";
-    public static final String TEXT_KOMMUNAL_KLAGE_KLASSIFISER = "En kommunal klage har blitt feilaktig innsendt som serviceklage. Journalposten har blitt feilregistrert og oppgaven lukket. Klagen ligger vedlagt.";
+    public static final String TEXT_KOMMUNAL_KLAGE_KLASSIFISER = "En kommunal klage har blitt feilaktig innsendt som serviceklage. Saksrelasjonen har blitt feilregistrert og oppgaven lukket. Klagen ligger vedlagt.";
     public static final String SUBJECT_FORVALTNINGSKLAGE_KLASSIFISER = "Serviceklage markert som forvaltningsklage av saksbehandler";
-    public static final String TEXT_FORVALTNINGSKLAGE_KLASSIFISER= "En forvaltningsklage har blitt feilaktig innsendt som serviceklage. Journalposten har blitt feilregistrert og oppgaven lukket. Klagen ligger vedlagt.";
+    public static final String TEXT_FORVALTNINGSKLAGE_KLASSIFISER= "En forvaltningsklage har blitt feilaktig innsendt som serviceklage. Saksrelasjonen har blitt feilregistrert og oppgaven lukket. Klagen ligger vedlagt.";
 
     private static final String JA = "Ja";
     private static final String ANNET = "Annet";
