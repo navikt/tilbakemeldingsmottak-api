@@ -3,7 +3,6 @@ package no.nav.tilbakemeldingsmottak.rest.feilogmangler.service;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.AbstractEmailService;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent;
-import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.Feiltype;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -20,9 +19,7 @@ public class FeilOgManglerService {
     private AbstractEmailService emailService;
 
     @Value("${email_nav_support_address}")
-    private String emailNavSupportAddress;
-    @Value("${email_uu_address}")
-    private String emailUuAddress;
+    private String emailToAddress;
     @Value("${email_from_address}")
     private String emailFromAddress;
 
@@ -36,8 +33,6 @@ public class FeilOgManglerService {
     }
 
     private void sendEmail(MeldFeilOgManglerRequest request) throws MessagingException {
-        String emailToAddress = Feiltype.UNIVERSELL_UTFORMING.equals(request.getFeiltype()) ? emailUuAddress : emailNavSupportAddress;
-
         MimeMessage message = emailService.getEmailSender().createMimeMessage();
         message.setHeader("Content-Encoding", "UTF-8");
         message.setContent(createContent(request), "text/html; charset=UTF-8");
