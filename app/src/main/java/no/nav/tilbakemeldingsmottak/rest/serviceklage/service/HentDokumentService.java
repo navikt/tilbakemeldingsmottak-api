@@ -29,7 +29,7 @@ public class HentDokumentService {
         Variantformat variantformat;
         Journalpost.DokumentInfo dokumentInfo;
         if (isEmpty(journalpost.getDokumenter())) {
-            return null;
+            throw new GyldigDokumentIkkeFunnetException(String.format("Finner ingen dokumenter knyttet til journalpost med journalpostId=%s", journalpostId));
         } else {
             dokumentInfo = journalpost.getDokumenter().get(0);
             if (dokumentInfo.getDokumentvarianter().stream().anyMatch(d -> d.getVariantformat().equals(Variantformat.SLADDET))) {
