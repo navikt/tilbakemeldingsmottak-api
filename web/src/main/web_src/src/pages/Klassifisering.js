@@ -8,7 +8,6 @@ import {DefaultAnswersMapper, SchemaMapper} from "../mappers/skjema/SkjemaMapper
 import Dokument from "../components/Dokument";
 import {RESET_KLASSIFISERING, UPDATE_SCHEMA} from "../store/actions";
 import "./Klassifisering.less";
-import AlertStripe from "nav-frontend-alertstriper";
 
 class Klassifisering extends Component {
   constructor(props) {
@@ -78,7 +77,8 @@ class Klassifisering extends Component {
         }
         {error &&
         <div className={"Feilmelding"}>
-          <AlertStripe type="feil">{error.data.message}</AlertStripe>
+            <h1>Beklager, det oppstod en feil!</h1>
+            <p>{"Feilmelding: " + error.data.message}</p>
         </div>
         }
       </div>
