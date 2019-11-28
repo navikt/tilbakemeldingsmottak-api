@@ -16,25 +16,26 @@ class Klassifisering extends Component {
     this.oppgaveId = params.oppgaveId || props.oppgaveId;
     this.state = {
       pdf: null,
-      status: {}
+      status: {},
+      error: null
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.props.actions.resetKlassifisering();
-    ServiceklageApi.hentKlassifiseringSkjema(this.oppgaveId).then(res => {
-      this.props.actions.updateSchema({
-        defaultAnswers: DefaultAnswersMapper(res.data.defaultAnswers) || {answers: {}},
-        questions: SchemaMapper(res.data.questions)
-      });
-    });
+    await ServiceklageApi.hentDokument(this.oppgaveId).then(res => {
+      const dataUri = `data:application/pdf;base64,${res.data.dokument}`;
+      this.setState({ ...this.state, pdf: dataUri });
+    }).catch(err => this.setState({...this.state, error: err}));
 
-    ServiceklageApi.hentDokument(this.oppgaveId)
-      .then(res => {
-        const dataUri = `data:application/pdf;base64,${res.data.dokument}`;
-        this.setState({ ...this.state, pdf: dataUri });
-      })
-      .catch(console.error);
+    if (!this.state.error) {
+      await ServiceklageApi.hentKlassifiseringSkjema(this.oppgaveId).then(res => {
+        this.props.actions.updateSchema({
+            defaultAnswers: DefaultAnswersMapper(res.data.defaultAnswers) || {answers: {}},
+            questions: SchemaMapper(res.data.questions)
+        });
+      }).catch(err => this.setState({...this.state, error: err}));
+    }
   }
 
   submitAnswers() {
@@ -51,25 +52,30 @@ class Klassifisering extends Component {
   }
 
   render() {
-    const { pdf } = this.state;
+    const { pdf, error } = this.state;
     const { status } = this.props;
     return (
       <div className="Row">
-        <div className="Klassifisering">
-          <SchemaRender />
-          {status.progress.index === "none" && (
-            <div className="SubmitButton">
-              <Hovedknapp onClick={() => this.submitAnswers()}>
-                Lagre serviceklage og lukk oppgave
-              </Hovedknapp>
-            </div>
-          )}
-        </div>
-        <div>
-          <div className="Dokument">
-            <Dokument pdf={pdf} />
+        {pdf && !error &&
+         <>
+          <div className="Klassifisering">
+            <SchemaRender />
+            {status.progress.index === "none" && (
+              <div className="SubmitButton">
+                <Hovedknapp onClick={() => this.submitAnswers()}>
+                  Lagre serviceklage og lukk oppgave
+                </Hovedknapp>
+              </div>
+            )}
           </div>
-        </div>
+          <div>
+            <div className="Dokument">
+              <Dokument pdf={pdf} />
+            </div>
+          </div>
+        </>
+        }
+        {error && <p>Det skjedde en feil :O</p>}
       </div>
     );
   }
