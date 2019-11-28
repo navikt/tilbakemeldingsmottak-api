@@ -3,8 +3,10 @@ package no.nav.tilbakemeldingsmottak.rest.common.handlers;
 import com.fasterxml.jackson.core.JsonParseException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
+import no.nav.tilbakemeldingsmottak.exceptions.GyldigDokumentIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
+import no.nav.tilbakemeldingsmottak.exceptions.OppgaveAlleredeFerdigstiltException;
 import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
@@ -54,6 +56,14 @@ public class ControllerAdvice {
 
     @ExceptionHandler(InvalidIdentException.class)
     public ResponseEntity<ErrorResponse> invalidIdentExceptionHandler(HttpServletRequest request, InvalidIdentException ex) {
+        log.warn("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
+                .message(ex.getMessage())
+                .build());
+    }
+
+    @ExceptionHandler(value = {OppgaveAlleredeFerdigstiltException.class, GyldigDokumentIkkeFunnetException.class})
+    public ResponseEntity<ErrorResponse> klassifiseringExceptionHandler(HttpServletRequest request, Exception ex) {
         log.warn("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
                 .message(ex.getMessage())
