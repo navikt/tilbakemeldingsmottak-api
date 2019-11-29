@@ -50,11 +50,11 @@ fasitResources:
     resourceType: baseurl
     propertyMap:
       url: NO_NAV_SECURITY_OIDC_ISSUER_AZUREAD_DISCOVERYURL
-  - alias: doklogin_oidc
+  - alias: loginservice_oidc
     resourceType: AzureOIDC
     propertyMap:
-      discoveryUri: NO_NAV_SECURITY_OIDC_ISSUER_AZURE_DISCOVERYURL
-      clientId: DOKLOGIN_ACCEPTED_AUDIENCE
+      discoveryUri: NO_NAV_SECURITY_OIDC_ISSUER_ISSO_DISCOVERYURL
+      clientId: LOGINSERVICE_ACCEPTED_AUDIENCE
   - alias: security-token-service-token
     resourceType: restservice
   - alias: Journalpost_v1
