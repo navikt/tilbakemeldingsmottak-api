@@ -31,57 +31,46 @@ fasitResources:
       url: SPRING_DATASOURCE_URL
       username: SPRING_DATASOURCE_USERNAME
       password: SPRING_DATASOURCE_PASSWORD
-
   - alias: srvtilbakemeldingsmottak
     resourceType: credential
     propertyMap:
       username: SERVICEUSER_USERNAME
       password: SERVICEUSER_PASSWORD
-
   - alias: aad_b2c_clientid
     resourceType: credential
     propertyMap:
       username: AZUREAD_CLIENTID
-
   - alias: security-token-service-openid-configuration
     resourceType: restservice
     propertyMap:
       url: NO_NAV_SECURITY_OIDC_ISSUER_RESTSTS_DISCOVERYURL
-
   - alias: securityTokenService
     resourceType: baseurl
-
   - alias: aad_b2c_discovery
     resourceType: baseurl
     propertyMap:
       url: NO_NAV_SECURITY_OIDC_ISSUER_AZUREAD_DISCOVERYURL
-
   - alias: loginservice_oidc
     resourceType: AzureOIDC
     propertyMap:
       discoveryUri: NO_NAV_SECURITY_OIDC_ISSUER_ISSO_DISCOVERYURL
       clientId: LOGINSERVICE_ACCEPTED_AUDIENCE
-
   - alias: security-token-service-token
     resourceType: restservice
-
   - alias: Journalpost_v1
     resourceType: restservice
-
   - alias: "oppgave.oppgaver"
     resourceType: restservice
-
   - alias: "aktoerregister.api.v1"
     resourceType: restservice
     propertyMap:
       url: aktoerregister.identer.url
-
   - alias: "ereg.api"
     resourceType: restservice
-
+  - alias: "norg2.api.v1"
+    resourceType: restservice
   - alias: tilbakemeldingsmottakProperties
     resourceType: applicationProperties
-
   exposed:
   - alias: tilbakemeldingsmottak
     resourceType: restservice

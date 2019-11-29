@@ -8,27 +8,31 @@ questions:
   - answer: Ja
   - answer: Ja, men inneholder også andre elementer
     questions:
-    - id: BEHANDLES_SOM_SERVICEKLAGE_SPESIFISER
+    - id: BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING
       text: Spesifiser
       type: TEXT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
   - answer: Nei, innsender har ikke fullmakt på vegne av bruker
-    emit: Du må skrive til innsender at serviceklagen ikke kan besvares fordi fullmakt mangler
     next: none
   - answer: Nei, serviceklagen gjelder kommunale tjenester eller ytelser
-    emit: Serviceklagen kan ikke behandles i denne løsningen. Overfør til kommunalt NAV kontor.(se rutine)
+    emit: Journalposten feilregistreres og klagen videresendes på mail til nav.serviceklager@nav.no
     next: none
   - answer: Nei - en forvaltningsklage
-    emit: Du må endre journalføringen og sørge for at riktig instans får forvaltningsklagen til behandling.
+    emit: Journalposten feilregistreres og klagen videresendes på mail til nav.serviceklager@nav.no
     next: none
   - answer: Nei - en beskjed til NAV
-    emit: Du må endre journalføringen og sørge for at riktig instans får dokumentet til behandling.
     next: none
   - answer: Nei - annet
     questions:
-    - id: BEHANDLES_SOM_SERVICEKLAGE_SPESIFISER
+    - id: BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING
       text: Spesifiser
       type: TEXT
       next: none
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
 
 - id: FREMMET_DATO
   text: Angi dato bruker fremmet serviceklagen
@@ -47,10 +51,17 @@ questions:
   type: RADIO
   answers:
   - answer: Serviceklageskjema på nav.no
-  - answer: Digital kanal på NAV.no
+  - answer: Digital kanal på nav.no
   - answer: Annen skriftlig kanal fra bruker
   - answer: Muntlig fra bruker
   - answer: Annet
+    questions:
+    - id: KANAL_UTDYPNING
+      text: Spesifiser
+      type: TEXT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
 
 - id: PAAKLAGET_ENHET_ER_BEHANDLENDE
   text: Er klagen behandlet i enheten det klages på?
@@ -58,14 +69,14 @@ questions:
   answers:
   - answer: Ja
   - answer: Nei
+    questions:
+    - id: ENHETSNUMMER_BEHANDLENDE
+      text: Angi enhetsnummer til enheten som behandler klagen
+      type: DATALIST
 
 - id: ENHETSNUMMER_PAAKLAGET
   text: Angi enhetsnummer til enheten det klages på
-  type: INPUT
-
-- id: ENHETSNUMMER_BEHANDLENDE
-  text: Angi enhetsnummer til enheten som behandler klagen
-  type: INPUT
+  type: DATALIST
 
 - id: GJELDER
   text: Hva mener du serviceklagen gjelder?
@@ -74,10 +85,18 @@ questions:
   - answer: Gjelder én ytelse eller tjeneste
   - answer: Gjelder flere ting eller sammensatt situasjon
 
+- id: BESKRIVELSE
+  text: Gi en kort beskrivelse av serviceklagen
+  type: TEXT
+  banner:
+    message: Unngå sensitive personopplysninger
+    type: WARN
+
 - id: YTELSE
   text: Hvilken ytelse mm. er mest relevant for serviceklagen?
   type: SELECT
   answers:
+  - answer: ''
   - answer: AFP - Avtalefestet pensjon
   - answer: Alderspensjon
   - answer: AAP - Arbeidsavklaringspenger
@@ -101,6 +120,14 @@ questions:
   - answer: Yrkesskade/yrkessykdom
   - answer: Annet
   - answer: Uspesifisert
+
+- id: RELATERT
+  text: Huk av dersom serviceklagen er relatert til
+  type: CHECKBOX
+  optional: true
+  answers:
+  - answer: EØS-saken
+  - answer: Åpningstider på NAV-kontoret
 
 - id: TEMA
   text: Hva gjelder serviceklagen?
@@ -149,9 +176,12 @@ questions:
   - answer: NAV-ansattes oppførsel
   - answer: Annet
     questions:
-    - id: TEMA_SPESIFISER
+    - id: TEMA_UTDYPNING
       text: Spesifiser
       type: INPUT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
 
 - id: UTFALL
   text: Hva er utfallet av serviceklagen?
@@ -159,14 +189,33 @@ questions:
   answers:
   - answer: a) Regler/rutiner/frister er fulgt - NAV har ivaretatt bruker godt
   - answer: b) Regler/rutiner/frister er fulgt men NAV burde ivaretatt bruker bedre
+    questions:
+    - id: AARSAK
+      text: Hva er, etter din mening, de bakenforliggende årsakene?
+      type: TEXT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
+    - id: TILTAK
+      text: Hvordan kan NAV hindre at det samme skjer igjen, etter din mening?
+      type: TEXT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
   - answer: c) Regler/rutiner/frister er brutt - NAV burde ivaretatt bruker bedre
     questions:
     - id: AARSAK
       text: Hva er, etter din mening, de bakenforliggende årsakene?
       type: TEXT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
     - id: TILTAK
       text: Hvordan kan NAV hindre at det samme skjer igjen, etter din mening?
       type: TEXT
+      banner:
+        message: Unngå sensitive personopplysninger
+        type: WARN
   - answer: d) Prøvd, men ikke klart å finne ut hva som har skjedd
 
 - id: SVARMETODE
@@ -187,6 +236,9 @@ questions:
       - answer: Bruker ikke bedt om svar
       - answer: Annet
         questions:
-        - id: SVARMETODE_SPESIFISER
+        - id: SVARMETODE_UTDYPNING
           text: Spesifiser
           type: TEXT
+          banner:
+            message: Unngå sensitive personopplysninger
+            type: WARN

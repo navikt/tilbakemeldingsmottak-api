@@ -2,16 +2,15 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
+import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertIkkeFerdigstilt;
 
 import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.oidc.api.Protected;
-import no.nav.security.oidc.context.OIDCRequestContextHolder;
-import no.nav.security.oidc.context.TokenContext;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
-import no.nav.tilbakemeldingsmottak.exceptions.OidcContextException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
@@ -51,7 +50,6 @@ public class ServiceklageRestController {
     private final HentDokumentService hentDokumentService;
     private final OpprettServiceklageValidator opprettServiceklageValidator;
     private final KlassifiserServiceklageValidator klassifiserServiceklageValidator;
-    private final OIDCRequestContextHolder oidcRequestContextHolder;
     private final OppgaveConsumer oppgaveConsumer;
 
 
@@ -72,32 +70,39 @@ public class ServiceklageRestController {
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "klassifiserServiceklage"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request,
                                                                                    @RequestParam String oppgaveId) {
-        String journalpostId = oppgaveConsumer.hentOppgave(oppgaveId).getJournalpostId();
-        klassifiserServiceklageValidator.validateRequest(request, hentSkjemaService.hentSkjema(journalpostId));
-        klassifiserServiceklageService.klassifiserServiceklage(request, journalpostId, oppgaveId);
+        HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
+        assertIkkeFerdigstilt(hentOppgaveResponseTo);
+
+        klassifiserServiceklageValidator.validateRequest(request, hentSkjemaService.hentSkjema(hentOppgaveResponseTo.getJournalpostId()));
+        klassifiserServiceklageService.klassifiserServiceklage(request, hentOppgaveResponseTo);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(KlassifiserServiceklageResponse.builder().message("Klassifisert serviceklage med journalpostId=" + journalpostId).build());
+                .body(KlassifiserServiceklageResponse.builder()
+                        .message("Klassifisert serviceklage med journalpostId=" + hentOppgaveResponseTo.getJournalpostId())
+                        .build());
     }
 
     @Transactional
-    @GetMapping(value = "/hentskjema/{journalpostId}")
+    @GetMapping(value = "/hentskjema/{oppgaveId}")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentSkjema"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<HentSkjemaResponse> hentSkjema(@PathVariable String journalpostId) {
-        HentSkjemaResponse response = hentSkjemaService.hentSkjema(journalpostId);
+    public ResponseEntity<HentSkjemaResponse> hentSkjema(@PathVariable String oppgaveId) {
+        HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
+        assertIkkeFerdigstilt(hentOppgaveResponseTo);
+
+        HentSkjemaResponse response = hentSkjemaService.hentSkjema(hentOppgaveResponseTo.getJournalpostId());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
     }
 
     @Transactional
-    @GetMapping(value = "/hentdokument/{journalpostId}")
+    @GetMapping(value = "/hentdokument/{oppgaveId}")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String journalpostId) {
-        String token = oidcRequestContextHolder.getOIDCValidationContext().getFirstValidToken()
-                .map(TokenContext::getIdToken)
-                .orElseThrow(() -> new OidcContextException("Finner ikke validert OIDC-token"));
-        HentDokumentResponse response = hentDokumentService.hentDokument(journalpostId, "Bearer " + token);
+    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId) {
+        HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
+        assertIkkeFerdigstilt(hentOppgaveResponseTo);
+
+        HentDokumentResponse response = hentDokumentService.hentDokument(hentOppgaveResponseTo.getJournalpostId());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);

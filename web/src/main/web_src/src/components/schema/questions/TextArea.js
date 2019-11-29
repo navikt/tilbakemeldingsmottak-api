@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import {default as NavTextArea} from "nav-frontend-skjema/lib/textarea";
 import Question from "./QuestionComponent"
 

@@ -15,4 +15,6 @@ public class Question {
     String emit;
     String next;
     List<Answer> answers;
+    Banner banner;
+    boolean optional;
 }

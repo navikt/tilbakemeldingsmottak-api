@@ -92,7 +92,7 @@ const normializeValues = questions =>
       ...(question.banner
         ? typeof question.banner === "string"
           ? { banner: { message: question.banner, type: "info" } }
-          : { banner: question.banner }
+          : { banner: { ...question.banner, type: question.banner.type.toLowerCase() } }
         : {}),
       ...(question.answers
         ? {

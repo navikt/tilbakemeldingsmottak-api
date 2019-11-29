@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.aktoer;
 
+import static no.nav.tilbakemeldingsmottak.config.cache.CacheConfig.AKTOER_CACHE;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
@@ -10,6 +11,7 @@ import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.util.RestSecurityHeadersUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +41,7 @@ public class AktoerConsumer {
 
 	@Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentAktoerIdForIdent"}, percentiles = {0.5, 0.95}, histogram = true)
 	@Retryable(include = AktoerTechnicalException.class, maxAttempts = 3, backoff = @Backoff(delay = 1000, multiplier = 2))
+	@Cacheable(AKTOER_CACHE)
 	public Map<String, IdentInfoForAktoer>  hentAktoerIdForIdent(String ident) {
 		try {
 			HttpHeaders headers = restSecurityHeadersUtils.createOidcHeaders();

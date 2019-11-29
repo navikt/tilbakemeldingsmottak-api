@@ -7,6 +7,8 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
+import no.nav.tilbakemeldingsmottak.exceptions.joark.FeilregistrerSakstilknytningFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.joark.FeilregistrerSakstilknytningTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.joark.OpprettJournalpostFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.joark.OpprettJournalpostTechnicalException;
 import no.nav.tilbakemeldingsmottak.integration.fasit.ServiceuserAlias;
@@ -28,7 +30,7 @@ import java.time.Duration;
 
 @Slf4j
 @Component
-public class OpprettJournalpostConsumer {
+public class JournalpostConsumer {
 
 	private final RestTemplate restTemplate;
 	private final String journalpostUrl;
@@ -36,9 +38,9 @@ public class OpprettJournalpostConsumer {
 
 	private static final String FORSOEK_FERDIGSTILL = "?forsoekFerdigstill=true";
 
-	public OpprettJournalpostConsumer(RestTemplateBuilder restTemplateBuilder,
-									  @Value("${Journalpost_v1_url}") String journalpostUrl,
-									  ServiceuserAlias serviceuserAlias, RestSecurityHeadersUtils restSecurityHeadersUtils) {
+	public JournalpostConsumer(RestTemplateBuilder restTemplateBuilder,
+							   @Value("${Journalpost_v1_url}") String journalpostUrl,
+							   ServiceuserAlias serviceuserAlias, RestSecurityHeadersUtils restSecurityHeadersUtils) {
 		this.journalpostUrl = journalpostUrl;
 		this.restSecurityHeadersUtils = restSecurityHeadersUtils;
 		this.restTemplate = restTemplateBuilder
@@ -56,7 +58,7 @@ public class OpprettJournalpostConsumer {
 
 			HttpHeaders headers = restSecurityHeadersUtils.createOidcHeaders();
 			headers.set("Nav-Callid", MDC.get(MDC_CALL_ID));
-			headers.set("Nav-Consumer-Id", MDC.get("srvtilbakemeldings"));
+			headers.set("Nav-Consumer-Id", "srvtilbakemeldings");
 
 			HttpEntity<OpprettJournalpostRequestTo> requestEntity = new HttpEntity<>(opprettJournalpostRequestTo, headers);
 
@@ -72,6 +74,31 @@ public class OpprettJournalpostConsumer {
 					.getStatusCode(), e.getMessage()), e);
 		} catch (HttpServerErrorException e) {
 			throw new OpprettJournalpostTechnicalException(String.format("opprettJournalpost feilet teknisk med statusKode=%s. Feilmelding=%s", e
+					.getStatusCode(), e.getMessage()), e);
+		}
+	}
+
+	@Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "feilregistrerSakstilknytning"}, percentiles = {0.5, 0.95}, histogram = true)
+	public void feilregistrerSakstilknytning(String journalpostId) {
+		if (log.isDebugEnabled()) {
+			log.debug("Feilregistrerer sakstilknytning");
+		}
+		try {
+			HttpHeaders headers = restSecurityHeadersUtils.createOidcHeaders();
+			headers.set("Nav-Callid", MDC.get(MDC_CALL_ID));
+			headers.set("Nav-Consumer-Id", "srvtilbakemeldings");
+
+			String feilregistrerSakstilknytningUrl = journalpostUrl + "/journalpost/" + journalpostId + "/feilregistrer/feilregistrerSakstilknytning";
+
+			restTemplate.patchForObject(feilregistrerSakstilknytningUrl, new HttpEntity<>(headers), String.class);
+			if (log.isDebugEnabled()) {
+				log.debug("Sakstilknytning feilregistrert for journalpost med journalpostId=" + journalpostId);
+			}
+		} catch (HttpClientErrorException e) {
+			throw new FeilregistrerSakstilknytningFunctionalException(String.format("feilregistrerSakstilknytning feilet funksjonelt med statusKode=%s. Feilmelding=%s", e
+					.getStatusCode(), e.getMessage()), e);
+		} catch (HttpServerErrorException e) {
+			throw new FeilregistrerSakstilknytningTechnicalException(String.format("feilregistrerSakstilknytning feilet teknisk med statusKode=%s. Feilmelding=%s", e
 					.getStatusCode(), e.getMessage()), e);
 		}
 	}

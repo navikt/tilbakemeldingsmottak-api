@@ -19,6 +19,7 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KLAGETYPER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KLASSIFISERING_JSON;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.OPPRETTET_DATO;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.RELATERT;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SERVICEKLAGE_ID;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SKJEMA_VERSJON;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVARMETODE;
@@ -41,6 +42,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -91,7 +93,7 @@ public class Serviceklage {
     private String behandlesSomServiceklageUtdypning;
 
     @Column(name = FREMMET_DATO)
-    private LocalDateTime fremmetDato;
+    private LocalDate fremmetDato;
 
     @Column(name = INNSENDER)
     @Size(max = 100)
@@ -124,6 +126,10 @@ public class Serviceklage {
     @Column(name = YTELSE)
     @Size(max = 100)
     private String ytelse;
+
+    @Column(name = RELATERT)
+    @Size(max = 200)
+    private String relatert;
 
     @Column(name = TEMA)
     @Size(max = 100)

@@ -1,7 +1,7 @@
 import React from "react";
 import Question from "./QuestionComponent"
 
-import { CheckboksPanelGruppe } from "nav-frontend-skjema";
+import {CheckboksPanelGruppe} from "nav-frontend-skjema";
 
 export default class Checkbox extends Question {
   constructor(props) {

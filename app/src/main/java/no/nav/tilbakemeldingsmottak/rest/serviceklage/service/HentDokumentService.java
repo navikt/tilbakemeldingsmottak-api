@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
 import static org.apache.cxf.common.util.CollectionUtils.isEmpty;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.saf.SafJournalpostQueryService;
 import no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument.HentDokumentConsumer;
@@ -10,31 +11,25 @@ import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat;
 import no.nav.tilbakemeldingsmottak.exceptions.GyldigDokumentIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
+import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class HentDokumentService {
 
-    private SafJournalpostQueryService safJournalpostQueryService;
-    private HentDokumentConsumer hentDokumentConsumer;
+    private final SafJournalpostQueryService safJournalpostQueryService;
+    private final HentDokumentConsumer hentDokumentConsumer;
+    private final OidcUtils oidcUtils;
 
-
-    @Inject
-    public HentDokumentService(SafJournalpostQueryService safJournalpostQueryService,
-                               HentDokumentConsumer hentDokumentConsumer) {
-        this.safJournalpostQueryService = safJournalpostQueryService;
-        this.hentDokumentConsumer = hentDokumentConsumer;
-    }
-
-    public HentDokumentResponse hentDokument(String journalpostId, String authorizationHeader) {
+    public HentDokumentResponse hentDokument(String journalpostId) {
+        String authorizationHeader = "Bearer " + oidcUtils.getFirstValidToken();
         Journalpost journalpost = safJournalpostQueryService.hentJournalpost(journalpostId, authorizationHeader);
         Variantformat variantformat;
         Journalpost.DokumentInfo dokumentInfo;
         if (isEmpty(journalpost.getDokumenter())) {
-            return null;
+            throw new GyldigDokumentIkkeFunnetException(String.format("Finner ingen dokumenter knyttet til journalpost med journalpostId=%s", journalpostId));
         } else {
             dokumentInfo = journalpost.getDokumenter().get(0);
             if (dokumentInfo.getDokumentvarianter().stream().anyMatch(d -> d.getVariantformat().equals(Variantformat.SLADDET))) {

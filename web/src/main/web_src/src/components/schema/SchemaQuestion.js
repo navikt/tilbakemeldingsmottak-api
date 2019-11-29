@@ -1,13 +1,14 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, {Component} from "react";
+import {connect} from "react-redux";
 import AlertStripe from "nav-frontend-alertstriper";
 
-import { UPDATE_ANSWER } from "../../store/actions";
+import {UPDATE_ANSWER} from "../../store/actions";
 import DateInput from "./questions/DateInput";
 import Input from "./questions/Input";
 import RadioButtons from "./questions/RadioButtons";
 import Select from "./questions/Select";
 import TextArea from "./questions/TextArea";
+import DataList from "./questions/DataList"
 import Checkbox from "./questions/Checkbox";
 
 class SchemaQuestion extends Component {
@@ -19,7 +20,8 @@ class SchemaQuestion extends Component {
     input: Input,
     radio: RadioButtons,
     select: Select,
-    text: TextArea
+    text: TextArea,
+    datalist: DataList
   };
 
   static alertmap = {

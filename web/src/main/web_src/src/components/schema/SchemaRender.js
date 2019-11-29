@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, {Component} from "react";
+import {connect} from "react-redux";
 import SchemaQuestion from "./SchemaQuestion";
 
 class Render extends Component {
@@ -13,23 +13,6 @@ class Render extends Component {
 
   componentDidUpdate() {
     this.el.scrollIntoView({ behavior: "smooth" });
-  }
-
-  collectEmitInfo() {
-    const { answers } = this.props;
-    this.props.onChange({
-      progress: {
-        index: answers.length >= 1 ? answers[answers.length - 1].next : 0,
-        numberOfQuestions: this.props.questions.length - 1
-      },
-      answers: answers.reduce(
-        (acc, answer) => ({
-          ...acc,
-          [answer.id]: answer.answer
-        }),
-        {}
-      )
-    });
   }
 
   render() {
