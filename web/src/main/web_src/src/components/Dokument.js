@@ -35,8 +35,8 @@ export default class Dokument extends Component {
             <Document file={pdf} onLoadSuccess={this.onDocumentLoadSuccess}>
               <Page pageNumber={pageNumber} />
             </Document>
-            numPages > 1 &&
-              {<div>
+              {numPages > 1 &&
+              <div>
                 <p>
                   Side {pageNumber || (numPages ? 1 : "--")} av {numPages || "--"}
                 </p>
