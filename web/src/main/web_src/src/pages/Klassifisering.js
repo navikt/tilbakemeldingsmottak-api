@@ -58,6 +58,7 @@ class Klassifisering extends Component {
       <div className="Row">
         {pdf && !error &&
          <>
+             <h1>Skjema for klassifisering av serviceklager</h1>
           <div className="Klassifisering">
             <SchemaRender />
             {status.progress.index === "none" && (
