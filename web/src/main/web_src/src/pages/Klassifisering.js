@@ -47,9 +47,9 @@ class Klassifisering extends Component {
             [key]: answer
         }), {})
     };
-    await ServiceklageApi.klassifiser(this.oppgaveId, answers).catch(err => this.setState({...this.state, error: err}))
-        .then(window.location = "/serviceklage/takk")
-        .catch(err => this.setState({...this.state, error: err}));
+    await ServiceklageApi.klassifiser(this.oppgaveId, answers)
+        .then(() => window.location = "/serviceklage/takk")
+        .catch(err => this.setState({error: err}));
   }
 
   render() {
