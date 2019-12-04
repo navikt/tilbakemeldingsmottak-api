@@ -62,7 +62,9 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
                     validateDate(question, answered);
                     break;
                 case CHECKBOX:
-                    Arrays.stream(answered.split(",")).forEach(a -> validateMultichoice(question, a));
+                    if (answered != null) {
+                        Arrays.stream(answered.split(",")).forEach(a -> validateMultichoice(question, a));
+                    }
                     break;
             }
             if (isFinalQuestion(question, answered)) {
