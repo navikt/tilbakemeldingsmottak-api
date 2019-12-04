@@ -79,6 +79,10 @@ public final class PdfService {
         if (request.getKlagetyper().contains(Klagetype.LOKALT_NAV_KONTOR)) {
             document.add(createParagraph("Gjelder økonomisk sosialhjelp/sosiale tjenester", request.getGjelderSosialhjelp().text));
         }
+        if (request.getKlagetyper().contains(Klagetype.ANNET) && !isBlank(request.getKlagetypeUtdypning())) {
+            document.add(createParagraph("Klagetype spesifisert i fritekst", request.getKlagetypeUtdypning()));
+
+        }
         document.add(createParagraph("Klagetekst", request.getKlagetekst()));
         if (request.getOenskerAaKontaktes() != null) {
             document.add(createParagraph("Ønsker å kontaktes", request.getOenskerAaKontaktes() ? "Ja" : "Nei"));

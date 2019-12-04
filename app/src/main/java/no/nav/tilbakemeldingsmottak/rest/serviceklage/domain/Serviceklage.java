@@ -17,6 +17,7 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KLAGEN_GJELDER_ID;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KLAGETEKST;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KLAGETYPER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KLAGETYPE_UTDYPNING;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KLASSIFISERING_JSON;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.OPPRETTET_DATO;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.RELATERT;
@@ -75,6 +76,10 @@ public class Serviceklage {
     @Column(name = KLAGETYPER)
     @Size(max = 200)
     private String klagetyper;
+
+    @Column(name = KLAGETYPE_UTDYPNING)
+    @Size(max = 1000)
+    private String klagetypeUtdypning;
 
     @Column(name = GJELDER_SOSIALHJELP)
     @Size(max = 100)
