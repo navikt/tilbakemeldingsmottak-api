@@ -38,7 +38,7 @@ class Klassifisering extends Component {
     }
   }
 
-  submitAnswers() {
+  async submitAnswers() {
     const { status, defaultAnswers } = this.props;
     const answers = {
         ...status.answers,
@@ -47,8 +47,9 @@ class Klassifisering extends Component {
             [key]: answer
         }), {})
     };
-    ServiceklageApi.klassifiser(this.oppgaveId, answers);
-    window.location = "/serviceklage/takk";
+    await ServiceklageApi.klassifiser(this.oppgaveId, answers)
+        .then(() => window.location = "/serviceklage/takk")
+        .catch(err => this.setState({error: err}));
   }
 
   render() {
@@ -59,6 +60,7 @@ class Klassifisering extends Component {
         {pdf && !error &&
          <>
           <div className="Klassifisering">
+              <h1>Skjema for klassifisering av serviceklager</h1>
             <SchemaRender />
             {status.progress.index === "none" && (
               <div className="SubmitButton">

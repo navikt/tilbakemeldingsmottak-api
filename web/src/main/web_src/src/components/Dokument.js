@@ -35,25 +35,26 @@ export default class Dokument extends Component {
             <Document file={pdf} onLoadSuccess={this.onDocumentLoadSuccess}>
               <Page pageNumber={pageNumber} />
             </Document>
-            <div>
-              <p>
-                Page {pageNumber || (numPages ? 1 : "--")} of {numPages || "--"}
-              </p>
-              <button
-                type="button"
-                disabled={pageNumber <= 1}
-                onClick={this.previousPage}
-              >
-                Previous
-              </button>
-              <button
-                type="button"
-                disabled={pageNumber >= numPages}
-                onClick={this.nextPage}
-              >
-                Next
-              </button>
-            </div>
+              {numPages > 1 &&
+              <div>
+                <p>
+                  Side {pageNumber || (numPages ? 1 : "--")} av {numPages || "--"}
+                </p>
+                <button
+                  type="button"
+                  disabled={pageNumber <= 1}
+                  onClick={this.previousPage}
+                >
+                  Forrige
+                </button>
+                <button
+                  type="button"
+                  disabled={pageNumber >= numPages}
+                  onClick={this.nextPage}
+                >
+                  Neste
+                </button>
+              </div>}
           </>
         )}
       </>

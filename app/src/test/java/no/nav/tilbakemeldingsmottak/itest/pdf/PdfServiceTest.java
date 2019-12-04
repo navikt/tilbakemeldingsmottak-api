@@ -33,6 +33,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,6 +103,18 @@ class PdfServiceTest {
     }
 
     @Test
+    void happyPathSpesifisertKlagetype() throws DocumentException, IOException {
+        opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
+        opprettServiceklageRequest.setKlagetyper(Collections.singletonList(Klagetype.ANNET));
+        opprettServiceklageRequest.setKlagetypeUtdypning("Spesifisert");
+        byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
+        String content = getStringFromByteArrayPdf(pdf);
+
+        assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
+        assertTrue(content.contains("OBS! Klagen er sendt inn uinnlogget"));
+    }
+
+    @Test
     void happyPathInnlogget() throws DocumentException, IOException {
         when(oidcUtils.getSubjectForIssuer(anyString())).thenReturn(Optional.of(PERSONNUMMER));
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
@@ -119,7 +132,7 @@ class PdfServiceTest {
         assertTrue(content.contains(LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
         assertTrue(content.contains(request.getOenskerAaKontaktes() ?
                 "Ønsker å kontaktes: Ja" : "Ønsker å kontaktes: Nei"));
-
+        assertContainsIfNotNull(content, request.getKlagetypeUtdypning());
         assertContainsIfNotNull(content, request.getEnhetsnummerPaaklaget());
         if (request.getGjelderSosialhjelp() != null) {
             assertTrue(content.contains("Gjelder økonomisk sosialhjelp/sosiale tjenester: " + request.getGjelderSosialhjelp().text));
