@@ -12,8 +12,7 @@ class Landingsside extends Component {
     }
 
     componentDidMount() {
-
-        setTimeout(window.location = this.redirectUrl, 5000)
+        setTimeout(() => window.location = this.redirectUrl, 5000)
     }
 
     render() {
