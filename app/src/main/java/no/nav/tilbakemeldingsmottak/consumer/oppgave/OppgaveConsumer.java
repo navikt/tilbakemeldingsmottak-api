@@ -9,7 +9,11 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestT
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
-import no.nav.tilbakemeldingsmottak.exceptions.joark.OpprettJournalpostFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.oppgave.EndreOppgaveFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.oppgave.EndreOppgaveTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.oppgave.HentOppgaveFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.oppgave.HentOppgaveTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveTechnicalException;
 import no.nav.tilbakemeldingsmottak.integration.fasit.ServiceuserAlias;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
@@ -64,7 +68,7 @@ public class OppgaveConsumer {
             }
             return response.getBody();
         } catch (HttpClientErrorException e) {
-            throw new OpprettJournalpostFunctionalException(String.format("opprettOppgave feilet funksjonelt med statusKode=%s. Feilmelding=%s", e
+            throw new OpprettOppgaveFunctionalException(String.format("opprettOppgave feilet funksjonelt med statusKode=%s. Feilmelding=%s", e
                     .getStatusCode(), e.getMessage()), e);
         } catch (HttpServerErrorException e) {
             throw new OpprettOppgaveTechnicalException(String.format("opprettOppgave feilet teknisk med statusKode=%s. Feilmelding=%s", e
@@ -89,10 +93,10 @@ public class OppgaveConsumer {
             }
             return response.getBody();
         } catch (HttpClientErrorException e) {
-            throw new OpprettJournalpostFunctionalException(String.format("endreOppgave feilet funksjonelt med statusKode=%s. Feilmelding=%s", e
+            throw new EndreOppgaveFunctionalException(String.format("endreOppgave feilet funksjonelt med statusKode=%s. Feilmelding=%s", e
                     .getStatusCode(), e.getMessage()), e);
         } catch (HttpServerErrorException e) {
-            throw new OpprettOppgaveTechnicalException(String.format("endreOppgave feilet teknisk med statusKode=%s. Feilmelding=%s", e
+            throw new EndreOppgaveTechnicalException(String.format("endreOppgave feilet teknisk med statusKode=%s. Feilmelding=%s", e
                     .getStatusCode(), e.getMessage()), e);
         }
     }
@@ -114,10 +118,10 @@ public class OppgaveConsumer {
             }
             return response.getBody();
         } catch (HttpClientErrorException e) {
-            throw new OpprettJournalpostFunctionalException(String.format("hentOppgave feilet funksjonelt med statusKode=%s. Feilmelding=%s", e
+            throw new HentOppgaveFunctionalException(String.format("hentOppgave feilet funksjonelt med statusKode=%s. Feilmelding=%s", e
                     .getStatusCode(), e.getMessage()), e);
         } catch (HttpServerErrorException e) {
-            throw new OpprettOppgaveTechnicalException(String.format("hentOppgave feilet teknisk med statusKode=%s. Feilmelding=%s", e
+            throw new HentOppgaveTechnicalException(String.format("hentOppgave feilet teknisk med statusKode=%s. Feilmelding=%s", e
                     .getStatusCode(), e.getMessage()), e);
         }
     }
