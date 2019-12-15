@@ -29,6 +29,7 @@ public class EndreOppgaveRequestToMapper {
     public EndreOppgaveRequestTo mapEndreTemaRequest(HentOppgaveResponseTo hentOppgaveResponseTo, String tema) {
         return createBaseRequest(hentOppgaveResponseTo)
                 .tema(tema)
+                .status(hentOppgaveResponseTo.getStatus())
                 .build();
     }
 }

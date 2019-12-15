@@ -79,7 +79,7 @@ public class OppgaveConsumer {
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "endreOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public String endreOppgave(EndreOppgaveRequestTo endreOppgaveRequestTo) {
         if (log.isDebugEnabled()) {
-            log.debug("Lukker oppgave");
+            log.debug("Endrer oppgave");
         }
         try {
             HttpHeaders headers = restSecurityHeadersUtils.createOidcHeaders();
@@ -87,9 +87,9 @@ public class OppgaveConsumer {
 
             HttpEntity<EndreOppgaveRequestTo> requestEntity = new HttpEntity<>(endreOppgaveRequestTo, headers);
 
-            ResponseEntity<String> response = restTemplate.exchange(oppgaveUrl+"/"+endreOppgaveRequestTo.getId(), HttpMethod.PUT, requestEntity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(oppgaveUrl+"/"+endreOppgaveRequestTo.getId(), HttpMethod.PATCH, requestEntity, String.class);
             if (log.isDebugEnabled()) {
-                log.debug("Oppgave lukket");
+                log.debug("Oppgave endret");
             }
             return response.getBody();
         } catch (HttpClientErrorException e) {
