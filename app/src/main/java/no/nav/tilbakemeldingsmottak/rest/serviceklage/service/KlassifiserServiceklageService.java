@@ -18,7 +18,6 @@ import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +33,6 @@ public class KlassifiserServiceklageService {
     private final OppgaveConsumer oppgaveConsumer;
     private final JournalpostConsumer journalpostConsumer;
     private final EndreOppgaveRequestToMapper endreOppgaveRequestToMapper;
-    private final ServiceklageMailHelper mailHelper;
-    private final HentDokumentService hentDokumentService;
 
     @Value("${email_serviceklage_address}")
     private String toAddress;
@@ -45,21 +42,17 @@ public class KlassifiserServiceklageService {
     private static final String KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser";
     private static final String FORVALTNINGSKLAGE = "Nei - en forvaltningsklage";
 
-    public static final String SUBJECT_KOMMUNAL_KLAGE_KLASSIFISER = "Serviceklage markert som kommunal klage av saksbehandler";
-    public static final String TEXT_KOMMUNAL_KLAGE_KLASSIFISER = "En kommunal klage har blitt feilaktig innsendt som serviceklage. Saksrelasjonen har blitt feilregistrert og oppgaven lukket. Klagen ligger vedlagt.";
-    public static final String SUBJECT_FORVALTNINGSKLAGE_KLASSIFISER = "Serviceklage markert som forvaltningsklage av saksbehandler";
-    public static final String TEXT_FORVALTNINGSKLAGE_KLASSIFISER= "En forvaltningsklage har blitt feilaktig innsendt som serviceklage. Saksrelasjonen har blitt feilregistrert og oppgaven lukket. Klagen ligger vedlagt.";
-
     private static final String JA = "Ja";
     private static final String ANNET = "Annet";
+    private static final String TEMA_FORVALTNINGSKLAGE = "KLA";
 
     public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo)  {
         if (KOMMUNAL_KLAGE.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen har blitt markert som en kommunal klage. Journalposten feilregistreres og klagen videresendes til {}.", toAddress);
-            handterFeilsendtKlage(hentOppgaveResponseTo, SUBJECT_KOMMUNAL_KLAGE_KLASSIFISER, TEXT_KOMMUNAL_KLAGE_KLASSIFISER);
+            log.info("Klagen har blitt markert som en kommunal klage. Journalposten feilregistreres.");
+            handterKommunalKlage(hentOppgaveResponseTo);
         } else if (FORVALTNINGSKLAGE.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen har blitt markert som en forvaltningsklage. Journalposten feilregistreres og klagen videresendes til {}.", toAddress);
-            handterFeilsendtKlage(hentOppgaveResponseTo, SUBJECT_FORVALTNINGSKLAGE_KLASSIFISER, TEXT_FORVALTNINGSKLAGE_KLASSIFISER);
+            log.info("Klagen har blitt markert som en forvaltningsklage. Tema på oppgaven endres til \"KLA\".");
+            handterForvaltningsklage(hentOppgaveResponseTo);
         }
 
         Serviceklage serviceklage = getOrCreateServiceklage(hentOppgaveResponseTo.getJournalpostId());
@@ -67,19 +60,23 @@ public class KlassifiserServiceklageService {
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med serviceklageId={} er klassifisert", serviceklage.getServiceklageId());
 
-        ferdigstillOppgave(hentOppgaveResponseTo);
-        log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
+        if (!FORVALTNINGSKLAGE.equals(request.getBehandlesSomServiceklage())) {
+            ferdigstillOppgave(hentOppgaveResponseTo);
+            log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
+        }
     }
 
-    private void handterFeilsendtKlage(HentOppgaveResponseTo hentOppgaveResponseTo, String subject, String text) {
+    private void handterKommunalKlage(HentOppgaveResponseTo hentOppgaveResponseTo) {
         String journalpostId = hentOppgaveResponseTo.getJournalpostId();
-        byte[] fysiskDokument = hentDokumentService.hentDokument(journalpostId).getDokument();
-        mailHelper.sendEmail(fromAddress, toAddress, subject, text, fysiskDokument);
         try {
             journalpostConsumer.feilregistrerSakstilknytning(journalpostId);
         } catch (FeilregistrerSakstilknytningFunctionalException e) {
             log.info("Forsøkte å feilregistrere sakstilknytning for journalpost med id={}, men sakstilknytningen er allerede feilregistrert.", journalpostId);
         }
+    }
+
+    private void handterForvaltningsklage(HentOppgaveResponseTo hentOppgaveResponseTo) {
+        oppgaveConsumer.endreOppgave(endreOppgaveRequestToMapper.mapEndreTemaRequest(hentOppgaveResponseTo, TEMA_FORVALTNINGSKLAGE));
     }
 
     private Serviceklage getOrCreateServiceklage(String journalpostId) {
@@ -122,7 +119,7 @@ public class KlassifiserServiceklageService {
     }
 
     private void ferdigstillOppgave(HentOppgaveResponseTo hentOppgaveResponseTo) {
-        EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.map(hentOppgaveResponseTo);
+        EndreOppgaveRequestTo endreOppgaveRequestTo = endreOppgaveRequestToMapper.mapFerdigstillRequest(hentOppgaveResponseTo);
         oppgaveConsumer.endreOppgave(endreOppgaveRequestTo);
     }
 

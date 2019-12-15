@@ -30,8 +30,6 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserServiceklageService.SUBJECT_FORVALTNINGSKLAGE_KLASSIFISER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserServiceklageService.SUBJECT_KOMMUNAL_KLAGE_KLASSIFISER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService.SUBJECT_JOURNALPOST_FEILET;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService.SUBJECT_OPPGAVE_FEILET;
 import static org.junit.Assert.assertNull;
@@ -320,11 +318,6 @@ class ServiceklageIT extends AbstractIT {
 
         assertEquals(serviceklage.getBehandlesSomServiceklage(), KOMMUNAL_KLAGE);
         assertEquals(serviceklage.getKlassifiseringJson(), objectMapper.writeValueAsString(request));
-
-        MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertEquals(message.getSubject(), SUBJECT_KOMMUNAL_KLAGE_KLASSIFISER);
-        assertEquals(message.getSender().toString(), "srvtilbakemeldings@preprod.local");
-        assertEquals(message.getRecipients(Message.RecipientType.TO)[0].toString(), "nav.serviceklager@preprod.local");
     }
 
     @Test
@@ -351,11 +344,6 @@ class ServiceklageIT extends AbstractIT {
 
         assertEquals(serviceklage.getBehandlesSomServiceklage(), FORVALTNINGSKLAGE);
         assertEquals(serviceklage.getKlassifiseringJson(), objectMapper.writeValueAsString(request));
-
-        MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertEquals(message.getSubject(), SUBJECT_FORVALTNINGSKLAGE_KLASSIFISER);
-        assertEquals(message.getSender().toString(), "srvtilbakemeldings@preprod.local");
-        assertEquals(message.getRecipients(Message.RecipientType.TO)[0].toString(), "nav.serviceklager@preprod.local");
     }
 
     @Test
