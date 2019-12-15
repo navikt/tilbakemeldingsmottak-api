@@ -13,6 +13,7 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestT
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.RequestParsingException;
+import no.nav.tilbakemeldingsmottak.exceptions.joark.FeilregistrerSakstilknytningFunctionalException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
@@ -74,7 +75,11 @@ public class KlassifiserServiceklageService {
         String journalpostId = hentOppgaveResponseTo.getJournalpostId();
         byte[] fysiskDokument = hentDokumentService.hentDokument(journalpostId).getDokument();
         mailHelper.sendEmail(fromAddress, toAddress, subject, text, fysiskDokument);
-        journalpostConsumer.feilregistrerSakstilknytning(journalpostId);
+        try {
+            journalpostConsumer.feilregistrerSakstilknytning(journalpostId);
+        } catch (FeilregistrerSakstilknytningFunctionalException e) {
+            log.info("Forsøkte å feilregistrere sakstilknytning for journalpost med id={}, men sakstilknytningen er allerede feilregistrert.", journalpostId);
+        }
     }
 
     private Serviceklage getOrCreateServiceklage(String journalpostId) {
