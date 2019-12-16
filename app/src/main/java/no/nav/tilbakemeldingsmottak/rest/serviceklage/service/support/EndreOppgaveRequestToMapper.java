@@ -8,28 +8,17 @@ import org.springframework.stereotype.Component;
 public class EndreOppgaveRequestToMapper {
     private static final String STATUS_FERDIGSTILT = "FERDIGSTILT";
 
-    public EndreOppgaveRequestTo.EndreOppgaveRequestToBuilder createBaseRequest(HentOppgaveResponseTo hentOppgaveResponseTo) {
+    public EndreOppgaveRequestTo map(HentOppgaveResponseTo hentOppgaveResponseTo) {
         return EndreOppgaveRequestTo.builder()
                 .aktivDato(hentOppgaveResponseTo.getAktivDato())
                 .id(hentOppgaveResponseTo.getId())
                 .journalpostId(hentOppgaveResponseTo.getJournalpostId())
                 .oppgavetype(hentOppgaveResponseTo.getOppgavetype())
                 .prioritet(hentOppgaveResponseTo.getPrioritet())
-                .tildeltEnhetsnr(hentOppgaveResponseTo.getTildeltEnhetsnr())
-                .versjon(hentOppgaveResponseTo.getVersjon());
-    }
-
-    public EndreOppgaveRequestTo mapFerdigstillRequest(HentOppgaveResponseTo hentOppgaveResponseTo) {
-        return createBaseRequest(hentOppgaveResponseTo)
                 .tema(hentOppgaveResponseTo.getTema())
+                .tildeltEnhetsnr(hentOppgaveResponseTo.getTildeltEnhetsnr())
+                .versjon(hentOppgaveResponseTo.getVersjon())
                 .status(STATUS_FERDIGSTILT)
-                .build();
-    }
-
-    public EndreOppgaveRequestTo mapEndreTemaRequest(HentOppgaveResponseTo hentOppgaveResponseTo, String tema) {
-        return createBaseRequest(hentOppgaveResponseTo)
-                .tema(tema)
-                .status(hentOppgaveResponseTo.getStatus())
                 .build();
     }
 }
