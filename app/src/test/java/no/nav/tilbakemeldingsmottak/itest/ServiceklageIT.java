@@ -26,15 +26,12 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServicekla
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvBedrift;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvPerson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatpersonLokaltKontor;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserServiceklageService.SUBJECT_FORVALTNINGSKLAGE_KLASSIFISER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserServiceklageService.SUBJECT_KOMMUNAL_KLAGE_KLASSIFISER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService.SUBJECT_JOURNALPOST_FEILET;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService.SUBJECT_KOMMUNAL_KLAGE;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService.SUBJECT_OPPGAVE_FEILET;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -209,23 +206,6 @@ class ServiceklageIT extends AbstractIT {
 
     @Test
     @SneakyThrows
-    void happyPathKommunalKlage() {
-        OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatpersonLokaltKontor();
-        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-        ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        assertEquals(serviceklageRepository.count(), 0);
-
-        MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertEquals(message.getSubject(), SUBJECT_KOMMUNAL_KLAGE);
-        assertEquals(message.getSender().toString(), "srvtilbakemeldings@preprod.local");
-        assertEquals(message.getRecipients(Message.RecipientType.TO)[0].toString(), "nav.serviceklager@preprod.local");
-    }
-
-    @Test
-    @SneakyThrows
     void happyPathOpprettJournalpostFeil() {
         WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/OPPRETT_JOURNALPOST/journalpost/")).willReturn(aResponse().withStatus(500)));
 
@@ -339,11 +319,6 @@ class ServiceklageIT extends AbstractIT {
 
         assertEquals(serviceklage.getBehandlesSomServiceklage(), KOMMUNAL_KLAGE);
         assertEquals(serviceklage.getKlassifiseringJson(), objectMapper.writeValueAsString(request));
-
-        MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertEquals(message.getSubject(), SUBJECT_KOMMUNAL_KLAGE_KLASSIFISER);
-        assertEquals(message.getSender().toString(), "srvtilbakemeldings@preprod.local");
-        assertEquals(message.getRecipients(Message.RecipientType.TO)[0].toString(), "nav.serviceklager@preprod.local");
     }
 
     @Test

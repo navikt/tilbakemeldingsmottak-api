@@ -17,7 +17,7 @@ questions:
   - answer: Nei, innsender har ikke fullmakt på vegne av bruker
     next: none
   - answer: Nei, serviceklagen gjelder kommunale tjenester eller ytelser
-    emit: Journalposten feilregistreres og klagen videresendes på mail til nav.serviceklager@nav.no
+    emit: Klagen må lagres og/eller skrives ut og håndteres lokalt.
     next: none
   - answer: Nei - en forvaltningsklage
     emit: Journalposten feilregistreres og klagen videresendes på mail til nav.serviceklager@nav.no

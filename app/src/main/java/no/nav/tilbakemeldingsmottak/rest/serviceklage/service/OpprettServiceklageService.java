@@ -16,8 +16,6 @@ import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveFunctionalE
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveTechnicalException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.GjelderSosialhjelpType;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
@@ -43,8 +41,6 @@ public class OpprettServiceklageService {
     private final PdfService pdfService;
     private final ServiceklageMailHelper mailHelper;
 
-    public static final String SUBJECT_KOMMUNAL_KLAGE = "Kommunal klage mottatt via serviceklageskjema på nav.no";
-    public static final String TEXT_KOMMUNAL_KLAGE = "En kommunal klage har blitt sendt inn via serviceklageskjema på nav.no. Denne har ikke blitt journalført eller lagret i serviceklagedatabasen. Feilsendt klage ligger vedlagt.";
     public static final String SUBJECT_JOURNALPOST_FEILET = "Automatisk journalføring av serviceklage feilet";
     public static final String TEXT_JOURNALPOST_FEILET= "Manuell journalføring og opprettelse av oppgave kreves. Klagen ligger vedlagt.";
     public static final String SUBJECT_OPPGAVE_FEILET = "Automatisk opprettelse av oppgave feilet";
@@ -58,14 +54,6 @@ public class OpprettServiceklageService {
     public OpprettServiceklageResponse opprettServiceklage(OpprettServiceklageRequest request) throws DocumentException {
 
         byte[] fysiskDokument = pdfService.opprettPdf(request);
-
-        if (isKommunalKlage(request)) {
-            mailHelper.sendEmail(fromAddress, toAddress, SUBJECT_KOMMUNAL_KLAGE, TEXT_KOMMUNAL_KLAGE, fysiskDokument);
-            log.info("Klagen er en kommunal klage, videresendt på mail til " + toAddress);
-            return OpprettServiceklageResponse.builder()
-                    .message("Klagen er en kommunal klage, videresendt på mail til " + toAddress)
-                    .build();
-        }
 
         OpprettJournalpostResponseTo opprettJournalpostResponseTo = forsoekOpprettJournalpost(request, fysiskDokument);
         log.info("Journalpost med journalpostId={} opprettet", opprettJournalpostResponseTo.getJournalpostId());
@@ -84,11 +72,6 @@ public class OpprettServiceklageService {
                 .journalpostId(serviceklage.getJournalpostId())
                 .oppgaveId(opprettOppgaveResponseTo.getId())
                 .build();
-    }
-
-    private boolean isKommunalKlage(OpprettServiceklageRequest request) {
-        return request.getKlagetyper().contains(Klagetype.LOKALT_NAV_KONTOR) &&
-                GjelderSosialhjelpType.JA.equals(request.getGjelderSosialhjelp());
     }
 
     private OpprettJournalpostResponseTo forsoekOpprettJournalpost(OpprettServiceklageRequest request, byte[] fysiskDokument) {
