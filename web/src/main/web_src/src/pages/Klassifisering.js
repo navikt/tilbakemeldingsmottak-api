@@ -65,7 +65,7 @@ class Klassifisering extends Component {
             {status.progress.index === "none" && (
               <div className="SubmitButton">
                 <Hovedknapp onClick={() => this.submitAnswers()}>
-                  Lagre serviceklage
+                  Lagre serviceklage og lukk oppgave
                 </Hovedknapp>
               </div>
             )}
