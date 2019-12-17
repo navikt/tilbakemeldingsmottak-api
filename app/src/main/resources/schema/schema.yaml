@@ -20,7 +20,7 @@ questions:
     emit: Klagen må lagres og/eller skrives ut og håndteres lokalt.
     next: none
   - answer: Nei - en forvaltningsklage
-    emit: Journalposten feilregistreres og klagen videresendes på mail til nav.serviceklager@nav.no
+    emit: Dette valget innebærer at oppgaven ikke lukkes. Du må endre oppgavens tema og gjelder til en forvaltningsklage. Vær obs på krav til signatur på forvaltningsklager. Det fremgår av serviceklagen hvorvidt bruker var autentisert/pålogget når klagen ble sendt inn.
     next: none
   - answer: Nei - en beskjed til NAV
     next: none
