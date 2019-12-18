@@ -90,7 +90,7 @@ public class HentSkjemaService {
 
     private Map<String, String> mapDefaultAnswers(Serviceklage serviceklage) {
         Map<String, String> defaultAnswers = new HashMap<>();
-        if (serviceklage.getOpprettetDato() != null) {
+        if (serviceklage.getFremmetDato() != null) {
             defaultAnswers.put(FREMMET_DATO, serviceklage.getFremmetDato().toString());
         }
         if (serviceklage.getInnsender() != null) {
