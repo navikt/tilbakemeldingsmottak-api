@@ -6,33 +6,77 @@ questions:
   type: RADIO
   answers:
   - answer: Ja
+    button:
+      info: Trykk fullfør for å ferdigstille oppgaven
+      text: Fullfør
   - answer: Ja, men inneholder også andre elementer
     questions:
-    - id: BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING
-      text: Spesifiser
-      type: TEXT
-      banner:
-        message: Unngå sensitive personopplysninger
-        type: WARN
+    - id: FULGT_BRUKERVEILEDNING_GOSYS
+      text: Har du knyttet dokumentet til andre aktuelle tema og sørget for at henvendelsen behandles? Jf. brukerveiledningen for Gosys
+      type: RADIO
+      answers:
+      - answer: Ja
+        button:
+          info: Trykk fullfør for å ferdigstille oppgaven
+          text: Fullfør
+        next: none
+      - answer: Nei
+        button:
+          text: Lukk og gå tilbake til Gosys
+        next: none
   - answer: Nei, innsender har ikke fullmakt på vegne av bruker
+    button:
+      info: Trykk fullfør for å ferdigstille oppgaven
+      text: Fullfør
     next: none
   - answer: Nei, serviceklagen gjelder kommunale tjenester eller ytelser
-    emit: Klagen må lagres og/eller skrives ut og håndteres lokalt.
+    questions:
+    - id: KOMMUNAL_BEHANDLING
+      text: Har du sørget for journalføring og behandling i kommunalt arkiv/fagsystem?
+      type: RADIO
+      answers:
+      - answer: Ja
+        button:
+          info: Trykk fullfør for å feilregistrere dokumentet og ferdigstille oppgaven
+          text: Fullfør
+      - answer: Nei
+        button:
+          text: Lukk og gå tilbake til Gosys
+        next: none
     next: none
   - answer: Nei - en forvaltningsklage
     emit: Dette valget innebærer at oppgaven ikke lukkes. Du må endre oppgavens tema og gjelder til en forvaltningsklage. Vær obs på krav til signatur på forvaltningsklager. Det fremgår av serviceklagen hvorvidt bruker var autentisert/pålogget når klagen ble sendt inn.
     next: none
-  - answer: Nei - en beskjed til NAV
-    next: none
-  - answer: Nei - annet
+  - answer: Nei, en beskjed til NAV
     questions:
-    - id: BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING
-      text: Spesifiser
-      type: TEXT
-      next: none
-      banner:
-        message: Unngå sensitive personopplysninger
-        type: WARN
+    - id: FULGT_BRUKERVEILEDNING_GOSYS
+      text: Har du knyttet dokumentet til andre aktuelle tema og sørget for at henvendelsen behandles? Jf. brukerveiledningen for Gosys
+      type: RADIO
+      answers:
+      - answer: Ja
+        button:
+          info: Trykk fullfør for å ferdigstille oppgaven
+          text: Fullfør
+        next: none
+      - answer: Nei
+        button:
+          text: Lukk og gå tilbake til Gosys
+        next: none
+  - answer: Nei, annet
+    questions:
+    - id: FULGT_BRUKERVEILEDNING_GOSYS
+      text: Har du knyttet dokumentet til andre aktuelle tema og sørget for at henvendelsen behandles? Jf. brukerveiledningen for Gosys
+      type: RADIO
+      answers:
+      - answer: Ja
+        button:
+          info: Trykk fullfør for å feilregistrere journalpost og ferdigstille oppgaven
+          text: Fullfør
+        next: none
+      - answer: Nei
+        button:
+          text: Lukk og gå tilbake til Gosys
+        next: none
 
 - id: FREMMET_DATO
   text: Angi dato bruker fremmet serviceklagen
