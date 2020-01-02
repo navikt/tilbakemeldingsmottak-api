@@ -15,6 +15,7 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.NAV_ENHETSNR_1;
 import static no.nav.tilbakemeldingsmottak.TestUtils.NAV_ENHETSNR_2;
 import static no.nav.tilbakemeldingsmottak.TestUtils.ORGANISASJONSNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER;
+import static no.nav.tilbakemeldingsmottak.TestUtils.RELATERT;
 import static no.nav.tilbakemeldingsmottak.TestUtils.TEMA;
 import static no.nav.tilbakemeldingsmottak.TestUtils.TILTAK;
 import static no.nav.tilbakemeldingsmottak.TestUtils.UTFALL;
@@ -283,6 +284,7 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getEnhetsnummerBehandlende(), NAV_ENHETSNR_2);
         assertEquals(serviceklage.getGjelder(), GJELDER);
         assertEquals(serviceklage.getBeskrivelse(), BESKRIVELSE);
+        assertEquals(serviceklage.getRelatert(), RELATERT);
         assertEquals(serviceklage.getYtelse(), YTELSE);
         assertEquals(serviceklage.getTema(), TEMA);
         assertEquals(serviceklage.getTemaUtdypning(), VENTE);

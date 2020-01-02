@@ -98,6 +98,7 @@ public class KlassifiserServiceklageService {
         serviceklage.setGjelder(request.getGjelder());
         serviceklage.setBeskrivelse(request.getBeskrivelse());
         serviceklage.setYtelse(request.getYtelse());
+        serviceklage.setRelatert(request.getRelatert());
         serviceklage.setTema(request.getTema());
         serviceklage.setTemaUtdypning(mapTemaUtdypning(request));
         serviceklage.setUtfall(request.getUtfall());
