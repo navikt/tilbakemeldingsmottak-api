@@ -29,7 +29,7 @@ const filterQuestionRenderProperties = question => {
 };
 
 const filterEmitProperties = object => {
-  return filterObjectKeys(object, ["id", "emit"]);
+  return filterObjectKeys(object, ["id", "emit", "button"]);
 };
 
 const indexAnswers = args => {

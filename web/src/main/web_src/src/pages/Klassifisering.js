@@ -1,12 +1,16 @@
-import React, {Component} from "react";
-import {connect} from "react-redux";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import Hovedknapp from "nav-frontend-knapper/lib/hovedknapp";
+import AlertStripe from "nav-frontend-alertstriper";
 import queryString from "query-string";
 import SchemaRender from "../components/schema/SchemaRender";
-import {ServiceklageApi} from "../api/Api";
-import {DefaultAnswersMapper, SchemaMapper} from "../mappers/skjema/SkjemaMapper";
+import { ServiceklageApi } from "../api/Api";
+import {
+  DefaultAnswersMapper,
+  SchemaMapper
+} from "../mappers/skjema/SkjemaMapper";
 import Dokument from "../components/Dokument";
-import {RESET_KLASSIFISERING, UPDATE_SCHEMA} from "../store/actions";
+import { RESET_KLASSIFISERING, UPDATE_SCHEMA } from "../store/actions";
 import "./Klassifisering.less";
 
 class Klassifisering extends Component {
@@ -23,33 +27,42 @@ class Klassifisering extends Component {
 
   async componentDidMount() {
     this.props.actions.resetKlassifisering();
-    await ServiceklageApi.hentDokument(this.oppgaveId).then(res => {
-      const dataUri = `data:application/pdf;base64,${res.data.dokument}`;
-      this.setState({ ...this.state, pdf: dataUri });
-    }).catch(err => this.setState({...this.state, error: err}));
+    await ServiceklageApi.hentDokument(this.oppgaveId)
+      .then(res => {
+        const dataUri = `data:application/pdf;base64,${res.data.dokument}`;
+        this.setState({ ...this.state, pdf: dataUri });
+      })
+      .catch(err => this.setState({ ...this.state, error: err }));
 
     if (!this.state.error) {
-      await ServiceklageApi.hentKlassifiseringSkjema(this.oppgaveId).then(res => {
-        this.props.actions.updateSchema({
-            defaultAnswers: DefaultAnswersMapper(res.data.defaultAnswers) || {answers: {}},
+      await ServiceklageApi.hentKlassifiseringSkjema(this.oppgaveId)
+        .then(res => {
+          this.props.actions.updateSchema({
+            defaultAnswers: DefaultAnswersMapper(
+              res.data.defaultAnswers || { answers: {} }
+            ),
             questions: SchemaMapper(res.data.questions)
-        });
-      }).catch(err => this.setState({...this.state, error: err}));
+          });
+        })
+        .catch(err => this.setState({ ...this.state, error: err }));
     }
   }
 
   async submitAnswers() {
     const { status, defaultAnswers } = this.props;
     const answers = {
-        ...status.answers,
-        ...Object.entries(defaultAnswers.answers || {}).reduce((acc, [key, {answer}]) => ({
-            ...acc,
-            [key]: answer
-        }), {})
+      ...status.answers,
+      ...Object.entries(defaultAnswers.answers || {}).reduce(
+        (acc, [key, { answer }]) => ({
+          ...acc,
+          [key]: answer
+        }),
+        {}
+      )
     };
     await ServiceklageApi.klassifiser(this.oppgaveId, answers)
-        .then(() => window.location = "/serviceklage/takk")
-        .catch(err => this.setState({error: err}));
+      .then(() => (window.location = "/serviceklage/takk"))
+      .catch(err => this.setState({ error: err }));
   }
 
   render() {
@@ -57,32 +70,49 @@ class Klassifisering extends Component {
     const { status } = this.props;
     return (
       <div className="Row">
-        {pdf && !error &&
-         <>
-          <div className="Klassifisering">
+        {pdf && !error && (
+          <>
+            <div className="Klassifisering">
               <h1>Skjema for klassifisering av serviceklager</h1>
-            <SchemaRender />
-            {status.progress.index === "none" && (
-              <div className="SubmitButton">
-                <Hovedknapp onClick={() => this.submitAnswers()}>
-                  Lagre serviceklage
-                </Hovedknapp>
-              </div>
-            )}
-          </div>
-          <div>
-            <div className="Dokument">
-              <Dokument pdf={pdf} />
+              <SchemaRender />
+              {status.progress.index === "none" &&
+                (() => {
+                  const answer = status.answersArray
+                    .reverse()
+                    .find(answer => answer.button) || {
+                    button: {
+                      text: "Trykk fullfør for å ferdigstille oppgaven"
+                    }
+                  };
+                  return (
+                    <>
+                      {answer.button.info && (
+                        <AlertStripe type="info">
+                          {answer.button.info}
+                        </AlertStripe>
+                      )}
+                      <div className="SubmitButton">
+                        <Hovedknapp onClick={() => this.submitAnswers()}>
+                          {answer.button.text}
+                        </Hovedknapp>
+                      </div>
+                    </>
+                  );
+                })()}
             </div>
-          </div>
-        </>
-        }
-        {error &&
-        <div className={"Feilmelding"}>
+            <div>
+              <div className="Dokument">
+                <Dokument pdf={pdf} />
+              </div>
+            </div>
+          </>
+        )}
+        {error && (
+          <div className={"Feilmelding"}>
             <h1>Beklager, det oppstod en feil!</h1>
             <p>{"Feilmelding: " + error.data.message}</p>
-        </div>
-        }
+          </div>
+        )}
       </div>
     );
   }
@@ -113,7 +143,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Klassifisering);
+export default connect(mapStateToProps, mapDispatchToProps)(Klassifisering);
