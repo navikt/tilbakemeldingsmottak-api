@@ -77,7 +77,7 @@ class Klassifisering extends Component {
               <SchemaRender />
               {status.progress.index === "none" &&
                 (() => {
-                  const answer = status.answersArray
+                  const answer = [...status.answersArray]
                     .reverse()
                     .find(answer => answer.button) || {
                     button: {
