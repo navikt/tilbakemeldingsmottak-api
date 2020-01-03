@@ -67,10 +67,8 @@ public class KlassifiserServiceklageService {
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med serviceklageId={} er klassifisert", serviceklage.getServiceklageId());
 
-        if (!FORVALTNINGSKLAGE.equals(request.getBehandlesSomServiceklage())) {
-            ferdigstillOppgave(hentOppgaveResponseTo);
-            log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
-        }
+        ferdigstillOppgave(hentOppgaveResponseTo);
+        log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
     }
 
 
