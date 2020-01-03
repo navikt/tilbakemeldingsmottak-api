@@ -20,7 +20,7 @@ class Landingsside extends Component {
         return (
             <div className="Landingsside">
                 <h1>Skjema for klassifisering av serviceklager</h1>
-                <AlertStripe type="suksess" className={"Alert"}>Ufylt skjema er sendt</AlertStripe>
+                <AlertStripe type="suksess" className={"Alert"}>Utfylt skjema er sendt</AlertStripe>
                 <p>Du blir videresendt til <a href={this.redirectUrl}>GOSYS</a> om tre sekunder.</p>
             </div>
         )
