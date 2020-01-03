@@ -7,6 +7,8 @@ import no.nav.tilbakemeldingsmottak.exceptions.GyldigDokumentIkkeFunnetException
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.OppgaveAlleredeFerdigstiltException;
+import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostIkkeFunnetFunctionalException;
 import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
@@ -51,6 +53,15 @@ public class ControllerAdvice {
         log.warn("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
                 .message(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .build());
+    }
+
+    @ExceptionHandler(value = {SafHentDokumentFunctionalException.class, SafJournalpostIkkeFunnetFunctionalException.class})
+    public ResponseEntity<ErrorResponse> safTilgangExceptionHandler(HttpServletRequest request, Exception ex) {
+        HttpStatus status = getHttpStatus(ex);
+        log.warn("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
+        return ResponseEntity.status(status).body(ErrorResponse.builder()
+                .message(status.getReasonPhrase())
                 .build());
     }
 
