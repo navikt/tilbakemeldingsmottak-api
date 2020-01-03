@@ -34,6 +34,8 @@ public final class ServiceklageConstants {
     public static final String SVAR_IKKE_NOEDVENDIG = "SVAR_IKKE_NOEDVENDIG";
     public static final String SVARMETODE_SPESIFISER = "SVARMETODE_SPESIFISER";
     public static final String BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING = "BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING";
+    public static final String FULGT_BRUKERVEILEDNING_GOSYS = "FULGT_BRUKERVEILEDNING_GOSYS";
+    public static final String KOMMUNAL_BEHANDLING = "KOMMUNAL_BEHANDLING";
     public static final String KANAL_UTDYPNING = "KANAL_UTDYPNING";
     public static final String BESKRIVELSE = "BESKRIVELSE";
     public static final String TEMA_UTDYPNING = "TEMA_UTDYPNING";

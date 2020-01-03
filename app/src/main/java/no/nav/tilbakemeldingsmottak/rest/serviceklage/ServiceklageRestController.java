@@ -52,6 +52,7 @@ public class ServiceklageRestController {
     private final KlassifiserServiceklageValidator klassifiserServiceklageValidator;
     private final OppgaveConsumer oppgaveConsumer;
 
+    private final String NEI = "Nei";
 
     @Transactional(dontRollbackOn = EksterntKallException.class)
     @PostMapping
@@ -71,6 +72,15 @@ public class ServiceklageRestController {
     public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request,
                                                                                    @RequestParam String oppgaveId) {
         log.info("Mottatt kall om å klassifisere serviceklage med oppgaveId={}", oppgaveId);
+
+        if (NEI.equals(request.getFulgtBrukerveiledningGosys()) || NEI.equals(request.getKommunalBehandling())) {
+            log.info("Videre behandling kreves, saksbehandler er informert og videresendt til Gosys.");
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(KlassifiserServiceklageResponse.builder()
+                            .message("Videre behandling kreves.")
+                            .build());
+        }
 
         HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
         assertIkkeFerdigstilt(hentOppgaveResponseTo);
