@@ -120,6 +120,7 @@ public class TestUtils {
     public static final String KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser";
     public static final String FORVALTNINGSKLAGE = "Nei, en forvaltningsklage";
     public static final String FULGT_BRUKERVEILEDNING_GOSYS = "Ja";
+    public static final String KOMMUNAL_BEHANDLING = "Ja";
 
     public static final String DOKUMENT_INFO_ID = "dokumentInfoId";
 
@@ -262,7 +263,7 @@ public class TestUtils {
     public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequestKommunalKlage() {
         return KlassifiserServiceklageRequest.builder()
                 .behandlesSomServiceklage(KOMMUNAL_KLAGE)
-                .fulgtBrukerveiledningGosys(FULGT_BRUKERVEILEDNING_GOSYS)
+                .kommunalBehandling(KOMMUNAL_BEHANDLING)
                 .innsender(INNSENDER)
                 .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
                 .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)
