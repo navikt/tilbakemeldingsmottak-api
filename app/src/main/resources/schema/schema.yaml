@@ -39,14 +39,26 @@ questions:
         button:
           info: Trykk fullfør for å feilregistrere dokumentet og ferdigstille oppgaven
           text: Fullfør
+        next: none
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
         next: none
-    next: none
   - answer: Nei, en forvaltningsklage
-    emit: Dette valget innebærer at oppgaven ikke lukkes. Du må endre oppgavens tema og gjelder til en forvaltningsklage. Vær obs på krav til signatur på forvaltningsklager. Det fremgår av serviceklagen hvorvidt bruker var autentisert/pålogget når klagen ble sendt inn.
-    next: none
+    questions:
+    - id: FULGT_BRUKERVEILEDNING_GOSYS
+      text: Har du knyttet dokumentet til andre aktuelle tema og sørget for at henvendelsen behandles? Jf. brukerveiledningen for Gosys
+      type: RADIO
+      answers:
+      - answer: Ja
+        button:
+          info: Trykk fullfør for å feilregistrere journalpost og ferdigstille oppgaven
+          text: Fullfør
+        next: none
+      - answer: Nei
+        button:
+          text: Lukk og gå tilbake til Gosys
+        next: none
   - answer: Nei, en beskjed til NAV
     questions:
     - id: FULGT_BRUKERVEILEDNING_GOSYS
