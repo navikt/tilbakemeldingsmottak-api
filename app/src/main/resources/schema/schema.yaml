@@ -19,7 +19,6 @@ questions:
         button:
           info: Trykk fullfør for å ferdigstille oppgaven
           text: Fullfør
-        next: none
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
