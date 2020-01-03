@@ -67,7 +67,7 @@ questions:
       answers:
       - answer: Ja
         button:
-          info: Trykk fullfør for å ferdigstille oppgaven
+          info: Trykk fullfør for å feilregistrere journalpost og ferdigstille oppgaven
           text: Fullfør
         next: none
       - answer: Nei
