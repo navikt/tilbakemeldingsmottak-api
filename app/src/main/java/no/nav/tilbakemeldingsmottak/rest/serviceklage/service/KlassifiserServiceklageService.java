@@ -40,7 +40,9 @@ public class KlassifiserServiceklageService {
     private String fromAddress;
 
     private static final String KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser";
-    private static final String FORVALTNINGSKLAGE = "Nei - en forvaltningsklage";
+    private static final String FORVALTNINGSKLAGE = "Nei, en forvaltningsklage";
+    private static final String BESKJED = "Nei, en beskjed til NAV";
+    private static final String IKKE_SERVICEKLAGE = "Nei, annet";
 
     private static final String JA = "Ja";
     private static final String ANNET = "Annet";
@@ -48,9 +50,16 @@ public class KlassifiserServiceklageService {
     public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo)  {
         if (KOMMUNAL_KLAGE.equals(request.getBehandlesSomServiceklage())) {
             log.info("Klagen har blitt markert som en kommunal klage. Journalposten feilregistreres.");
-            handterKommunalKlage(hentOppgaveResponseTo);
+            feilregistrerSakstilkytning(hentOppgaveResponseTo);
         } else if (FORVALTNINGSKLAGE.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen har blitt markert som en forvaltningsklage.");
+            log.info("Klagen har blitt markert som en forvaltningsklage. Journalposten feilregistreres.");
+            feilregistrerSakstilkytning(hentOppgaveResponseTo);
+        } else if (BESKJED.equals(request.getBehandlesSomServiceklage())) {
+            log.info("Klagen har blitt markert som en beskjed til NAV. Journalposten feilregistreres.");
+            feilregistrerSakstilkytning(hentOppgaveResponseTo);
+        } else if (IKKE_SERVICEKLAGE.equals(request.getBehandlesSomServiceklage())) {
+            log.info("Klagen er ikke en serviceklage. Journalposten feilregistreres.");
+            feilregistrerSakstilkytning(hentOppgaveResponseTo);
         }
 
         Serviceklage serviceklage = getOrCreateServiceklage(hentOppgaveResponseTo.getJournalpostId());
@@ -58,14 +67,12 @@ public class KlassifiserServiceklageService {
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med serviceklageId={} er klassifisert", serviceklage.getServiceklageId());
 
-        if (!FORVALTNINGSKLAGE.equals(request.getBehandlesSomServiceklage())) {
-            ferdigstillOppgave(hentOppgaveResponseTo);
-            log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
-        }
+        ferdigstillOppgave(hentOppgaveResponseTo);
+        log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
     }
 
 
-    private void handterKommunalKlage(HentOppgaveResponseTo hentOppgaveResponseTo) {
+    private void feilregistrerSakstilkytning(HentOppgaveResponseTo hentOppgaveResponseTo) {
         String journalpostId = hentOppgaveResponseTo.getJournalpostId();
         try {
             journalpostConsumer.feilregistrerSakstilknytning(journalpostId);
@@ -98,6 +105,7 @@ public class KlassifiserServiceklageService {
         serviceklage.setGjelder(request.getGjelder());
         serviceklage.setBeskrivelse(request.getBeskrivelse());
         serviceklage.setYtelse(request.getYtelse());
+        serviceklage.setRelatert(request.getRelatert());
         serviceklage.setTema(request.getTema());
         serviceklage.setTemaUtdypning(mapTemaUtdypning(request));
         serviceklage.setUtfall(request.getUtfall());

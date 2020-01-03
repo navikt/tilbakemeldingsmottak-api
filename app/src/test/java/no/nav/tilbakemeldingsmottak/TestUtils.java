@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak;
 
 import static no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType.NAV_KONTAKTSENTER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.ENHETSNUMMER_PAAKLAGET;
@@ -117,10 +116,11 @@ public class TestUtils {
     public static final String AARSAK = "Service har vært dårlig";
     public static final String TILTAK = "Gi bedre service";
 
-    public static final String BEHANDLES_IKKE_SOM_SERVICEKLAGE = "Nei - annet";
-    public static final String BEHANDLES_IKKE_SOM_SERVICEKLAGE_UTDYPNING = "Det er ikke en serviceklage";
+    public static final String BEHANDLES_IKKE_SOM_SERVICEKLAGE = "Nei, annet";
     public static final String KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser";
-    public static final String FORVALTNINGSKLAGE = "Nei - en forvaltningsklage";
+    public static final String FORVALTNINGSKLAGE = "Nei, en forvaltningsklage";
+    public static final String FULGT_BRUKERVEILEDNING_GOSYS = "Ja";
+    public static final String KOMMUNAL_BEHANDLING = "Ja";
 
     public static final String DOKUMENT_INFO_ID = "dokumentInfoId";
 
@@ -252,7 +252,7 @@ public class TestUtils {
     public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequestIkkeServiceklage() {
         return KlassifiserServiceklageRequest.builder()
                 .behandlesSomServiceklage(BEHANDLES_IKKE_SOM_SERVICEKLAGE)
-                .behandlesSomServiceklageUtdypning(BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING)
+                .fulgtBrukerveiledningGosys(FULGT_BRUKERVEILEDNING_GOSYS)
                 .innsender(INNSENDER)
                 .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
                 .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)
@@ -263,6 +263,7 @@ public class TestUtils {
     public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequestKommunalKlage() {
         return KlassifiserServiceklageRequest.builder()
                 .behandlesSomServiceklage(KOMMUNAL_KLAGE)
+                .kommunalBehandling(KOMMUNAL_BEHANDLING)
                 .innsender(INNSENDER)
                 .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
                 .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)
@@ -273,6 +274,7 @@ public class TestUtils {
     public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequestForvaltningsklage() {
         return KlassifiserServiceklageRequest.builder()
                 .behandlesSomServiceklage(FORVALTNINGSKLAGE)
+                .fulgtBrukerveiledningGosys(FULGT_BRUKERVEILEDNING_GOSYS)
                 .innsender(INNSENDER)
                 .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
                 .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)

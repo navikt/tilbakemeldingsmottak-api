@@ -28,7 +28,8 @@ const updateAnswersStatus = (answers, questions) => {
         [answer.id]: answer.answer
       }),
       {}
-    )
+    ),
+    answersArray: JSON.parse(JSON.stringify(answers))
   };
 };
 

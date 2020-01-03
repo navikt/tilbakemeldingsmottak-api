@@ -7,11 +7,13 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.ENHETSNUMMER_PAAKLAGET;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.FREMMET_DATO;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.FULGT_BRUKERVEILEDNING_GOSYS;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.GJELDER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INFORMASJON;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNSENDER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_UTDYPNING;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KOMMUNAL_BEHANDLING;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.PAAKLAGET_ENHET_ER_BEHANDLENDE;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.RELATERT;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVARMETODE;
@@ -39,6 +41,12 @@ public class KlassifiserServiceklageRequest {
 
     @JsonProperty(BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING)
     private String behandlesSomServiceklageUtdypning;
+
+    @JsonProperty(FULGT_BRUKERVEILEDNING_GOSYS)
+    private String fulgtBrukerveiledningGosys;
+
+    @JsonProperty(KOMMUNAL_BEHANDLING)
+    private String kommunalBehandling;
 
     @JsonProperty(FREMMET_DATO)
     private String fremmetDato;

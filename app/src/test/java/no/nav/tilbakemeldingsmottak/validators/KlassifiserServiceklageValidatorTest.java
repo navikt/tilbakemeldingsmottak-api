@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.validators;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createHentSkjemaResponse;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createHentSkjemaResponseWithDefaultAnswers;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequest;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequestForvaltningsklage;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequestIkkeServiceklage;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_MUNTLIG_ANSWER;
 import static org.junit.Assert.assertTrue;
@@ -28,6 +29,12 @@ class KlassifiserServiceklageValidatorTest {
     @Test
     void happyPathAnnet() {
         klassifiserServiceklageRequest = createKlassifiserServiceklageRequestIkkeServiceklage();
+        klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest, createHentSkjemaResponse());
+    }
+
+    @Test
+    void happyPathForvaltningsklage() {
+        klassifiserServiceklageRequest = createKlassifiserServiceklageRequestForvaltningsklage();
         klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest, createHentSkjemaResponse());
     }
 

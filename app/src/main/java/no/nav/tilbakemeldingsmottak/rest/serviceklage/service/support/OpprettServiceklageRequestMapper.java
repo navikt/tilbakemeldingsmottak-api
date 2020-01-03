@@ -19,13 +19,14 @@ import java.util.stream.Collectors;
 @Component
 public class OpprettServiceklageRequestMapper {
 
-    public Serviceklage map(OpprettServiceklageRequest request) {
+    public Serviceklage map(OpprettServiceklageRequest request, boolean innlogget) {
         LocalDateTime currentDateTime = LocalDateTime.now();
         return Serviceklage.builder()
                 .opprettetDato(currentDateTime)
                 .fremmetDato(currentDateTime.toLocalDate())
                 .innsender(request.getPaaVegneAv().text)
                 .klagenGjelderId(findKlagenGjelderId(request))
+                .innlogget(innlogget)
                 .klagetyper(mapKlagetype(request.getKlagetyper()))
                 .klagetypeUtdypning(request.getKlagetyper().contains(Klagetype.ANNET) ? request.getKlagetypeUtdypning() : null)
                 .gjelderSosialhjelp(request.getGjelderSosialhjelp() == null ? null : request.getGjelderSosialhjelp().text)
