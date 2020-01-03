@@ -10,6 +10,7 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.FREMMET_DATO;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.GJELDER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.GJELDER_SOSIALHJELP;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNLOGGET;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNSENDER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.JOURNALPOST_ID;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL;
@@ -72,6 +73,9 @@ public class Serviceklage {
     @Column(name = KLAGEN_GJELDER_ID)
     @Size(max = 15)
     private String klagenGjelderId;
+
+    @Column(name = INNLOGGET)
+    private Boolean innlogget;
 
     @Column(name = KLAGETYPER)
     @Size(max = 200)

@@ -5,6 +5,7 @@ public final class ServiceklageConstants {
     public static final String JOURNALPOST_ID = "JOURNALPOST_ID";
     public static final String OPPRETTET_DATO = "OPPRETTET_DATO";
     public static final String KLAGEN_GJELDER_ID = "KLAGEN_GJELDER_ID";
+    public static final String INNLOGGET = "INNLOGGET";
     public static final String KLAGETYPER = "KLAGETYPER";
     public static final String KLAGETYPE_UTDYPNING = "KLAGETYPE_UTDYPNING";
     public static final String GJELDER_SOSIALHJELP = "GJELDER_SOSIALHJELP";

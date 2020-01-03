@@ -1,5 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
+
 import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettJou
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettServiceklageRequestMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
+import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +43,7 @@ public class OpprettServiceklageService {
     private final OppgaveConsumer oppgaveConsumer;
     private final PdfService pdfService;
     private final ServiceklageMailHelper mailHelper;
+    private final OidcUtils oidcUtils;
 
     public static final String SUBJECT_JOURNALPOST_FEILET = "Automatisk journalføring av serviceklage feilet";
     public static final String TEXT_JOURNALPOST_FEILET= "Manuell journalføring og opprettelse av oppgave kreves. Klagen ligger vedlagt.";
@@ -58,7 +62,8 @@ public class OpprettServiceklageService {
         OpprettJournalpostResponseTo opprettJournalpostResponseTo = forsoekOpprettJournalpost(request, fysiskDokument);
         log.info("Journalpost med journalpostId={} opprettet", opprettJournalpostResponseTo.getJournalpostId());
 
-        Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request);
+        boolean innlogget = oidcUtils.getSubjectForIssuer(AZURE_ISSUER).isPresent();
+        Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request, innlogget);
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
         serviceklageRepository.save(serviceklage);
         log.info("Serviceklage med serviceklageId={} persistert", serviceklage.getServiceklageId());
