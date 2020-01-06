@@ -1,11 +1,13 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.ENHETSNUMMER_PAAKLAGET;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.FREMMET_DATO;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNSENDER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVARMETODE;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVARMETODE_UTDYPNING;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG;
 import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 
@@ -44,6 +46,7 @@ public class HentSkjemaService {
 
     private static final String MESSAGE = "Feltet ble fylt ut under registrering av serviceklage";
     private static final String NEDLAGT = "nedlagt";
+    private static final String ANNET = "Annet";
     private static final String SCHEMA_PATH = "classpath:schema/schema.yaml";
     private static final Charset CHARSET = Charset.forName("utf-8");
 
@@ -103,7 +106,12 @@ public class HentSkjemaService {
             defaultAnswers.put(SVARMETODE, serviceklage.getSvarmetode());
         }
         if (serviceklage.getSvarmetodeUtdypning() != null) {
-            defaultAnswers.put(SVAR_IKKE_NOEDVENDIG, serviceklage.getSvarmetodeUtdypning());
+            if (BRUKER_IKKE_BEDT_OM_SVAR_ANSWER.equals(serviceklage.getSvarmetodeUtdypning())) {
+                defaultAnswers.put(SVAR_IKKE_NOEDVENDIG, serviceklage.getSvarmetodeUtdypning());
+            } else {
+                defaultAnswers.put(SVAR_IKKE_NOEDVENDIG, ANNET);
+                defaultAnswers.put(SVARMETODE_UTDYPNING, serviceklage.getSvarmetodeUtdypning());
+            }
         }
         return defaultAnswers;
     }
