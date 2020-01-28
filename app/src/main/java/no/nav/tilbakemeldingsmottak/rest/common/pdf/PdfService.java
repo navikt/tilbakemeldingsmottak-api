@@ -37,6 +37,7 @@ public final class PdfService {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, stream);
         document.open();
+        document.add(new Paragraph());
         document.close();
         return stream.toByteArray();
     }
