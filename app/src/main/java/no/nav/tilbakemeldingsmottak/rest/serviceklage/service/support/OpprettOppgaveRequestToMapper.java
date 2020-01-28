@@ -34,7 +34,7 @@ public class OpprettOppgaveRequestToMapper {
                 .aktoerId(paaVegneAvType.equals(PaaVegneAvType.BEDRIFT) ? null : aktoerConsumer.hentAktoerIdForIdent(klagenGjelderId).get(klagenGjelderId).getFirstIdent())
                 .orgnr(paaVegneAvType.equals(PaaVegneAvType.BEDRIFT) ? klagenGjelderId : null)
                 .aktivDato(LocalDate.now().toString())
-                .journalpostId(opprettJournalpostResponseTo.getJournalpostId())
+//                .journalpostId(opprettJournalpostResponseTo.getJournalpostId())
                 .tema(TEMA)
                 .oppgavetype(JOURNALSTATUS_ENDELIG.equals(opprettJournalpostResponseTo.getJournalstatus()) ? OPPGAVETYPE_VUR : OPPGAVETYPE_JFR)
                 .fristFerdigstillelse(LocalDate.now().plusDays(DAGER_FRIST).toString())
