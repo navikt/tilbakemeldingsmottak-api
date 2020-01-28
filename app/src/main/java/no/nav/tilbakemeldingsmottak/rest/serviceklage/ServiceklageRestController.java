@@ -110,7 +110,7 @@ public class ServiceklageRestController {
     @Transactional
     @GetMapping(value = "/hentdokument/{oppgaveId}")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId) {
+    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId) throws DocumentException {
         HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
         assertIkkeFerdigstilt(hentOppgaveResponseTo);
 

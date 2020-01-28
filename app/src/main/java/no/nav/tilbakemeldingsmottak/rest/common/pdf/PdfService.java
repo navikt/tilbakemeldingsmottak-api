@@ -32,6 +32,15 @@ public final class PdfService {
 
     private final OidcUtils oidcUtils;
 
+    public byte[] opprettTomPdf() throws DocumentException {
+        Document document = new Document();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, stream);
+        document.open();
+        document.close();
+        return stream.toByteArray();
+    }
+
     public byte[] opprettPdf(OpprettServiceklageRequest request) throws DocumentException {
         Document document = new Document();
 
