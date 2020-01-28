@@ -3,7 +3,6 @@ package no.nav.tilbakemeldingsmottak.rest.common.handlers;
 import com.fasterxml.jackson.core.JsonParseException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
-import no.nav.tilbakemeldingsmottak.exceptions.GyldigDokumentIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.OppgaveAlleredeFerdigstiltException;
@@ -73,7 +72,7 @@ public class ControllerAdvice {
                 .build());
     }
 
-    @ExceptionHandler(value = {OppgaveAlleredeFerdigstiltException.class, GyldigDokumentIkkeFunnetException.class})
+    @ExceptionHandler(value = {OppgaveAlleredeFerdigstiltException.class})
     public ResponseEntity<ErrorResponse> klassifiseringExceptionHandler(HttpServletRequest request, Exception ex) {
         log.warn("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()

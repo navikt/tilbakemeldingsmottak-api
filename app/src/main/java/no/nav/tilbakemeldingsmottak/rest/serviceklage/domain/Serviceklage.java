@@ -63,7 +63,7 @@ public class Serviceklage {
     @Column(name = SERVICEKLAGE_ID, nullable = false)
     private Long serviceklageId;
 
-    @Column(name = JOURNALPOST_ID, nullable = false)
+    @Column(name = JOURNALPOST_ID)
     @Size(max = 11)
     private String journalpostId;
 
