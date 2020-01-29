@@ -102,6 +102,7 @@ questions:
     - id: KVITTERING
       text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
       type: RADIO
+      answers:
       - answer: Ja
         next: none
       - answer: Nei
@@ -123,6 +124,7 @@ questions:
     - id: KVITTERING
       text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
       type: RADIO
+      answers:
       - answer: Ja
         next: none
       - answer: Nei
