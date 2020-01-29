@@ -83,7 +83,7 @@ public class HentSkjemaService {
         return response;
     }
 
-    private HentSkjemaResponse readSkjema() {
+    public HentSkjemaResponse readSkjema() {
         try {
             return mapper.readValue(classpathSkjema, HentSkjemaResponse.class);
         } catch (Exception e) {

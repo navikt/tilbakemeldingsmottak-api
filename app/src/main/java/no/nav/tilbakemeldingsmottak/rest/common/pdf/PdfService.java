@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.rest.common.pdf;
 
 import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
+import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.itextpdf.text.Chunk;
@@ -11,8 +12,11 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.RequiredArgsConstructor;
+import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.HentSkjemaService;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -20,6 +24,8 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -31,6 +37,7 @@ public final class PdfService {
     private Font boldUnderline = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD|Font.UNDERLINE);
 
     private final OidcUtils oidcUtils;
+    private final HentSkjemaService hentSkjemaService;
 
     public byte[] opprettTomPdf() throws DocumentException {
         Document document = new Document();
@@ -45,7 +52,7 @@ public final class PdfService {
         return stream.toByteArray();
     }
 
-    public byte[] opprettPdf(OpprettServiceklageRequest request) throws DocumentException {
+    public byte[] opprettServiceklagePdf(OpprettServiceklageRequest request) throws DocumentException {
         Document document = new Document();
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -109,10 +116,39 @@ public final class PdfService {
         return stream.toByteArray();
     }
 
+    public byte[] opprettKlassifiseringPdf(Map<String, String> answersMap) throws DocumentException {
+        List<Question> questions = hentSkjemaService.readSkjema().getQuestions();
+
+        Document document = new Document();
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, stream);
+
+        document.open();
+
+        for (Map.Entry entry : answersMap.entrySet()) {
+            String question = getQuestionById(questions, entry.getKey().toString())
+                    .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + entry.getKey().toString()))
+                    .getText();
+            document.add(createParagraph(question, entry.getValue().toString(), "/n", true));
+        }
+
+        document.close();
+
+        return stream.toByteArray();
+    }
+
     private Paragraph createParagraph(String fieldname, String content) {
+        return createParagraph(fieldname, content, ": ", false);
+    }
+
+    private Paragraph createParagraph(String fieldname, String content, String delimiter, boolean addNewline) {
         Paragraph p = new Paragraph();
-        p.add(new Chunk(fieldname + ": ", bold));
+        p.add(new Chunk(fieldname + delimiter, bold));
         p.add(new Chunk(content, regular));
+        if (addNewline) {
+            p.add(new Chunk("/n", regular));
+        }
         return p;
     }
 

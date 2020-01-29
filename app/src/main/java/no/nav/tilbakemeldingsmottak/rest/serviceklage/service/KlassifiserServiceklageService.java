@@ -4,7 +4,9 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.joark.JournalpostConsumer;
@@ -15,14 +17,18 @@ import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.RequestParsingException;
 import no.nav.tilbakemeldingsmottak.exceptions.joark.FeilregistrerSakstilknytningFunctionalException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
+import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,6 +39,8 @@ public class KlassifiserServiceklageService {
     private final OppgaveConsumer oppgaveConsumer;
     private final JournalpostConsumer journalpostConsumer;
     private final EndreOppgaveRequestToMapper endreOppgaveRequestToMapper;
+    private final PdfService pdfService;
+    private final ServiceklageMailHelper mailHelper;
 
     @Value("${email_serviceklage_address}")
     private String toAddress;
@@ -47,7 +55,7 @@ public class KlassifiserServiceklageService {
     private static final String JA = "Ja";
     private static final String ANNET = "Annet";
 
-    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo)  {
+    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo) throws DocumentException {
         if (KOMMUNAL_KLAGE.equals(request.getBehandlesSomServiceklage())) {
             log.info("Klagen har blitt markert som en kommunal klage. Journalposten feilregistreres.");
             feilregistrerSakstilkytning(hentOppgaveResponseTo);
@@ -69,8 +77,29 @@ public class KlassifiserServiceklageService {
 
         ferdigstillOppgave(hentOppgaveResponseTo);
         log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
+
+        if (JA.equals(request.getKvittering())) {
+            sendKvittering(request, hentOppgaveResponseTo.getId());
+        }
     }
 
+    private void sendKvittering(KlassifiserServiceklageRequest request, String oppgaveId) throws DocumentException {
+        ObjectMapper m = new ObjectMapper();
+
+        Map<String, String> answersMap = m.convertValue(request, new TypeReference<Map<String, String>>(){})
+                .entrySet().stream()
+                .filter(entry -> entry.getValue() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        byte[] pdf = pdfService.opprettKlassifiseringPdf(answersMap);
+
+        mailHelper.sendEmail(fromAddress,
+                "bjornar.hunshamar@trygdeetaten.no",
+                "Kvittering på innsendt klassifiseringsskjema",
+                "Serviceklage med oppgave-id " + oppgaveId + " har blitt klassifisert. " +
+                        "Innholdet i ditt utfylte skjema ligger vedlagt.",
+                pdf);
+    }
 
     private void feilregistrerSakstilkytning(HentOppgaveResponseTo hentOppgaveResponseTo) {
         String journalpostId = hentOppgaveResponseTo.getJournalpostId();
