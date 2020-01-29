@@ -22,15 +22,7 @@ questions:
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
-        questions:
-        - id: KVITTERING
-          text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
-          type: RADIO
-          answers:
-          - answer: Ja
-            next: none
-          - answer: Nei
-            next: none
+        next: none
   - answer: Nei, innsender har ikke fullmakt på vegne av bruker
     button:
       info: Trykk fullfør for å ferdigstille oppgaven
@@ -57,6 +49,7 @@ questions:
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
+        next: none
     - id: KVITTERING
       text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
       type: RADIO
@@ -78,6 +71,7 @@ questions:
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
+        next: none
     - id: KVITTERING
       text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
       type: RADIO
@@ -99,6 +93,7 @@ questions:
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
+        next: none
     - id: KVITTERING
       text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
       type: RADIO
@@ -121,6 +116,7 @@ questions:
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
+        next: none
     - id: KVITTERING
       text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
       type: RADIO
