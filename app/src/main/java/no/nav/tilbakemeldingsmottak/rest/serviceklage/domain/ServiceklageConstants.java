@@ -40,6 +40,7 @@ public final class ServiceklageConstants {
     public static final String BESKRIVELSE = "BESKRIVELSE";
     public static final String TEMA_UTDYPNING = "TEMA_UTDYPNING";
     public static final String SVARMETODE_UTDYPNING = "SVARMETODE_UTDYPNING";
+    public static final String KVITTERING = "KVITTERING";
     public static final String AVSLUTTET_DATO = "AVSLUTTET_DATO";
     public static final String FERDIG_DATO = "FERDIG_DATO";
 
