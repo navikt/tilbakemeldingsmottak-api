@@ -97,7 +97,7 @@ public class KlassifiserServiceklageService {
                 .entrySet()
                 .stream()
                 .filter(entry -> entry.getValue() != null)
-                .filter(entry -> defaultValuesContainsEntry(skjemaResponse, entry))
+                .filter(entry -> !defaultValuesContainsEntry(skjemaResponse, entry))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         byte[] pdf = pdfService.opprettKlassifiseringPdf(answersMap, skjemaResponse.getQuestions());
