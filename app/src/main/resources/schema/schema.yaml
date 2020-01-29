@@ -22,15 +22,7 @@ questions:
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
-        questions:
-        - id: KVITTERING
-          text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
-          type: RADIO
-          answers:
-          - answer: Ja
-            next: none
-          - answer: Nei
-            next: none
+        next: none
   - answer: Nei, innsender har ikke fullmakt på vegne av bruker
     button:
       info: Trykk fullfør for å ferdigstille oppgaven
@@ -44,6 +36,7 @@ questions:
         next: none
       - answer: Nei
         next: none
+    next: none
   - answer: Nei, serviceklagen gjelder kommunale tjenester eller ytelser
     questions:
     - id: KOMMUNAL_BEHANDLING
@@ -54,16 +47,19 @@ questions:
         button:
           info: Trykk fullfør for å feilregistrere dokumentet og ferdigstille oppgaven
           text: Fullfør
+        questions:
+        - id: KVITTERING
+          text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
+          type: RADIO
+          answers:
+          - answer: Ja
+            next: none
+          - answer: Nei
+            next: none
+        next: none
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
-    - id: KVITTERING
-      text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
-      type: RADIO
-      answers:
-      - answer: Ja
-        next: none
-      - answer: Nei
         next: none
   - answer: Nei, en forvaltningsklage
     questions:
@@ -75,16 +71,19 @@ questions:
         button:
           info: Trykk fullfør for å feilregistrere journalpost og ferdigstille oppgaven
           text: Fullfør
+        questions:
+        - id: KVITTERING
+          text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
+          type: RADIO
+          answers:
+          - answer: Ja
+            next: none
+          - answer: Nei
+            next: none
+        next: none
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
-    - id: KVITTERING
-      text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
-      type: RADIO
-      answers:
-      - answer: Ja
-        next: none
-      - answer: Nei
         next: none
   - answer: Nei, en beskjed til NAV
     questions:
@@ -96,18 +95,20 @@ questions:
         button:
           info: Trykk fullfør for å feilregistrere journalpost og ferdigstille oppgaven
           text: Fullfør
+        questions:
+        - id: KVITTERING
+          text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
+          type: RADIO
+          answers:
+          - answer: Ja
+            next: none
+          - answer: Nei
+            next: none
+        next: none
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
-    - id: KVITTERING
-      text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
-      type: RADIO
-      answers:
-      - answer: Ja
         next: none
-      - answer: Nei
-        next: none
-      next: none
   - answer: Nei, annet
     questions:
     - id: FULGT_BRUKERVEILEDNING_GOSYS
@@ -118,18 +119,20 @@ questions:
         button:
           info: Trykk fullfør for å feilregistrere journalpost og ferdigstille oppgaven
           text: Fullfør
+        questions:
+        - id: KVITTERING
+          text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
+          type: RADIO
+          answers:
+          - answer: Ja
+            next: none
+          - answer: Nei
+            next: none
+        next: none
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
-    - id: KVITTERING
-      text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
-      type: RADIO
-      answers:
-      - answer: Ja
         next: none
-      - answer: Nei
-        next: none
-      next: none
 
 - id: FREMMET_DATO
   text: Angi dato bruker fremmet serviceklagen
