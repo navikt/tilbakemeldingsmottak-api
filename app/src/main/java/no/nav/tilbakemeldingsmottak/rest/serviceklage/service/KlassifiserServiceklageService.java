@@ -18,6 +18,7 @@ import no.nav.tilbakemeldingsmottak.exceptions.RequestParsingException;
 import no.nav.tilbakemeldingsmottak.exceptions.joark.FeilregistrerSakstilknytningFunctionalException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
@@ -39,6 +40,7 @@ public class KlassifiserServiceklageService {
     private final OppgaveConsumer oppgaveConsumer;
     private final JournalpostConsumer journalpostConsumer;
     private final EndreOppgaveRequestToMapper endreOppgaveRequestToMapper;
+    private final HentSkjemaService hentSkjemaService;
     private final PdfService pdfService;
     private final ServiceklageMailHelper mailHelper;
 
@@ -79,26 +81,40 @@ public class KlassifiserServiceklageService {
         log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
 
         if (JA.equals(request.getKvittering())) {
-            sendKvittering(request, hentOppgaveResponseTo.getId());
+            try {
+                sendKvittering(serviceklage, hentOppgaveResponseTo);
+            } catch (JsonProcessingException e) {
+                log.warn("Kunne ikke produsere kvittering på mail");
+            }
         }
     }
 
-    private void sendKvittering(KlassifiserServiceklageRequest request, String oppgaveId) throws DocumentException {
-        ObjectMapper m = new ObjectMapper();
-
-        Map<String, String> answersMap = m.convertValue(request, new TypeReference<Map<String, String>>(){})
-                .entrySet().stream()
+    private void sendKvittering(Serviceklage serviceklage, HentOppgaveResponseTo hentOppgaveResponseTo) throws DocumentException, JsonProcessingException {
+        HentSkjemaResponse skjemaResponse = hentOppgaveResponseTo.getJournalpostId() != null ?
+                hentSkjemaService.hentSkjema(hentOppgaveResponseTo.getJournalpostId()) :
+                hentSkjemaService.readSkjema();
+        Map<String, String> answersMap = new ObjectMapper().readValue(serviceklage.getKlassifiseringJson(), new TypeReference<Map<String, String>>(){})
+                .entrySet()
+                .stream()
                 .filter(entry -> entry.getValue() != null)
+                .filter(entry -> defaultValuesContainsEntry(skjemaResponse, entry))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        byte[] pdf = pdfService.opprettKlassifiseringPdf(answersMap);
+        byte[] pdf = pdfService.opprettKlassifiseringPdf(answersMap, skjemaResponse.getQuestions());
 
         mailHelper.sendEmail(fromAddress,
                 "bjornar.hunshamar@trygdeetaten.no",
                 "Kvittering på innsendt klassifiseringsskjema",
-                "Serviceklage med oppgave-id " + oppgaveId + " har blitt klassifisert. " +
+                "Serviceklage med oppgave-id " + hentOppgaveResponseTo.getId() + " har blitt klassifisert. " +
                         "Innholdet i ditt utfylte skjema ligger vedlagt.",
                 pdf);
+    }
+
+    private boolean defaultValuesContainsEntry(HentSkjemaResponse skjemaResponse, Map.Entry entry) {
+        if (skjemaResponse.getDefaultAnswers() == null || skjemaResponse.getDefaultAnswers().getAnswers() == null) {
+            return false;
+        }
+        return skjemaResponse.getDefaultAnswers().getAnswers().keySet().contains(entry.getKey().toString());
     }
 
     private void feilregistrerSakstilkytning(HentOppgaveResponseTo hentOppgaveResponseTo) {

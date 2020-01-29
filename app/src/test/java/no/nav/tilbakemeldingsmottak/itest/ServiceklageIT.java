@@ -298,6 +298,29 @@ class ServiceklageIT extends AbstractIT {
 
     @Test
     @SneakyThrows
+    void happyPathKlassifiserServiceklageMedKvittering() {
+        restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
+
+        assertEquals(serviceklageRepository.count(), 1);
+        String fremmetDato = serviceklageRepository.findAll().iterator().next().getFremmetDato().toString();
+
+        KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
+        request.setKvittering("Ja");
+        request.setFremmetDato(fremmetDato);
+        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + OPPGAVE_ID, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
+        TestTransaction.start();
+
+        assertEquals(serviceklageRepository.count(), 1);
+    }
+
+    @Test
+    @SneakyThrows
     void happyPathKlassifiserKommunalKlage() {
         restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
 

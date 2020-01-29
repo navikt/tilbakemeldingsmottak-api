@@ -13,11 +13,9 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.HentSkjemaService;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -38,7 +36,6 @@ public final class PdfService {
     private Font boldUnderline = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD|Font.UNDERLINE);
 
     private final OidcUtils oidcUtils;
-    private final HentSkjemaService hentSkjemaService;
 
     public byte[] opprettTomPdf() throws DocumentException {
         Document document = new Document();
@@ -117,10 +114,7 @@ public final class PdfService {
         return stream.toByteArray();
     }
 
-    public byte[] opprettKlassifiseringPdf(Map<String, String> answersMap) throws DocumentException {
-        HentSkjemaResponse hentSkjemaResponse = hentSkjemaService.readSkjema();
-        List<Question> questions = hentSkjemaResponse.getQuestions();
-
+    public byte[] opprettKlassifiseringPdf(Map<String, String> answersMap, List<Question> questions) throws DocumentException {
         Document document = new Document();
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -129,14 +123,12 @@ public final class PdfService {
         document.open();
 
         for (Map.Entry entry : answersMap.entrySet()) {
-            if (!hentSkjemaResponse.getDefaultAnswers().getAnswers().keySet().contains(entry.getKey().toString())) {
-                String question = getQuestionById(questions, entry.getKey().toString())
-                        .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + entry.getKey().toString()))
-                        .getText();
-                document.add(createSimpleParagraph(question, bold));
-                document.add(createSimpleParagraph(entry.getValue().toString(),regular));
-                document.add(createSimpleParagraph("", regular));
-            }
+            String question = getQuestionById(questions, entry.getKey().toString())
+                    .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + entry.getKey().toString()))
+                    .getText();
+            document.add(createSimpleParagraph(question, bold));
+            document.add(createSimpleParagraph(entry.getValue().toString(),regular));
+            document.add(createSimpleParagraph("", regular));
         }
 
         document.close();
