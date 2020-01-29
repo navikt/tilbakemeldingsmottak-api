@@ -13,6 +13,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
@@ -117,7 +118,8 @@ public final class PdfService {
     }
 
     public byte[] opprettKlassifiseringPdf(Map<String, String> answersMap) throws DocumentException {
-        List<Question> questions = hentSkjemaService.readSkjema().getQuestions();
+        HentSkjemaResponse hentSkjemaResponse = hentSkjemaService.readSkjema();
+        List<Question> questions = hentSkjemaResponse.getQuestions();
 
         Document document = new Document();
 
@@ -127,10 +129,14 @@ public final class PdfService {
         document.open();
 
         for (Map.Entry entry : answersMap.entrySet()) {
-            String question = getQuestionById(questions, entry.getKey().toString())
-                    .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + entry.getKey().toString()))
-                    .getText();
-            document.add(createParagraph(question, entry.getValue().toString(), "/n", true));
+            if (!hentSkjemaResponse.getDefaultAnswers().getAnswers().keySet().contains(entry.getKey().toString())) {
+                String question = getQuestionById(questions, entry.getKey().toString())
+                        .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + entry.getKey().toString()))
+                        .getText();
+                document.add(createSimpleParagraph(question, bold));
+                document.add(createSimpleParagraph(entry.getValue().toString(),regular));
+                document.add(createSimpleParagraph("", regular));
+            }
         }
 
         document.close();
@@ -139,16 +145,15 @@ public final class PdfService {
     }
 
     private Paragraph createParagraph(String fieldname, String content) {
-        return createParagraph(fieldname, content, ": ", false);
+        Paragraph p = new Paragraph();
+        p.add(new Chunk(fieldname + ": ", bold));
+        p.add(new Chunk(content, regular));
+        return p;
     }
 
-    private Paragraph createParagraph(String fieldname, String content, String delimiter, boolean addNewline) {
+    private Paragraph createSimpleParagraph(String content, Font font) {
         Paragraph p = new Paragraph();
-        p.add(new Chunk(fieldname + delimiter, bold));
-        p.add(new Chunk(content, regular));
-        if (addNewline) {
-            p.add(new Chunk("/n", regular));
-        }
+        p.add(new Chunk(content, font));
         return p;
     }
 
