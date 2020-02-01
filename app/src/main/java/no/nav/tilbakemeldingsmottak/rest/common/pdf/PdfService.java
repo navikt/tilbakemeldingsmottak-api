@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.rest.common.pdf;
 
 import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.NONE;
 import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -147,7 +148,10 @@ public final class PdfService {
                         .filter(a -> a.getAnswer().equals(answersMap.get(questionId)))
                         .findFirst();
 
-                if (answer.isPresent() && answer.get().getQuestions() != null && !answer.get().getQuestions().isEmpty()) {
+                if (answer.isPresent()
+                        && answer.get().getQuestions() != null
+                        && !answer.get().getQuestions().isEmpty()
+                        && !answer.get().getNext().equals(NONE)) {
                     addQuestionsToDocument(answersMap, answer.get().getQuestions(), document);
                 }
             }
