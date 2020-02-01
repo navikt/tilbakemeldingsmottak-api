@@ -2,8 +2,6 @@ package no.nav.tilbakemeldingsmottak.rest.common.pdf;
 
 import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.NONE;
-import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.itextpdf.text.Chunk;
@@ -13,12 +11,8 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.RequiredArgsConstructor;
-import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Answer;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionType;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -26,9 +20,7 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -118,44 +110,24 @@ public final class PdfService {
         return stream.toByteArray();
     }
 
-    public byte[] opprettKlassifiseringPdf(Map<String, String> answersMap, List<Question> questions) throws DocumentException {
+    public byte[] opprettKlassifiseringPdf(Map<String, String> questionAnswerMap) throws DocumentException {
         Document document = new Document();
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, stream);
 
         document.open();
-        addQuestionsToDocument(answersMap, questions, document);
+
+        int questionIndex = 1;
+        for (Map.Entry entry : questionAnswerMap.entrySet()) {
+            document.add(createSimpleParagraph(questionIndex + ". " + entry.getKey().toString(), bold));
+            document.add(createSimpleParagraph(entry.getValue().toString(),regular));
+            document.add(createSimpleParagraph(" ", regular));
+            questionIndex++;
+        }
         document.close();
 
         return stream.toByteArray();
-    }
-
-    private void addQuestionsToDocument(Map<String, String> answersMap, List<Question> questions, Document document) throws DocumentException {
-        for (Question q : questions) {
-            String questionId = q.getId();
-            if (answersMap.keySet().contains(q.getId())) {
-                String question = getQuestionById(questions, questionId)
-                        .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + questionId))
-                        .getText();
-                document.add(createSimpleParagraph(question, bold));
-                document.add(createSimpleParagraph(answersMap.get(questionId),regular));
-                document.add(createSimpleParagraph(" ", regular));
-            }
-
-            if (q.getType().equals(QuestionType.RADIO)) {
-                Optional<Answer> answer = q.getAnswers().stream()
-                        .filter(a -> a.getAnswer().equals(answersMap.get(questionId)))
-                        .findFirst();
-
-                if (answer.isPresent()
-                        && answer.get().getQuestions() != null
-                        && !answer.get().getQuestions().isEmpty()
-                        && !NONE.equals(answer.get().getNext())) {
-                    addQuestionsToDocument(answersMap, answer.get().getQuestions(), document);
-                }
-            }
-        }
     }
 
     private Paragraph createParagraph(String fieldname, String content) {
