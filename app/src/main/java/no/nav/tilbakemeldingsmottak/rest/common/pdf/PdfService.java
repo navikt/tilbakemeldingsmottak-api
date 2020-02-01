@@ -151,7 +151,7 @@ public final class PdfService {
                 if (answer.isPresent()
                         && answer.get().getQuestions() != null
                         && !answer.get().getQuestions().isEmpty()
-                        && !answer.get().getNext().equals(NONE)) {
+                        && !NONE.equals(answer.get().getNext())) {
                     addQuestionsToDocument(answersMap, answer.get().getQuestions(), document);
                 }
             }
