@@ -13,9 +13,11 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Answer;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionType;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -121,7 +124,13 @@ public final class PdfService {
         PdfWriter.getInstance(document, stream);
 
         document.open();
+        addQuestionsToDocument(answersMap, questions, document);
+        document.close();
 
+        return stream.toByteArray();
+    }
+
+    private void addQuestionsToDocument(Map<String, String> answersMap, List<Question> questions, Document document) throws DocumentException {
         for (Question q : questions) {
             String questionId = q.getId();
             if (answersMap.keySet().contains(q.getId())) {
@@ -132,11 +141,17 @@ public final class PdfService {
                 document.add(createSimpleParagraph(answersMap.get(questionId),regular));
                 document.add(createSimpleParagraph(" ", regular));
             }
+
+            if (q.getType().equals(QuestionType.RADIO)) {
+                Optional<Answer> answer = q.getAnswers().stream()
+                        .filter(a -> a.getAnswer().equals(answersMap.get(questionId)))
+                        .findFirst();
+
+                if (answer.isPresent() && answer.get().getQuestions() != null && !answer.get().getQuestions().isEmpty()) {
+                    addQuestionsToDocument(answersMap, questions, document);
+                }
+            }
         }
-
-        document.close();
-
-        return stream.toByteArray();
     }
 
     private Paragraph createParagraph(String fieldname, String content) {
