@@ -96,8 +96,8 @@ public class KlassifiserServiceklageService {
         if (JA.equals(request.getKvittering())) {
             try {
                 sendKvittering(serviceklage, hentOppgaveResponseTo);
-            } catch (JsonProcessingException e) {
-                log.warn("Kunne ikke produsere kvittering på mail");
+            } catch (Exception e) {
+                log.warn("Kunne ikke produsere kvittering på mail", e.getMessage());
             }
         }
     }
@@ -111,7 +111,7 @@ public class KlassifiserServiceklageService {
         byte[] pdf = pdfService.opprettKlassifiseringPdf(questionAnswerMap);
 
         mailHelper.sendEmail(fromAddress,
-                "bjornar.hunshamar@trygdeetaten.no",
+                email,
                 "Kvittering på innsendt klassifiseringsskjema",
                 "Serviceklage med oppgave-id " + hentOppgaveResponseTo.getId() + " har blitt klassifisert. " +
                         "Innholdet i ditt utfylte skjema ligger vedlagt.",
