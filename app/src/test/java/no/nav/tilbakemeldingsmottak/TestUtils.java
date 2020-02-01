@@ -115,6 +115,7 @@ public class TestUtils {
     public static final String UTFALL = "b) Regler/rutiner/frister er fulgt men NAV burde ivaretatt bruker bedre";
     public static final String AARSAK = "Service har vært dårlig";
     public static final String TILTAK = "Gi bedre service";
+    public static final String KVITTERING = "Nei";
 
     public static final String BEHANDLES_IKKE_SOM_SERVICEKLAGE = "Nei, annet";
     public static final String KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser";
@@ -246,6 +247,7 @@ public class TestUtils {
                 .tiltak(TILTAK)
                 .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)
                 .svarIkkeNoedvendig(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
+                .kvittering(KVITTERING)
                 .build();
     }
 
@@ -257,6 +259,7 @@ public class TestUtils {
                 .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
                 .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)
                 .svarIkkeNoedvendig(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
+                .kvittering(KVITTERING)
                 .build();
     }
 
@@ -268,6 +271,7 @@ public class TestUtils {
                 .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
                 .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)
                 .svarIkkeNoedvendig(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
+                .kvittering(KVITTERING)
                 .build();
     }
 
@@ -279,6 +283,7 @@ public class TestUtils {
                 .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
                 .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)
                 .svarIkkeNoedvendig(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
+                .kvittering(KVITTERING)
                 .build();
     }
 

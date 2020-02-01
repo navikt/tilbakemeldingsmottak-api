@@ -11,7 +11,6 @@ public final class ServiceklageConstants {
     public static final String GJELDER_SOSIALHJELP = "GJELDER_SOSIALHJELP";
     public static final String KLAGETEKST = "KLAGETEKST";
     public static final String BEHANDLES_SOM_SERVICEKLAGE = "BEHANDLES_SOM_SERVICEKLAGE";
-    public static final String BEHANDLES_SOM_SERVICEKLAGE_SPESIFISER = "BEHANDLES_SOM_SERVICEKLAGE_SPESIFISER";
     public static final String FREMMET_DATO = "FREMMET_DATO";
     public static final String INNSENDER = "INNSENDER";
     public static final String KANAL = "KANAL";
@@ -26,13 +25,11 @@ public final class ServiceklageConstants {
     public static final String TILGJENGELIGHET = "TILGJENGELIGHET";
     public static final String INFORMASJON = "INFORMASJON";
     public static final String VEILEDNING = "VEILEDNING";
-    public static final String TEMA_SPESIFISER = "TEMA_SPESIFISER";
     public static final String UTFALL = "UTFALL";
     public static final String AARSAK = "AARSAK";
     public static final String TILTAK = "TILTAK";
     public static final String SVARMETODE = "SVARMETODE";
     public static final String SVAR_IKKE_NOEDVENDIG = "SVAR_IKKE_NOEDVENDIG";
-    public static final String SVARMETODE_SPESIFISER = "SVARMETODE_SPESIFISER";
     public static final String BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING = "BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING";
     public static final String FULGT_BRUKERVEILEDNING_GOSYS = "FULGT_BRUKERVEILEDNING_GOSYS";
     public static final String KOMMUNAL_BEHANDLING = "KOMMUNAL_BEHANDLING";
@@ -40,8 +37,8 @@ public final class ServiceklageConstants {
     public static final String BESKRIVELSE = "BESKRIVELSE";
     public static final String TEMA_UTDYPNING = "TEMA_UTDYPNING";
     public static final String SVARMETODE_UTDYPNING = "SVARMETODE_UTDYPNING";
+    public static final String KVITTERING = "KVITTERING";
     public static final String AVSLUTTET_DATO = "AVSLUTTET_DATO";
-    public static final String FERDIG_DATO = "FERDIG_DATO";
 
     public static final String KLASSIFISERING_JSON = "KLASSIFISERING_JSON";
     public static final String SKJEMA_VERSJON = "SKJEMA_VERSJON";

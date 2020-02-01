@@ -1,10 +1,15 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
+import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.NONE;
+import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.joark.JournalpostConsumer;
@@ -13,16 +18,30 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestT
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.RequestParsingException;
+import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
+import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
 import no.nav.tilbakemeldingsmottak.exceptions.joark.FeilregistrerSakstilknytningFunctionalException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
+import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Answer;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionType;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
+import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,6 +52,10 @@ public class KlassifiserServiceklageService {
     private final OppgaveConsumer oppgaveConsumer;
     private final JournalpostConsumer journalpostConsumer;
     private final EndreOppgaveRequestToMapper endreOppgaveRequestToMapper;
+    private final HentSkjemaService hentSkjemaService;
+    private final PdfService pdfService;
+    private final ServiceklageMailHelper mailHelper;
+    private final OidcUtils oicdUtils;
 
     @Value("${email_serviceklage_address}")
     private String toAddress;
@@ -47,7 +70,7 @@ public class KlassifiserServiceklageService {
     private static final String JA = "Ja";
     private static final String ANNET = "Annet";
 
-    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo)  {
+    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo) throws DocumentException {
         if (KOMMUNAL_KLAGE.equals(request.getBehandlesSomServiceklage())) {
             log.info("Klagen har blitt markert som en kommunal klage. Journalposten feilregistreres.");
             feilregistrerSakstilkytning(hentOppgaveResponseTo);
@@ -69,8 +92,80 @@ public class KlassifiserServiceklageService {
 
         ferdigstillOppgave(hentOppgaveResponseTo);
         log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
+
+        if (JA.equals(request.getKvittering())) {
+            try {
+                sendKvittering(serviceklage, hentOppgaveResponseTo);
+            } catch (Exception e) {
+                log.warn("Kunne ikke produsere kvittering på mail", e.getMessage());
+            }
+        }
     }
 
+    private void sendKvittering(Serviceklage serviceklage, HentOppgaveResponseTo hentOppgaveResponseTo) throws DocumentException, JsonProcessingException {
+
+        String email = oicdUtils.getEmailForIssuer(LOGINSERVICE_ISSUER).orElseThrow(() -> new ServiceklageIkkeFunnetException("Fant ikke email-adresse i token"));
+
+        LinkedHashMap<String, String> questionAnswerMap = createQuestionAnswerMap(serviceklage, hentOppgaveResponseTo);
+
+        byte[] pdf = pdfService.opprettKlassifiseringPdf(questionAnswerMap);
+
+        mailHelper.sendEmail(fromAddress,
+                email,
+                "Kvittering på innsendt klassifiseringsskjema",
+                "Serviceklage med oppgave-id " + hentOppgaveResponseTo.getId() + " har blitt klassifisert. " +
+                        "Innholdet i ditt utfylte skjema ligger vedlagt.",
+                pdf);
+        log.info("Kvittering sendt på mail til saksbehandler");
+    }
+
+    private LinkedHashMap<String, String> createQuestionAnswerMap(Serviceklage serviceklage, HentOppgaveResponseTo hentOppgaveResponseTo) throws JsonProcessingException {
+        LinkedHashMap<String, String> questionAnswerMap = new LinkedHashMap<>();
+        HentSkjemaResponse skjemaResponse = hentOppgaveResponseTo.getJournalpostId() != null ?
+                hentSkjemaService.hentSkjema(hentOppgaveResponseTo.getJournalpostId()) :
+                hentSkjemaService.readSkjema();
+        Map<String, String> answersMap = new ObjectMapper().readValue(serviceklage.getKlassifiseringJson(), new TypeReference<Map<String, String>>(){})
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getValue() != null)
+                .filter(entry -> !defaultValuesContainsEntry(skjemaResponse, entry))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        addEntriesToQuestionAnswerMap(answersMap, skjemaResponse.getQuestions(), questionAnswerMap);
+        return questionAnswerMap;
+    }
+
+    private void addEntriesToQuestionAnswerMap(Map<String, String> answersMap, List<Question> questions, Map<String, String> questionAnswerMap) {
+        for (Question q : questions) {
+            String questionId = q.getId();
+            if (answersMap.keySet().contains(q.getId()) && !questionAnswerMap.keySet().contains(q.getText())) {
+                String question = getQuestionById(questions, questionId)
+                        .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + questionId))
+                        .getText();
+                questionAnswerMap.put(question, answersMap.get(questionId));
+            }
+
+            if (q.getType().equals(QuestionType.RADIO)) {
+                Optional<Answer> answer = q.getAnswers().stream()
+                        .filter(a -> a.getAnswer().equals(answersMap.get(questionId)))
+                        .findFirst();
+
+                if (answer.isPresent()
+                        && answer.get().getQuestions() != null
+                        && !answer.get().getQuestions().isEmpty()
+                        && !NONE.equals(answer.get().getNext())) {
+                    addEntriesToQuestionAnswerMap(answersMap, answer.get().getQuestions(), questionAnswerMap);
+                }
+            }
+        }
+    }
+
+    private boolean defaultValuesContainsEntry(HentSkjemaResponse skjemaResponse, Map.Entry entry) {
+        if (skjemaResponse.getDefaultAnswers() == null || skjemaResponse.getDefaultAnswers().getAnswers() == null) {
+            return false;
+        }
+        return skjemaResponse.getDefaultAnswers().getAnswers().keySet().contains(entry.getKey().toString());
+    }
 
     private void feilregistrerSakstilkytning(HentOppgaveResponseTo hentOppgaveResponseTo) {
         String journalpostId = hentOppgaveResponseTo.getJournalpostId();

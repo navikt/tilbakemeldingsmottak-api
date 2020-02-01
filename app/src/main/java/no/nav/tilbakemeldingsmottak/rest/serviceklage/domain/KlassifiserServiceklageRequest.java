@@ -14,6 +14,7 @@ import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_UTDYPNING;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KOMMUNAL_BEHANDLING;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KVITTERING;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.PAAKLAGET_ENHET_ER_BEHANDLENDE;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.RELATERT;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVARMETODE;
@@ -116,5 +117,8 @@ public class KlassifiserServiceklageRequest {
 
     @JsonProperty(SVARMETODE_UTDYPNING)
     private String svarmetodeUtdypning;
+
+    @JsonProperty(KVITTERING)
+    private String kvittering;
 
 }

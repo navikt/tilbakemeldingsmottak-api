@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -45,7 +46,7 @@ public final class PdfService {
         return stream.toByteArray();
     }
 
-    public byte[] opprettPdf(OpprettServiceklageRequest request) throws DocumentException {
+    public byte[] opprettServiceklagePdf(OpprettServiceklageRequest request) throws DocumentException {
         Document document = new Document();
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -109,10 +110,36 @@ public final class PdfService {
         return stream.toByteArray();
     }
 
+    public byte[] opprettKlassifiseringPdf(Map<String, String> questionAnswerMap) throws DocumentException {
+        Document document = new Document();
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, stream);
+
+        document.open();
+
+        int questionIndex = 1;
+        for (Map.Entry entry : questionAnswerMap.entrySet()) {
+            document.add(createSimpleParagraph(questionIndex + ". " + entry.getKey().toString(), bold));
+            document.add(createSimpleParagraph(entry.getValue().toString(),regular));
+            document.add(createSimpleParagraph(" ", regular));
+            questionIndex++;
+        }
+        document.close();
+
+        return stream.toByteArray();
+    }
+
     private Paragraph createParagraph(String fieldname, String content) {
         Paragraph p = new Paragraph();
         p.add(new Chunk(fieldname + ": ", bold));
         p.add(new Chunk(content, regular));
+        return p;
+    }
+
+    private Paragraph createSimpleParagraph(String content, Font font) {
+        Paragraph p = new Paragraph();
+        p.add(new Chunk(content, font));
         return p;
     }
 

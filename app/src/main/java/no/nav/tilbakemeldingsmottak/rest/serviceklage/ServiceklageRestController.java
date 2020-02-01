@@ -70,7 +70,7 @@ public class ServiceklageRestController {
     @PutMapping(value = "/klassifiser")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "klassifiserServiceklage"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request,
-                                                                                   @RequestParam String oppgaveId) {
+                                                                                   @RequestParam String oppgaveId) throws DocumentException {
         log.info("Mottatt kall om å klassifisere serviceklage med oppgaveId={}", oppgaveId);
 
         if (NEI.equals(request.getFulgtBrukerveiledningGosys()) || NEI.equals(request.getKommunalBehandling())) {

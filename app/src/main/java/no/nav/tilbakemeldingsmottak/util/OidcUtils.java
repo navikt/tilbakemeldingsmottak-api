@@ -29,6 +29,20 @@ public class OidcUtils {
         }
     }
 
+    public Optional<String> getEmailForIssuer(String issuer) {
+        TokenContext userToken = oidcRequestContextHolder.getOIDCValidationContext().getToken(issuer);
+        if (userToken == null) {
+            return Optional.empty();
+        } else {
+            try {
+                SignedJWT parsedUserToken = SignedJWT.parse(userToken.getIdToken());
+                return Optional.of(parsedUserToken.getPayload().toJSONObject().getAsString("upn"));
+            } catch (ParseException e) {
+                throw new OidcContextException("Feil i parsing av token");
+            }
+        }
+    }
+
     public String getFirstValidToken() {
         return oidcRequestContextHolder.getOIDCValidationContext().getFirstValidToken()
                 .map(TokenContext::getIdToken)

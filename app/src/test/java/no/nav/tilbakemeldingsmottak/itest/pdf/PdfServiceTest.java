@@ -53,7 +53,7 @@ class PdfServiceTest {
     @Test
     void happyPathPrivatperson() throws DocumentException, IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
-        byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
+        byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest);
         String content = getStringFromByteArrayPdf(pdf);
 
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
@@ -63,7 +63,7 @@ class PdfServiceTest {
     @Test
     void happyPathAnnenPerson() throws DocumentException, IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvPerson();
-        byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
+        byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest);
         String content = getStringFromByteArrayPdf(pdf);
 
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
@@ -73,7 +73,7 @@ class PdfServiceTest {
     @Test
     void happyPathBedrift() throws DocumentException, IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
-        byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
+        byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest);
         String content = getStringFromByteArrayPdf(pdf);
 
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
@@ -85,7 +85,7 @@ class PdfServiceTest {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         String langKlagetekst = RandomStringUtils.randomAlphabetic(10000);
         opprettServiceklageRequest.setKlagetekst(langKlagetekst);
-        byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
+        byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest);
         String content = getStringFromByteArrayPdf(pdf);
 
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
@@ -95,7 +95,7 @@ class PdfServiceTest {
     @Test
     void happyPathLokaltKontor() throws DocumentException, IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatpersonLokaltKontor();
-        byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
+        byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest);
         String content = getStringFromByteArrayPdf(pdf);
 
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
@@ -107,7 +107,7 @@ class PdfServiceTest {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         opprettServiceklageRequest.setKlagetyper(Collections.singletonList(Klagetype.ANNET));
         opprettServiceklageRequest.setKlagetypeUtdypning("Spesifisert");
-        byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
+        byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest);
         String content = getStringFromByteArrayPdf(pdf);
 
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
@@ -118,7 +118,7 @@ class PdfServiceTest {
     void happyPathInnlogget() throws DocumentException, IOException {
         when(oidcUtils.getSubjectForIssuer(anyString())).thenReturn(Optional.of(PERSONNUMMER));
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
-        byte[] pdf = pdfService.opprettPdf(opprettServiceklageRequest);
+        byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest);
         String content = getStringFromByteArrayPdf(pdf);
 
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
