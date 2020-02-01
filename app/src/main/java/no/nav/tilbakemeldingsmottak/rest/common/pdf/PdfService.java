@@ -128,7 +128,7 @@ public final class PdfService {
                     .getText();
             document.add(createSimpleParagraph(question, bold));
             document.add(createSimpleParagraph(entry.getValue().toString(),regular));
-            document.add(createSimpleParagraph("", regular));
+            document.add(createSimpleParagraph(" ", regular));
         }
 
         document.close();

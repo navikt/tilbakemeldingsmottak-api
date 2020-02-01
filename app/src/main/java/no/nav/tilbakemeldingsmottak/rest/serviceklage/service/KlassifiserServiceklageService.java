@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
+import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
@@ -15,6 +16,7 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestT
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.RequestParsingException;
+import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.exceptions.joark.FeilregistrerSakstilknytningFunctionalException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
@@ -23,6 +25,7 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServicek
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
+import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +46,7 @@ public class KlassifiserServiceklageService {
     private final HentSkjemaService hentSkjemaService;
     private final PdfService pdfService;
     private final ServiceklageMailHelper mailHelper;
+    private final OidcUtils oicdUtils;
 
     @Value("${email_serviceklage_address}")
     private String toAddress;
@@ -90,6 +94,8 @@ public class KlassifiserServiceklageService {
     }
 
     private void sendKvittering(Serviceklage serviceklage, HentOppgaveResponseTo hentOppgaveResponseTo) throws DocumentException, JsonProcessingException {
+
+        String email = oicdUtils.getEmailForIssuer(LOGINSERVICE_ISSUER).orElseThrow(() -> new ServiceklageIkkeFunnetException("Fant ikke email-adresse i token"));
         HentSkjemaResponse skjemaResponse = hentOppgaveResponseTo.getJournalpostId() != null ?
                 hentSkjemaService.hentSkjema(hentOppgaveResponseTo.getJournalpostId()) :
                 hentSkjemaService.readSkjema();
@@ -108,6 +114,7 @@ public class KlassifiserServiceklageService {
                 "Serviceklage med oppgave-id " + hentOppgaveResponseTo.getId() + " har blitt klassifisert. " +
                         "Innholdet i ditt utfylte skjema ligger vedlagt.",
                 pdf);
+        log.info("Mail sendt til " + email);
     }
 
     private boolean defaultValuesContainsEntry(HentSkjemaResponse skjemaResponse, Map.Entry entry) {
