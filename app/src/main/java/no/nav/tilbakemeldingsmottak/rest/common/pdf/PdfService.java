@@ -122,13 +122,16 @@ public final class PdfService {
 
         document.open();
 
-        for (Map.Entry entry : answersMap.entrySet()) {
-            String question = getQuestionById(questions, entry.getKey().toString())
-                    .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + entry.getKey().toString()))
-                    .getText();
-            document.add(createSimpleParagraph(question, bold));
-            document.add(createSimpleParagraph(entry.getValue().toString(),regular));
-            document.add(createSimpleParagraph(" ", regular));
+        for (Question q : questions) {
+            String questionId = q.getId();
+            if (answersMap.keySet().contains(q.getId())) {
+                String question = getQuestionById(questions, questionId)
+                        .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + questionId))
+                        .getText();
+                document.add(createSimpleParagraph(question, bold));
+                document.add(createSimpleParagraph(answersMap.get(questionId),regular));
+                document.add(createSimpleParagraph(" ", regular));
+            }
         }
 
         document.close();

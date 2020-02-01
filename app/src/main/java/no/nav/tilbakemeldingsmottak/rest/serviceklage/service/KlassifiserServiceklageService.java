@@ -114,7 +114,7 @@ public class KlassifiserServiceklageService {
                 "Serviceklage med oppgave-id " + hentOppgaveResponseTo.getId() + " har blitt klassifisert. " +
                         "Innholdet i ditt utfylte skjema ligger vedlagt.",
                 pdf);
-        log.info("Mail sendt til " + email);
+        log.info("Kvittering sendt på mail til saksbehandler");
     }
 
     private boolean defaultValuesContainsEntry(HentSkjemaResponse skjemaResponse, Map.Entry entry) {
