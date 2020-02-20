@@ -20,3 +20,4 @@
   "SRVUSER_PATH": "/serviceuser/data/dev/srvtilbakemeldingsmottak",
   "SECRETS_PATH": "/kv/preprod/fss/tilbakemeldingsmottak/default"
 }
+
