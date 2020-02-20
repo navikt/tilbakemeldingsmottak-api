@@ -37,7 +37,7 @@ spec:
     value: {{ NORG2_API_V1_URL }}
   - name: LOGINSERVICE_URL
     value: {{ LOGINSERVICE_URL }}
-  image: repo.adeo.no:5443/dok/tilbakemeldingsmottak
+  image: {{ image }}
   ingresses:
   - {{ INGRESS }}
   liveness:
