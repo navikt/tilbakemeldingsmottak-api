@@ -18,5 +18,5 @@
   "INGRESS": "https://tilbakemeldingsmottak-q1.nais.preprod.local",
   "DB_PATH": "/oracle/data/dev/creds/serviceklage_q1-user",
   "SRVUSER_PATH": "/serviceuser/data/dev/srvtilbakemeldingsmottak",
-  "SECRETS_PATH": "/kv/preprod/fss/tilbakemeldingsmottak/default"
+  "SECRETS_PATH": "/kv/preprod/fss/tilbakemeldingsmottak/q1"
 }
