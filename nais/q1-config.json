@@ -1,0 +1,22 @@
+{
+  "NAMESPACE": "q1",
+  "SPRING_DATASOURCE_URL": "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=a01dbfl042.adeo.no)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=SERVICEKLAGE_Q1)(INSTANCE_NAME=ccf18qa)(UR=A)(SERVER=DEDICATED)))",
+  "AZUREAD_CLIENTID": "0090b6e1-ffcc-4c37-bc21-049f7d1f0fe5",
+  "NO_NAV_SECURITY_OIDC_ISSUER_RESTSTS_DISCOVERYURL": "https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration",
+  "SECURITYTOKENSERVICE_URL": "https://sts-q1.preprod.local/SecurityTokenServiceProvider/",
+  "NO_NAV_SECURITY_OIDC_ISSUER_AZUREAD_DISCOVERYURL": "https://login.microsoftonline.com/NAVtestB2C.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten_ver1",
+  "LOGINSERVICE_ACCEPTED_AUDIENCE": "38e07d31-659d-4595-939a-f18dce3446c5",
+  "LOGINSERVICE_OIDC_CALLBACKURI": "https://loginservice.nais.preprod.local/callback",
+  "NO_NAV_SECURITY_OIDC_ISSUER_ISSO_DISCOVERYURL": "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/.well-known/openid-configuration",
+  "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.preprod.local/rest/v1/sts/token",
+  "JOURNALPOST_V1_URL": "https://dokarkiv-q1.nais.preprod.local/rest/journalpostapi/v1",
+  "OPPGAVE_OPPGAVER_URL": "https://oppgave.nais.preprod.local/api/v1/oppgaver",
+  "AKTOERREGISTER_IDENTER_URL": "https://app-q1.adeo.no/aktoerregister/api/v1",
+  "EREG_API_URL": "https://modapp-q1.adeo.no/ereg/api",
+  "NORG2_API_V1_URL": "https://app-q1.adeo.no/norg2/api/v1",
+  "LOGINSERVICE_URL": "https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login",
+  "INGRESS": "https://tilbakemeldingsmottak-q1.nais.preprod.local",
+  "DB_PATH": "/oracle/data/dev/creds/serviceklage_q1-user",
+  "SRVUSER_PATH": "/serviceuser/data/dev/srvtilbakemeldingsmottak",
+  "SECRETS_PATH": "/kv/preprod/fss/tilbakemeldingsmottak/default"
+}
