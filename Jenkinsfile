@@ -1,5 +1,5 @@
-naisPipeline {
+naiseratorPipeline {
     applicationName = "tilbakemeldingsmottak"
     dockerfileDir = "."
-    deployEnvironmentT = "q1"
+    deployEnvironmentQ = "q1"
 }
