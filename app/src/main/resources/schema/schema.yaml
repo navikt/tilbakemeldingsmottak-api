@@ -43,9 +43,6 @@ questions:
       type: RADIO
       answers:
       - answer: Ja
-        button:
-          info: Trykk fullfør for å feilregistrere dokumentet og ferdigstille oppgaven
-          text: Fullfør
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
@@ -65,9 +62,6 @@ questions:
       type: RADIO
       answers:
       - answer: Ja
-        button:
-          info: Trykk fullfør for å feilregistrere journalpost og ferdigstille oppgaven
-          text: Fullfør
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
@@ -87,9 +81,6 @@ questions:
       type: RADIO
       answers:
       - answer: Ja
-        button:
-          info: Trykk fullfør for å feilregistrere journalpost og ferdigstille oppgaven
-          text: Fullfør
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
@@ -110,9 +101,6 @@ questions:
       type: RADIO
       answers:
       - answer: Ja
-        button:
-          info: Trykk fullfør for å feilregistrere journalpost og ferdigstille oppgaven
-          text: Fullfør
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
