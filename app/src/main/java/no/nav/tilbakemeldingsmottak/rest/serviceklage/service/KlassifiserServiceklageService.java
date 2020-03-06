@@ -171,7 +171,7 @@ public class KlassifiserServiceklageService {
     private void opprettSlettingOppgave(HentOppgaveResponseTo hentOppgaveResponseTo) {
         OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.mapSlettingOppgave(hentOppgaveResponseTo);
         OpprettOppgaveResponseTo opprettOppgaveResponseTo = oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
-        log.info("Opprettet oppgave om sletting av dokument med oppgaveId={]", opprettOppgaveResponseTo.getId());
+        log.info("Opprettet oppgave om sletting av dokument med oppgaveId={}", opprettOppgaveResponseTo.getId());
     }
 
     private Serviceklage getOrCreateServiceklage(String journalpostId) {
