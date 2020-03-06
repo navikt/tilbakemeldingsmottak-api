@@ -7,6 +7,8 @@ import lombok.Value;
 @Builder
 public class HentOppgaveResponseTo {
     String id;
+    String aktoerId;
+    String orgnr;
     String tildeltEnhetsnr;
     String tema;
     String versjon;

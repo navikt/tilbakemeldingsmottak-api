@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support;
 
 import no.nav.tilbakemeldingsmottak.consumer.aktoer.AktoerConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
 import org.springframework.stereotype.Component;
@@ -12,12 +13,15 @@ import java.time.LocalDate;
 @Component
 public class OpprettOppgaveRequestToMapper {
 
-    private static final String TILDELT_ENHETSNR = "4200";
+    private static final String KLAGEINSTANS_ENHETSNR = "4200";
+    private static final String FAGPOST_ENHETSNR = "2950";
     private static final String PRIORITET = "NORM";
-    private static final String TEMA = "SER";
+    private static final String SERVICEKLAGE_TEMA = "SER";
+    private static final String RETTING_TEMA = "RPO";
     private static final String OPPGAVETYPE_VUR = "VUR";
     private static final String OPPGAVETYPE_JFR = "JFR";
     private static final String JOURNALSTATUS_ENDELIG = "ENDELIG";
+    private static final String BESKRIVELSE_SLETTING = "Skal slettes da det ikke er en serviceklage";
     private static final Long DAGER_FRIST = 18L;
 
     private AktoerConsumer aktoerConsumer;
@@ -27,16 +31,31 @@ public class OpprettOppgaveRequestToMapper {
         this.aktoerConsumer = aktoerConsumerService;
     }
 
-    public OpprettOppgaveRequestTo map(String klagenGjelderId, PaaVegneAvType paaVegneAvType, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
+    public OpprettOppgaveRequestTo mapServiceklageOppgave(String klagenGjelderId, PaaVegneAvType paaVegneAvType, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
         return OpprettOppgaveRequestTo.builder()
-                .tildeltEnhetsnr(TILDELT_ENHETSNR)
+                .tildeltEnhetsnr(KLAGEINSTANS_ENHETSNR)
                 .prioritet(PRIORITET)
                 .aktoerId(paaVegneAvType.equals(PaaVegneAvType.BEDRIFT) ? null : aktoerConsumer.hentAktoerIdForIdent(klagenGjelderId).get(klagenGjelderId).getFirstIdent())
                 .orgnr(paaVegneAvType.equals(PaaVegneAvType.BEDRIFT) ? klagenGjelderId : null)
                 .aktivDato(LocalDate.now().toString())
                 .journalpostId(opprettJournalpostResponseTo.getJournalpostId())
-                .tema(TEMA)
+                .tema(SERVICEKLAGE_TEMA)
                 .oppgavetype(JOURNALSTATUS_ENDELIG.equals(opprettJournalpostResponseTo.getJournalstatus()) ? OPPGAVETYPE_VUR : OPPGAVETYPE_JFR)
+                .fristFerdigstillelse(LocalDate.now().plusDays(DAGER_FRIST).toString())
+                .build();
+    }
+
+    public OpprettOppgaveRequestTo mapSlettingOppgave(HentOppgaveResponseTo hentOppgaveResponseTo) {
+        return OpprettOppgaveRequestTo.builder()
+                .tildeltEnhetsnr(FAGPOST_ENHETSNR)
+                .prioritet(PRIORITET)
+                .aktoerId(hentOppgaveResponseTo.getAktoerId())
+                .orgnr(hentOppgaveResponseTo.getOrgnr())
+                .beskrivelse(BESKRIVELSE_SLETTING)
+                .aktivDato(LocalDate.now().toString())
+                .journalpostId(hentOppgaveResponseTo.getJournalpostId())
+                .tema(RETTING_TEMA)
+                .oppgavetype(OPPGAVETYPE_VUR)
                 .fristFerdigstillelse(LocalDate.now().plusDays(DAGER_FRIST).toString())
                 .build();
     }

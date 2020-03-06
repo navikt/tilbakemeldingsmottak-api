@@ -1,6 +1,8 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static no.nav.tilbakemeldingsmottak.TestUtils.AARSAK;
 import static no.nav.tilbakemeldingsmottak.TestUtils.BEHANDLES_SOM_SERVICEKLAGE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.BESKRIVELSE;
@@ -315,6 +317,8 @@ class ServiceklageIT extends AbstractIT {
         TestTransaction.end();
         TestTransaction.start();
 
+        verify(2, postRequestedFor(WireMock.urlPathMatching("/OPPGAVE")));
+
         assertEquals(serviceklageRepository.count(), 1);
         Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
 
@@ -340,6 +344,8 @@ class ServiceklageIT extends AbstractIT {
         TestTransaction.flagForCommit();
         TestTransaction.end();
         TestTransaction.start();
+
+        verify(2, postRequestedFor(WireMock.urlPathMatching("/OPPGAVE")));
 
         assertEquals(serviceklageRepository.count(), 1);
         Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();

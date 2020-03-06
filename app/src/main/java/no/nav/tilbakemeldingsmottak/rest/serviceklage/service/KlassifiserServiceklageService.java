@@ -12,15 +12,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.consumer.joark.JournalpostConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.RequestParsingException;
 import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
-import no.nav.tilbakemeldingsmottak.exceptions.joark.FeilregistrerSakstilknytningFunctionalException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Answer;
@@ -30,6 +30,7 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionType;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
+import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,12 +51,12 @@ public class KlassifiserServiceklageService {
 
     private final ServiceklageRepository serviceklageRepository;
     private final OppgaveConsumer oppgaveConsumer;
-    private final JournalpostConsumer journalpostConsumer;
     private final EndreOppgaveRequestToMapper endreOppgaveRequestToMapper;
     private final HentSkjemaService hentSkjemaService;
     private final PdfService pdfService;
     private final ServiceklageMailHelper mailHelper;
     private final OidcUtils oicdUtils;
+    private final OpprettOppgaveRequestToMapper opprettOppgaveRequestToMapper;
 
     @Value("${email_serviceklage_address}")
     private String toAddress;
@@ -72,17 +73,17 @@ public class KlassifiserServiceklageService {
 
     public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo) throws DocumentException {
         if (KOMMUNAL_KLAGE.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen har blitt markert som en kommunal klage. Journalposten feilregistreres.");
-            feilregistrerSakstilkytning(hentOppgaveResponseTo);
+            log.info("Klagen har blitt markert som en kommunal klage. Oppretter oppgave om sletting av dokument.");
+            opprettSlettingOppgave(hentOppgaveResponseTo);
         } else if (FORVALTNINGSKLAGE.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen har blitt markert som en forvaltningsklage. Journalposten feilregistreres.");
-            feilregistrerSakstilkytning(hentOppgaveResponseTo);
+            log.info("Klagen har blitt markert som en forvaltningsklage. Oppretter oppgave om sletting av dokument.");
+            opprettSlettingOppgave(hentOppgaveResponseTo);
         } else if (BESKJED.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen har blitt markert som en beskjed til NAV. Journalposten feilregistreres.");
-            feilregistrerSakstilkytning(hentOppgaveResponseTo);
+            log.info("Klagen har blitt markert som en beskjed til NAV. Oppretter oppgave om sletting av dokument.");
+            opprettSlettingOppgave(hentOppgaveResponseTo);
         } else if (IKKE_SERVICEKLAGE.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen er ikke en serviceklage. Journalposten feilregistreres.");
-            feilregistrerSakstilkytning(hentOppgaveResponseTo);
+            log.info("Klagen er ikke en serviceklage. Oppretter oppgave om sletting av dokument.");
+            opprettSlettingOppgave(hentOppgaveResponseTo);
         }
 
         Serviceklage serviceklage = getOrCreateServiceklage(hentOppgaveResponseTo.getJournalpostId());
@@ -167,13 +168,10 @@ public class KlassifiserServiceklageService {
         return skjemaResponse.getDefaultAnswers().getAnswers().keySet().contains(entry.getKey().toString());
     }
 
-    private void feilregistrerSakstilkytning(HentOppgaveResponseTo hentOppgaveResponseTo) {
-        String journalpostId = hentOppgaveResponseTo.getJournalpostId();
-        try {
-            journalpostConsumer.feilregistrerSakstilknytning(journalpostId);
-        } catch (FeilregistrerSakstilknytningFunctionalException e) {
-            log.info("Forsøkte å feilregistrere sakstilknytning for journalpost med id={}, men sakstilknytningen er allerede feilregistrert.", journalpostId);
-        }
+    private void opprettSlettingOppgave(HentOppgaveResponseTo hentOppgaveResponseTo) {
+        OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.mapSlettingOppgave(hentOppgaveResponseTo);
+        OpprettOppgaveResponseTo opprettOppgaveResponseTo = oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
+        log.info("Opprettet oppgave med oppgaveId={}", opprettOppgaveResponseTo.getId());
     }
 
     private Serviceklage getOrCreateServiceklage(String journalpostId) {

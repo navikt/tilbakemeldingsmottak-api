@@ -91,7 +91,7 @@ public class OpprettServiceklageService {
 
     private OpprettOppgaveResponseTo forsoekOpprettOppgave(String id, PaaVegneAvType paaVegneAvType, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
         try {
-            OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.map(id, paaVegneAvType, opprettJournalpostResponseTo);
+            OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.mapServiceklageOppgave(id, paaVegneAvType, opprettJournalpostResponseTo);
             return oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
         } catch (OpprettOppgaveFunctionalException | OpprettOppgaveTechnicalException e) {
             mailHelper.sendEmail(fromAddress, toAddress, SUBJECT_OPPGAVE_FEILET, TEXT_OPPGAVE_FEILET + opprettJournalpostResponseTo.getJournalpostId());

@@ -1,16 +1,13 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, {Component} from "react";
+import {connect} from "react-redux";
 import Hovedknapp from "nav-frontend-knapper/lib/hovedknapp";
 import AlertStripe from "nav-frontend-alertstriper";
 import queryString from "query-string";
 import SchemaRender from "../components/schema/SchemaRender";
-import { ServiceklageApi } from "../api/Api";
-import {
-  DefaultAnswersMapper,
-  SchemaMapper
-} from "../mappers/skjema/SkjemaMapper";
+import {ServiceklageApi} from "../api/Api";
+import {DefaultAnswersMapper, SchemaMapper} from "../mappers/skjema/SkjemaMapper";
 import Dokument from "../components/Dokument";
-import { RESET_KLASSIFISERING, UPDATE_SCHEMA } from "../store/actions";
+import {RESET_KLASSIFISERING, UPDATE_SCHEMA} from "../store/actions";
 import "./Klassifisering.less";
 
 class Klassifisering extends Component {
@@ -81,7 +78,8 @@ class Klassifisering extends Component {
                     .reverse()
                     .find(answer => answer.button) || {
                     button: {
-                      text: "Trykk fullfør for å ferdigstille oppgaven"
+                      info: "Trykk fullfør for å ferdigstille oppgaven",
+                      text: "Fullfør"
                     }
                   };
                   return (
