@@ -127,6 +127,7 @@ public class AbstractIT {
 
     @AfterEach
     void tearDown() {
+        WireMock.reset();
         smtpServer.stop();
     }
 
