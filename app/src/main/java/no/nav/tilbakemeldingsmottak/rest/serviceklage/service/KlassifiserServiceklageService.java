@@ -73,16 +73,16 @@ public class KlassifiserServiceklageService {
 
     public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo) throws DocumentException {
         if (KOMMUNAL_KLAGE.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen har blitt markert som en kommunal klage. Journalposten feilregistreres.");
+            log.info("Klagen har blitt markert som en kommunal klage. Oppretter oppgave om sletting av dokument.");
             opprettSlettingOppgave(hentOppgaveResponseTo);
         } else if (FORVALTNINGSKLAGE.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen har blitt markert som en forvaltningsklage. Journalposten feilregistreres.");
+            log.info("Klagen har blitt markert som en forvaltningsklage. Oppretter oppgave om sletting av dokument.");
             opprettSlettingOppgave(hentOppgaveResponseTo);
         } else if (BESKJED.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen har blitt markert som en beskjed til NAV. Journalposten feilregistreres.");
+            log.info("Klagen har blitt markert som en beskjed til NAV. Oppretter oppgave om sletting av dokument.");
             opprettSlettingOppgave(hentOppgaveResponseTo);
         } else if (IKKE_SERVICEKLAGE.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen er ikke en serviceklage. Journalposten feilregistreres.");
+            log.info("Klagen er ikke en serviceklage. Oppretter oppgave om sletting av dokument.");
             opprettSlettingOppgave(hentOppgaveResponseTo);
         }
 
@@ -171,7 +171,7 @@ public class KlassifiserServiceklageService {
     private void opprettSlettingOppgave(HentOppgaveResponseTo hentOppgaveResponseTo) {
         OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.mapSlettingOppgave(hentOppgaveResponseTo);
         OpprettOppgaveResponseTo opprettOppgaveResponseTo = oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
-        log.info("Opprettet oppgave om sletting av dokument med oppgaveId={}", opprettOppgaveResponseTo.getId());
+        log.info("Opprettet oppgave med oppgaveId={}", opprettOppgaveResponseTo.getId());
     }
 
     private Serviceklage getOrCreateServiceklage(String journalpostId) {
