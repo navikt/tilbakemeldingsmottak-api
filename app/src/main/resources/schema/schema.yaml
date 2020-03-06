@@ -87,15 +87,6 @@ questions:
       next: none
   - answer: Nei, annet
     questions:
-    - id: FULGT_BRUKERVEILEDNING_GOSYS
-      text: Har du knyttet dokumentet til andre aktuelle tema og sørget for at henvendelsen behandles? Jf. brukerveiledningen for Gosys
-      type: RADIO
-      answers:
-      - answer: Ja
-      - answer: Nei
-        button:
-          text: Lukk og gå tilbake til Gosys
-        next: none
     - id: KVITTERING
       text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
       type: RADIO
