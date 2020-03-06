@@ -16,6 +16,7 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.RequestParsingException;
 import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
@@ -169,8 +170,8 @@ public class KlassifiserServiceklageService {
 
     private void opprettSlettingOppgave(HentOppgaveResponseTo hentOppgaveResponseTo) {
         OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.mapSlettingOppgave(hentOppgaveResponseTo);
-        oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
-        log.info("Opprettet oppgave om sletting av dokument");
+        OpprettOppgaveResponseTo opprettOppgaveResponseTo = oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
+        log.info("Opprettet oppgave om sletting av dokument med oppgaveId={]", opprettOppgaveResponseTo.getId());
     }
 
     private Serviceklage getOrCreateServiceklage(String journalpostId) {
