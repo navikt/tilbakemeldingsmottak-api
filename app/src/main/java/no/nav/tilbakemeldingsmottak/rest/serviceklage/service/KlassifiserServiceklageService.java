@@ -66,7 +66,6 @@ public class KlassifiserServiceklageService {
     private static final String KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser";
     private static final String FORVALTNINGSKLAGE = "Nei, en forvaltningsklage";
     private static final String BESKJED = "Nei, en beskjed til NAV";
-    private static final String IKKE_SERVICEKLAGE = "Nei, annet";
 
     private static final String JA = "Ja";
     private static final String ANNET = "Annet";
@@ -80,9 +79,6 @@ public class KlassifiserServiceklageService {
             opprettSlettingOppgave(hentOppgaveResponseTo);
         } else if (BESKJED.equals(request.getBehandlesSomServiceklage())) {
             log.info("Klagen har blitt markert som en beskjed til NAV. Oppretter oppgave om sletting av dokument.");
-            opprettSlettingOppgave(hentOppgaveResponseTo);
-        } else if (IKKE_SERVICEKLAGE.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen er ikke en serviceklage. Oppretter oppgave om sletting av dokument.");
             opprettSlettingOppgave(hentOppgaveResponseTo);
         }
 

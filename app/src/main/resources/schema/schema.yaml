@@ -34,6 +34,8 @@ questions:
       type: RADIO
       answers:
       - answer: Ja
+        button:
+          text: Trykk fullfør for å ferdigstille oppgaven. Dokumentet vil bli slettet.
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
@@ -53,6 +55,8 @@ questions:
       type: RADIO
       answers:
       - answer: Ja
+        button:
+          text: Trykk fullfør for å ferdigstille oppgaven. Dokumentet vil bli slettet.
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
@@ -72,6 +76,8 @@ questions:
       type: RADIO
       answers:
       - answer: Ja
+        button:
+          text: Trykk fullfør for å ferdigstille oppgaven. Dokumentet vil bli slettet.
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
@@ -123,7 +129,7 @@ questions:
       text: Spesifiser
       type: TEXT
       banner:
-        message: Unngå sensitive personopplysninger
+        message: Ikke identifiser bruker eller ansatt
         type: WARN
 
 - id: PAAKLAGET_ENHET_ER_BEHANDLENDE
@@ -152,7 +158,7 @@ questions:
   text: Gi en kort beskrivelse av serviceklagen
   type: TEXT
   banner:
-    message: Unngå sensitive personopplysninger
+    message: Ikke identifiser bruker eller ansatt. Beskrivelsen blir brukt til læring.
     type: WARN
 
 - id: YTELSE
@@ -208,6 +214,7 @@ questions:
       - answer: Svartid telefon
       - answer: Ventetid kontakt bruker
       - answer: Svartid/ventetid i andre tilfeller
+      - answer: Annet
   - answer: Tilgjengelighet
     questions:
     - id: TILGJENGELIGHET
@@ -216,7 +223,8 @@ questions:
       answers:
       - answer: Mulighet til kontakt i dagens kanaler
       - answer: Nedetid i NAVs løsninger
-      - answer: Kanal mangler
+      - answer: Ønsket kanal mangler
+      - answer: Annet
   - answer: Informasjon
     questions:
     - id: INFORMASJON
@@ -227,6 +235,7 @@ questions:
       - answer: Muntlig ved oppmøte/møte
       - answer: På nav.no /andre brukerflater i NAV
       - answer: I brev
+      - answer: Annet
   - answer: Funksjonalitet i NAVs løsninger
   - answer: Veiledning og oppfølging mot arbeid
     questions:
@@ -237,6 +246,7 @@ questions:
       - answer: Muntlig over telefon
       - answer: Muntlig ved oppmøte/møte
       - answer: På nav.no/andre brukerflater i NAV
+      - answer: Annet
   - answer: NAV-ansattes oppførsel
   - answer: Annet
     questions:
@@ -244,7 +254,7 @@ questions:
       text: Spesifiser
       type: INPUT
       banner:
-        message: Unngå sensitive personopplysninger
+        message: Ikke identifiser bruker eller ansatt
         type: WARN
 
 - id: UTFALL
@@ -258,13 +268,13 @@ questions:
       text: Hva er, etter din mening, de bakenforliggende årsakene?
       type: TEXT
       banner:
-        message: Unngå sensitive personopplysninger
+        message: Ikke identifiser bruker eller ansatt
         type: WARN
     - id: TILTAK
       text: Hvordan kan NAV hindre at det samme skjer igjen, etter din mening?
       type: TEXT
       banner:
-        message: Unngå sensitive personopplysninger
+        message: Ikke identifiser bruker eller ansatt
         type: WARN
   - answer: c) Regler/rutiner/frister er brutt - NAV burde ivaretatt bruker bedre
     questions:
@@ -272,13 +282,13 @@ questions:
       text: Hva er, etter din mening, de bakenforliggende årsakene?
       type: TEXT
       banner:
-        message: Unngå sensitive personopplysninger
+        message: Ikke identifiser bruker eller ansatt
         type: WARN
     - id: TILTAK
       text: Hvordan kan NAV hindre at det samme skjer igjen, etter din mening?
       type: TEXT
       banner:
-        message: Unngå sensitive personopplysninger
+        message: Ikke identifiser bruker eller ansatt
         type: WARN
   - answer: d) Prøvd, men ikke klart å finne ut hva som har skjedd
 
@@ -304,7 +314,7 @@ questions:
           text: Spesifiser
           type: TEXT
           banner:
-            message: Unngå sensitive personopplysninger
+            message: Ikke identifiser bruker eller ansatt
             type: WARN
 
 - id: KVITTERING
