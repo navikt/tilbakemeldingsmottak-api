@@ -71,7 +71,7 @@ questions:
         next: none
       - answer: Nei
         next: none
-  - answer: Nei, en beskjed til NAV
+  - answer: Nei, Skriv til oss
     questions:
     - id: FULGT_BRUKERVEILEDNING_GOSYS
       text: Har du knyttet dokumentet til andre aktuelle tema og sørget for at henvendelsen behandles? Jf. brukerveiledningen for Gosys
