@@ -31,6 +31,7 @@
 		<oracle.version>18.3.0.0</oracle.version>
 		<greenmail.version>1.5.10</greenmail.version>
 		<itextpdf.version>5.5.10</itextpdf.version>
+		<nimbus-jose-jwt.version>8.9</nimbus-jose-jwt.version>
 		<oidc-spring-support.version>0.2.18</oidc-spring-support.version>
 		<oidc-spring-test.version>0.2.5</oidc-spring-test.version>
 		<cxf.version>3.2.7</cxf.version>
@@ -41,6 +42,11 @@
 	<dependencyManagement>
 		<dependencies>
 			<!--Security-->
+			<dependency>
+				<groupId>com.nimbusds</groupId>
+				<artifactId>nimbus-jose-jwt</artifactId>
+				<version>${nimbus-jose-jwt.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>no.nav.security</groupId>
 				<artifactId>oidc-spring-support</artifactId>
