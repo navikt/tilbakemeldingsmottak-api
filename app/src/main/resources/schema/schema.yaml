@@ -58,7 +58,7 @@ questions:
       - answer: Ja
         button:
           text: Fullfør
-          info: Trykk fullfør for å ferdigstille oppgaven. Dokumentet vil bli slettet.
+          info: Trykk fullfør for å ferdigstille oppgaven.
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
@@ -80,7 +80,7 @@ questions:
       - answer: Ja
         button:
           text: Fullfør
-          info: Trykk fullfør for å ferdigstille oppgaven. Dokumentet vil bli slettet.
+          info: Trykk fullfør for å ferdigstille oppgaven.
       - answer: Nei
         button:
           text: Lukk og gå tilbake til Gosys
