@@ -300,7 +300,7 @@ class ServiceklageIT extends AbstractIT {
 
     @Test
     @SneakyThrows
-    void happyPathKlassifiserKommunalKlage() {
+    void dersomDetErKommunaltSkalDokumenterSlettes() {
         restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
 
         assertEquals(serviceklageRepository.count(), 1);
@@ -325,10 +325,10 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getBehandlesSomServiceklage(), KOMMUNAL_KLAGE);
         assertEquals(serviceklage.getKlassifiseringJson(), objectMapper.writeValueAsString(request));
     }
-    
+
     @Test
     @SneakyThrows
-    void shouldCreateServiceklageIfServiceklageNotFound() {
+    void EnServiceklageSkalOpprettesOmDenMangler() {
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
         ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + OPPGAVE_ID, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
