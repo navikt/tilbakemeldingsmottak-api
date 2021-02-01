@@ -325,35 +325,7 @@ class ServiceklageIT extends AbstractIT {
         assertEquals(serviceklage.getBehandlesSomServiceklage(), KOMMUNAL_KLAGE);
         assertEquals(serviceklage.getKlassifiseringJson(), objectMapper.writeValueAsString(request));
     }
-
-    @Test
-    @SneakyThrows
-    void happyPathKlassifiserForvaltningsklage() {
-        restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(createOpprettServiceklageRequestPrivatperson(), createHeaders()), OpprettServiceklageResponse.class);
-
-        assertEquals(serviceklageRepository.count(), 1);
-        String fremmetDato = serviceklageRepository.findAll().iterator().next().getFremmetDato().toString();
-
-        KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequestForvaltningsklage();
-        request.setFremmetDato(fremmetDato);
-        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-        ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + OPPGAVE_ID, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        TestTransaction.flagForCommit();
-        TestTransaction.end();
-        TestTransaction.start();
-
-        verify(2, postRequestedFor(WireMock.urlPathMatching("/OPPGAVE")));
-
-        assertEquals(serviceklageRepository.count(), 1);
-        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
-
-        assertEquals(serviceklage.getBehandlesSomServiceklage(), FORVALTNINGSKLAGE);
-        assertEquals(serviceklage.getKlassifiseringJson(), objectMapper.writeValueAsString(request));
-    }
-
+    
     @Test
     @SneakyThrows
     void shouldCreateServiceklageIfServiceklageNotFound() {
