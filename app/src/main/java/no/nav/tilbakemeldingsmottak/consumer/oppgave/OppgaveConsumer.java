@@ -52,9 +52,8 @@ public class OppgaveConsumer {
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "opprettOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public OpprettOppgaveResponseTo opprettOppgave(OpprettOppgaveRequestTo opprettOppgaveRequestTo) {
-        if (log.isDebugEnabled()) {
-            log.debug("Oppretter oppgave");
-        }
+        log.debug("Oppretter oppgave");
+
         try {
 
             HttpHeaders headers = restSecurityHeadersUtils.createOidcHeaders();
@@ -63,9 +62,9 @@ public class OppgaveConsumer {
             HttpEntity<OpprettOppgaveRequestTo> requestEntity = new HttpEntity<>(opprettOppgaveRequestTo, headers);
 
             ResponseEntity<OpprettOppgaveResponseTo> response = restTemplate.exchange(oppgaveUrl, HttpMethod.POST, requestEntity, OpprettOppgaveResponseTo.class);
-            if (log.isDebugEnabled()) {
-                log.debug("Oppgave med oppgaveId={} opprettet", response.getBody().getId());
-            }
+
+            log.debug("Oppgave med oppgaveId={} opprettet", response.getBody().getId());
+
             return response.getBody();
         } catch (HttpClientErrorException e) {
             throw new OpprettOppgaveFunctionalException(String.format("opprettOppgave feilet funksjonelt med statusKode=%s. Feilmelding=%s", e
@@ -78,9 +77,8 @@ public class OppgaveConsumer {
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "endreOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public String endreOppgave(EndreOppgaveRequestTo endreOppgaveRequestTo) {
-        if (log.isDebugEnabled()) {
-            log.debug("Endrer oppgave");
-        }
+        log.debug("Endrer oppgave");
+
         try {
             HttpHeaders headers = restSecurityHeadersUtils.createOidcHeaders();
             headers.set("X-Correlation-ID", MDC.get(MDC_CALL_ID));
@@ -88,9 +86,8 @@ public class OppgaveConsumer {
             HttpEntity<EndreOppgaveRequestTo> requestEntity = new HttpEntity<>(endreOppgaveRequestTo, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(oppgaveUrl+"/"+endreOppgaveRequestTo.getId(), HttpMethod.PATCH, requestEntity, String.class);
-            if (log.isDebugEnabled()) {
-                log.debug("Oppgave endret");
-            }
+            log.debug("Oppgave endret");
+
             return response.getBody();
         } catch (HttpClientErrorException e) {
             throw new EndreOppgaveFunctionalException(String.format("endreOppgave feilet funksjonelt med statusKode=%s. Feilmelding=%s", e
@@ -103,9 +100,8 @@ public class OppgaveConsumer {
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public HentOppgaveResponseTo hentOppgave(String oppgaveId) {
-        if (log.isDebugEnabled()) {
             log.debug("Henter oppgave med id={}", oppgaveId);
-        }
+
         try {
             HttpHeaders headers = restSecurityHeadersUtils.createOidcHeaders();
             headers.set("X-Correlation-ID", MDC.get(MDC_CALL_ID));
@@ -113,9 +109,8 @@ public class OppgaveConsumer {
             HttpEntity<EndreOppgaveRequestTo> requestEntity = new HttpEntity<>(headers);
 
             ResponseEntity<HentOppgaveResponseTo> response = restTemplate.exchange(oppgaveUrl+"/"+oppgaveId, HttpMethod.GET, requestEntity, HentOppgaveResponseTo.class);
-            if (log.isDebugEnabled()) {
-                log.debug("Oppgave hentet");
-            }
+                log.debug("Oppgave hentet id={}", oppgaveId);
+
             return response.getBody();
         } catch (HttpClientErrorException e) {
             throw new HentOppgaveFunctionalException(String.format("hentOppgave feilet funksjonelt med statusKode=%s. Feilmelding=%s", e
