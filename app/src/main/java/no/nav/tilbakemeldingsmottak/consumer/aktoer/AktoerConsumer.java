@@ -24,9 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
-/**
- * @author Ugur Alpay Cenar, Visma Consulting.
- */
+
 @Component
 public class AktoerConsumer {
 	private final RestTemplate restTemplate;
