@@ -74,12 +74,6 @@ public class KlassifiserServiceklageService {
         if (KOMMUNAL_KLAGE.equals(request.getBehandlesSomServiceklage())) {
             log.info("Klagen har blitt markert som en kommunal klage. Oppretter oppgave om sletting av dokument.");
             opprettSlettingOppgave(hentOppgaveResponseTo);
-        } else if (FORVALTNINGSKLAGE.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen har blitt markert som en forvaltningsklage. Oppretter oppgave om sletting av dokument.");
-            opprettSlettingOppgave(hentOppgaveResponseTo);
-        } else if (SKRIV_TIL_OSS.equals(request.getBehandlesSomServiceklage())) {
-            log.info("Klagen har blitt markert som Skriv til oss. Oppretter oppgave om sletting av dokument.");
-            opprettSlettingOppgave(hentOppgaveResponseTo);
         }
 
         Serviceklage serviceklage = getOrCreateServiceklage(hentOppgaveResponseTo.getJournalpostId());
