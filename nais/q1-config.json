@@ -1,6 +1,6 @@
 {
   "NAMESPACE": "q1",
-  "SPRING_DATASOURCE_URL": "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=a01dbfl042.adeo.no)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=SERVICEKLAGE_Q1)(INSTANCE_NAME=ccf18qa)(UR=A)(SERVER=DEDICATED)))",
+  "SPRING_DATASOURCE_URL": "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=a01dbfl033.adeo.no)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=SERVICEKLAGE_Q1)(INSTANCE_NAME=ccf18qa)(UR=A)(SERVER=DEDICATED)))",
   "AZUREAD_CLIENTID": "0090b6e1-ffcc-4c37-bc21-049f7d1f0fe5",
   "NO_NAV_SECURITY_OIDC_ISSUER_RESTSTS_DISCOVERYURL": "https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration",
   "SECURITYTOKENSERVICE_URL": "https://sts-q1.preprod.local/SecurityTokenServiceProvider/",
