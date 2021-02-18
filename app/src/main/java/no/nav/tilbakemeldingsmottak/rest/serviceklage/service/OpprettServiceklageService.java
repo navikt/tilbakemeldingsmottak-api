@@ -94,6 +94,7 @@ public class OpprettServiceklageService {
             OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.mapServiceklageOppgave(id, paaVegneAvType, opprettJournalpostResponseTo);
             return oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
         } catch (OpprettOppgaveFunctionalException | OpprettOppgaveTechnicalException e) {
+            log.error("Hele feilmeldingen", e);
             mailHelper.sendEmail(fromAddress, toAddress, SUBJECT_OPPGAVE_FEILET, TEXT_OPPGAVE_FEILET + opprettJournalpostResponseTo.getJournalpostId());
             throw new EksterntKallException("Feil ved opprettelse av oppgave, journalpostId videresendt til " + toAddress);
         }
