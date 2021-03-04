@@ -328,7 +328,7 @@ class ServiceklageIT extends AbstractIT {
 
     @Test
     @SneakyThrows
-    void EnServiceklageSkalOpprettesOmDenMangler() {
+    void enServiceklageSkalOpprettesOmDenMangler() {
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
         ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + OPPGAVE_ID, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
