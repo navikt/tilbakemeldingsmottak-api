@@ -29,7 +29,7 @@ Hvordan bygge, teste og kjøre koden
 * npm start
 * Kan gå til [http://localhost:3000/serviceklage/klassifiser](http://localhost:3000/serviceklage/klassifiser)
 
-## Bygg til miljø
+## Bygg til akseptansetestmiljø
 * Applikasjonen er PT satt opp for bygg mot Q1
 * [Byggserver](https://dok-jenkins.adeo.no/job/tilbakemeldingsmottak2/) må åpnes i *Chrome skss*  
 * Jobben krever at en godkjenner  
@@ -48,8 +48,14 @@ Bygget feiler | Sjekk loggene, oppdatter pr
 
 
 ## Deploy til produksjon
-* utgangspunkt fra master
-- [ ] TODO å skrive når det blir gjort.
+* Ved merge til master trigges bygg på [master branch](https://dok-jenkins.adeo.no/job/tilbakemeldingsmottak2/job/master/)
+
+ Steg: | Build cangeset | Relase | SCM tag | Sonar rapport | Build release | Deploy til q1 | Produksjon? 
+------- |  ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |---------- |
+ Handling:| Automatisk | Velg versjons bump | Automatisk | Automatisk | Automatisk | Automatisk | Se under 
+
+1. Hvis ja, bekreft at den skal rett ut
+2. Hvis nei, velg **abort**, Deploy til prod av denne versjonen gjørse da gjennom egen jobb  [Deply Naiserator](https://dok-jenkins.adeo.no/view/deploy/job/deploy-naiserator/)
 
 ---
 
@@ -60,8 +66,8 @@ Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på Git
 
 Eller:
 Spørsmål knyttet til kode eller prosjektet kan rettes mot:
-[mail to team-soknad@nav.no](mailto:team-soknad@nav.no)
+[mail to team-soknad@nav.no](mailto:team-innsending@nav.no)
 
 ## For NAV-ansatte
 
-Interne henvendelser kan sendes via Slack i kanalen #Serviceklage.
+Interne henvendelser kan sendes via Slack i kanalen **#Serviceklage**.
