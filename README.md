@@ -35,7 +35,17 @@ Hvordan bygge, teste og kjøre koden
 * Jobben krever at en godkjenner  
     * Build and push dockerimage
     * deploy?
-    
+### Test i miljøet
+For å teste appliaksjonen er en avhengig av å ha:
+1. en test-ident for saksbehandler opprettet i [Ida](https://ida.nais.adeo.no/)
+   - brukeren må ha nasjonal tilgang, tilgang til gosys, enhet 4200 og tema Serviceklage
+2. testperson opprettet i [dolly](https://dolly.nais.preprod.local/)
+
+Innsending gjøres via 
+    [Ditt nav](http://www.dev.nav.no/person/dittnav) eller innlogget/uinlogget fra [Kontakt oss/Tilbakemelding](https://www.dev.nav.no/person/kontakt-oss/nb/tilbakemeldinger) 
+
+Saksbehandling gjøres via [Gosys](https://gosys-nais-q1.nais.preprod.local/gosys/)
+- logg på med test-saksbehandler
 *When it fails*
 * under bygg av docker image eller deploy må det gjennomføres ny commit i branch.  
 Dette må gjøres fordi det må genereres nytt dockerimage da disse må være unike
