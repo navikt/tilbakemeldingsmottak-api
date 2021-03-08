@@ -13,9 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 
-/**
- * @author Ketill Fenne, Visma Consulting
- */
+
 @Configuration
 public class RestConfig {
 	@Bean

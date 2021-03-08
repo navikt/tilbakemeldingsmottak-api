@@ -13,8 +13,8 @@ import java.time.LocalDate;
 @Component
 public class OpprettOppgaveRequestToMapper {
 
-    private static final String KLAGEINSTANS_ENHETSNR = "4200";
-    private static final String FAGPOST_ENHETSNR = "2950";
+    private static final String KLAGEINSTANS_ENHETSNR = "4200"; //enhet som får alle nye serviceklager
+    private static final String FAGPOST_ENHETSNR = "2950"; //enhet som mottar alle sletteoppgavene
     private static final String PRIORITET = "NORM";
     private static final String SERVICEKLAGE_TEMA = "SER";
     private static final String RETTING_TEMA = "RPO";

@@ -14,9 +14,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Properties;
 
-/**
- * @author Joakim Bjørnstad, Jbit AS
- */
+
 @EnableTransactionManagement
 @EnableConfigurationProperties(DataSourceProperties.class)
 @Configuration
