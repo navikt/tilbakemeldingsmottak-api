@@ -17,7 +17,7 @@ Hvordan bygge, teste og kjøre koden
 * applikasjonen bygger med mvn clean install
 * avhengigheter til [Internt repo](https://repo.adeo.no)
 
-## Kjøring lokalt
+## Kjøring lokalt 
 ### For å kjøre applikasjonen lokalt med npm@6.x.x installert:
 * cd web\src\main\web_src
 * npm install
