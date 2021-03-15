@@ -12,15 +12,24 @@
 	<artifactId>app</artifactId>
 	<packaging>jar</packaging>
 
+	<properties>
+		<okhttp3.version>4.9.0</okhttp3.version>
+	</properties>
+
+
 	<dependencies>
 		<!--Security-->
 		<dependency>
 			<groupId>no.nav.security</groupId>
-			<artifactId>oidc-spring-support</artifactId>
+			<artifactId>token-validation-spring</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>no.nav.security</groupId>
-			<artifactId>oidc-spring-test</artifactId>
+			<artifactId>token-validation-spring-test</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>no.nav.security</groupId>
+			<artifactId>token-validation-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -141,16 +150,25 @@
 			<artifactId>resilience4j-circuitbreaker</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.oracle.jdbc</groupId>
+			<groupId>com.oracle.ojdbc</groupId>
 			<artifactId>ojdbc8</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.oracle.jdbc</groupId>
-			<artifactId>ucp</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Fix for okhttp problem ifm tokensupport -->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>mockwebserver</artifactId>
+			<version>${okhttp3.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>${okhttp3.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
