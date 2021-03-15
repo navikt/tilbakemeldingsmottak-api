@@ -7,7 +7,7 @@ import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertIkkeFerdigsti
 import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.security.oidc.api.Protected;
+import no.nav.security.token.support.core.api.Protected;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;

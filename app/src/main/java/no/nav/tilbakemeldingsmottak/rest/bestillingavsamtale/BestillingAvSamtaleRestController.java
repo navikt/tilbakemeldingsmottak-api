@@ -4,7 +4,7 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.security.oidc.api.Protected;
+import no.nav.security.token.support.core.api.Protected;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleResponse;

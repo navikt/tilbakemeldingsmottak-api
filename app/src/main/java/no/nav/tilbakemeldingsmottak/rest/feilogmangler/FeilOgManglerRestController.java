@@ -5,7 +5,7 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.security.oidc.api.Protected;
+import no.nav.security.token.support.core.api.Protected;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerResponse;
