@@ -5,7 +5,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.security.oidc.api.Unprotected;
+import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.nais.selftest.AbstractDependencyCheck;
 import no.nav.tilbakemeldingsmottak.nais.selftest.DependencyCheckResult;
 import no.nav.tilbakemeldingsmottak.nais.selftest.Importance;
