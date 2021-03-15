@@ -8,7 +8,8 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
-import no.nav.security.spring.oidc.test.TokenGeneratorController;
+import no.nav.security.mock.oauth2.MockOAuth2Server;
+import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
 import no.nav.tilbakemeldingsmottak.CoreConfig;
 import no.nav.tilbakemeldingsmottak.config.RepositoryConfig;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
@@ -40,12 +41,16 @@ import javax.inject.Inject;
 @AutoConfigureCache
 @AutoConfigureDataLdap
 @Transactional
+@EnableMockOAuth2Server
 public class AbstractIT {
 
     @Inject
     protected ServiceklageRepository serviceklageRepository;
     @Inject
     protected TestRestTemplate restTemplate;
+    @Inject
+    private MockOAuth2Server mockOAuth2Server;
+
 
     protected GreenMail smtpServer;
     private int port = 2500;
@@ -133,9 +138,11 @@ public class AbstractIT {
         return headers;
     }
 
+
     private String getToken(String user) {
-        TokenGeneratorController tokenGeneratorController = new TokenGeneratorController();
-        return tokenGeneratorController.issueToken(user);
+        /*TokenGeneratorController tokenGeneratorController = new TokenGeneratorController();
+        return tokenGeneratorController.issueToken(user)*/
+        return mockOAuth2Server.issueToken("reststs",user).toString();
     }
 
 }
