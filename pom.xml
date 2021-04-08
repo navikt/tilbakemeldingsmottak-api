@@ -36,26 +36,27 @@
 		<cxf.version>3.2.7</cxf.version>
 		<micrometer.version>1.1.2</micrometer.version>
 		<jackson.version>2.10.0</jackson.version>
+		<spring-cloud.version>1.2.5.RELEASE</spring-cloud.version>
+		<tomakehurst.version>2.19.0</tomakehurst.version>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
 			<!--Security-->
-
-					<!-- Lås nimbus-jose-jwt til versjon som er kompatibel med com.nimbusds:oauth2-oidc-sdk:6.5.
-                         Ellers får man runtime-feil på token-validering, med nyeste publiserte versjon 9.0 av nimbus-jose-jwt. -->
-					<dependency>
-						<groupId>com.nimbusds</groupId>
-						<artifactId>nimbus-jose-jwt</artifactId>
-						<version>8.20</version>
-					</dependency>
-					<!-- Det finnes 2.3-SNAPSHOT av json-smart publisert der ute i det ville,
-                     sørg for å aldri bruke den ved å låse til 2.3. -->
-					<dependency>
-						<groupId>net.minidev</groupId>
-						<artifactId>json-smart</artifactId>
-						<version>2.3</version>
-					</dependency>
+			<!-- Lås nimbus-jose-jwt til versjon som er kompatibel med com.nimbusds:oauth2-oidc-sdk:6.5.
+            Ellers får man runtime-feil på token-validering, med nyeste publiserte versjon 9.0 av nimbus-jose-jwt. -->
+			<dependency>
+				<groupId>com.nimbusds</groupId>
+				<artifactId>nimbus-jose-jwt</artifactId>
+				<version>8.20</version>
+			</dependency>
+			<!-- Det finnes 2.3-SNAPSHOT av json-smart publisert der ute i det ville,
+            sørg for å aldri bruke den ved å låse til 2.3. -->
+			<dependency>
+				<groupId>net.minidev</groupId>
+				<artifactId>json-smart</artifactId>
+				<version>2.3</version>
+			</dependency>
 			<dependency>
 				<groupId>no.nav.security</groupId>
 				<artifactId>token-validation-spring</artifactId>
@@ -84,7 +85,6 @@
 				<artifactId>cxf-rt-ws-security</artifactId>
 				<version>${cxf.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>no.nav.tilbakemeldingsmottak</groupId>
 				<artifactId>web</artifactId>
@@ -132,21 +132,20 @@
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-contract-wiremock</artifactId>
-				<version>1.2.5.RELEASE</version>
+				<version>${spring-cloud.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.github.tomakehurst</groupId>
 				<artifactId>wiremock-standalone</artifactId>
-				<version>2.19.0</version>
+				<version>${tomakehurst.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.oracle.ojdbc</groupId>
 				<artifactId>ojdbc8</artifactId>
-				<version>19.3.0.0</version>
+				<version>${oracle.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>com.icegreen</groupId>
 				<artifactId>greenmail</artifactId>
