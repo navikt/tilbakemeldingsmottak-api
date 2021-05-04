@@ -20,17 +20,5 @@ public class FeilOgManglerIT extends AbstractIT {
 
     private static final String URL_FEIL_OG_MANGLER = "/rest/feil-og-mangler";
 
-    @Test
-    void happyPath() throws MessagingException, IOException {
-        MeldFeilOgManglerRequest request = createMeldFeilOgManglerRequest();
-        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
-        ResponseEntity<MeldFeilOgManglerResponse> response = restTemplate.exchange(URL_FEIL_OG_MANGLER, HttpMethod.POST, requestEntity, MeldFeilOgManglerResponse.class);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertTrue(message.getContent().toString().contains(request.getEpost()));
-        assertTrue(message.getContent().toString().contains(request.getFeiltype().text));
-        assertTrue(message.getContent().toString().contains(request.getMelding()));
-    }
 }

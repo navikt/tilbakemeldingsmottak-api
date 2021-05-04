@@ -21,7 +21,7 @@ public class RosIT extends AbstractIT {
 
     private static final String URL_ROS = "/rest/ros";
 
-    @Test
+/*    @Test
     void happyPath() throws MessagingException, IOException {
         SendRosRequest request = createSendRosRequest();
         HttpEntity requestEntity = new HttpEntity(request, createHeaders());
@@ -46,5 +46,5 @@ public class RosIT extends AbstractIT {
         assertTrue(message.getContent().toString().contains(request.getHvemRoses().text));
         assertTrue(message.getContent().toString().contains(request.getNavKontor()));
         assertTrue(message.getContent().toString().contains(request.getMelding()));
-    }
+    }*/
 }
