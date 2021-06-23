@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.consumer.aktoer.AktoerConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.aktoer.domain.IdentInfoForAktoer;
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
@@ -17,6 +18,7 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklage
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -109,7 +111,8 @@ public class OpprettServiceklageValidator extends RequestValidator {
     private void validateFnr(String fnr) {
         personnummerValidator.validate(fnr);
 
-        if (aktoerConsumer.hentAktoerIdForIdent(fnr).get(fnr).getIdenter() == null) {
+        Map<String, IdentInfoForAktoer> identer = aktoerConsumer.hentAktoerIdForIdent(fnr);
+        if (identer == null || identer.get(fnr) == null || identer.get(fnr).getIdenter() == null) {
             throw new InvalidIdentException("Feil i validering av personnummer");
         }
     }

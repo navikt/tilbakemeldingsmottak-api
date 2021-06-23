@@ -8,5 +8,15 @@
         "identgruppe": "AktoerId"
       }
     ]
+  },
+  "14117119611": {
+    "feilmelding": "null",
+    "identer": [
+      {
+        "gjeldende": true,
+        "ident": "1000010402396",
+        "identgruppe": "AktoerId"
+      }
+    ]
   }
 }
