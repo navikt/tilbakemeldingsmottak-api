@@ -1,26 +1,17 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
-import com.nimbusds.jwt.JWT;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.PlainJWT;
-import com.nimbusds.jwt.SignedJWT;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import lombok.SneakyThrows;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
-import no.nav.security.mock.oauth2.OAuth2Config;
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback;
 import no.nav.security.mock.oauth2.token.OAuth2TokenCallback;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
-import no.nav.security.token.support.test.JwtTokenGenerator;
 import no.nav.tilbakemeldingsmottak.Application;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.*;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,33 +31,20 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
 import org.springframework.web.context.WebApplicationContext;
-import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.servlet.Filter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpResponse;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
-import java.util.function.Supplier;
 
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static no.nav.tilbakemeldingsmottak.TestUtils.*;
-import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETEKST;
-import static no.nav.tilbakemeldingsmottak.TestUtils.KLAGETYPER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.config.Constants.RESTSTS_ISSUER;
 
 
 @ActiveProfiles("itest")
@@ -98,7 +76,7 @@ public class ApplicationTest {
     protected static final String CONSUMER_ID = "theclientid";
     private static final String URL_SERVICEKLAGE = "/rest/serviceklage";
     protected GreenMail smtpServer;
-    private static final String ISSUER = "issuer1";
+    private static final String SRVUSER = "srvtilbakelendingse";
     private static final String INNLOGGET_BRUKER = "14117119611";
     private static final String AUD ="application";
 
@@ -154,7 +132,7 @@ public class ApplicationTest {
         WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/STS"))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value())
                         .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .withBody(String.format("{\"accessToken\": \"%s\", \"token_type\": \"%s\", \"expires_in\":3600}", getToken("isso", "srvtilbakelendingse"), "Bearer"))));
+                        .withBody(String.format("{\"accessToken\": \"%s\", \"token_type\": \"%s\", \"expires_in\":3600}", getToken(RESTSTS_ISSUER, SRVUSER), "Bearer"))));
 
         WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/AKTOER/identer/"))
                 .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
@@ -166,10 +144,12 @@ public class ApplicationTest {
                         .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(createNorg2Response())));
 
+/*
         WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/norg2/enhet"))
                 .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
                         .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(createNorg2Response())));
+*/
 
         WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/safgraphql"))
                 .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
@@ -192,13 +172,20 @@ public class ApplicationTest {
     HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(CONSUMER_ID));
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(INNLOGGET_BRUKER));
+        return headers;
+    }
+
+    HttpHeaders createHeaders(String issuer, String user) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user));
         return headers;
     }
 
 
     private String getToken(String user) {
-        return token(ISSUER, INNLOGGET_BRUKER, AUD);
+        return token(AZURE_ISSUER, user, AUD);
     }
 
     private String getToken(String issuer, String user) {

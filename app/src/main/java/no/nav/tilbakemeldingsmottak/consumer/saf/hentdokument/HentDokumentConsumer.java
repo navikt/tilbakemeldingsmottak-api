@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument;
 
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
+import static no.nav.tilbakemeldingsmottak.consumer.saf.util.HttpHeadersUtil.createAuthHeaderFromToken;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
@@ -13,6 +14,7 @@ import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.Backoff;
@@ -22,6 +24,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import javax.inject.Inject;
+import java.util.function.Consumer;
 
 /**
  * @author Sigurd Midttun, Visma Consulting.
@@ -31,7 +34,7 @@ import javax.inject.Inject;
 public class HentDokumentConsumer implements HentDokument {
 
 	@Inject
-	@Qualifier("arkivclient")
+	@Qualifier("safclient")
 	private WebClient webClient;
 
 	private final String hentDokumentUrl;
@@ -47,9 +50,11 @@ public class HentDokumentConsumer implements HentDokument {
 	@Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
 	@Retryable(include = AbstractTilbakemeldingsmottakTechnicalException.class, backoff = @Backoff(delay = 3, multiplier = 500))
 	public HentDokumentResponseTo hentDokument(String journalpostId, String dokumentInfoId, String variantFormat, String token) {
+		HttpHeaders httpHeaders = createAuthHeaderFromToken(token);
 		byte[] dokument = webClient
 				.method(HttpMethod.GET)
 				.uri(this.hentDokumentUrl + "/"+journalpostId+"/" +dokumentInfoId + "/" + variantFormat)
+				.headers(getHttpHeadersAsConsumer(httpHeaders))
 				.header("Nav-Callid", MDC.get(MDC_CALL_ID))
 				.header("Nav-Consumer-Id", "srvtilbakemeldings")
 				.retrieve()
@@ -82,4 +87,11 @@ public class HentDokumentConsumer implements HentDokument {
 					.getMessage()), e);
 		}
 	}
+
+	private Consumer<HttpHeaders> getHttpHeadersAsConsumer(HttpHeaders httpHeaders) {
+		return consumer -> {
+			consumer.addAll(httpHeaders);
+		};
+	}
+
 }

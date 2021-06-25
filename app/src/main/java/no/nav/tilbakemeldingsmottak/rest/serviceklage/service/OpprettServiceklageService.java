@@ -63,6 +63,7 @@ public class OpprettServiceklageService {
         log.info("Journalpost med journalpostId={} opprettet", opprettJournalpostResponseTo.getJournalpostId());
 
         boolean innlogget = oidcUtils.getSubjectForIssuer(AZURE_ISSUER).isPresent();
+        log.info("Bruker er innlogget " + innlogget);
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request, innlogget);
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
         serviceklageRepository.save(serviceklage);

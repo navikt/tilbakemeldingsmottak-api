@@ -44,7 +44,7 @@ import java.time.Duration;
 public class OppgaveConsumer {
 
     @Inject
-    @Qualifier("aadclient")
+    @Qualifier("serviceuserclient")
     private WebClient webClient;
 
     private final String oppgaveUrl;

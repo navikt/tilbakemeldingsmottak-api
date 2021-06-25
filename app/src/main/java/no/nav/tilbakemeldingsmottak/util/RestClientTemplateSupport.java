@@ -37,6 +37,7 @@ public class RestClientTemplateSupport {
     @Autowired
     private ClientConfigurationProperties clientConfigurationProperties;
 
+/*
     @Bean
     @Qualifier("arkivclient")
     @Scope("prototype")
@@ -49,19 +50,9 @@ public class RestClientTemplateSupport {
 
         return buildWebClient(buildHttpClient(5000,60,60), clientProperties);
     }
+*/
 
-    @Bean
-    @Qualifier("aadclient")
-    @Scope("prototype")
-    WebClient aadClientRestTemplate(
-    ) {
-
-        ClientProperties clientProperties =
-                Optional.ofNullable(clientConfigurationProperties.getRegistration().get("aadclient"))
-                        .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for aadclient"));
-
-        return buildWebClient(buildHttpClient(5000,60,60), clientProperties);
-    }
+/*
 
     @Bean
     @Qualifier("aktoerclient")
@@ -75,7 +66,7 @@ public class RestClientTemplateSupport {
 
         return buildWebClient(buildHttpClient(5000,20,30), clientProperties);
     }
-
+*/
     @Bean
     @Qualifier("serviceuserclient")
     @Scope("prototype")
