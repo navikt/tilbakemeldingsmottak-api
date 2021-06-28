@@ -30,6 +30,8 @@ import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -64,6 +66,11 @@ public class OpprettServiceklageService {
 
         boolean innlogget = oidcUtils.getSubjectForIssuer(AZURE_ISSUER).isPresent();
         log.info("Bruker er innlogget " + innlogget);
+        if (!innlogget) {
+            Optional<String> enBruker = oidcUtils.getSubjectForFirstValidToken();
+            log.info("Bruker fra første validToken = " + (enBruker.isPresent()? enBruker.get() : "ingen funnet"));
+            oidcUtils.checkSubjectOnEachIssuer();
+        }
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request, innlogget);
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
         serviceklageRepository.save(serviceklage);
