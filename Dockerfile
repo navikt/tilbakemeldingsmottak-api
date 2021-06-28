@@ -6,4 +6,4 @@ COPY export-vault-secrets.sh /init-scripts/50-export-vault-secrets.sh
 ENV JAVA_OPTS="-Xmx1024m \
                -Djava.security.egd=file:/dev/./urandom \
                -Dspring.profiles.active=nais \
-               ‑Djdk.tls.client.protocols=TLSv1,TLSv1.1,TLSv1.2"
+               ‑Djdk.tls.client.protocols=\"TLSv1,TLSv1.1,TLSv1.2\""
