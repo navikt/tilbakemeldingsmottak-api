@@ -46,7 +46,7 @@ public final class PdfService {
         return stream.toByteArray();
     }
 
-    public byte[] opprettServiceklagePdf(OpprettServiceklageRequest request) throws DocumentException {
+    public byte[] opprettServiceklagePdf(OpprettServiceklageRequest request, boolean innlogget) throws DocumentException {
         Document document = new Document();
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -54,7 +54,7 @@ public final class PdfService {
 
         document.open();
 
-        if (!oidcUtils.getSubjectForIssuer(AZURE_ISSUER).isPresent()) {
+        if (!innlogget) {
             document.add(createUinnloggetHeader());
             document.add(Chunk.NEWLINE);
         }

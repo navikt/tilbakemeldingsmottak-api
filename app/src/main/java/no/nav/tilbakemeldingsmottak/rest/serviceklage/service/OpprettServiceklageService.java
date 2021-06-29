@@ -59,7 +59,7 @@ public class OpprettServiceklageService {
 
     public OpprettServiceklageResponse opprettServiceklage(OpprettServiceklageRequest request, boolean innlogget) throws DocumentException {
 
-        byte[] fysiskDokument = pdfService.opprettServiceklagePdf(request);
+        byte[] fysiskDokument = pdfService.opprettServiceklagePdf(request, innlogget);
 
         OpprettJournalpostResponseTo opprettJournalpostResponseTo = forsoekOpprettJournalpost(request, fysiskDokument, innlogget);
         log.info("Journalpost med journalpostId={} opprettet", opprettJournalpostResponseTo.getJournalpostId());
