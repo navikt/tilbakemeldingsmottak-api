@@ -70,4 +70,12 @@ public class OidcUtils {
         Optional<JwtToken> userToken = tokenValidationContextHolder.getTokenValidationContext().getJwtTokenAsOptional(issuer);
         log.info("Context issuer=" + issuer + " User="+ (userToken.isPresent()? userToken.get().getSubject(): "Ikke funnet"));
     }
+
+    public String getSubject(String token) {
+        if (token != null) {
+            JwtToken jwtToken = new JwtToken(token);
+            return jwtToken.getSubject();
+        }
+        return null;
+    }
 }

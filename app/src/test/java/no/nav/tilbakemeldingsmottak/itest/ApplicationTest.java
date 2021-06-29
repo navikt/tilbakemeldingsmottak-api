@@ -188,7 +188,7 @@ public class ApplicationTest {
         return token(AZURE_ISSUER, user, AUD);
     }
 
-    private String getToken(String issuer, String user) {
+    public String getToken(String issuer, String user) {
         return token(issuer, user, AUD);
     }
 

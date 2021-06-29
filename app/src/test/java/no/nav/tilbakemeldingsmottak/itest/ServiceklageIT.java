@@ -33,10 +33,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+
 import org.springframework.test.context.transaction.TestTransaction;
 
 import javax.mail.Message;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.Cookie;
 import java.util.Arrays;
 
 class ServiceklageIT extends ApplicationTest {
@@ -52,7 +55,6 @@ class ServiceklageIT extends ApplicationTest {
     @Test
     public void happyPathPrivatperson() {
         OpprettServiceklageRequest msg = createOpprettServiceklageRequestPrivatperson();
-
         HttpEntity requestEntity = new HttpEntity(msg, createHeaders(AZURE_ISSUER, msg.getInnmelder().getPersonnummer()));
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());

@@ -57,20 +57,13 @@ public class OpprettServiceklageService {
     @Value("${email_from_address}")
     private String fromAddress;
 
-    public OpprettServiceklageResponse opprettServiceklage(OpprettServiceklageRequest request) throws DocumentException {
+    public OpprettServiceklageResponse opprettServiceklage(OpprettServiceklageRequest request, boolean innlogget) throws DocumentException {
 
         byte[] fysiskDokument = pdfService.opprettServiceklagePdf(request);
 
-        OpprettJournalpostResponseTo opprettJournalpostResponseTo = forsoekOpprettJournalpost(request, fysiskDokument);
+        OpprettJournalpostResponseTo opprettJournalpostResponseTo = forsoekOpprettJournalpost(request, fysiskDokument, innlogget);
         log.info("Journalpost med journalpostId={} opprettet", opprettJournalpostResponseTo.getJournalpostId());
 
-        boolean innlogget = oidcUtils.getSubjectForIssuer(AZURE_ISSUER).isPresent();
-        log.info("Bruker er innlogget " + innlogget);
-        if (!innlogget) {
-            Optional<String> enBruker = oidcUtils.getSubjectForFirstValidToken();
-            log.info("Bruker fra første validToken = " + (enBruker.isPresent()? enBruker.get() : "ingen funnet"));
-            oidcUtils.checkSubjectOnEachIssuer();
-        }
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request, innlogget);
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
         serviceklageRepository.save(serviceklage);
@@ -87,9 +80,9 @@ public class OpprettServiceklageService {
                 .build();
     }
 
-    private OpprettJournalpostResponseTo forsoekOpprettJournalpost(OpprettServiceklageRequest request, byte[] fysiskDokument) {
+    private OpprettJournalpostResponseTo forsoekOpprettJournalpost(OpprettServiceklageRequest request, byte[] fysiskDokument, boolean innlogget) {
         try {
-            OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument);
+            OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument, innlogget);
             return journalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo);
         } catch (OpprettJournalpostFunctionalException | OpprettJournalpostTechnicalException e) {
             mailHelper.sendEmail(fromAddress, toAddress, SUBJECT_JOURNALPOST_FEILET, TEXT_JOURNALPOST_FEILET, fysiskDokument);
