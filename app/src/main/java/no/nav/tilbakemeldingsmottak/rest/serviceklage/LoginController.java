@@ -27,6 +27,7 @@ public class LoginController {
 	@Unprotected
 	@RequestMapping("/login")
 	public String redirect(HttpServletRequest request, HttpServletResponse response) {
+		log.info("Login ");
 		Optional<Cookie> redirectCookie = CookieUtils.findCookie(request.getCookies(), REDIRECT_COOKIE);
 		if (redirectCookie.isPresent()) {
 			response.addCookie(CookieUtils.createSessionClearingCookie(REDIRECT_COOKIE, true));
