@@ -62,7 +62,8 @@ window.axios.interceptors.response.use(function (response) {
             confirmButtonText: "Yes",
             closeOnConfirm: false
         }, function(){
-            window.location = 'https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login';
+            window.location.href = 'https://loginservice.dev.nav.no/login' + '?redirect=' + window.location.origin
+            //window.location = 'https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login';
             return Promise.reject(error);
         });
     } else {
