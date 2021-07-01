@@ -61,10 +61,10 @@ instance.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
     if (401 === error.response.status || 403 === error.response.status) {
-        //alert("Autentisering mangler, du må logge inn for å fortsette"),
-        //function(){
-            window.location = 'https://loginservice.dev.nav.no/login?redirect=window.location.origin';
-            //window.location = 'https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login';
+        alert("Autentisering mangler, du må logge inn for å fortsette");
+        //window.location = 'https://loginservice.dev.nav.no/login?redirect=window.location.origin';
+        window.location.href = 'https://loginservice.nais.preprod.local/login?redirect=redirect=window.location.origin';
+            //'https://tilbakemeldingsmottak-q1.nais.preprod.local/login';
             //return Promise.reject(error);
         //};
     } else {
