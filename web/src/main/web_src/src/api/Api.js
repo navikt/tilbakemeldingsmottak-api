@@ -20,22 +20,30 @@ const requests = {
     instance
       .delete(`${API_ROOT}${url}`, { data: data, headers: headers })
       .catch(err => {
-        throw err.response;
+          console.log('Delete result: ' + err.response.statusText);
+          console.log('Delete response header: '+ err.response.headers);
+          throw err.response;
       }),
   get: (url, config) =>
     instance.get(`${API_ROOT}${url}`, config).catch(err => {
-      throw err.response;
-    }) .then(console.log('Get result: ' + response.statusText, console.log('Get response header: '+ response.headers))),
+        console.log('Get result: ' + err.response.statusText);
+        console.log('Get response header: '+ err.response.headers);
+        throw err.response;
+    }),
   post: (url, data, headers) =>
     instance
       .post(`${API_ROOT}${url}`, data, { headers: headers })
       .catch(err => {
-        throw err.response;
-      }) .then(console.log('Post result: ' + response.statusText, console.log('Post response header: '+ response.headers))),
+          console.log('Post result: ' + err.response.statusText);
+          console.log('Post response header: '+ err.response.headers);
+          throw err.response;
+      }),
   put: (url, data, headers) =>
     instance.put(`${API_ROOT}${url}`, data, { headers: headers }).catch(err => {
-      throw err.response;
-    }) .then(console.log('Put result: ' + response.statusText, console.log('Put response header: '+ response.headers)))
+        console.log('Put result: ' + err.response.statusText);
+        console.log('Put response header: '+ err.response.headers);
+        throw err.response;
+    })
 };
 
 export const ServiceklageApi = {
