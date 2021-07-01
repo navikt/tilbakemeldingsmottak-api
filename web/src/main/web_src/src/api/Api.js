@@ -53,9 +53,9 @@ instance.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
     if (401 === error.response.status ) {
-        alert({message: "Autentisering mangler, du må logge inn for å fortsette"}),
+        alert("Autentisering mangler, du må logge inn for å fortsette"),
         function(){
-            window.location.href = 'https://loginservice.dev.nav.no/login' + '?redirect=' + window.location.origin
+            window.location.href = 'https://loginservice.dev.nav.no/login' + '?redirect=' + 'https://tilbakemeldingsmottak-q1.nais.preprod.local/serviceklage/klassifiser?oppgaveId=331166456'
             //window.location = 'https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login';
             //return Promise.reject(error);
         };
