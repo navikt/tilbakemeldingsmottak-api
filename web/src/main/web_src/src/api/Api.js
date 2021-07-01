@@ -63,7 +63,7 @@ instance.interceptors.response.use(function (response) {
     if (401 === error.response.status || 403 === error.response.status) {
         alert("Autentisering mangler, du må logge inn for å fortsette");
         window.location = window.location.href.includes("preprod") ?
-            "https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login" :
+            "https://loginservice.nais.preprod.local/login?redirect="+window.location.origin :
             "https://loginservice.nais.local/login?redirect=https://tilbakemeldingsmottak.nais.adeo.no/login";
     } else {
         return Promise.reject(error);
