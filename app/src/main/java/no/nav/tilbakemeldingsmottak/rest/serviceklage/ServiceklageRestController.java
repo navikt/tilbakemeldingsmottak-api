@@ -124,7 +124,6 @@ public class ServiceklageRestController {
         HentDokumentResponse response = hentDokumentService.hentDokument(hentOppgaveResponseTo.getJournalpostId());
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_PDF)
                 .body(response);
     }
 }
