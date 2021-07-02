@@ -33,7 +33,7 @@ public class LoginController {
 		if (redirectCookie.isPresent()) {
 			response.addCookie(CookieUtils.createSessionClearingCookie(REDIRECT_COOKIE, true));
 		} else if (redirectParameter != null) {
-			response.addCookie(CookieUtils.createSessionClearingCookie((new Cookie(REDIRECT_COOKIE,redirectParameter)).toString(), true));
+			return "redirect:"+redirectParameter;
 		}
 		return "redirect:" + redirectCookie
 				.map(Cookie::getValue)
