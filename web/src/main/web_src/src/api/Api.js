@@ -10,7 +10,7 @@ const instance = axios.create({
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
-    Accept: "application/json, text/html",
+    Accept: "application/json, text/html, application/javascript",
     callId
   }
 });
