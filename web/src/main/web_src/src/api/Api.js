@@ -61,11 +61,11 @@ instance.interceptors.response.use(function (response) {
     return response;
 }, function (error) {
     if (401 === error.response.status || 403 === error.response.status) {
-        alert("Autentisering mangler, du må logge inn for å fortsette til" +  window.location.href);
+        alert("Autentisering mangler, du må logge inn for å fortsette til " +  window.location.href);
 
         window.location = window.location.href.includes("preprod") ?
-            "https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login" :
-            "https://loginservice.nais.local/login?redirect=https://tilbakemeldingsmottak.nais.adeo.no/login";
+            "https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login"+"?redirect_cookie="+window.location.href :
+            "https://loginservice.nais.local/login?redirect=https://tilbakemeldingsmottak.nais.adeo.no/login"+"?redirect_cookie="+window.location.href;
     } else {
         return Promise.reject(error);
     }

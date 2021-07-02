@@ -27,10 +27,13 @@ public class LoginController {
 	@Unprotected
 	@RequestMapping("/login")
 	public String redirect(HttpServletRequest request, HttpServletResponse response) {
-		log.info("Login ");
 		Optional<Cookie> redirectCookie = CookieUtils.findCookie(request.getCookies(), REDIRECT_COOKIE);
+		String redirectParameter = request.getParameter(REDIRECT_COOKIE);
+		log.info("Login:" + " RedirectCookie="+redirectCookie.isPresent() + "RedirectParameter="+redirectParameter);
 		if (redirectCookie.isPresent()) {
 			response.addCookie(CookieUtils.createSessionClearingCookie(REDIRECT_COOKIE, true));
+		} else if (redirectParameter != null) {
+			response.addCookie(CookieUtils.createSessionClearingCookie((new Cookie(REDIRECT_COOKIE,redirectParameter)).toString(), true));
 		}
 		return "redirect:" + redirectCookie
 				.map(Cookie::getValue)
