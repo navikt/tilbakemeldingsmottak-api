@@ -11,7 +11,6 @@ import no.nav.security.mock.oauth2.token.OAuth2TokenCallback;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
 import no.nav.tilbakemeldingsmottak.Application;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -144,13 +143,6 @@ public class ApplicationTest {
                         .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(createNorg2Response())));
 
-/*
-        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/norg2/enhet"))
-                .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
-                        .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
-                        .withBody(createNorg2Response())));
-*/
-
         WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/safgraphql"))
                 .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
                         .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
@@ -191,12 +183,6 @@ public class ApplicationTest {
     public String getToken(String issuer, String user) {
         return token(issuer, user, AUD);
     }
-
-/*
-    @Test
-    public void testContext(){
-    }
-*/
 
 
     private String token(String issuerId, String subject, String audience)  {

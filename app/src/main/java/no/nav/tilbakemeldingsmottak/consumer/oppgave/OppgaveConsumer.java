@@ -6,7 +6,6 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
@@ -17,27 +16,17 @@ import no.nav.tilbakemeldingsmottak.exceptions.oppgave.HentOppgaveFunctionalExce
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.HentOppgaveTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveTechnicalException;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentTechnicalException;
-import no.nav.tilbakemeldingsmottak.integration.fasit.ServiceuserAlias;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
-import no.nav.tilbakemeldingsmottak.util.RestSecurityHeadersUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import javax.inject.Inject;
-import java.net.URI;
-import java.time.Duration;
 
 @Slf4j
 @Component
