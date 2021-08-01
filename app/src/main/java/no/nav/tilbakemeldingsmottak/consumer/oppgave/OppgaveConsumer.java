@@ -87,14 +87,14 @@ public class OppgaveConsumer {
                 .onStatus(HttpStatus::isError, statusResponse -> {
                     log.error(String.format("EndreOppgave feilet med statusKode=%s", statusResponse.statusCode()));
                     if (statusResponse.statusCode().is5xxServerError()) {
-                        throw new EndreOppgaveTechnicalException(String.format("EndreOppgave feilet teknisk med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot arkivet feilet"));
+                        throw new EndreOppgaveTechnicalException(String.format("EndreOppgave feilet teknisk med statusKode=%1$s for id = %2$s.", statusResponse
+                                .statusCode(), endreOppgaveRequestTo.getId()), new RuntimeException("Kall mot arkivet feilet"));
                     } else if (statusResponse.statusCode().is4xxClientError()) {
-                        throw new EndreOppgaveFunctionalException(String.format("EndreOppgave feilet funksjonelt med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot arkivet feilet"));
+                        throw new EndreOppgaveFunctionalException(String.format("EndreOppgave feilet funksjonelt med statusKode=%1$s for id = %2$s.", statusResponse
+                                .statusCode(), endreOppgaveRequestTo.getId()), new RuntimeException("Kall mot arkivet feilet"));
                     }
                     return Mono.error(new IllegalStateException(
-                            String.format("EndreOppgave feilet med statusKode=%s", statusResponse.statusCode())));
+                            String.format("EndreOppgave feilet med statusKode=%1$s for id = %2$s ", statusResponse.statusCode(), endreOppgaveRequestTo.getId())));
 
                 })
                 .bodyToMono(String.class)
