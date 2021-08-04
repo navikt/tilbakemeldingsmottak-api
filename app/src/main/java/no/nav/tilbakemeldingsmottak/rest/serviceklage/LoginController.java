@@ -3,7 +3,7 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 import static no.nav.tilbakemeldingsmottak.config.Constants.REDIRECT_COOKIE;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.security.oidc.api.Unprotected;
+import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.util.CookieUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -14,9 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
-/**
- * @author Ugur Alpay Cenar, Visma Consulting.
- */
 @Slf4j
 @Controller
 public class LoginController {
@@ -31,8 +28,12 @@ public class LoginController {
 	@RequestMapping("/login")
 	public String redirect(HttpServletRequest request, HttpServletResponse response) {
 		Optional<Cookie> redirectCookie = CookieUtils.findCookie(request.getCookies(), REDIRECT_COOKIE);
+		String redirectParameter = request.getParameter(REDIRECT_COOKIE);
+		log.info("Login:" + " RedirectCookie="+redirectCookie.isPresent() + "RedirectParameter="+redirectParameter);
 		if (redirectCookie.isPresent()) {
 			response.addCookie(CookieUtils.createSessionClearingCookie(REDIRECT_COOKIE, true));
+		} else if (redirectParameter != null) {
+			return "redirect:"+redirectParameter;
 		}
 		return "redirect:" + redirectCookie
 				.map(Cookie::getValue)

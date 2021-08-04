@@ -16,7 +16,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 
-public class FeilOgManglerIT extends AbstractIT {
+public class FeilOgManglerIT extends ApplicationTest {
 
     private static final String URL_FEIL_OG_MANGLER = "/rest/feil-og-mangler";
 
@@ -33,4 +33,5 @@ public class FeilOgManglerIT extends AbstractIT {
         assertTrue(message.getContent().toString().contains(request.getFeiltype().text));
         assertTrue(message.getContent().toString().contains(request.getMelding()));
     }
+
 }

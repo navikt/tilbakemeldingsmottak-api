@@ -31,7 +31,7 @@ public class OpprettJournalpostRequestToMapper {
 
     private final OidcUtils oidcUtils;
 
-    public OpprettJournalpostRequestTo map(OpprettServiceklageRequest request, byte[] fysiskDokument) {
+    public OpprettJournalpostRequestTo map(OpprettServiceklageRequest request, byte[] fysiskDokument, boolean innlogget) {
         OpprettJournalpostRequestTo opprettJournalpostRequestTo = OpprettJournalpostRequestTo.builder()
                 .avsenderMottaker( AvsenderMottaker.builder()
                         .id(request.getInnmelder().getPersonnummer())
@@ -46,7 +46,7 @@ public class OpprettJournalpostRequestToMapper {
                 .journalfoerendeEnhet(JOURNALFOERENDE_ENHET)
                 .tema(TEMA_SER)
                 .tittel(TITTEL_SERVICEKLAGE)
-                .kanal(oidcUtils.getSubjectForIssuer(AZURE_ISSUER).isPresent() ? KANAL_NAV_NO : KANAL_NAV_NO_UINNLOGGET)
+                .kanal(innlogget ? KANAL_NAV_NO : KANAL_NAV_NO_UINNLOGGET)
                 .build();
 
         opprettJournalpostRequestTo.getDokumenter().add(buildDokument(fysiskDokument));

@@ -9,8 +9,8 @@ import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,7 +20,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Duration;
+import javax.inject.Inject;
 
 /**
  * @author Sigurd Midttun, Visma Consulting.
@@ -28,15 +28,13 @@ import java.time.Duration;
 @Component
 public class EregConsumer implements Ereg {
 
-	private final RestTemplate restTemplate;
+	@Inject
+	@Qualifier("basicclient")
+	private RestTemplate restTemplate;
+
 	private final String eregApiUrl;
 
-	public EregConsumer(RestTemplateBuilder restTemplateBuilder,
-						@Value("${ereg.api.url}") String eregApiUrl) {
-		this.restTemplate = restTemplateBuilder
-				.setReadTimeout(Duration.ofSeconds(20))
-				.setConnectTimeout(Duration.ofSeconds(5))
-				.build();
+	public EregConsumer(@Value("${ereg.api.url}") String eregApiUrl) {
 		this.eregApiUrl = eregApiUrl;
 	}
 

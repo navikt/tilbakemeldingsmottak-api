@@ -122,6 +122,7 @@ public class TestUtils {
     public static final String FORVALTNINGSKLAGE = "Nei, en forvaltningsklage";
     public static final String FULGT_BRUKERVEILEDNING_GOSYS = "Ja";
     public static final String KOMMUNAL_BEHANDLING = "Ja";
+    public static final String SAKSBEHANDLER = "saksbehandler";
 
     public static final String DOKUMENT_INFO_ID = "dokumentInfoId";
 
@@ -148,6 +149,7 @@ public class TestUtils {
                         .navn(NAVN_INNMELDER)
                         .telefonnummer(TELEFONNUMMER)
                         .harFullmakt(HAR_FULLMAKT)
+                        .personnummer(PERSONNUMMER)
                         .rolle(ROLLE)
                         .build())
                 .paaVegneAvPerson(PaaVegneAvPerson.builder()

@@ -16,7 +16,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 
-public class BestillingAvSamtaleIT extends AbstractIT {
+public class BestillingAvSamtaleIT extends ApplicationTest {
 
     private static final String URL_BESTILLING_AV_SAMTALE = "/rest/bestilling-av-samtale";
 
@@ -34,4 +34,5 @@ public class BestillingAvSamtaleIT extends AbstractIT {
         assertTrue(message.getContent().toString().contains(request.getTelefonnummer()));
         assertTrue(message.getContent().toString().contains(request.getTidsrom().text));
     }
+
 }

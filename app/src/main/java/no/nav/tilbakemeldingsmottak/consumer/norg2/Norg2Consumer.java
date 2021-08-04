@@ -10,8 +10,8 @@ import no.nav.tilbakemeldingsmottak.exceptions.norg2.HentEnheterFunctionalExcept
 import no.nav.tilbakemeldingsmottak.exceptions.norg2.HentEnheterTechnicalException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -25,22 +25,20 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Duration;
+import javax.inject.Inject;
 import java.util.List;
 
 
 @Component
 public class Norg2Consumer {
 
-	private final RestTemplate restTemplate;
+	@Inject
+	@Qualifier("basicclient")
+	private RestTemplate restTemplate;
+
 	private final String norg2Url;
 
-	public Norg2Consumer(RestTemplateBuilder restTemplateBuilder,
-						 @Value("${norg2.api.v1.url}") String norg2Url) {
-		this.restTemplate = restTemplateBuilder
-				.setReadTimeout(Duration.ofSeconds(20))
-				.setConnectTimeout(Duration.ofSeconds(5))
-				.build();
+	public Norg2Consumer(@Value("${norg2.api.v1.url}") String norg2Url) {
 		this.norg2Url = norg2Url;
 	}
 

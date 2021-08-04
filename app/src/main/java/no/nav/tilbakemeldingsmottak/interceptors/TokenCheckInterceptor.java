@@ -1,12 +1,10 @@
 package no.nav.tilbakemeldingsmottak.interceptors;
 
 import static no.nav.tilbakemeldingsmottak.config.Constants.RESTSTS_ISSUER;
-
-import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.security.oidc.context.OIDCRequestContextHolder;
-import no.nav.security.oidc.context.TokenContext;
+import no.nav.security.token.support.core.context.TokenValidationContextHolder;
+import no.nav.security.token.support.core.jwt.JwtToken;
 import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,11 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class TokenCheckInterceptor extends AbstractInterceptor {
 
-	private final OIDCRequestContextHolder oidcRequestContextHolder;
+	private final TokenValidationContextHolder tokenValidationContextHolder;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		TokenContext consumerToken = oidcRequestContextHolder.getOIDCValidationContext().getToken(RESTSTS_ISSUER);
+		JwtToken consumerToken = tokenValidationContextHolder.getTokenValidationContext().getJwtToken(RESTSTS_ISSUER);
 		if (consumerToken == null) {
 			String message = "Consumertoken må være satt";
 			log.warn(message);
@@ -30,8 +28,7 @@ public class TokenCheckInterceptor extends AbstractInterceptor {
 			return false;
 
 		} else {
-			SignedJWT parsedConsumerToken = SignedJWT.parse(consumerToken.getIdToken());
-			String consumerId = parsedConsumerToken.getJWTClaimsSet().getSubject();
+			String consumerId = consumerToken.getSubject();
 			if (consumerId != null && consumerId.startsWith("srv")) {
 				addValueToMDC(consumerId, MDCConstants.MDC_CONSUMER_ID);
 			}  else {

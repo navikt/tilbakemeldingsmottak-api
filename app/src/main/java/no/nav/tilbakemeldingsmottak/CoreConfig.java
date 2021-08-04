@@ -1,12 +1,13 @@
 package no.nav.tilbakemeldingsmottak;
 
 import io.micrometer.core.instrument.MeterRegistry;
+import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client;
+import no.nav.security.token.support.spring.api.EnableJwtTokenValidation;
 import no.nav.tilbakemeldingsmottak.integration.fasit.ServiceuserAlias;
 import no.nav.tilbakemeldingsmottak.metrics.DokTimedAspect;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
@@ -14,11 +15,12 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @author Ugur Alpay Cenar, Visma Consulting.
  */
 
-@ComponentScan(basePackages = "no.nav.tilbakemeldingsmottak")
 @Configuration
-@EnableAutoConfiguration
 @EnableAspectJAutoProxy
-@EnableConfigurationProperties(ServiceuserAlias.class)
+@EnableConfigurationProperties({ServiceuserAlias.class})
+@EnableJwtTokenValidation(ignore={"org.springframework", "springfox.documentation.swagger.web.ApiResourceController"})
+@EnableOAuth2Client(cacheEnabled = true)
+@ConfigurationPropertiesScan
 public class CoreConfig {
 
     @Bean

@@ -17,7 +17,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 
-public class RosIT extends AbstractIT {
+public class RosIT extends ApplicationTest {
 
     private static final String URL_ROS = "/rest/ros";
 
@@ -33,7 +33,6 @@ public class RosIT extends AbstractIT {
         assertTrue(message.getContent().toString().contains(request.getHvemRoses().text));
         assertTrue(message.getContent().toString().contains(request.getMelding()));
     }
-
     @Test
     void happyPathNavKontor() throws MessagingException, IOException {
         SendRosRequest request = createSendRosRequestWithNavKontor();

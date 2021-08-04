@@ -1,13 +1,15 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertIkkeFerdigstilt;
 
 import com.itextpdf.text.DocumentException;
+import jdk.jfr.ContentType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.security.oidc.api.Protected;
+import no.nav.security.token.support.core.api.Protected;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
@@ -24,16 +26,10 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserService
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.KlassifiserServiceklageValidator;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
+import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 
@@ -51,19 +47,27 @@ public class ServiceklageRestController {
     private final OpprettServiceklageValidator opprettServiceklageValidator;
     private final KlassifiserServiceklageValidator klassifiserServiceklageValidator;
     private final OppgaveConsumer oppgaveConsumer;
+    private final OidcUtils oidcUtils;
 
     private final String NEI = "Nei";
 
     @Transactional(dontRollbackOn = EksterntKallException.class)
     @PostMapping
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "opprettServiceklage"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<OpprettServiceklageResponse> opprettServiceklage(@RequestBody OpprettServiceklageRequest request) throws DocumentException {
+    public ResponseEntity<OpprettServiceklageResponse>
+            opprettServiceklage(@RequestBody OpprettServiceklageRequest request,
+            @CookieValue(name = "selvbetjening-idtoken", required = false) String selvbetjening)
+            throws DocumentException {
+
         log.info("Mottatt serviceklage via skjema på nav.no");
+        boolean innlogget = oidcUtils.getSubject(selvbetjening) != null ? true : oidcUtils.getSubjectForIssuer(AZURE_ISSUER).isPresent();
+        log.info("Bruker er innlogget " + innlogget);
         opprettServiceklageValidator.validateRequest(request);
-        OpprettServiceklageResponse opprettServiceklageResponse = opprettServiceklageService.opprettServiceklage(request);
+        OpprettServiceklageResponse opprettServiceklageResponse = opprettServiceklageService.opprettServiceklage(request, innlogget);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(opprettServiceklageResponse);
+
     }
 
     @Transactional

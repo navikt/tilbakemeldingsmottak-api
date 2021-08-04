@@ -2,7 +2,7 @@ Tilbakemeldingsmottak
 ================
 
 Tilbakemeldingsmottak / Serviceklage er en applikasjon med både frontend og backend
-for behandling av serviceklager. 
+for mottak og behandling av serviceklager. 
 Applikasjonen har skjema som sendes inn via [kontakt oss på nav.no](https://www.nav.no/person/kontakt-oss/nb/tilbakemeldinger/serviceklage/login)  
 Informasjon sendes inn via en kontakt-oss-api app, Serviceklage omgjør da skjemaet til en pdf,  
 oppretter en kontroll oppgave som følges opp av ansvarlig enhet.
