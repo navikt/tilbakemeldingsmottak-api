@@ -59,10 +59,10 @@ public class OppgaveConsumer {
                     log.error(String.format("OpprettOppgave feilet med statusKode=%s", statusResponse.statusCode()));
                     if (statusResponse.statusCode().is5xxServerError()) {
                         throw new OpprettOppgaveTechnicalException(String.format("OpprettOppgave feilet teknisk med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot arkivet feilet"));
+                                .statusCode()), new RuntimeException("Kall mot oppgave feilet"));
                     } else if (statusResponse.statusCode().is4xxClientError()) {
                         throw new OpprettOppgaveFunctionalException(String.format("OpprettOppgave feilet funksjonelt med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot arkivet feilet"));
+                                .statusCode()), new RuntimeException("Kall mot oppgave feilet"));
                     }
                     return Mono.error(new IllegalStateException(
                             String.format("OpprettOppgave feilet med statusKode=%s", statusResponse.statusCode())));
@@ -88,10 +88,10 @@ public class OppgaveConsumer {
                     log.error(String.format("EndreOppgave feilet med statusKode=%s", statusResponse.statusCode()));
                     if (statusResponse.statusCode().is5xxServerError()) {
                         throw new EndreOppgaveTechnicalException(String.format("EndreOppgave feilet teknisk med statusKode=%1$s for id = %2$s.", statusResponse
-                                .statusCode(), endreOppgaveRequestTo.getId()), new RuntimeException("Kall mot arkivet feilet"));
+                                .statusCode(), endreOppgaveRequestTo.getId()), new RuntimeException("Kall mot oppgave feilet"));
                     } else if (statusResponse.statusCode().is4xxClientError()) {
                         throw new EndreOppgaveFunctionalException(String.format("EndreOppgave feilet funksjonelt med statusKode=%1$s for id = %2$s.", statusResponse
-                                .statusCode(), endreOppgaveRequestTo.getId()), new RuntimeException("Kall mot arkivet feilet"));
+                                .statusCode(), endreOppgaveRequestTo.getId()), new RuntimeException("Kall mot oppgave feilet"));
                     }
                     return Mono.error(new IllegalStateException(
                             String.format("EndreOppgave feilet med statusKode=%1$s for id = %2$s ", statusResponse.statusCode(), endreOppgaveRequestTo.getId())));
@@ -118,10 +118,10 @@ public class OppgaveConsumer {
                     log.error(String.format("HentOppgave feilet med statusKode=%s", statusResponse.statusCode()));
                     if (statusResponse.statusCode().is5xxServerError()) {
                         throw new HentOppgaveTechnicalException(String.format("HentOppgave feilet teknisk med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot arkivet feilet"));
+                                .statusCode()), new RuntimeException("Kall mot oppgave feilet"));
                     } else if (statusResponse.statusCode().is4xxClientError()) {
                         throw new HentOppgaveFunctionalException(String.format("HentOppgave feilet funksjonelt med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot arkivet feilet"));
+                                .statusCode()), new RuntimeException("Kall mot oppgave feilet"));
                     }
                     return Mono.error(new IllegalStateException(
                             String.format("HentOppgave feilet med statusKode=%s", statusResponse.statusCode())));
