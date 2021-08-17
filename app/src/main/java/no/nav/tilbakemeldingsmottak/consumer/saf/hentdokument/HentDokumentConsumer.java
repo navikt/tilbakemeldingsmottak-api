@@ -50,7 +50,9 @@ public class HentDokumentConsumer implements HentDokument {
 	@Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
 	@Retryable(include = AbstractTilbakemeldingsmottakTechnicalException.class, backoff = @Backoff(delay = 3, multiplier = 500))
 	public HentDokumentResponseTo hentDokument(String journalpostId, String dokumentInfoId, String variantFormat, String token) {
+		log.info("Opprett AuthHeader");
 		HttpHeaders httpHeaders = createAuthHeaderFromToken(token);
+		log.info("Opprettet AuthHeader");
 		byte[] dokument = webClient
 				.method(HttpMethod.GET)
 				.uri(this.hentDokumentUrl + "/"+journalpostId+"/" +dokumentInfoId + "/" + variantFormat)
