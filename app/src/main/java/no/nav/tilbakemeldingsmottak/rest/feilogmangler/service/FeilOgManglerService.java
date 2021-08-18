@@ -39,10 +39,10 @@ public class FeilOgManglerService {
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
         helper.setTo(emailToAddress);
         helper.setFrom(emailFromAddress);
-        helper.setSubject("Feil/mangel meldt via skjema på nav.no");
+        helper.setSubject("Feil/mangel på nav.no meldt via skjema på nav.no");
         emailService.sendMail(message);
 
-        log.info("Melding om feil/mangel videresendt til " + emailToAddress);
+        log.info("Melding om feil/mangel på nav.no videresendt til " + emailToAddress);
     }
 
     private String createContent(MeldFeilOgManglerRequest request) {
