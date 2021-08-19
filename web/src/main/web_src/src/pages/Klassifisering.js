@@ -18,7 +18,8 @@ class Klassifisering extends Component {
     this.state = {
       pdf: null,
       status: {},
-      error: null
+      error: null,
+      submitting: false
     };
   }
 
@@ -57,13 +58,16 @@ class Klassifisering extends Component {
         {}
       )
     };
+    this.setState({submitting: true});
     await ServiceklageApi.klassifiser(this.oppgaveId, answers)
       .then(() => (window.location = "/serviceklage/takk"))
       .catch(err => this.setState({ error: err }));
+
+    this.setState({submitting: false});
   }
 
   render() {
-    const { pdf, error } = this.state;
+    const { pdf, error, submitting } = this.state;
     const { status } = this.props;
     return (
       <div className="Row">
@@ -90,7 +94,7 @@ class Klassifisering extends Component {
                         </AlertStripe>
                       )}
                       <div className="SubmitButton">
-                        <Hovedknapp onClick={() => this.submitAnswers()}>
+                        <Hovedknapp onClick={() => this.submitAnswers()} disabled={submitting}>
                           {answer.button.text}
                         </Hovedknapp>
                       </div>

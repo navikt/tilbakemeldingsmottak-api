@@ -41,10 +41,10 @@ public class RosService {
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
         helper.setTo(emailToAddress);
         helper.setFrom(emailFromAddress);
-        helper.setSubject("Ros sendt inn via skjema på nav.no");
+        helper.setSubject("Ros til NAV sendt inn via skjema på nav.no");
         emailService.sendMail(message);
 
-        log.info("Ros videresendt til " + emailToAddress);
+        log.info("Ros til NAV videresendt til " + emailToAddress);
     }
 
     private String createContent(SendRosRequest request) {

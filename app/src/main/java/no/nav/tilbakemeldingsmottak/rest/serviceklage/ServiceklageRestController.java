@@ -87,6 +87,8 @@ public class ServiceklageRestController {
         }
 
         HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
+        log.info("Hentet oppgaveId={}, med versjonsnummer={}", oppgaveId, hentOppgaveResponseTo.getVersjon());
+
         assertIkkeFerdigstilt(hentOppgaveResponseTo);
 
         klassifiserServiceklageValidator.validateRequest(request, hentSkjemaService.hentSkjema(hentOppgaveResponseTo.getJournalpostId()));
