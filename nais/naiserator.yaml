@@ -4,7 +4,7 @@ metadata:
   name: tilbakemeldingsmottak
   namespace: {{ NAMESPACE }}
   labels:
-    team: teamdokumenthandtering
+    team: teamserviceklage
 spec:
   env:
   - name: SPRING_DATASOURCE_URL
