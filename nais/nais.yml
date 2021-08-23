@@ -1,0 +1,76 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: tilbakemeldingsmottak-api
+  namespace: default
+  labels:
+    team: team-soknad
+spec:
+  image: {{image}}
+  port: 8091
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 100
+    failureThreshold: 10
+    timeout: 20
+  readiness:
+    path: /internal/isReady
+    initialDelay: 100
+    timeout: 20
+  preStopHookPath: /internal/stop
+  prometheus:
+    enabled: true
+    path: /internal/prometheus
+  replicas:
+    min: 2
+    max: 4
+  resources:
+    limits:
+      cpu: 3000m
+      memory: 8Gi
+    requests:
+      cpu: 1000m
+      memory: 1024Mi
+  ingresses:
+    - https://tilbakemeldingsmottak.nais.preprod.local
+  vault:
+    enabled: true
+    paths:
+      - mountPath: /var/run/secrets/nais.io/serviceuser
+        kvPath: /serviceuser/data/prod/srvsoknadarkiverer
+      - mountPath: /var/run/secrets/nais.io/kv
+        kvPath: /kv/prod/fss/tilbakemeldingsmottak-api/default
+      - mountPath: /var/run/secrets/nais.io/vault
+        kvPath: /kv/prod/fss/tilbakemeldingsmottak-api/environment
+      - mountPath: /var/run/secrets/nais.io/appdynamics
+        kvPath: /apikey/appdynamics/prod
+
+  env:
+    - name: APP_VERSION
+      value: {{ app_version }}
+    - name: KAFKA_BOOTSTRAP_SERVERS
+      value: SASL_SSL://a01apvl00145.adeo.no:8443,SASL_SSL://a01apvl00146.adeo.no:8443,SASL_SSL://a01apvl00147.adeo.no:8443,SASL_SSL://a01apvl00149.adeo.no:8443
+    - name: SCHEMA_REGISTRY_URL
+      value: https://kafka-schema-registry.nais.adeo.no
+    - name: KAFKA_SECURITY
+      value: 'TRUE'
+    - name: KAFKA_SECPROT
+      value: SASL_SSL
+    - name: KAFKA_SASLMEC
+      value: PLAIN
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
+    - name: KAFKA_INPUT_TOPIC
+      value: privat-soknadInnsendt-v1
+    - name: KAFKA_PROCESSING_TOPIC
+      value: privat-soknadInnsendt-processingEventLog-v1
+    - name: KAFKA_MESSAGE_TOPIC
+      value: privat-soknadInnsendt-messages-v1
+    - name: KAFKA_METRICS_TOPIC
+      value: privat-soknadInnsendt-metrics-v1
+    - name: KAFKA_GROUPID
+      value: tilbakemeldingsmottak-api-groupid-p
+    - name: FILESTORAGE_HOST
+      value: https://soknadsfillager.nais.adeo.no
+    - name: JOARK_HOST
+      value: https://dokarkiv.nais.adeo.no
