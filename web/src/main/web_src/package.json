@@ -9,7 +9,7 @@
   "scripts": {
     "start": "npm-run-all open:src",
     "open:src": "webpack-dev-server --config ./webpack.config.js --port 3000",
-    "prebuild": "npm install --save --legacy-peer-deps",
+    "prebuild": "npm i",
     "build": "cross-env NODE_ENV=production webpack --config ./webpack.config.js",
     "lint": "node_modules/.bin/esw webpack.config.* src",
     "lint:watch": "npm run lint -- --watch",
