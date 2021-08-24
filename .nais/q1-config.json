@@ -14,7 +14,7 @@
   "AKTOERREGISTER_IDENTER_URL": "https://app-q1.adeo.no/aktoerregister/api/v1",
   "EREG_API_URL": "https://modapp-q1.adeo.no/ereg/api",
   "NORG2_API_V1_URL": "https://app-q1.adeo.no/norg2/api/v1",
-  "LOGINSERVICE_URL": "https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login",
+  "LOGINSERVICE_URL": "https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak.nais.preprod.local/login",
   "INGRESS": "https://tilbakemeldingsmottak.nais.preprod.local",
   "DB_PATH": "/oracle/data/dev/creds/serviceklage_q1-user",
   "SRVUSER_PATH": "/serviceuser/data/dev/srvtilbakemeldingsmottak",

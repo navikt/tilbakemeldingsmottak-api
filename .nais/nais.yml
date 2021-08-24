@@ -2,75 +2,77 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: tilbakemeldingsmottak-api
-  namespace: default
+  namespace: teamserviceklage
   labels:
-    team: team-soknad
+    team: teamserviceklage
 spec:
   image: {{image}}
-  port: 8091
+  port: 8080
   liveness:
-    path: /internal/isAlive
-    initialDelay: 100
+    path: /isAlive
+    port: 8080
+    initialDelay: 30
     failureThreshold: 10
     timeout: 20
   readiness:
-    path: /internal/isReady
+    path: /isReady
+    port: 8080
     initialDelay: 100
     timeout: 20
-  preStopHookPath: /internal/stop
   prometheus:
     enabled: true
-    path: /internal/prometheus
+    path: /internal/metrics
   replicas:
-    min: 2
-    max: 4
+    min: 1
+    max: 2
+    cpuThresholdPercentage: 50
   resources:
     limits:
       cpu: 3000m
-      memory: 8Gi
+      memory: 1Gi
     requests:
       cpu: 1000m
-      memory: 1024Mi
+      memory: 1Gi
   ingresses:
     - https://tilbakemeldingsmottak.nais.preprod.local
   vault:
     enabled: true
     paths:
-      - mountPath: /var/run/secrets/nais.io/serviceuser
-        kvPath: /serviceuser/data/prod/srvsoknadarkiverer
-      - mountPath: /var/run/secrets/nais.io/kv
-        kvPath: /kv/prod/fss/tilbakemeldingsmottak-api/default
-      - mountPath: /var/run/secrets/nais.io/vault
-        kvPath: /kv/prod/fss/tilbakemeldingsmottak-api/environment
-      - mountPath: /var/run/secrets/nais.io/appdynamics
-        kvPath: /apikey/appdynamics/prod
+      - kvPath: {{ DB_PATH }}
+        mountPath: /var/run/secrets/nais.io/tilbakemeldingsmottak
+      - kvPath: {{ SRVUSER_PATH }}
+        mountPath: /var/run/secrets/nais.io/srvtilbakemeldingsmottak
+      - kvPath: {{ SECRETS_PATH }}
+        mountPath: /var/run/secrets/nais.io/vault
 
   env:
-    - name: APP_VERSION
-      value: {{ app_version }}
-    - name: KAFKA_BOOTSTRAP_SERVERS
-      value: SASL_SSL://a01apvl00145.adeo.no:8443,SASL_SSL://a01apvl00146.adeo.no:8443,SASL_SSL://a01apvl00147.adeo.no:8443,SASL_SSL://a01apvl00149.adeo.no:8443
-    - name: SCHEMA_REGISTRY_URL
-      value: https://kafka-schema-registry.nais.adeo.no
-    - name: KAFKA_SECURITY
-      value: 'TRUE'
-    - name: KAFKA_SECPROT
-      value: SASL_SSL
-    - name: KAFKA_SASLMEC
-      value: PLAIN
-    - name: SPRING_PROFILES_ACTIVE
-      value: prod
-    - name: KAFKA_INPUT_TOPIC
-      value: privat-soknadInnsendt-v1
-    - name: KAFKA_PROCESSING_TOPIC
-      value: privat-soknadInnsendt-processingEventLog-v1
-    - name: KAFKA_MESSAGE_TOPIC
-      value: privat-soknadInnsendt-messages-v1
-    - name: KAFKA_METRICS_TOPIC
-      value: privat-soknadInnsendt-metrics-v1
-    - name: KAFKA_GROUPID
-      value: tilbakemeldingsmottak-api-groupid-p
-    - name: FILESTORAGE_HOST
-      value: https://soknadsfillager.nais.adeo.no
-    - name: JOARK_HOST
-      value: https://dokarkiv.nais.adeo.no
+    - name: SPRING_DATASOURCE_URL
+      value: {{ SPRING_DATASOURCE_URL }}
+    - name: AZUREAD_CLIENTID
+      value: {{ AZUREAD_CLIENTID }}
+    - name: NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL
+      value: {{ NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL }}
+    - name: SECURITYTOKENSERVICE_URL
+      value: {{ SECURITYTOKENSERVICE_URL }}
+    - name: NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL
+      value: {{ NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL }}
+    - name: LOGINSERVICE_ACCEPTED_AUDIENCE
+      value: {{ LOGINSERVICE_ACCEPTED_AUDIENCE }}
+    - name: LOGINSERVICE_OIDC_CALLBACKURI
+      value: {{ LOGINSERVICE_OIDC_CALLBACKURI }}
+    - name: NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL
+      value: {{ NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL }}
+    - name: SECURITY_TOKEN_SERVICE_TOKEN_URL
+      value: {{ SECURITY_TOKEN_SERVICE_TOKEN_URL }}
+    - name: JOURNALPOST_V1_URL
+      value: {{ JOURNALPOST_V1_URL }}
+    - name: OPPGAVE_OPPGAVER_URL
+      value: {{ OPPGAVE_OPPGAVER_URL }}
+    - name: AKTOERREGISTER_IDENTER_URL
+      value: {{ AKTOERREGISTER_IDENTER_URL }}
+    - name: EREG_API_URL
+      value: {{ EREG_API_URL }}
+    - name: NORG2_API_V1_URL
+      value: {{ NORG2_API_V1_URL }}
+    - name: LOGINSERVICE_URL
+      value: {{ LOGINSERVICE_URL }}
