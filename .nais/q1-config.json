@@ -18,5 +18,6 @@
   "INGRESS": "https://tilbakemeldingsmottak.nais.preprod.local",
   "DB_PATH": "/oracle/data/dev/creds/serviceklage_q1-user",
   "SRVUSER_PATH": "/serviceuser/data/dev/srvtilbakemeldingsmottak",
-  "SECRETS_PATH": "/kv/preprod/fss/tilbakemeldingsmottak-api/teamserviceklage"
+  "SECRETS_PATH": "/kv/preprod/fss/tilbakemeldingsmottak-api/teamserviceklage",
+  "SAF_URL": "https://saf-q1.dev.intern.nav.no/graphql"
 }
