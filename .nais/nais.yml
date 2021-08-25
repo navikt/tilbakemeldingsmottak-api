@@ -76,3 +76,5 @@ spec:
       value: {{ NORG2_API_V1_URL }}
     - name: LOGINSERVICE_URL
       value: {{ LOGINSERVICE_URL }}
+    - name: SAF_URL
+      value: {{ SAF_URL }}
