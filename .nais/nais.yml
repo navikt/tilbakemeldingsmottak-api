@@ -78,3 +78,5 @@ spec:
       value: {{ LOGINSERVICE_URL }}
     - name: SAF_URL
       value: {{ SAF_URL }}
+    - name: SAF_HENTDOKUMENT_URL
+      value: {{SAF_HENTDOKUMENT_URL}}
