@@ -24,6 +24,8 @@ public class RosService {
     private String emailToAddress;
     @Value("${email_from_address}")
     private String emailFromAddress;
+    @Value("${spring.mail.host}")
+    private String springMailHost;
 
     @Inject
     public RosService(AbstractEmailService emailService) {
@@ -42,6 +44,7 @@ public class RosService {
         helper.setTo(emailToAddress);
         helper.setFrom(emailFromAddress);
         helper.setSubject("Ros til NAV sendt inn via skjema på nav.no");
+        logEmailProps();
         emailService.sendMail(message);
 
         log.info("Ros til NAV videresendt til " + emailToAddress);
@@ -57,6 +60,10 @@ public class RosService {
         content.addParagraph("Melding", request.getMelding());
 
         return content.getContentString();
+    }
+
+    private void logEmailProps() {
+        log.info("springMailHost="+springMailHost+"\nemailToAddress="+emailToAddress+"\nemailFromAddress="+emailFromAddress);
     }
 
 }
