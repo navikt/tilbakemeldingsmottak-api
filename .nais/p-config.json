@@ -18,7 +18,7 @@
   "INGRESS": "https://tilbakemeldingsmottak-api.nais.adeo.no",
   "DB_PATH": "/oracle/data/prod/creds/tilbakemeldingsmottak-user",
   "SRVUSER_PATH": "/serviceuser/data/prod/srvtilbakemeldingsmottak",
-  "SECRETS_PATH": "/kv/prod/fss/tilbakemeldingsmottak/default",
+  "SECRETS_PATH": "/kv/prod/fss/tilbakemeldingsmottak-api/teamserviceklage",
   "SAF_URL": "https://saf.intern.nav.no/graphql",
   "SAF_HENTDOKUMENT_URL": "https://saf.intern.nav.no/rest/hentdokument"
 }
