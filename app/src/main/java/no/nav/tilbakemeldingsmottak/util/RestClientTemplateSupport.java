@@ -31,6 +31,8 @@ import java.util.concurrent.TimeUnit;
 @EnableConfigurationProperties(ClientConfigurationProperties.class)
 public class RestClientTemplateSupport {
 
+    private static int MAX_FILE_SIZE = 16 * 1024 *1024;
+
     @Autowired
     private OAuth2AccessTokenService oAuth2AccessTokenService;
 
@@ -68,6 +70,11 @@ public class RestClientTemplateSupport {
 
     private WebClient buildWebClient(HttpClient httpClient, ClientProperties clientProperties)  {
         return WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(MAX_FILE_SIZE))
+                        .build())
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .filter(bearerTokenExchange(clientProperties))
                 .build();
@@ -76,6 +83,11 @@ public class RestClientTemplateSupport {
 
     private WebClient buildWebClient(HttpClient httpClient)  {
         return WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(MAX_FILE_SIZE))
+                        .build())
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .build();
 

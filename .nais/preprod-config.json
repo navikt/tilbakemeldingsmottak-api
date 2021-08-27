@@ -1,5 +1,5 @@
 {
-  "NAMESPACE": "q1",
+  "NAMESPACE": "teamserviceklage",
   "SPRING_DATASOURCE_URL": "jdbc:oracle:thin:@a01dbfl033.adeo.no:1521/SERVICEKLAGE_Q1",
   "AZUREAD_CLIENTID": "0090b6e1-ffcc-4c37-bc21-049f7d1f0fe5",
   "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL": "https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration",
@@ -18,5 +18,7 @@
   "INGRESS": "https://tilbakemeldingsmottak-q1.nais.preprod.local",
   "DB_PATH": "/oracle/data/dev/creds/serviceklage_q1-user",
   "SRVUSER_PATH": "/serviceuser/data/dev/srvtilbakemeldingsmottak",
-  "SECRETS_PATH": "/kv/preprod/fss/tilbakemeldingsmottak/q1"
+  "SECRETS_PATH": "/kv/preprod/fss/tilbakemeldingsmottak-api/teamserviceklage",
+  "SAF_URL": "https://saf-q1.dev.intern.nav.no/graphql",
+  "SAF_HENTDOKUMENT_URL": "https://saf-q1.dev.intern.nav.no/rest/hentdokument"
 }

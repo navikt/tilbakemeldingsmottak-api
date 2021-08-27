@@ -13,7 +13,7 @@ Hvordan bygge, teste og kjøre koden
 
 ## Bygging lokalt
 * Applikasjonen benytter java 11, dette må være installert
-* toolchain.xml må settes opp i ./m2/toolchain.xml
+* toolchain.xml må settes opp i ~/m2/toolchain.xml
 * applikasjonen bygger med mvn clean install
 * avhengigheter til [Internt repo](https://repo.adeo.no)
 

@@ -2,6 +2,8 @@ package no.nav.tilbakemeldingsmottak.rest.common.handlers;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.security.token.support.core.exceptions.JwtTokenMissingException;
+import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
@@ -35,6 +37,15 @@ public class ControllerAdvice {
         log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
         return ResponseEntity.status(status).body(ErrorResponse.builder()
                 .message(ex.getMessage())
+                .build());
+    }
+
+    @ExceptionHandler(value={JwtTokenMissingException.class, JwtTokenUnauthorizedException.class})
+    public ResponseEntity<ErrorResponse> loginRequiredExceptionHandler(HttpServletRequest request, Exception ex) {
+        HttpStatus status = getHttpStatus(ex);
+        log.warn("Autentisering feilet ved kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
+        return ResponseEntity.status(status).body(ErrorResponse.builder()
+                .message(status.getReasonPhrase())
                 .build());
     }
 

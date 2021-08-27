@@ -70,7 +70,7 @@ public class SafGraphqlConsumer {
 				.bodyToMono(SafJsonJournalpost.class)
 				.block();
 
-		if (respons == null || respons.getJournalpost() == null) {
+		if (respons == null || respons.getData() == null || respons.getJournalpost() == null) {
 			throw new SafJournalpostIkkeFunnetFunctionalException("Ingen journalpost ble funnet");
 		}
 		return respons.getJournalpost();
