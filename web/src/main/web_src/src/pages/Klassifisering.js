@@ -24,6 +24,7 @@ class Klassifisering extends Component {
   }
 
   async componentDidMount() {
+    alert("componentDidMount");
     this.props.actions.resetKlassifisering();
     await ServiceklageApi.hentDokument(this.oppgaveId)
       .then(res => {
