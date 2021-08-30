@@ -2,7 +2,7 @@ const isProdBuild = process.env.NODE_ENV === 'production';
 
 const config = {
 	services: {
-		serviceklageBackend: '/rest/serviceklage'
+		serviceklageBackend: '/rest/taskserviceklage'
 	},
 	debug: true
 };

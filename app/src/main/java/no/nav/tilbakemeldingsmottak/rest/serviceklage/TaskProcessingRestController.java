@@ -26,7 +26,7 @@ import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertIkkeFerdigsti
 @Slf4j
 @Protected
 @RestController
-@RequestMapping("/rest/serviceklage")
+@RequestMapping("/rest/taskserviceklage")
 @RequiredArgsConstructor
 public class TaskProcessingRestController {
 
