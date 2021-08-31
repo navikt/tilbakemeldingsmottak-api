@@ -41,12 +41,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '10.14.2'
-      - name: Build with NPM (REMOVE ENV VARS LATER)
-        env:
-          GITHUB_USERNAME: x-access-token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run build
-        working-directory: ./web/src/main/web_src
       - name: Build with maven
         env:
           GITHUB_USERNAME: x-access-token
