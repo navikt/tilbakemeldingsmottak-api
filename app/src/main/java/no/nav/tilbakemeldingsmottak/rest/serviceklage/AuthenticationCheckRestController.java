@@ -16,7 +16,7 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 @Slf4j
 @Unprotected
 @RestController
-@RequestMapping("/rest/serviceklage")
+@RequestMapping("/rest/taskserviceklage")
 @RequiredArgsConstructor
 public class AuthenticationCheckRestController {
 
