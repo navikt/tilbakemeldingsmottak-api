@@ -44,7 +44,7 @@ public class RosService {
         helper.setTo(emailToAddress);
         helper.setFrom(emailFromAddress);
         helper.setSubject("Ros til NAV sendt inn via skjema på nav.no");
-        logEmailProps();
+        //logEmailProps();
         emailService.sendMail(message);
 
         log.info("Ros til NAV videresendt til " + emailToAddress);
