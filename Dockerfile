@@ -6,4 +6,4 @@ COPY tlssetting.properties /securityoverride/tlssetting.properties
 
 ENV JAVA_OPTS="-Xmx1024m \
                -Djava.security.egd=file:/dev/./urandom \
-               -Dspring.profiles.active=nais
+               -Dspring.profiles.active=nais"
