@@ -102,6 +102,9 @@ const redirectToLogin = () => {
 
 instance.interceptors.response.use(
   function (response) {
+      if (response.status === 204) {
+          return Promise.reject('Det er ikke mulig å behandle en serviceklage når det ikke er et dokument tilknyttet oppgaven.');
+      }
     return response;
   },
   function (error) {
