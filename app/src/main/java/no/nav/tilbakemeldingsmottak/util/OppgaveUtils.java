@@ -18,7 +18,7 @@ public class OppgaveUtils {
     }
 
     public static void assertHarJournalpost(HentOppgaveResponseTo hentOppgaveResponseTo) {
-        if (hentOppgaveResponseTo.getJournalpostId() == null || hentOppgaveResponseTo.getJournalpostId() == "") {
+        if (hentOppgaveResponseTo.getJournalpostId() == null || "".equals(hentOppgaveResponseTo.getJournalpostId())) {
             throw new OppgaveManglerJournalpostException(String.format("Oppgave med oppgaveId=%s har ikke tilknyttet dokument i arkivet",
                     hentOppgaveResponseTo.getId()));
         }
