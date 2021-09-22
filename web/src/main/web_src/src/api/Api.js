@@ -102,9 +102,6 @@ const redirectToLogin = () => {
 
 instance.interceptors.response.use(
   function (response) {
-      if (response.status === 204) {
-          return Promise.reject(response);
-      }
     return response;
   },
   function (error) {

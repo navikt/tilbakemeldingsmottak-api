@@ -27,12 +27,16 @@ class Klassifisering extends Component {
     this.props.actions.resetKlassifisering();
     await ServiceklageApi.hentDokument(this.oppgaveId)
       .then(res => {
-        const dataUri = `data:application/pdf;base64,${res.data.dokument}`;
-        this.setState({ ...this.state, pdf: dataUri });
+        if (res.status === 204) {
+          this.setState({ ...this.state });
+        } else {
+          const dataUri = `data:application/pdf;base64,${res.data.dokument}`;
+          this.setState({...this.state, pdf: dataUri});
+        }
       })
       .catch(err => this.setState({ ...this.state, error: err }));
 
-    if (!this.state.error) {
+    if (!this.state.error && this.state.pdf) {
       await ServiceklageApi.hentKlassifiseringSkjema(this.oppgaveId)
         .then(res => {
           this.props.actions.updateSchema({
@@ -109,11 +113,17 @@ class Klassifisering extends Component {
             </div>
           </>
         )}
+        {!error && !pdf && (
+            <div className={"Dokumentfeil"}>
+              <h1>Dokument mangler</h1>
+              <p>{"Det er ikke mulig å behandle en serviceklage når det ikke er et dokument tilknyttet oppgaven."}</p>
+            </div>
+        )}
         {error && (
-          <div className={"Feilmelding"}>
-            <h1>Beklager, det oppstod en feil!</h1>
-            <p>{"Feilmelding: " + error.data.message}</p>
-          </div>
+            <div className={"Feilmelding"}>
+              <h1>Beklager, det oppstod en feil!</h1>
+              <p>{"Feilmelding: " + error.data.message}</p>
+            </div>
         )}
       </div>
     );
