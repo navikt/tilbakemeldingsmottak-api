@@ -22,6 +22,7 @@ import javax.transaction.Transactional;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertIkkeFerdigstilt;
+import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertHarJournalpost;
 
 @Slf4j
 @Protected
@@ -59,6 +60,7 @@ public class TaskProcessingRestController {
         log.info("Hentet oppgaveId={}, med versjonsnummer={}", oppgaveId, hentOppgaveResponseTo.getVersjon());
 
         assertIkkeFerdigstilt(hentOppgaveResponseTo);
+        assertHarJournalpost(hentOppgaveResponseTo);
 
         klassifiserServiceklageValidator.validateRequest(request, hentSkjemaService.hentSkjema(hentOppgaveResponseTo.getJournalpostId()));
         klassifiserServiceklageService.klassifiserServiceklage(request, hentOppgaveResponseTo);
@@ -75,6 +77,7 @@ public class TaskProcessingRestController {
     public ResponseEntity<HentSkjemaResponse> hentSkjema(@PathVariable String oppgaveId) {
         HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
         assertIkkeFerdigstilt(hentOppgaveResponseTo);
+        assertHarJournalpost(hentOppgaveResponseTo);
 
         HentSkjemaResponse response = hentSkjemaService.hentSkjema(hentOppgaveResponseTo.getJournalpostId());
         return ResponseEntity
@@ -88,6 +91,7 @@ public class TaskProcessingRestController {
     public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId) throws DocumentException {
         HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
         assertIkkeFerdigstilt(hentOppgaveResponseTo);
+        assertHarJournalpost(hentOppgaveResponseTo);
 
         HentDokumentResponse response = hentDokumentService.hentDokument(hentOppgaveResponseTo.getJournalpostId());
         return ResponseEntity
