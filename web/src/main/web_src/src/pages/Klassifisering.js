@@ -116,7 +116,19 @@ class Klassifisering extends Component {
         {!error && !pdf && (
             <div className={"Dokumentfeil"}>
               <h1>Dokument mangler</h1>
-              <p>{"Det er ikke mulig å behandle en serviceklage når det ikke er et dokument tilknyttet oppgaven."}</p>
+              <p>Det er ikke mulig å behandle en serviceklage når det ikke er et dokument tilknyttet oppgaven.</p>
+              <h2>Du må:</h2>
+              <ol>
+                <li>Endre oppgavetype på den eksisterende oppgaven til "Vurder henvendelse"-oppgave. Ferdigstill denne oppgaven.</li>
+                <li>Gå inn på journalposten til dokumentet i Gosys som inneholder serviceklagen. Opprett en ny "Vurder dokument"-oppgave derfra. Da kan du behandle serviceklagen.</li>
+              </ol>
+              <div className="GosysButton">
+              <Hovedknapp onClick={() => window.location = window.location.href.includes("preprod") ?
+                  "https://gosys-q1.dev.intern.no/gosys" :
+                  "https://gosys-nais.nais.adeo.no/gosys/"}>
+                  Tilbake til Gosys
+              </Hovedknapp>
+          </div>
             </div>
         )}
         {error && (
