@@ -18,6 +18,7 @@ Hvordan bygge, teste og kjøre koden
 * avhengigheter til [Internt repo](https://repo.adeo.no)
 
 ## Kjøring lokalt 
+TODO - dette må fikses på
 ### For å kjøre applikasjonen lokalt med npm@6.x.x installert:
 * cd web\src\main\web_src
 * npm install
@@ -29,16 +30,15 @@ Hvordan bygge, teste og kjøre koden
 * npm start
 * Kan gå til [http://localhost:3000/serviceklage/klassifiser](http://localhost:3000/serviceklage/klassifiser)
 
-## Bygg til akseptansetestmiljø
+## Bygg og deploy til akseptansetestmiljø
 * Applikasjonen er PT satt opp for bygg mot Q1
-* [Byggserver](https://dok-jenkins.adeo.no/job/tilbakemeldingsmottak2/) må åpnes i *Chrome skss*  
-* Jobben krever at en godkjenner  
-    * Build and push dockerimage
-    * deploy?
+* merge din branch inn i [preprod-pipeline](https://github.com/navikt/tilbakemeldingsmottak-api/tree/preprod-pipeline)
+  * Da blir appliakskjonen deployet og du kan se status [her](https://github.com/navikt/tilbakemeldingsmottak-api/actions)
+    * Kun merge til prod krever PR
 ### Test i miljøet
 For å teste appliaksjonen er en avhengig av å ha:
 1. en test-ident for saksbehandler opprettet i [Ida](https://ida.nais.adeo.no/)
-   - brukeren må ha nasjonal tilgang, tilgang til gosys, enhet 4200 og tema Serviceklage
+   - brukeren må ha nasjonal tilgang, tilgang til gosys, enhet 4200 og tema SRV Serviceklage
 2. testperson opprettet i [dolly](https://dolly.nais.preprod.local/)
 
 Innsending gjøres via 
@@ -58,18 +58,10 @@ Bygget feiler | Sjekk loggene, oppdatter pr
 
 
 ## Deploy til produksjon
-* Ved merge til master trigges bygg på [master branch](https://dok-jenkins.adeo.no/job/tilbakemeldingsmottak2/job/master/)
-
- Steg: | Build cangeset | Relase | SCM tag | Sonar rapport | Build release | Deploy til q1 | Produksjon? 
-------- |  ---------- | ---------- | ---------- | ---------- | ---------- | ---------- |---------- |
- Handling:| Automatisk | Velg versjons bump | Automatisk | Automatisk | Automatisk | Automatisk | Se under 
-
-1. Hvis ja, bekreft at den skal rett ut
-2. Hvis nei, velg **abort**, Deploy til prod av denne versjonen gjørse da gjennom egen jobb  [Deply Naiserator](https://dok-jenkins.adeo.no/view/deploy/job/deploy-naiserator/)
-
----
+Håndteres av [Github workflow](https://github.com/navikt/tilbakemeldingsmottak-api/tree/main/.github/workflows)
 
 # Henvendelser
+Applikasjonen vedlikeholdes av teamserviceklage / Team søknad som er ansvarlig for 4 tjenestser.
 
 Enten:
 Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub
