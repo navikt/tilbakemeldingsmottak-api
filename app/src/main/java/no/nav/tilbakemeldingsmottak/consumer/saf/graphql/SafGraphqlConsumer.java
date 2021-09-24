@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJsonJournalpost;
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostIkkeFunnetFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostQueryTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostQueryUnauthorizedException;
@@ -57,14 +58,14 @@ public class SafGraphqlConsumer {
 				.onStatus(HttpStatus::isError, statusResponse -> {
 					log.error(String.format("Query mot SAF tjenesten feilet med statusKode=%s", statusResponse.statusCode()));
 					if (statusResponse.statusCode().is5xxServerError()) {
-						throw new OpprettOppgaveTechnicalException(String.format("Tjenesten SAF (graphQL) feilet med status: %s.", statusResponse
+						throw new SafJournalpostQueryTechnicalException(String.format("Henting av journalpost feilet med status: %s, feilmelding: %s", statusResponse
 								.statusCode()), new RuntimeException("Kall mot arkivet feilet"));
 					} else if (statusResponse.statusCode().is4xxClientError()) {
 						throw new SafJournalpostQueryUnauthorizedException(String.format("Henting av journalpost feilet med status: %s.", statusResponse
 								.statusCode()), new RuntimeException("Kall mot arkivet feilet"));
 					}
-					return Mono.error(new IllegalStateException(
-							String.format("Query mot SAF tjenesten feilet med statusKode=%s", statusResponse.statusCode())));
+					throw new SafHentDokumentTechnicalException(String.format("Henting av journalpost feilet med status: %s.", statusResponse
+							.statusCode()), new RuntimeException("Kall mot arkivet feilet"));
 
 				})
 				.bodyToMono(SafJsonJournalpost.class)
