@@ -19,7 +19,7 @@ Hvordan bygge, teste og kjøre koden
 
 ## Kjøring lokalt 
 ### For kjøring av applikasjonen med npm
-* Bruk bruk node versjon 10.14.2
+* Bruk node versjon 10.14.2
 * cd web\src\main\web_src
 * npm install --save --legacy-peer-deps
 * npm start
