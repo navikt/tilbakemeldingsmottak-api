@@ -19,34 +19,37 @@ class Klassifisering extends Component {
       pdf: null,
       status: {},
       error: null,
-      submitting: false
+      submitting: false,
+      loading: true,
     };
   }
 
   async componentDidMount() {
     this.props.actions.resetKlassifisering();
     await ServiceklageApi.hentDokument(this.oppgaveId)
-      .then(res => {
+      .then((res) => {
         if (res.status === 204) {
-          this.setState({ ...this.state });
+          this.setState({ ...this.state, loading: false });
         } else {
           const dataUri = `data:application/pdf;base64,${res.data.dokument}`;
-          this.setState({...this.state, pdf: dataUri});
+          this.setState({ ...this.state, pdf: dataUri, loading: false });
         }
       })
-      .catch(err => this.setState({ ...this.state, error: err }));
+      .catch((err) =>
+        this.setState({ ...this.state, error: err, loading: false })
+      );
 
     if (!this.state.error && this.state.pdf) {
       await ServiceklageApi.hentKlassifiseringSkjema(this.oppgaveId)
-        .then(res => {
+        .then((res) => {
           this.props.actions.updateSchema({
             defaultAnswers: DefaultAnswersMapper(
               res.data.defaultAnswers || { answers: {} }
             ),
-            questions: SchemaMapper(res.data.questions)
+            questions: SchemaMapper(res.data.questions),
           });
         })
-        .catch(err => this.setState({ ...this.state, error: err }));
+        .catch((err) => this.setState({ ...this.state, error: err }));
     }
   }
 
@@ -57,21 +60,21 @@ class Klassifisering extends Component {
       ...Object.entries(defaultAnswers.answers || {}).reduce(
         (acc, [key, { answer }]) => ({
           ...acc,
-          [key]: answer
+          [key]: answer,
         }),
         {}
-      )
+      ),
     };
-    this.setState({submitting: true});
+    this.setState({ submitting: true });
     await ServiceklageApi.klassifiser(this.oppgaveId, answers)
       .then(() => (window.location = "/serviceklage/takk"))
-      .catch(err => this.setState({ error: err }));
+      .catch((err) => this.setState({ error: err }));
 
-    this.setState({submitting: false});
+    this.setState({ submitting: false });
   }
 
   render() {
-    const { pdf, error, submitting } = this.state;
+    const { pdf, error, submitting, loading } = this.state;
     const { status } = this.props;
     return (
       <div className="Row">
@@ -113,57 +116,71 @@ class Klassifisering extends Component {
             </div>
           </>
         )}
-        {!error && !pdf && (
-            <div className={"Dokumentfeil"}>
-              <h1>Dokument mangler</h1>
-              <p>Det er ikke mulig å behandle en serviceklage når det ikke er et dokument tilknyttet oppgaven.</p>
-              <h2>Du må:</h2>
-              <ol>
-                <li>Endre oppgavetype på den eksisterende oppgaven til "Vurder henvendelse"-oppgave. Ferdigstill denne oppgaven.</li>
-                <li>Gå inn på journalposten til dokumentet i Gosys som inneholder serviceklagen. Opprett en ny "Vurder dokument"-oppgave derfra. Da kan du behandle serviceklagen.</li>
-              </ol>
-              <div className="GosysButton">
-              <Hovedknapp onClick={() => window.location = window.location.href.includes("preprod") ?
-                  "https://gosys-q1.dev.intern.nav.no/gosys/oppgave/oppgaveliste.jsf" :
-                  "https://gosys-nais.nais.adeo.no/gosys/oppgave/oppgaveliste.jsf"}>
-                  Tilbake til Gosys
+        {!loading && !error && !pdf && (
+          <div className={"Dokumentfeil"}>
+            <h1>Dokument mangler</h1>
+            <p>
+              Det er ikke mulig å behandle en serviceklage når det ikke er et
+              dokument tilknyttet oppgaven.
+            </p>
+            <h2>Du må:</h2>
+            <ol>
+              <li>
+                Endre oppgavetype på den eksisterende oppgaven til "Vurder
+                henvendelse"-oppgave. Ferdigstill denne oppgaven.
+              </li>
+              <li>
+                Gå inn på journalposten til dokumentet i Gosys som inneholder
+                serviceklagen. Opprett en ny "Vurder dokument"-oppgave derfra.
+                Da kan du behandle serviceklagen.
+              </li>
+            </ol>
+            <div className="GosysButton">
+              <Hovedknapp
+                onClick={() =>
+                  (window.location = window.location.href.includes("preprod")
+                    ? "https://gosys-q1.dev.intern.nav.no/gosys/oppgave/oppgaveliste.jsf"
+                    : "https://gosys-nais.nais.adeo.no/gosys/oppgave/oppgaveliste.jsf")
+                }
+              >
+                Tilbake til Gosys
               </Hovedknapp>
-          </div>
             </div>
+          </div>
         )}
         {error && (
-            <div className={"Feilmelding"}>
-              <h1>Beklager, det oppstod en feil!</h1>
-              <p>{"Feilmelding: " + error.data.message}</p>
-            </div>
+          <div className={"Feilmelding"}>
+            <h1>Beklager, det oppstod en feil!</h1>
+            <p>{"Feilmelding: " + error.data.message}</p>
+          </div>
         )}
       </div>
     );
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     answers: state.klassifiseringReducer.answers,
     defaultAnswers: state.klassifiseringReducer.defaultAnswers,
-    status: state.klassifiseringReducer.status
+    status: state.klassifiseringReducer.status,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     actions: {
       updateSchema: ({ defaultAnswers, questions }) => {
         dispatch({
           type: UPDATE_SCHEMA,
           defaultAnswers,
-          questions
+          questions,
         });
       },
       resetKlassifisering: () => {
         dispatch({ type: RESET_KLASSIFISERING });
-      }
-    }
+      },
+    },
   };
 };
 
