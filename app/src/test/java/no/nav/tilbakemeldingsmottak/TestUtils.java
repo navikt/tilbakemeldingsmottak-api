@@ -378,6 +378,24 @@ public class TestUtils {
         return objectMapper.writeValueAsString(safJsonJournalpost);
     }
 
+    @SneakyThrows
+    public static String createSafGraphqlNoDocumentsResponse() {
+        SafJournalpostTo safJournalpostTo = SafJournalpostTo.builder()
+                .dokumenter(Collections.singletonList(SafJournalpostTo.DokumentInfo.builder()
+                        .dokumentInfoId(DOKUMENT_INFO_ID)
+                        .dokumentvarianter(Arrays.asList())
+                        .build()))
+                .build();
+
+        DataJournalpost dataJournalpost = new DataJournalpost();
+        dataJournalpost.setJournalpost(safJournalpostTo);
+
+        SafJsonJournalpost safJsonJournalpost = new SafJsonJournalpost();
+        safJsonJournalpost.setData(dataJournalpost);
+
+        return objectMapper.writeValueAsString(safJsonJournalpost);
+    }
+
     public static String getStringFromByteArrayPdf(byte[] bytes) throws IOException {
         PdfReader reader = new PdfReader(bytes);
         int numPages = reader.getNumberOfPages();

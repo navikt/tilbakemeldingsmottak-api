@@ -28,6 +28,7 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -50,7 +51,7 @@ class ServiceklageIT extends ApplicationTest {
     private static final String HENT_SKJEMA = "hentskjema";
     private static final String HENT_DOKUMENT = "hentdokument";
     private static final String JOURNALPOST_ID ="12345";
-    private static final String OPPGAVE_ID = "12345678";
+    private static final String OPPGAVE_ID = "1234567";
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
@@ -411,5 +412,44 @@ class ServiceklageIT extends ApplicationTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
+
+
+    @Test
+    @SneakyThrows
+    void journalpostManglerSkalKaste204() {
+        OpprettServiceklageRequest msg = createOpprettServiceklageRequestPrivatperson();
+        ResponseEntity<OpprettServiceklageResponse> opprettResponse = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(msg, createHeaders(AZURE_ISSUER, msg.getInnmelder().getPersonnummer())), OpprettServiceklageResponse.class);
+
+        assertEquals(serviceklageRepository.count(), 1);
+        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
+
+        String fremmetDato = serviceklage.getFremmetDato().toString();
+
+        KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
+        request.setFremmetDato(fremmetDato);
+        ResponseEntity<HentDokumentResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + 99, HttpMethod.GET, new HttpEntity<>(createHeaders(LOGINSERVICE_ISSUER, SAKSBEHANDLER)), HentDokumentResponse.class);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+/*
+    @Test
+    @SneakyThrows
+    void safJournalpostManglerSkalKaste204() {
+        OpprettServiceklageRequest msg = createOpprettServiceklageRequestPrivatperson();
+        ResponseEntity<OpprettServiceklageResponse> opprettResponse = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, new HttpEntity(msg, createHeaders(AZURE_ISSUER, msg.getInnmelder().getPersonnummer())), OpprettServiceklageResponse.class);
+
+        assertEquals(serviceklageRepository.count(), 1);
+        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
+
+        String fremmetDato = serviceklage.getFremmetDato().toString();
+
+        KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
+        request.setFremmetDato(fremmetDato);
+        ResponseEntity<HentDokumentResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + 88, HttpMethod.GET, new HttpEntity<>(createHeaders(LOGINSERVICE_ISSUER, SAKSBEHANDLER)), HentDokumentResponse.class);
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+*/
 
 }
