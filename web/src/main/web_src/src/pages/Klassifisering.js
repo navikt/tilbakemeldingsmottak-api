@@ -139,8 +139,8 @@ class Klassifisering extends Component {
               <Hovedknapp
                 onClick={() =>
                   (window.location = window.location.href.includes("preprod")
-                    ? "https://gosys-q1.dev.intern.nav.no/gosys/oppgave/oppgaveliste.jsf"
-                    : "https://gosys-nais.nais.adeo.no/gosys/oppgave/oppgaveliste.jsf")
+                    ? "https://gosys-q1.dev.intern.nav.no/gosys"
+                    : "https://gosys.dev.intern.nav.no/gosys")
                 }
               >
                 Tilbake til Gosys

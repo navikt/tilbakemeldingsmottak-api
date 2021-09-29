@@ -18,13 +18,8 @@ Hvordan bygge, teste og kjøre koden
 * avhengigheter til [Internt repo](https://repo.adeo.no)
 
 ## Kjøring lokalt 
-TODO - dette må fikses på
-### For å kjøre applikasjonen lokalt med npm@6.x.x installert:
-* cd web\src\main\web_src
-* npm install
-* npm start
-* Kan gå til [http://localhost:3000/serviceklage/klassifiser](http://localhost:3000/serviceklage/klassifiser)
-### For kjøring av applikasjonen med npm*7.x.x
+### For kjøring av applikasjonen med npm
+* Bruk node versjon 10.14.2
 * cd web\src\main\web_src
 * npm install --save --legacy-peer-deps
 * npm start
