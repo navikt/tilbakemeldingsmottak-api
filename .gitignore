@@ -16,6 +16,10 @@ target
 *.iml
 *.ipr
 
+### NPM Logger ###
+npm-debug.log
+web/src/main/web_src/npm-debug.log
+
 ### NetBeans ###
 /nbproject/private/
 /build/
