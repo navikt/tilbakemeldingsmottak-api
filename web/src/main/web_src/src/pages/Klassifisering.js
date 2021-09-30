@@ -140,7 +140,7 @@ class Klassifisering extends Component {
                 onClick={() =>
                   (window.location = window.location.href.includes("preprod")
                     ? "https://gosys-q1.dev.intern.nav.no/gosys"
-                    : "https://gosys.dev.intern.nav.no/gosys")
+                    : "https://gosys.intern.nav.no/gosys")
                 }
               >
                 Tilbake til Gosys
