@@ -14,6 +14,7 @@
 
 	<properties>
 		<okhttp3.version>4.9.0</okhttp3.version>
+		<apache.httpcomponents>4.5.13</apache.httpcomponents>
 	</properties>
 
 
@@ -114,7 +115,7 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.5.8</version>
+			<version>${apache.httpcomponents}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.inject</groupId>
