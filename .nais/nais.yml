@@ -34,7 +34,9 @@ spec:
       cpu: 1000m
       memory: 1Gi
   ingresses:
-    - {{ INGRESS }}
+  {{#each ingress}}
+    - "{{this}}"
+  {{/each}}
   vault:
     enabled: true
     paths:
