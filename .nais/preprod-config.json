@@ -15,7 +15,7 @@
   "EREG_API_URL": "https://modapp-q1.adeo.no/ereg/api",
   "NORG2_API_V1_URL": "https://app-q1.adeo.no/norg2/api/v1",
   "LOGINSERVICE_URL": "https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login",
-  "INGRESS": "https://tilbakemeldingsmottak-q1.nais.preprod.local",
+  "INGRESS": ["https://tilbakemeldingsmottak-q1.nais.preprod.local","https://tilbakemeldingsmottak-q1.dev.intern.nav.no"],
   "DB_PATH": "/oracle/data/dev/creds/serviceklage_q1-user",
   "SRVUSER_PATH": "/serviceuser/data/dev/srvtilbakemeldingsmottak",
   "SECRETS_PATH": "/kv/preprod/fss/tilbakemeldingsmottak-api/teamserviceklage",
