@@ -34,7 +34,8 @@ spec:
       cpu: 1000m
       memory: 1Gi
   ingresses:
-    - {{ INGRESS }}
+    - "https://tilbakemeldingsmottak-q1.nais.preprod.local"
+    - "https://tilbakemeldingsmottak-q1.dev.intern.nav.no"
   vault:
     enabled: true
     paths:
