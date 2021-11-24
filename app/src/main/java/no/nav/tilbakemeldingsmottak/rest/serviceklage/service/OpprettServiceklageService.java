@@ -64,7 +64,7 @@ public class OpprettServiceklageService {
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request, innlogget);
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
         serviceklageRepository.save(serviceklage);
-        log.info("Serviceklage med serviceklageId={} persistert", serviceklage.getServiceklageId());
+        log.info("Serviceklage med serviceklageId= {} opprettet", serviceklage.getServiceklageId());
 
         OpprettOppgaveResponseTo opprettOppgaveResponseTo = forsoekOpprettOppgave(serviceklage.getKlagenGjelderId(), request.getPaaVegneAv(), opprettJournalpostResponseTo);
         log.info("Oppgave med oppgaveId={} opprettet", opprettOppgaveResponseTo.getId());
