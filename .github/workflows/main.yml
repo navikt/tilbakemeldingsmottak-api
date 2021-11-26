@@ -11,6 +11,7 @@ on:
     paths-ignore:
       - '**.md'
       - '.github/workflows/preprod-pipeline.yml'
+      - '.nais/preprod-fss/*'
 
 jobs:
   bygg-app-main:

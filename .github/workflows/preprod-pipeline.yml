@@ -96,7 +96,7 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           PRINT_PAYLOAD: true
           CLUSTER: dev-fss
-          RESOURCE: .nais/nais.yml
-          VARS: .nais/preprod-config.json
+          RESOURCE: .nais/preprod-fss/preprod.yml
+          VARS: .nais/preprod-fss/preprod-config.json
           DRY_RUN: false
           IMAGE: docker.pkg.github.com/${{ github.repository }}/tilbakemeldingsmottak-api:${{env.TAG}}
