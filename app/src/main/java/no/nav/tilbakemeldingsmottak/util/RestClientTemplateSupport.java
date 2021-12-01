@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 @EnableConfigurationProperties(ClientConfigurationProperties.class)
 public class RestClientTemplateSupport {
 
-    private static int MAX_FILE_SIZE = 16 * 1024 *1024;
+    private static int MAX_FILE_SIZE = 300 * 1024 *1024;
 
     @Autowired
     private OAuth2AccessTokenService oAuth2AccessTokenService;
@@ -57,7 +57,7 @@ public class RestClientTemplateSupport {
     @Scope("prototype")
     WebClient safClientRestTemplate(
     ) {
-        return buildWebClient(buildHttpClient(5000,20,40));
+        return buildWebClient(buildHttpClient(5000,60,60));
     }
 
     private HttpClient buildHttpClient(int connection_timeout, int readTimeout, int writeTimeout) {
