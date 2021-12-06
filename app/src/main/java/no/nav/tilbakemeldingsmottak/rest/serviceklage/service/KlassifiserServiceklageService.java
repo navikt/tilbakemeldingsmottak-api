@@ -79,7 +79,7 @@ public class KlassifiserServiceklageService {
         Serviceklage serviceklage = getOrCreateServiceklage(hentOppgaveResponseTo.getJournalpostId());
         updateServiceklage(serviceklage, request);
         serviceklageRepository.save(serviceklage);
-        log.info("Serviceklage med serviceklageId={} er klassifisert", serviceklage.getServiceklageId());
+        log.info("Serviceklage med serviceklageId={} er klassifisert som {}", serviceklage.getServiceklageId(), serviceklage.getTema());
 
         log.info("Ferdigstille oppgave med oppgaveId={} og versjonsnummer={}", hentOppgaveResponseTo.getId(), hentOppgaveResponseTo.getVersjon());
         ferdigstillOppgave(hentOppgaveResponseTo);

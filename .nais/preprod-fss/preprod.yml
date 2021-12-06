@@ -9,13 +9,13 @@ spec:
   image: {{image}}
   port: 8080
   liveness:
-    path: /isAlive
+    path: /internal/isAlive
     port: 8080
     initialDelay: 30
     failureThreshold: 10
     timeout: 20
   readiness:
-    path: /isReady
+    path: /internal/isReady
     port: 8080
     initialDelay: 100
     timeout: 20
@@ -23,20 +23,19 @@ spec:
     enabled: true
     path: /internal/metrics
   replicas:
-    min: 1
-    max: 2
+    min: 2
+    max: 6
     cpuThresholdPercentage: 50
   resources:
     limits:
       cpu: 3000m
-      memory: 3Gi
+      memory: 1Gi
     requests:
       cpu: 1000m
       memory: 1Gi
   ingresses:
-  {{#each INGRESS as |url|}}
-     - {{url}}
-  {{/each}}
+    - "https://tilbakemeldingsmottak-q1.nais.preprod.local"
+    - "https://tilbakemeldingsmottak-q1.dev.intern.nav.no"
   vault:
     enabled: true
     paths:
