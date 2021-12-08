@@ -148,10 +148,15 @@ class Klassifisering extends Component {
             </div>
           </div>
         )}
-        {error && (
+             {error && (
           <div className={"Feilmelding"}>
             <h1>Beklager, det oppstod en feil!</h1>
             <p>{"Feilmelding: " + error.data.message}</p>
+          </div>
+        )}
+        {loading && (
+          <div>
+           laster
           </div>
         )}
       </div>
