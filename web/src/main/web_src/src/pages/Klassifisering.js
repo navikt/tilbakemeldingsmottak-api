@@ -155,7 +155,7 @@ class Klassifisering extends Component {
           </div>
         )}
         {loading && (
-          <div>
+          <div className={"Laster"}>
            laster
           </div>
         )}
