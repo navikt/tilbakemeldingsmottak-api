@@ -7,8 +7,8 @@ class Landingsside extends Component {
     constructor(props) {
         super(props);
         this.redirectUrl = window.location.href.includes("preprod") ?
-            "https://gosys-nais-q1.nais.preprod.local/gosys/" :
-            "https://gosys-nais.nais.adeo.no/gosys/"
+            "https://gosys-q1.dev.intern.nav.no/gosys/" :
+            "https://gosys.intern.nav.no/gosys/"
     }
 
     componentDidMount() {
