@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import Hovedknapp from "nav-frontend-knapper/lib/hovedknapp";
 import AlertStripe from "nav-frontend-alertstriper";
+import NavFrontendSpinner from 'nav-frontend-spinner';
 import queryString from "query-string";
 import SchemaRender from "../components/schema/SchemaRender";
 import {ServiceklageApi} from "../api/Api";
@@ -148,10 +149,15 @@ class Klassifisering extends Component {
             </div>
           </div>
         )}
-        {error && (
+             {error && (
           <div className={"Feilmelding"}>
             <h1>Beklager, det oppstod en feil!</h1>
             <p>{"Feilmelding: " + error.data.message}</p>
+          </div>
+        )}
+        {loading && (
+          <div className={"Laster"}>
+           <NavFrontendSpinner />
           </div>
         )}
       </div>
