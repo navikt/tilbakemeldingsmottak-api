@@ -1,9 +1,5 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
-import static no.nav.tilbakemeldingsmottak.TestUtils.createMeldFeilOgManglerRequest;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerResponse;
 import org.junit.jupiter.api.Test;
@@ -16,6 +12,10 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 
+import static no.nav.tilbakemeldingsmottak.TestUtils.createMeldFeilOgManglerRequest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class FeilOgManglerIT extends ApplicationTest {
 
     private static final String URL_FEIL_OG_MANGLER = "/rest/feil-og-mangler";
@@ -23,7 +23,7 @@ public class FeilOgManglerIT extends ApplicationTest {
     @Test
     void happyPath() throws MessagingException, IOException {
         MeldFeilOgManglerRequest request = createMeldFeilOgManglerRequest();
-        HttpEntity requestEntity = new HttpEntity(request, createHeaders());
+        HttpEntity<MeldFeilOgManglerRequest> requestEntity = new HttpEntity<>(request, createHeaders());
         ResponseEntity<MeldFeilOgManglerResponse> response = restTemplate.exchange(URL_FEIL_OG_MANGLER, HttpMethod.POST, requestEntity, MeldFeilOgManglerResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -33,5 +33,4 @@ public class FeilOgManglerIT extends ApplicationTest {
         assertTrue(message.getContent().toString().contains(request.getFeiltype().text));
         assertTrue(message.getContent().toString().contains(request.getMelding()));
     }
-
 }
