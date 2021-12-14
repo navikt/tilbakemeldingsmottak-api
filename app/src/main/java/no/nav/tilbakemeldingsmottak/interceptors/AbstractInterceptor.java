@@ -1,16 +1,15 @@
 package no.nav.tilbakemeldingsmottak.interceptors;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Slf4j
-public class AbstractInterceptor extends HandlerInterceptorAdapter {
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
+@Slf4j
+public class AbstractInterceptor implements HandlerInterceptor {
 
 	public AbstractInterceptor() {}
 
@@ -27,11 +26,9 @@ public class AbstractInterceptor extends HandlerInterceptorAdapter {
 		return fallbackValue;
 	}
 
-	boolean addValueToMDC(String value, String key) {
+	void addValueToMDC(String value, String key) {
 		if (value != null && !value.isEmpty()) {
 			MDC.put(key, value);
-			return true;
 		}
-		return false;
 	}
 }
