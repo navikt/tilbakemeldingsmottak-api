@@ -11,6 +11,10 @@
 
     <artifactId>web</artifactId>
 
+    <properties>
+        <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
+    </properties>
+
     <profiles>
         <profile>
             <id>platform-unix</id>
@@ -20,7 +24,7 @@
                 </os>
             </activation>
             <properties>
-                <script.extension></script.extension>
+                <script.extension/>
             </properties>
         </profile>
         <profile>
@@ -48,6 +52,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
+                        <version>${exec-maven-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>npm run build (with local node installation)</id>
