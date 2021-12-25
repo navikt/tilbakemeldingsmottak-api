@@ -28,7 +28,7 @@
 		<lombok.version>1.18.4</lombok.version>
 		<junit5.version>5.3.2</junit5.version>
 		<junit5.mockito.version>2.23.0</junit5.mockito.version>
-		<resilience4j.version>0.11.0</resilience4j.version>
+		<resilience4j.version>0.17.0</resilience4j.version>
 		<oracle.version>19.3.0.0</oracle.version>
 		<greenmail.version>1.5.10</greenmail.version>
 		<itextpdf.version>5.5.10</itextpdf.version>
