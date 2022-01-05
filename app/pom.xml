@@ -200,7 +200,7 @@
             <artifactId>resilience4j-circuitbreaker</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.oracle.database.jdbc</groupId>
+            <groupId>com.oracle.ojdbc</groupId>
             <artifactId>ojdbc8</artifactId>
         </dependency>
         <dependency>
