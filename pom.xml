@@ -150,6 +150,13 @@
                 <artifactId>hibernate-validator</artifactId>
                 <version>${hibernate-validator.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
             <!-- CXF/WS-->
             <dependency>
                 <groupId>org.apache.cxf</groupId>
