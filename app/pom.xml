@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <httpclient.version>4.5.8</httpclient.version>
+        <httpclient.version>4.5.13</httpclient.version>
         <okhttp3.version>4.9.0</okhttp3.version>
     </properties>
 
