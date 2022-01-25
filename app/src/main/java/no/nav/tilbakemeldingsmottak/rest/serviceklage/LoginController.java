@@ -1,7 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.REDIRECT_COOKIE;
-
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.util.CookieUtils;
@@ -13,6 +11,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
+
+import static no.nav.tilbakemeldingsmottak.config.Constants.REDIRECT_COOKIE;
 
 @Slf4j
 @Controller
@@ -33,11 +33,11 @@ public class LoginController {
 		if (redirectCookie.isPresent()) {
 			response.addCookie(CookieUtils.createSessionClearingCookie(REDIRECT_COOKIE, true));
 		} else if (redirectParameter != null) {
-			return "redirect:"+redirectParameter;
+			return "redirect:" + redirectParameter;
 		}
 		return "redirect:" + redirectCookie
 				.map(Cookie::getValue)
-				.filter(cookie -> !"/login".equals(cookie) && !StringUtils.isEmpty(cookie))
+				.filter(cookie -> !"/login".equals(cookie) && !StringUtils.hasLength(cookie))
 				.orElse("/serviceklage/frontpage");
 	}
 }
