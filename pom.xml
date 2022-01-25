@@ -36,7 +36,7 @@
         <spring-cloud-contract-wiremock.version>1.2.5.RELEASE</spring-cloud-contract-wiremock.version>
         <wiremock.version>2.19.0</wiremock.version>
         <mock-oauth2-server.version>0.3.3</mock-oauth2-server.version>
-        <h2.db.version>1.4.197</h2.db.version>
+        <h2.db.version>2.1.210</h2.db.version>
         <json-smart.version>2.3</json-smart.version>
         <hibernate.validator.version>6.2.0.Final</hibernate.validator.version>
         <rest-assured.version>4.4.0</rest-assured.version>
