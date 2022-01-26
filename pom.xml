@@ -27,6 +27,7 @@
         <!-- Dependencies that are not yet bumped to latest version -->
         <nimbus-jose-jwt.version>8.20</nimbus-jose-jwt.version>
         <oracle.version>19.3.0.0</oracle.version>
+        <jackson.version>2.10.0</jackson.version>
 
         <!-- Dependencies that should be on the latest version -->
         <javax.inject.version>1</javax.inject.version>
@@ -38,9 +39,8 @@
         <resilience4j.version>1.7.1</resilience4j.version>
         <greenmail.version>1.6.5</greenmail.version>
         <itextpdf.version>5.5.13.2</itextpdf.version>
-        <cxf.version>3.2.7</cxf.version>
+        <cxf.version>3.5.0</cxf.version>
         <micrometer.version>1.8.2</micrometer.version>
-        <jackson.version>2.10.0</jackson.version>
         <spring-cloud-contract-wiremock.version>3.1.0</spring-cloud-contract-wiremock.version>
         <wiremock.version>2.27.2</wiremock.version>
         <json-smart.version>2.4.7</json-smart.version>
