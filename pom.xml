@@ -27,9 +27,9 @@
         <!-- Dependencies that are not yet bumped to latest version -->
         <nimbus-jose-jwt.version>8.20</nimbus-jose-jwt.version>
         <oracle.version>19.3.0.0</oracle.version>
-        <jackson.version>2.10.0</jackson.version>
 
         <!-- Dependencies that should be on the latest version -->
+        <jackson-bom.version>2.13.1</jackson-bom.version>
         <javax.inject.version>1</javax.inject.version>
         <logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
         <logback-syslog4j.version>1.0.0</logback-syslog4j.version>
@@ -265,7 +265,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-yaml</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson-bom.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.micrometer</groupId>
