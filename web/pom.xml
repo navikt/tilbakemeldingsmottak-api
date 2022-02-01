@@ -11,9 +11,6 @@
 
     <artifactId>web</artifactId>
 
-    <properties>
-        <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
-    </properties>
 
     <profiles>
         <profile>
@@ -83,6 +80,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-clean-plugin</artifactId>
+                        <version>${maven-clean-plugin.version}</version>
                         <configuration>
                             <filesets>
                                 <fileset>

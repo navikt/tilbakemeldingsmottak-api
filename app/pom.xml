@@ -12,12 +12,6 @@
     <artifactId>app</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <httpclient.version>4.5.13</httpclient.version>
-        <okhttp3.version>4.9.3</okhttp3.version>
-        <rxjava.version>2.2.21</rxjava.version>
-    </properties>
-
 
     <dependencies>
         <!--Security-->
@@ -245,6 +239,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
                 <configuration>
                     <finalName>app</finalName>
                 </configuration>
