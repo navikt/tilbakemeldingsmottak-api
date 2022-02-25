@@ -36,7 +36,6 @@
         <jackson-bom.version>2.13.1</jackson-bom.version>
         <javax.inject.version>1</javax.inject.version>
         <logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
-        <logback-syslog4j.version>1.0.0</logback-syslog4j.version>
         <lombok.version>1.18.22</lombok.version>
         <mockito-junit-jupiter.version>4.3.1</mockito-junit-jupiter.version>
         <resilience4j.version>1.7.1</resilience4j.version>
@@ -186,21 +185,6 @@
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logstash-logback-encoder.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.papertrailapp</groupId>
-                <artifactId>logback-syslog4j</artifactId>
-                <version>${logback-syslog4j.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-classic</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
