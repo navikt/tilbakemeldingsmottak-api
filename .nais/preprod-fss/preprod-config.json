@@ -17,7 +17,8 @@
   "LOGINSERVICE_URL": "https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login",
   "INGRESS": [
           "https://tilbakemeldingsmottak-q1.nais.preprod.local",
-          "https://tilbakemeldingsmottak-q1.dev.intern.nav.no"
+          "https://tilbakemeldingsmottak-q1.dev.intern.nav.no",
+          "https://tilbakemeldingsmottak.dev-fss-pub.nais.io"
   ],
   "DB_PATH": "/oracle/data/dev/creds/serviceklage_q1-user",
   "SRVUSER_PATH": "/serviceuser/data/dev/srvtilbakemeldingsmottak",

@@ -17,7 +17,8 @@
   "LOGINSERVICE_URL": "https://loginservice.nais.adeo.no/login?redirect=https://tilbakemeldingsmottak.nais.adeo.no/login",
   "INGRESS": [
           "https://tilbakemeldingsmottak.nais.adeo.no",
-          "https://tilbakemeldingsmottak.intern.nav.no"
+          "https://tilbakemeldingsmottak.intern.nav.no",
+          "https://tilbakemeldingsmottak.prod-fss-pub.nais.io"
   ],
   "DB_PATH": "/oracle/data/prod/creds/tilbakemeldingsmottak-user",
   "SRVUSER_PATH": "/serviceuser/data/prod/srvtilbakemeldingsmottak",
