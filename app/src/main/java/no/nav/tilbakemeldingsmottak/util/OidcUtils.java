@@ -74,7 +74,8 @@ public class OidcUtils {
     public String getSubject(String token) {
         if (token != null) {
             JwtToken jwtToken = new JwtToken(token);
-            return jwtToken.getSubject();
+            String pid = (String)jwtToken.getJwtTokenClaims().get("pid");
+            return pid != null ? pid : jwtToken.getSubject();
         }
         return null;
     }
