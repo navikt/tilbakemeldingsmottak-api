@@ -2,8 +2,8 @@ package no.nav.tilbakemeldingsmottak.nais;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.nais.selftest.AbstractDependencyCheck;
@@ -39,10 +39,15 @@ public class NaisContract {
 	private final String version;
 	private final List<AbstractDependencyCheck> dependencyCheckList;
 
-	private AtomicInteger app_status = new AtomicInteger();
+	private final AtomicInteger app_status = new AtomicInteger();
 
 	@Inject
-	public NaisContract(List<AbstractDependencyCheck> dependencyCheckList, MeterRegistry registry, @Value("${APP_NAME:tilbakemeldingsmottak}") String appName, @Value("${APP_VERSION:0}") String version) {
+	public NaisContract(
+			List<AbstractDependencyCheck> dependencyCheckList,
+			MeterRegistry registry,
+			@Value("${APP_NAME:tilbakemeldingsmottak}") String appName,
+			@Value("${APP_VERSION:0}") String version
+	) {
 		this.dependencyCheckList = new ArrayList<>(dependencyCheckList);
 		Gauge.builder("dok_app_is_ready", app_status, AtomicInteger::get).register(registry);
 		this.appName = appName;
@@ -118,5 +123,4 @@ public class NaisContract {
 				.map(payload -> payload.check().get())
 				.sequential().blockingSubscribe(results::add);
 	}
-
 }
