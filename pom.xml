@@ -35,24 +35,24 @@
         <rxjava.version>3.1.4</rxjava.version>
         <jackson-bom.version>2.13.2</jackson-bom.version>
         <javax.inject.version>1</javax.inject.version>
-        <logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
-        <lombok.version>1.18.22</lombok.version>
+        <logstash-logback-encoder.version>7.1.1</logstash-logback-encoder.version>
+        <lombok.version>1.18.24</lombok.version>
         <mockito-junit-jupiter.version>4.4.0</mockito-junit-jupiter.version>
         <resilience4j.version>1.7.1</resilience4j.version>
-        <greenmail.version>1.6.7</greenmail.version>
+        <greenmail.version>1.6.8</greenmail.version>
         <itextpdf.version>5.5.13.3</itextpdf.version>
-        <cxf.version>3.5.1</cxf.version>
-        <micrometer.version>1.8.4</micrometer.version>
+        <cxf.version>3.5.2</cxf.version>
+        <micrometer.version>1.8.5</micrometer.version>
         <wiremock.version>2.27.2</wiremock.version>
         <json-smart.version>2.4.8</json-smart.version>
-        <rest-assured.version>4.5.1</rest-assured.version>
+        <rest-assured.version>5.0.1</rest-assured.version>
 
         <!-- Maven plugins -->
         <wagon-webdav-jackrabbit.version>3.5.1</wagon-webdav-jackrabbit.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
         <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
-        <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+        <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
 
         <!-- Project config -->
         <java.version>17</java.version>
