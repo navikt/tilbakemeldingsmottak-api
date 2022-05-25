@@ -68,6 +68,6 @@ jobs:
           CLUSTER: prod-fss
           RESOURCE: .nais/nais.yml
           VARS: .nais/p-config
-          DRY_RUN: true
+          DRY_RUN: false
 
 
