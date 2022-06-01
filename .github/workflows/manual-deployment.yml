@@ -1,4 +1,3 @@
-# This workflow can be used to manually trigger a build and deploy of any branch using a workflow_dispatch event.
 name: Manually triggered deployment
 
 on:
@@ -55,7 +54,7 @@ jobs:
           CLUSTER: dev-fss
           RESOURCE: .nais/nais.yml
           VARS: .nais/preprod-config.json
-          DRY_RUN: true
+          DRY_RUN: false
   deploy-prod:
     needs: build-and-push
     if: github.event.inputs.environment == 'prod'
