@@ -16,32 +16,32 @@ env:
   IMAGE: docker.pkg.github.com/${{ github.repository }}/tilbakmeldingsmottak-api:${{ github.sha }}
 
 jobs:
-#  build-and-push:
-#    runs-on: ubuntu-latest
-#    steps:
-#    - uses: actions/checkout@v3
-#    - name: Branch name
-#      run: echo running on branch ${GITHUB_REF##*/}
-#    - uses: actions/setup-java@v3
-#      with:
-#          distrubution: 'temurin'
-#          java-version: '17'
-#          cache: 'maven'
-#    - name: Set timezone
-#      uses: szenius/set-timezone@v1.0
-#      with:
-#        timezoneLinux: "Europe/Oslo"
-#    - name: Build
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: mvn -B package -DskipTests --file pom.xml
-#    - name: Build and publish Docker image
-#      env:
-#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#      run: |
-#        docker build --tag ${IMAGE} .
-#        docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-#        docker push ${IMAGE}
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Branch name
+      run: echo running on branch ${GITHUB_REF##*/}
+    - uses: actions/setup-java@v3
+      with:
+          distrubution: 'temurin'
+          java-version: '17'
+          cache: 'maven'
+    - name: Set timezone
+      uses: szenius/set-timezone@v1.0
+      with:
+        timezoneLinux: "Europe/Oslo"
+    - name: Build
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mvn -B package -DskipTests --file pom.xml
+    - name: Build and publish Docker image
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        docker build --tag ${IMAGE} .
+        docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+        docker push ${IMAGE}
   deploy-preprod:
     needs: build-and-push
     if: github.event.inputs.environment == 'preprod'
