@@ -34,7 +34,7 @@ jobs:
     - name: Build
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn -B package -DskipTests --file pom.xml
+      run: mvn -B package -DskipTests --file pom.xml
     - name: Build and publish Docker image
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
