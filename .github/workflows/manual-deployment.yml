@@ -42,35 +42,35 @@ jobs:
         docker build --tag ${IMAGE} .
         docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
         docker push ${IMAGE}
-  deploy-preprod:
-    needs: build-and-push
-    if: github.event.inputs.environment == 'preprod'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v3
-      - name: Deploy
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
-          RESOURCE: .nais/nais.yml
-          VARS: .nais/preprod-config.json
-          DRY_RUN: true
-  deploy-prod:
-    needs: build-and-push
-    if: github.event.inputs.environment == 'prod'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v3
-      - name: Deploy
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-fss
-          RESOURCE: .nais/nais.yml
-          VARS: .nais/p-config
-          DRY_RUN: true
+#  deploy-preprod:
+#    needs: build-and-push
+#    if: github.event.inputs.environment == 'preprod'
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout source code
+#        uses: actions/checkout@v3
+#      - name: Deploy
+#        uses: nais/deploy/actions/deploy@v1
+#        env:
+#          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+#          CLUSTER: dev-fss
+#          RESOURCE: .nais/nais.yml
+#          VARS: .nais/preprod-config.json
+#          DRY_RUN: true
+#  deploy-prod:
+#    needs: build-and-push
+#    if: github.event.inputs.environment == 'prod'
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout source code
+#        uses: actions/checkout@v3
+#      - name: Deploy
+#        uses: nais/deploy/actions/deploy@v1
+#        env:
+#          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+#          CLUSTER: prod-fss
+#          RESOURCE: .nais/nais.yml
+#          VARS: .nais/p-config
+#          DRY_RUN: true
 
 
