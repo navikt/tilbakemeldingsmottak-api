@@ -1,0 +1,26 @@
+no.nav.security.jwt:
+  client:
+    registration:
+      serviceuser:
+        authentication:
+          client-auth-method: client_secret_basic
+          client-id: ${serviceuser.username}
+          client-secret: ${serviceuser.password}
+        grant-type: client_credentials
+        scope: openid
+        token-endpoint-url: ${SECURITY_TOKEN_SERVICE_TOKEN_URL}
+  issuer:
+    azuread:
+      accepted-audience: ${AZUREAD_CLIENTID}
+      cookie-name: azuread-idtoken
+      discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL}
+      proxyUrl: http://webproxy-nais.nav.no:8088
+    isso:
+      accepted-audience: ${LOGINSERVICE_ACCEPTED_AUDIENCE}
+      cookie-name: isso-idtoken
+      discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL}
+      proxyUrl: http://webproxy-nais.nav.no:8088
+    reststs:
+      accepted-audience: srvtilbakemeldings, srvtilbakemeldinge
+      cookie-name: reststs-idtoken
+      discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL}

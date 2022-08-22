@@ -1,6 +1,8 @@
 package no.nav.tilbakemeldingsmottak.rest.feilogmangler.service;
 
+import com.microsoft.graph.models.generated.BodyType;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.AbstractEmailService;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
@@ -16,7 +18,7 @@ import javax.mail.internet.MimeMessage;
 @Slf4j
 public class FeilOgManglerService {
 
-    private AbstractEmailService emailService;
+    private AzureEmailService emailService;
 
     @Value("${email_nav_support_address}")
     private String emailToAddress;
@@ -24,25 +26,13 @@ public class FeilOgManglerService {
     private String emailFromAddress;
 
     @Inject
-    public FeilOgManglerService(AbstractEmailService emailService) {
+    public FeilOgManglerService(AzureEmailService emailService) {
         this.emailService = emailService;
     }
 
     public void meldFeilOgMangler(MeldFeilOgManglerRequest request) throws MessagingException {
-        sendEmail(request);
-    }
-
-    private void sendEmail(MeldFeilOgManglerRequest request) throws MessagingException {
-        MimeMessage message = emailService.getEmailSender().createMimeMessage();
-        message.setHeader("Content-Encoding", "UTF-8");
-        message.setContent(createContent(request), "text/html; charset=UTF-8");
-        MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
-        helper.setTo(emailToAddress);
-        helper.setFrom(emailFromAddress);
-        helper.setSubject("Feil/mangel på nav.no meldt via skjema på nav.no");
-        emailService.sendMail(message);
-
-        log.info("Melding om feil/mangel på nav.no videresendt til " + emailToAddress);
+        emailService.sendSimpleMessage(emailToAddress, "Feil/mangel på nav.no meldt via skjema på nav.no", BodyType.HTML, createContent(request));
+        log.info("Melding om feil og mangler videresendt til " + emailToAddress);
     }
 
     private String createContent(MeldFeilOgManglerRequest request) {

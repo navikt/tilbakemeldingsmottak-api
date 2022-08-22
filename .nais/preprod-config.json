@@ -24,5 +24,7 @@
   "SRVUSER_PATH": "/serviceuser/data/dev/srvtilbakemeldingsmottak",
   "SECRETS_PATH": "/kv/preprod/fss/tilbakemeldingsmottak-api/teamserviceklage",
   "SAF_URL": "https://saf-q1.dev.intern.nav.no/graphql",
-  "SAF_HENTDOKUMENT_URL": "https://saf-q1.dev.intern.nav.no/rest/hentdokument"
+  "SAF_HENTDOKUMENT_URL": "https://saf-q1.dev.intern.nav.no/rest/hentdokument",
+  "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
+  "TENANT": "trygdeetaten.no"
 }

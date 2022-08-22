@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.icegreen.greenmail.util.GreenMail;

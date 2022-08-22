@@ -37,6 +37,10 @@ spec:
   {{#each INGRESS as |url|}}
      - {{url}}
   {{/each}}
+  azure:
+    application:
+      enabled: true
+      tenant: {{ TENANT }}
   vault:
     enabled: true
     paths:
@@ -50,6 +54,8 @@ spec:
   env:
     - name: SPRING_DATASOURCE_URL
       value: {{ SPRING_DATASOURCE_URL }}
+    - name: AAD_AUTHORITY
+      value: {{ AAD_AUTHORITY }}
     - name: AZUREAD_CLIENTID
       value: {{ AZUREAD_CLIENTID }}
     - name: NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL

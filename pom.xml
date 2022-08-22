@@ -20,6 +20,11 @@
     <properties>
         <!-- Keep up to date with parent version -->
         <spring-boot.version>2.5.13</spring-boot.version>
+        <kotlin.version>1.6.10</kotlin.version>
+
+        <adal4j.version>1.6.7</adal4j.version>
+        <microsoft-graph.version>2.9.0</microsoft-graph.version>
+        <msal4j.version>1.12.0</msal4j.version>
 
         <!-- NAV internal dependencies -->
         <token-support.version>1.3.7</token-support.version>
@@ -34,6 +39,7 @@
         <okhttp3.version>4.9.3</okhttp3.version>
         <rxjava.version>3.1.4</rxjava.version>
         <jackson-bom.version>2.13.3</jackson-bom.version>
+        <jackson-kotlin.version>2.13.2</jackson-kotlin.version>
         <javax.inject.version>1</javax.inject.version>
         <logstash-logback-encoder.version>7.1.1</logstash-logback-encoder.version>
         <lombok.version>1.18.24</lombok.version>
@@ -93,6 +99,21 @@
                 <version>${spring-boot.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>adal4j</artifactId>
+                <version>${adal4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.azure</groupId>
+                <artifactId>msal4j</artifactId>
+                <version>${msal4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.graph</groupId>
+                <artifactId>microsoft-graph</artifactId>
+                <version>${microsoft-graph.version}</version>
+            </dependency>
             <!--Security-->
             <!-- Lås nimbus-jose-jwt til versjon som er kompatibel med com.nimbusds:oauth2-oidc-sdk:6.5.
             Ellers får man runtime-feil på token-validering, med nyeste publiserte versjon 9.0 av nimbus-jose-jwt. -->
@@ -254,6 +275,11 @@
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>${jackson-bom.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-kotlin</artifactId>
+                <version>${jackson-kotlin.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.micrometer</groupId>
