@@ -37,8 +37,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-          distrubution: 'temurin'
-          java-version: '17'
+        java-version: '17.x'
 
     - name: Set up Node 10
       uses: actions/setup-node@v1
