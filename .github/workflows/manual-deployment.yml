@@ -13,7 +13,7 @@ on:
           - preprod
           - prod
 env:
-  docker_image: ghcr.io/${{ github.repository }}/tilbakemeldingsmottak-api:${{ github.sha }}
+  IMAGE: ghcr.io/${{ github.repository }}/tilbakemeldingsmottak-api:${{ github.sha }}
 
 jobs:
   build-and-push:
@@ -34,14 +34,6 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Read/save .m2 cache
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
-
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
@@ -59,11 +51,13 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: mvn install --file pom.xml
 
-    - uses: docker/build-push-action@v3
-      with:
-        context: .
-        push: true
-        tags: ${{ env.docker_image }}
+    - name: Build and publish Docker image
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        docker build --tag ${IMAGE} .
+        docker login ghcr.io -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
+        docker push ${IMAGE}
 
   deploy-preprod:
     needs: build-and-push
