@@ -13,7 +13,7 @@ on:
           - preprod
           - prod
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/tilbakmeldingsmottak-api:${{ github.sha }}
+  docker_image: ghcr.io/${{ github.repository }}:${{ github.sha }}
 
 jobs:
   build-and-push:
@@ -27,21 +27,26 @@ jobs:
           distrubution: 'temurin'
           java-version: '17'
           cache: 'maven'
+    - name: Set up Node 10
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.14.2'
+
     - name: Set timezone
       uses: szenius/set-timezone@v1.0
       with:
         timezoneLinux: "Europe/Oslo"
-    - name: Build
+    - name: Build with maven
       env:
+        GITHUB_USERNAME: x-access-token
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn -B package -DskipTests --file pom.xml
-    - name: Build and publish Docker image
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        docker build --tag ${IMAGE} .
-        docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-        docker push ${IMAGE}
+      run: mvn install --file pom.xml
+    - uses: docker/build-push-action@v3
+      with:
+        context: .
+        push: true
+        tags: ${{ env.docker_image }}
+
   deploy-preprod:
     needs: build-and-push
     if: github.event.inputs.environment == 'preprod'
@@ -54,6 +59,7 @@ jobs:
           CLUSTER: dev-fss
           RESOURCE: .nais/nais.yml
           VARS: .nais/preprod-config.json
+          VAR: image=${{ env.docker_image }}
           DRY_RUN: false
   deploy-prod:
     needs: build-and-push
@@ -66,7 +72,7 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-fss
           RESOURCE: .nais/nais.yml
-          VARS: .nais/p-config
-          DRY_RUN: true
+          VAR: image=${{ env.docker_image }}
+          DRY_RUN: false
 
 
