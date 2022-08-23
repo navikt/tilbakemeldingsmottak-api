@@ -13,7 +13,7 @@ on:
           - preprod
           - prod
 env:
-  docker_image: ghcr.io/${{ github.repository }}:${{ github.sha }}
+  docker_image: ghcr.io/${{ github.repository }}/tilbakemeldingsmottak-api:${{ github.sha }}
 
 jobs:
   build-and-push:
