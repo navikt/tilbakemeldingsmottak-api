@@ -1,3 +1,9 @@
+aad:
+  authority: ${AAD_AUTHORITY}
+  clientId: ${AZUREAD_CLIENTID}
+  serviceuser: ${serviceuser.username}
+  password: ${serviceuser.password}
+
 no.nav.security.jwt:
   client:
     registration:
