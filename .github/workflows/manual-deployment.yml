@@ -71,7 +71,7 @@ jobs:
           CLUSTER: dev-fss
           RESOURCE: .nais/nais.yml
           VARS: .nais/preprod-config.json
-          VAR: image=${{ env.docker_image }}
+          VAR: image=${{ IMAGE }}
           DRY_RUN: false
   deploy-prod:
     needs: build-and-push
@@ -84,7 +84,7 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-fss
           RESOURCE: .nais/nais.yml
-          VAR: image=${{ env.docker_image }}
+          VAR: image=${{ IMAGE }}
           DRY_RUN: false
 
 
