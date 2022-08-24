@@ -26,5 +26,6 @@
   "SAF_URL": "https://saf.intern.nav.no/graphql",
   "SAF_HENTDOKUMENT_URL": "https://saf.intern.nav.no/rest/hentdokument",
   "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
-  "TENANT": "nav.no"
+  "TENANT": "nav.no",
+  "HTTP_PROXY": "http://webproxy-nais.nav.no:8088"
 }
