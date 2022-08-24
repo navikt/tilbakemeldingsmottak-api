@@ -41,7 +41,7 @@ spec:
     application:
       enabled: true
       tenant: {{ TENANT }}
-  webproxy: true
+  webproxy: false
   vault:
     enabled: true
     paths:
