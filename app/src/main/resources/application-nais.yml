@@ -16,11 +16,11 @@ no.nav.security.jwt:
         scope: openid
         token-endpoint-url: ${SECURITY_TOKEN_SERVICE_TOKEN_URL}
   issuer:
-    azuread:
-      accepted-audience: ${AZURE_APP_CLIENT_ID}
-      cookie-name: azuread-idtoken
-      discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL}
-      proxyUrl: ${HTTP_PROXY}
+#    azuread:
+#      accepted-audience: ${AZURE_APP_CLIENT_ID}
+#      cookie-name: azuread-idtoken
+#      discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL}
+#      proxyUrl: ${HTTP_PROXY}
     isso:
       accepted-audience: ${LOGINSERVICE_ACCEPTED_AUDIENCE}
       cookie-name: isso-idtoken

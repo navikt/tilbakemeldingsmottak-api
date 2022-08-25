@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
@@ -41,7 +40,7 @@ public class ServiceklageRestController {
             throws DocumentException {
 
         log.info("Mottatt serviceklage via skjema på nav.no");
-        boolean innlogget = oidcUtils.getSubject(selvbetjening) != null ? true : oidcUtils.getSubjectForIssuer(AZURE_ISSUER).isPresent();
+        boolean innlogget = oidcUtils.getSubject(selvbetjening) != null;
         log.info("Bruker er innlogget " + innlogget);
         opprettServiceklageValidator.validateRequest(request);
         OpprettServiceklageResponse opprettServiceklageResponse = opprettServiceklageService.opprettServiceklage(request, innlogget);

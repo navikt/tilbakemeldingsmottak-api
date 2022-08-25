@@ -1,7 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.AvsenderMottaker;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.AvsenderMottakerIdType;
@@ -14,7 +12,6 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequ
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Sak;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Sakstype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,8 +25,6 @@ public class OpprettJournalpostRequestToMapper {
     private static final String JOURNALFOERENDE_ENHET = "9999";
     private static final String FILTYPE_PDFA = "PDFA";
     private static final String VARIANTFORMAT_ARKIV = "ARKIV";
-
-    private final OidcUtils oidcUtils;
 
     public OpprettJournalpostRequestTo map(OpprettServiceklageRequest request, byte[] fysiskDokument, boolean innlogget) {
         OpprettJournalpostRequestTo opprettJournalpostRequestTo = OpprettJournalpostRequestTo.builder()

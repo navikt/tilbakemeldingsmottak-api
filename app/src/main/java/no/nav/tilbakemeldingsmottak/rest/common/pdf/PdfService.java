@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.common.pdf;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -13,7 +12,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -30,8 +28,6 @@ public final class PdfService {
     private Font regular = new Font(Font.FontFamily.HELVETICA, 14);
     private Font bold = new  Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);
     private Font boldUnderline = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD|Font.UNDERLINE);
-
-    private final OidcUtils oidcUtils;
 
     public byte[] opprettTomPdf() throws DocumentException {
         Document document = new Document();
