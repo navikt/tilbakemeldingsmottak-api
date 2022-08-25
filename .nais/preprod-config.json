@@ -1,10 +1,10 @@
 {
   "NAMESPACE": "teamserviceklage",
   "SPRING_DATASOURCE_URL": "jdbc:oracle:thin:@a01dbfl033.adeo.no:1521/SERVICEKLAGE_Q1",
-  "AZUREAD_CLIENTID": "0090b6e1-ffcc-4c37-bc21-049f7d1f0fe5",
+  "AZUREAD_CLIENTID": "f4268a0c-b76d-48aa-b498-73aec7d7fd42",
   "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL": "https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration",
   "SECURITYTOKENSERVICE_URL": "https://sts-q1.preprod.local/SecurityTokenServiceProvider/",
-  "NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL": "https://login.microsoftonline.com/NAVtestB2C.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten_ver1",
+  "NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL": "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0/.well-known/openid-configuration",
   "LOGINSERVICE_ACCEPTED_AUDIENCE": "38e07d31-659d-4595-939a-f18dce3446c5",
   "LOGINSERVICE_OIDC_CALLBACKURI": "https://loginservice.nais.preprod.local/callback",
   "NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL": "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/.well-known/openid-configuration",
