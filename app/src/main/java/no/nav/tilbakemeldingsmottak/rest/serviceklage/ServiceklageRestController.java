@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 

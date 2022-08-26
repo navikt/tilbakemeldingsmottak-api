@@ -1,7 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
-import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype.LOKALT_NAV_KONTOR;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
@@ -20,7 +18,6 @@ import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -33,7 +30,6 @@ public class OpprettServiceklageValidator extends RequestValidator {
 
 
     private static final int ENHETSNUMMER_LENGTH = 4;
-    private static final String LOGIN_SELVBETJENING_ISSUER = LOGINSERVICE_ISSUER;
 
     public void validateRequest(OpprettServiceklageRequest request) {
         validateRequest(request, null);
