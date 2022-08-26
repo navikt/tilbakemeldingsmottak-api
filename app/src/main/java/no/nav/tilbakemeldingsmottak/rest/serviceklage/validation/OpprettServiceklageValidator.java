@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
 import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype.LOKALT_NAV_KONTOR;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
@@ -32,13 +33,18 @@ public class OpprettServiceklageValidator extends RequestValidator {
 
 
     private static final int ENHETSNUMMER_LENGTH = 4;
-    private static final String LOGIN_SELVBETJENING_ISSUER = AZURE_ISSUER;
+    private static final String LOGIN_SELVBETJENING_ISSUER = LOGINSERVICE_ISSUER;
+
     public void validateRequest(OpprettServiceklageRequest request) {
+        validateRequest(request, null);
+    }
+
+    public void validateRequest(OpprettServiceklageRequest request, String paloggetBruker) {
         validateCommonRequiredFields(request);
 
         switch(request.getPaaVegneAv()) {
             case PRIVATPERSON:
-                validatePaaVegneAvPrivatperson(request);
+                validatePaaVegneAvPrivatperson(request, paloggetBruker);
                 break;
             case ANNEN_PERSON:
                 validatePaaVegneAvAnnenPerson(request);
@@ -59,7 +65,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
         hasText(request.getKlagetekst(), "klagetekst");
     }
 
-    private void validatePaaVegneAvPrivatperson(OpprettServiceklageRequest request) {
+    private void validatePaaVegneAvPrivatperson(OpprettServiceklageRequest request, String paloggetBruker) {
         hasText(request.getInnmelder().getNavn(), "innmelder.navn", " dersom paaVegneAv=PRIVATPERSON");
         hasText(request.getInnmelder().getPersonnummer(), "innmelder.personnummer", " dersom paaVegneAv=PRIVATPERSON");
         isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes", " dersom paaVegneAv=PRIVATPERSON");
@@ -68,7 +74,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
         }
 
         validateFnr(request.getInnmelder().getPersonnummer());
-        validateRequestFnrMatchesTokenFnr(request.getInnmelder().getPersonnummer());
+        validateRequestFnrMatchesTokenFnr(request.getInnmelder().getPersonnummer(), paloggetBruker);
     }
 
     private void validatePaaVegneAvAnnenPerson(OpprettServiceklageRequest request) {
@@ -125,10 +131,9 @@ public class OpprettServiceklageValidator extends RequestValidator {
         }
     }
 
-    private void validateRequestFnrMatchesTokenFnr(String fnr) {
-        Optional<String> subject = oidcUtils.getSubjectForIssuer(LOGIN_SELVBETJENING_ISSUER);
-        if (subject.isPresent()
-                && !fnr.equals(subject.get())) {
+    private void validateRequestFnrMatchesTokenFnr(String fnr, String paloggetBruker) {
+        if (paloggetBruker != null
+                && !fnr.equals(paloggetBruker)) {
             throw new InvalidRequestException("innmelder.personnummer samsvarer ikke med brukertoken");
         }
     }

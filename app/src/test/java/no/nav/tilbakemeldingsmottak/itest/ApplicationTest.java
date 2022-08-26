@@ -183,7 +183,7 @@ public class ApplicationTest {
     HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(INNLOGGET_BRUKER));
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(LOGINSERVICE_ISSUER, INNLOGGET_BRUKER));
         return headers;
     }
 
@@ -191,6 +191,18 @@ public class ApplicationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user));
+        return headers;
+    }
+
+    HttpHeaders createHeaders(String issuer, String user, Boolean addCookie) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String token = getToken(issuer, user);
+
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user));
+        if (addCookie) {
+            headers.add("Cookie", "selvbetjening-idtoken="+token);
+        }
         return headers;
     }
 
@@ -215,7 +227,7 @@ public class ApplicationTest {
         boolean loggedIn = mockOAuth2Server.enqueueCallback(oAuth2TokenCallback);
         return mockOAuth2Server.issueToken(
                 issuerId,
-                "theclientid",
+                CONSUMER_ID,
                 oAuth2TokenCallback
             ).serialize();
     }
