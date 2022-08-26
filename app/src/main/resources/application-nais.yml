@@ -15,20 +15,4 @@ no.nav.security.jwt:
         grant-type: client_credentials
         scope: openid
         token-endpoint-url: ${SECURITY_TOKEN_SERVICE_TOKEN_URL}
-  issuer:
-#    azuread:
-#      accepted-audience: ${AZURE_APP_CLIENT_ID}
-#      cookie-name: azuread-idtoken
-#      discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL}
-#      proxyUrl: ${HTTP_PROXY}
-    isso:
-      accepted-audience: ${LOGINSERVICE_ACCEPTED_AUDIENCE}
-      cookie-name: isso-idtoken
-      discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL}
-      proxyUrl: ${HTTP_PROXY}
 
-#    reststs:
-#      accepted-audience: srvtilbakemeldings, srvtilbakemeldinge
-#      cookie-name: reststs-idtoken
-#      discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL}
-#      proxyUrl: ${HTTP_PROXY:}
