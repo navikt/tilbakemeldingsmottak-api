@@ -1,6 +1,6 @@
 aad:
-  authority: ${AAD_AUTHORITY}
-  clientId: ${AZURE_APP_CLIENT_ID}
+  authority: ${SECURITY_TOKEN_SERVICE_TOKEN_URL} # ${AAD_AUTHORITY}
+  clientId:  ${AZUREAD_CLIENTID} # ${AZURE_APP_CLIENT_ID}
   serviceuser: ${serviceuser.username}
   password: ${serviceuser.password}
 
