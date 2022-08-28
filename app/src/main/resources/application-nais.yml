@@ -18,6 +18,6 @@ no.nav.security.jwt:
 
   issuer:
     reststs:
-      accepted-audience: ${AZURE_APP_CLIENT_ID}
+      accepted-audience: srvtilbakemeldings, srvtilbakemeldinge
       cookie-name: reststs-idtoken
       discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL}
