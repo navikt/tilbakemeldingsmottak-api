@@ -37,11 +37,11 @@ spec:
   {{#each INGRESS as |url|}}
      - {{url}}
   {{/each}}
-#  azure:
-#    application:
-#      enabled: true
-#      tenant: {{ TENANT }}
-#  webproxy: true
+  azure:
+    application:
+      enabled: true
+      tenant: {{ TENANT }}
+  webproxy: true
   vault:
     enabled: true
     paths:

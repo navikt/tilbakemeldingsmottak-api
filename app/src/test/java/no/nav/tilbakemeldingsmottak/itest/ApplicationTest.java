@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.icegreen.greenmail.util.GreenMail;
@@ -41,7 +40,6 @@ import java.util.*;
 
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static no.nav.tilbakemeldingsmottak.TestUtils.*;
 import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;

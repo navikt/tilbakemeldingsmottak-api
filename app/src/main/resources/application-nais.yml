@@ -1,6 +1,6 @@
 aad:
-  authority: ${SECURITY_TOKEN_SERVICE_TOKEN_URL} # ${AAD_AUTHORITY}
-  clientId:  ${AZUREAD_CLIENTID} # ${AZURE_APP_CLIENT_ID}
+  authority: ${AAD_AUTHORITY}
+  clientId:  ${AZURE_APP_CLIENT_ID}
   serviceuser: ${serviceuser.username}
   password: ${serviceuser.password}
 
@@ -17,6 +17,16 @@ no.nav.security.jwt:
         token-endpoint-url: ${SECURITY_TOKEN_SERVICE_TOKEN_URL}
 
   issuer:
+    azuread:
+      accepted-audience: ${AZURE_APP_CLIENT_ID}
+      cookie-name: azuread-idtoken
+      discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL}
+      proxyurl: ${HTTP_PROXY:}
+    isso:
+      accepted-audience: ${LOGINSERVICE_ACCEPTED_AUDIENCE}
+      cookie-name: isso-idtoken
+      discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL}
+      proxyUrl: http://webproxy-nais.nav.no:8088
     reststs:
       accepted-audience: srvtilbakemeldings, srvtilbakemeldinge
       cookie-name: reststs-idtoken
