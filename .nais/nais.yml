@@ -5,6 +5,10 @@ metadata:
   namespace: teamserviceklage
   labels:
     team: teamserviceklage
+  annotations:
+    nais.io/read-only-file-system: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: "320M"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   image: {{image}}
   port: 8080
