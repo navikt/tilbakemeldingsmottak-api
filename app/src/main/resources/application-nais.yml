@@ -21,12 +21,12 @@ no.nav.security.jwt:
       accepted-audience: ${AZURE_APP_CLIENT_ID}
       cookie-name: azuread-idtoken
       discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL}
-      proxyurl: ${HTTP_PROXY:}
+      proxy-url: ${HTTP_PROXY:}
     isso:
       accepted-audience: ${LOGINSERVICE_ACCEPTED_AUDIENCE}
       cookie-name: isso-idtoken
       discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL}
-      proxyUrl: http://webproxy-nais.nav.no:8088
+      proxy-url: http://webproxy-nais.nav.no:8088
     reststs:
       accepted-audience: srvtilbakemeldings, srvtilbakemeldinge
       cookie-name: reststs-idtoken

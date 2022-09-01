@@ -63,6 +63,7 @@ public class AADSimpleMailClient implements AADMailClient {
 
 
     private AADToken getNewAADToken() throws ExecutionException, InterruptedException, IOException {
+        log.info("Henter nytt token fra Azure");
         PublicClientApplication pca = PublicClientApplication.builder(aadProperties.getClientId()).
                 authority(aadProperties.getAuthority()).
                 build();
