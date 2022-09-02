@@ -6,76 +6,85 @@ on:
       environment:
         description: 'Environment to deploy'
         required: true
-        default: 'preprod'
+        default: 'none'
         type: choice
         options:
           - none
           - preprod
           - prod
 env:
-  IMAGE: docker.pkg.github.com/${{ github.repository }}/tilbakmeldingsmottak-api:${{ github.sha }}
+  docker_image: ghcr.io/${{ github.repository }}:${{ github.sha }}
 
 jobs:
   build-and-push:
+    if: github.ref != 'refs/heads/preprod-pipeline' && github.ref != github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Branch name
       run: echo running on branch ${GITHUB_REF##*/}
-    - name: Set up java 17
-      uses: actions/setup-java@v3
-      with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'maven'
-    - name: Set up Node 10
-      uses: actions/setup-node@v1
-      with:
-        node-version: '10.14.2'
+
     - name: Set timezone
       uses: szenius/set-timezone@v1.0
       with:
         timezoneLinux: "Europe/Oslo"
-    - name: Build
+
+    - uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17.x'
+
+    - name: Set up Node 10
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.14.2'
+
+    - name: Build with maven
       env:
+        GITHUB_USERNAME: x-access-token
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: mvn -B package -DskipTests --file pom.xml
+      run: mvn install --file pom.xml
+
     - name: Build and publish Docker image
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        docker build --tag ${IMAGE} .
-        docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-        docker push ${IMAGE}
+      uses: docker/build-push-action@v3
+      with:
+        context: .
+        push: true
+        tags: ${{ env.docker_image }}
+
   deploy-preprod:
     needs: build-and-push
     if: github.event.inputs.environment == 'preprod'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v3
-      - name: Deploy
-        uses: nais/deploy/actions/deploy@v1
+      - uses: actions/checkout@v3
+      - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-fss
           RESOURCE: .nais/nais.yml
           VARS: .nais/preprod-config.json
+          VAR: image=${{env.docker_image}}
           DRY_RUN: false
   deploy-prod:
     needs: build-and-push
     if: github.event.inputs.environment == 'prod'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v3
-      - name: Deploy
-        uses: nais/deploy/actions/deploy@v1
+      - uses: actions/checkout@v3
+      - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-fss
           RESOURCE: .nais/nais.yml
-          VARS: .nais/p-config
-          DRY_RUN: true
+          VAR: image=${{env.docker_image}}
+          DRY_RUN: false
 
 
