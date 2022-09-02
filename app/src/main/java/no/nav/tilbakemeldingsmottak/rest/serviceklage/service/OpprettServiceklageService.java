@@ -24,7 +24,6 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettJou
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettServiceklageRequestMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
-import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +41,6 @@ public class OpprettServiceklageService {
     private final OppgaveConsumer oppgaveConsumer;
     private final PdfService pdfService;
     private final ServiceklageMailHelper mailHelper;
-    private final OidcUtils oidcUtils;
 
     public static final String SUBJECT_JOURNALPOST_FEILET = "Automatisk journalføring av serviceklage feilet";
     public static final String TEXT_JOURNALPOST_FEILET= "Manuell journalføring og opprettelse av oppgave kreves. Klagen ligger vedlagt.";

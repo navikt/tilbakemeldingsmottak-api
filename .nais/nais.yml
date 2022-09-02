@@ -91,3 +91,5 @@ spec:
       value: {{ SAF_URL }}
     - name: SAF_HENTDOKUMENT_URL
       value: {{SAF_HENTDOKUMENT_URL}}
+    - name: AZURE_DEFAULT_SCOPE
+      value: {{AZURE_DEFAULT_SCOPE}}
