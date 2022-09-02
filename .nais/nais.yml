@@ -46,6 +46,24 @@ spec:
       enabled: true
       tenant: {{ TENANT }}
   webproxy: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: tilbakemelding-api
+          namespace: personbruker
+    outbound:
+      external:
+        - host: login.microsoftonline.com
+          ports:
+            - port: 443
+              name: https
+              protocol: HTTPS
+        - host: graph.microsoft.com
+          ports:
+            - port: 443
+              name: https
+              protocol: HTTPS
+
   vault:
     enabled: true
     paths:
