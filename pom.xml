@@ -33,7 +33,7 @@
         <httpclient.version>4.5.13</httpclient.version>
         <okhttp3.version>4.9.3</okhttp3.version>
         <rxjava.version>3.1.4</rxjava.version>
-        <jackson-bom.version>2.13.2</jackson-bom.version>
+        <jackson-bom.version>2.13.4</jackson-bom.version>
         <javax.inject.version>1</javax.inject.version>
         <logstash-logback-encoder.version>7.1.1</logstash-logback-encoder.version>
         <lombok.version>1.18.24</lombok.version>
