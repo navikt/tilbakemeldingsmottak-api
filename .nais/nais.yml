@@ -63,7 +63,8 @@ spec:
             - port: 443
               name: https
               protocol: HTTPS
-
+  tokenx:
+    enabled: true
   vault:
     enabled: true
     paths:
