@@ -47,10 +47,10 @@ spec:
       tenant: {{ TENANT }}
   webproxy: true
   accessPolicy:
-    inbound:
-      rules:
-        - application: tilbakemelding-api
-          namespace: personbruker
+#    inbound:
+#      rules:
+#        - application: tilbakemelding-api
+#          namespace: personbruker
     outbound:
       external:
         - host: login.microsoftonline.com
@@ -63,8 +63,8 @@ spec:
             - port: 443
               name: https
               protocol: HTTPS
-  tokenx:
-    enabled: true
+#  tokenx:
+#    enabled: true
   vault:
     enabled: true
     paths:

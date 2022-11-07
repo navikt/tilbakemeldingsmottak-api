@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author Ugur Alpay Cenar, Visma Consulting.
  */
-//@Component
+@Component
 @Profile({"nais", "local"})
 public class STSConfig {
 
