@@ -44,13 +44,14 @@ spec:
   azure:
     application:
       enabled: true
+      allowAllUsers: true
       tenant: {{ TENANT }}
   webproxy: true
   accessPolicy:
-#    inbound:
-#      rules:
-#        - application: tilbakemelding-api
-#          namespace: personbruker
+    inbound:
+      rules:
+        - application: tilbakemelding-api
+          namespace: personbruker
     outbound:
       external:
         - host: login.microsoftonline.com
