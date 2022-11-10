@@ -45,7 +45,6 @@ spec:
     application:
       enabled: true
       tenant: {{ TENANT }}
-  webproxy: true
 #  tokenx:
 #    enabled: true
   vault:

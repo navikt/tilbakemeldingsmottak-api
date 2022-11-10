@@ -11,5 +11,4 @@ ENV JAVA_OPTS="-Xmx1024m \
                -Dhttp.proxyHost=webproxy.nais \
                -Dhttps.proxyHost=webproxy.nais \
                -Dhttp.proxyPort=8088 \
-               -Dhttps.proxyPort=8088 \
-               -Dhttp.nonProxyHosts=\"*.local\""
+               -Dhttps.proxyPort=8088"
