@@ -7,4 +7,4 @@ COPY tlssetting.properties /securityoverride/tlssetting.properties
 ENV JAVA_OPTS="-Xmx1024m \
                -Djava.security.egd=file:/dev/./urandom \
                -Dspring.profiles.active=nais \
-               -Djava.security.properties=/securityoverride/tlssetting.properties"
+               -Djava.security.properties=/securityoverride/tlssetting.properties ${JAVA_PROXY_OPTIONS}"
