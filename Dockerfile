@@ -7,8 +7,4 @@ COPY tlssetting.properties /securityoverride/tlssetting.properties
 ENV JAVA_OPTS="-Xmx1024m \
                -Djava.security.egd=file:/dev/./urandom \
                -Dspring.profiles.active=nais \
-               -Djava.security.properties=/securityoverride/tlssetting.properties \
-               -Dhttp.proxyHost=webproxy.nais \
-               -Dhttps.proxyHost=webproxy.nais \
-               -Dhttp.proxyPort=8088 \
-               -Dhttps.proxyPort=8088"
+               -Djava.security.properties=/securityoverride/tlssetting.properties"
