@@ -44,26 +44,8 @@ spec:
   azure:
     application:
       enabled: true
-      allowAllUsers: true
       tenant: {{ TENANT }}
   webproxy: true
-  accessPolicy:
-    inbound:
-      rules:
-        - application: tilbakemelding-api
-          namespace: personbruker
-    outbound:
-      external:
-        - host: login.microsoftonline.com
-          ports:
-            - port: 443
-              name: https
-              protocol: HTTPS
-        - host: graph.microsoft.com
-          ports:
-            - port: 443
-              name: https
-              protocol: HTTPS
 #  tokenx:
 #    enabled: true
   vault:
@@ -79,14 +61,10 @@ spec:
   env:
     - name: SPRING_DATASOURCE_URL
       value: {{ SPRING_DATASOURCE_URL }}
-    - name: AZUREAD_CLIENTID
-      value: {{ AZUREAD_CLIENTID }}
     - name: NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL
       value: {{ NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL }}
     - name: SECURITYTOKENSERVICE_URL
       value: {{ SECURITYTOKENSERVICE_URL }}
-    - name: NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL
-      value: {{ NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL }}
     - name: LOGINSERVICE_ACCEPTED_AUDIENCE
       value: {{ LOGINSERVICE_ACCEPTED_AUDIENCE }}
     - name: LOGINSERVICE_OIDC_CALLBACKURI
