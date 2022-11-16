@@ -20,13 +20,9 @@
     <properties>
         <!-- Keep up to date with parent version -->
         <spring-boot.version>2.5.13</spring-boot.version>
-        <kotlin.version>1.6.10</kotlin.version>
 
-        <adal4j.version>1.6.7</adal4j.version>
         <microsoft-graph.version>5.41.0</microsoft-graph.version>
         <microsoft-graph-core.version>2.0.14</microsoft-graph-core.version>
-        <msal4j.version>1.12.0</msal4j.version>
-        <azure.core.version>1.34.0</azure.core.version>
         <azure.identity.version>1.7.0</azure.identity.version>
 
         <!-- NAV internal dependencies -->
@@ -39,10 +35,9 @@
 
         <!-- Dependencies that should be on the latest version -->
         <httpclient.version>4.5.13</httpclient.version>
-        <okhttp3.version>4.9.3</okhttp3.version>
+        <okhttp3.version>4.10.0</okhttp3.version>
         <rxjava.version>3.1.4</rxjava.version>
         <jackson-bom.version>2.13.3</jackson-bom.version>
-        <jackson-kotlin.version>2.13.2</jackson-kotlin.version>
         <javax.inject.version>1</javax.inject.version>
         <logstash-logback-encoder.version>7.1.1</logstash-logback-encoder.version>
         <lombok.version>1.18.24</lombok.version>
@@ -286,11 +281,6 @@
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>${jackson-bom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-kotlin</artifactId>
-                <version>${jackson-kotlin.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.micrometer</groupId>
