@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.email.aad;
 
-import com.microsoft.graph.models.extensions.Message;
+import com.microsoft.graph.models.Message;
 
 public interface AADMailClient {
 

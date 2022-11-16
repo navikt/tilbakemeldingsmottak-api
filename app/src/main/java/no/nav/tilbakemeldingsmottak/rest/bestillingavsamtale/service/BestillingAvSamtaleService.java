@@ -1,18 +1,15 @@
 package no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.service;
 
-import com.microsoft.graph.models.generated.BodyType;
+import com.microsoft.graph.models.BodyType;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
-import no.nav.tilbakemeldingsmottak.rest.common.epost.AbstractEmailService;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 
 @Service
 @Slf4j

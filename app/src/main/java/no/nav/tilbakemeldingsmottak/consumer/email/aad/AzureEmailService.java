@@ -1,9 +1,7 @@
 package no.nav.tilbakemeldingsmottak.consumer.email.aad;
 
-import com.microsoft.graph.logger.LoggerLevel;
-import com.microsoft.graph.models.extensions.*;
-import com.microsoft.graph.models.generated.BodyType;
-import com.microsoft.graph.requests.extensions.GraphServiceClient;
+import com.microsoft.graph.models.*;
+import com.microsoft.graph.models.BodyType;
 import no.nav.tilbakemeldingsmottak.consumer.email.EmailService;
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException;
 import org.slf4j.Logger;

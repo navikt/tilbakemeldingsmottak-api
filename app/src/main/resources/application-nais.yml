@@ -3,6 +3,9 @@ aad:
   clientId:  ${AZURE_APP_CLIENT_ID}
   serviceuser: ${serviceuser.username}
   password: ${serviceuser.password}
+  proxyHost: ${PROXY_HOST}
+  proxyPort: ${PROXY_PORT}
+  tenant: ${tenant}
 
 no.nav.security.jwt:
   client:
@@ -20,13 +23,13 @@ no.nav.security.jwt:
     azuread:
       accepted-audience: ${AZURE_APP_CLIENT_ID}
       cookie-name: azuread-idtoken
-      discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL}
-      proxy-url: ${HTTP_PROXY:}
+      discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
+      proxy-url: http://${PROXY_HOST}:PROXY_PORT
     isso:
       accepted-audience: ${LOGINSERVICE_ACCEPTED_AUDIENCE}
       cookie-name: isso-idtoken
       discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL}
-      proxy-url: http://webproxy-nais.nav.no:8088
+      proxy-url: http://${PROXY_HOST}:${PROXY_PORT}
     reststs:
       accepted-audience: srvtilbakemeldings, srvtilbakemeldinge
       cookie-name: reststs-idtoken

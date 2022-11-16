@@ -22,4 +22,9 @@ public class AADProperties {
     private String serviceuser;
     @NotEmpty
     private String password;
+
+    private String proxyHost;
+    private Integer proxyPort;
+    private String tenant;
+
 }

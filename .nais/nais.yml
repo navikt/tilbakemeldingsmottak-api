@@ -45,25 +45,8 @@ spec:
     application:
       enabled: true
       tenant: {{ TENANT }}
-  webproxy: true
-  accessPolicy:
-    inbound:
-      rules:
-        - application: tilbakemelding-api
-          namespace: personbruker
-    outbound:
-      external:
-        - host: login.microsoftonline.com
-          ports:
-            - port: 443
-              name: https
-              protocol: HTTPS
-        - host: graph.microsoft.com
-          ports:
-            - port: 443
-              name: https
-              protocol: HTTPS
-
+#  tokenx:
+#    enabled: true
   vault:
     enabled: true
     paths:
@@ -77,18 +60,10 @@ spec:
   env:
     - name: SPRING_DATASOURCE_URL
       value: {{ SPRING_DATASOURCE_URL }}
-    - name: AAD_AUTHORITY
-      value: {{ AAD_AUTHORITY }}
-    - name: AZUREAD_CLIENTID
-      value: {{ AZURE_APP_CLIENTID }}
-    - name: AZUREAD_CLIENT_SECRET
-      value: {{ AZURE_APP_CLIENT_SECRET }}
     - name: NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL
       value: {{ NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL }}
     - name: SECURITYTOKENSERVICE_URL
       value: {{ SECURITYTOKENSERVICE_URL }}
-    - name: NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL
-      value: {{ NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL }}
     - name: LOGINSERVICE_ACCEPTED_AUDIENCE
       value: {{ LOGINSERVICE_ACCEPTED_AUDIENCE }}
     - name: LOGINSERVICE_OIDC_CALLBACKURI
@@ -113,5 +88,11 @@ spec:
       value: {{ SAF_URL }}
     - name: SAF_HENTDOKUMENT_URL
       value: {{SAF_HENTDOKUMENT_URL}}
-    - name: HTTP_PROXY
-      value: {{HTTP_PROXY}}
+    - name: AZURE_DEFAULT_SCOPE
+      value: {{AZURE_DEFAULT_SCOPE}}
+    - name: PROXY_HOST
+      value: {{ PROXY_HOST }}
+    - name: PROXY_PORT
+      value: {{ PROXY_PORT }}
+    - name: TENANT
+      value: {{ TENANT }}

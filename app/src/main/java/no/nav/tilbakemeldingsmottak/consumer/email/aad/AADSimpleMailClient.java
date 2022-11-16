@@ -1,12 +1,19 @@
 package no.nav.tilbakemeldingsmottak.consumer.email.aad;
 
+import com.azure.core.http.HttpClient;
+import com.azure.core.http.ProxyOptions;
+import com.azure.core.util.HttpClientOptions;
+import com.azure.identity.ClientSecretCredential;
+import com.azure.identity.ClientSecretCredentialBuilder;
 import com.microsoft.aad.msal4j.IAuthenticationResult;
 import com.microsoft.aad.msal4j.PublicClientApplication;
 import com.microsoft.aad.msal4j.UserNamePasswordParameters;
-import com.microsoft.graph.logger.LoggerLevel;
-import com.microsoft.graph.models.extensions.IGraphServiceClient;
-import com.microsoft.graph.models.extensions.Message;
-import com.microsoft.graph.requests.extensions.GraphServiceClient;
+import com.microsoft.graph.authentication.TokenCredentialAuthProvider;
+import com.microsoft.graph.httpcore.HttpClients;
+import com.microsoft.graph.models.Message;
+import com.microsoft.graph.models.UserSendMailParameterSet;
+import com.microsoft.graph.requests.GraphServiceClient;
+import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +21,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashSet;
@@ -35,14 +44,16 @@ public class AADSimpleMailClient implements AADMailClient {
         this.aadProperties = aadProperties;
     }
 
-    public void sendMailViaClient(Message message) throws Exception {
-        IGraphServiceClient graphClient = GraphServiceClient.builder()
-                .authenticationProvider(new SimpleAuthProvider(getToken().getAccessToken()))
-                .buildClient();
-        graphClient.getLogger().setLoggingLevel(LoggerLevel.ERROR);
+    public void sendMailViaClient(Message message) {
 
+        UserSendMailParameterSet sendMailParameterSet = UserSendMailParameterSet.newBuilder()
+                .withMessage(message)
+                .withSaveToSentItems(null)
+                .build();
+
+        GraphServiceClient graphClient = getGraphClient();
         graphClient.me()
-                .sendMail(message, null)
+                .sendMail(sendMailParameterSet)
                 .buildRequest()
                 .post();
     }
@@ -64,9 +75,11 @@ public class AADSimpleMailClient implements AADMailClient {
 
     private AADToken getNewAADToken() throws ExecutionException, InterruptedException, IOException {
         log.info("Henter nytt token fra Azure");
-        PublicClientApplication pca = PublicClientApplication.builder(aadProperties.getClientId()).
-                authority(aadProperties.getAuthority()).
-                build();
+        PublicClientApplication pca = PublicClientApplication.builder(
+                aadProperties.getClientId())
+                    .authority(aadProperties.getAuthority())
+                    .proxy(getProxy())
+                    .build();
 
         Set<String> scopes = new HashSet<>();
         scopes.add("User.Read");
@@ -84,5 +97,46 @@ public class AADSimpleMailClient implements AADMailClient {
                 .toLocalDateTime());
     }
 
+    private Proxy getProxy() {
+        return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(aadProperties.getProxyHost(), aadProperties.getProxyPort()));
+    }
 
+
+    private TokenCredentialAuthProvider getTokenProviderViaProxy() {
+        ProxyOptions proxyOptions = new ProxyOptions(
+                ProxyOptions.Type.HTTP, new InetSocketAddress(aadProperties.getProxyHost(), aadProperties.getProxyPort()));
+
+        HttpClientOptions clientOptions = new HttpClientOptions();
+        clientOptions.setProxyOptions(proxyOptions);
+
+        HttpClient azHttpClient = HttpClient.createDefault(clientOptions);
+
+        ClientSecretCredential clientSecretCredential = new ClientSecretCredentialBuilder()
+                .clientId(aadProperties.getClientId())
+                .clientSecret(aadProperties.getPassword())
+                .tenantId(aadProperties.getTenant())
+                .httpClient(azHttpClient)
+                .build();
+
+        return new TokenCredentialAuthProvider(clientSecretCredential);
+    }
+
+
+    private GraphServiceClient getGraphClient() {
+
+        final TokenCredentialAuthProvider authenticationProvider = getTokenProviderViaProxy();
+
+        final Proxy proxy = getProxy();
+
+        final OkHttpClient graphHttpClient =
+                HttpClients.createDefault(authenticationProvider)
+                        .newBuilder()
+                        .proxy(proxy)
+                        .build();
+
+        return GraphServiceClient
+                        .builder()
+                        .httpClient(graphHttpClient)
+                        .buildClient();
+    }
 }

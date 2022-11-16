@@ -27,5 +27,7 @@
   "SAF_HENTDOKUMENT_URL": "https://saf.intern.nav.no/rest/hentdokument",
   "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
   "TENANT": "nav.no",
+  "PROXY_HOST": "webproxy-nais.nav.no",
+  "PROXY_PORT": "8088",
   "HTTP_PROXY": "http://webproxy-nais.nav.no:8088"
 }
