@@ -33,15 +33,15 @@ public class AzureEmailService implements EmailService {
     private static final String NO_REPLY_ADDRESSE = "do-not-reply@nav.no";
 
     @Override
-    public void sendSimpleMessage(String mottaker, String subject, BodyType contentType, String content) throws SendEmailException {
+    public void sendSimpleMessage(String mottaker, String subject, String content) throws SendEmailException {
         Message message = new Message();
         message.subject = subject;
         ItemBody body = new ItemBody();
-        body.contentType = contentType;
+        body.contentType = BodyType.HTML;
         body.content = content;
         message.body = body;
         LinkedList<Recipient> toRecipientsList = new LinkedList<>();
-        toRecipientsList.add(lagMottaker(mottaker));
+        toRecipientsList.add(lagMottaker(mottaker == null ? emailToAddress : mottaker));
         message.toRecipients = toRecipientsList;
         message.from = lagMottaker(emailFromAddress);
 

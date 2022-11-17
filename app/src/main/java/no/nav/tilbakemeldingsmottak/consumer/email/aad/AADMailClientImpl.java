@@ -31,16 +31,16 @@ import java.util.concurrent.ExecutionException;
 
 @Profile("nais | spring")
 @Component
-public class AADSimpleMailClient implements AADMailClient {
+public class AADMailClientImpl implements AADMailClient {
 
-    private static final Logger log = LoggerFactory.getLogger(AADSimpleMailClient.class);
+    private static final Logger log = LoggerFactory.getLogger(AADMailClientImpl.class);
 
     private final AADProperties aadProperties;
 
     private volatile AADToken token;
 
     @Autowired
-    public AADSimpleMailClient(AADProperties aadProperties) {
+    public AADMailClientImpl(AADProperties aadProperties) {
         this.aadProperties = aadProperties;
     }
 

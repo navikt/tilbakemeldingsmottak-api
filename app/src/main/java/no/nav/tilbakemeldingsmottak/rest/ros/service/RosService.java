@@ -2,7 +2,6 @@ package no.nav.tilbakemeldingsmottak.rest.ros.service;
 
 import static no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType.NAV_KONTOR;
 
-import com.microsoft.graph.models.generated.BodyType;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent;
@@ -31,7 +30,7 @@ public class RosService {
     }
 
     public void sendRos(SendRosRequest request) {
-        emailService.sendSimpleMessage(emailToAddress, "Ros til NAV sendt inn via skjema på nav.no", BodyType.HTML, createContent(request));
+        emailService.sendSimpleMessage(emailToAddress, "Ros til NAV sendt inn via skjema på nav.no", createContent(request));
         log.info("Ros til NAV videresendt til " + emailToAddress);
     }
 

@@ -1,10 +1,12 @@
 package no.nav.tilbakemeldingsmottak.consumer.email.aad;
 
 import lombok.Data;
+import org.springframework.context.annotation.Profile;
 
 import java.time.LocalDateTime;
 
 @Data
+@Profile("nais | spring")
 public class AADToken {
 
     private String accessToken;

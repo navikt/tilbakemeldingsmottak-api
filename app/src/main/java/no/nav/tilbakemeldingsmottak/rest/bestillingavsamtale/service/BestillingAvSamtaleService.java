@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.service;
 
-import com.microsoft.graph.models.BodyType;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
@@ -28,7 +27,7 @@ public class BestillingAvSamtaleService {
     }
 
     public void bestillSamtale(BestillSamtaleRequest request) throws MessagingException {
-        emailService.sendSimpleMessage(emailToAddress, "Bestilling av samtale mottatt via skjema på nav.no", BodyType.HTML, createContent(request));
+        emailService.sendSimpleMessage(emailToAddress, "Bestilling av samtale mottatt via skjema på nav.no", createContent(request));
         log.info("Bestilling av samtale videresendt til " + emailToAddress);
     }
 
