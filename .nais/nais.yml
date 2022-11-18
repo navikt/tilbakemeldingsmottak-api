@@ -93,6 +93,6 @@ spec:
     - name: PROXY_HOST
       value: {{ PROXY_HOST }}
     - name: PROXY_PORT
-      value: {{ PROXY_PORT }}
+      value: "8088"
     - name: TENANT
       value: {{ TENANT }}
