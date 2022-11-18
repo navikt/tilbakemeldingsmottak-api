@@ -5,7 +5,7 @@ aad:
   password: ${serviceuser.password}
   proxyHost: ${PROXY_HOST}
   proxyPort: ${PROXY_PORT}
-  tenant: ${tenant}
+  tenant: ${TENANT}
 
 no.nav.security.jwt:
   client:
@@ -24,7 +24,7 @@ no.nav.security.jwt:
       accepted-audience: ${AZURE_APP_CLIENT_ID}
       cookie-name: azuread-idtoken
       discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
-      proxy-url: http://${PROXY_HOST}:PROXY_PORT
+      proxy-url: http://${PROXY_HOST}:${PROXY_PORT}
     isso:
       accepted-audience: ${LOGINSERVICE_ACCEPTED_AUDIENCE}
       cookie-name: isso-idtoken
