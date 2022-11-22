@@ -20,6 +20,8 @@ public class AADProperties {
     @NotEmpty
     private String clientId;
     @NotEmpty
+    private String clientSecret;
+    @NotEmpty
     private String serviceuser;
     @NotEmpty
     private String password;

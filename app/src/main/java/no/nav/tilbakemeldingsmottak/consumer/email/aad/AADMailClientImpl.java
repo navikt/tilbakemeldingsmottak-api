@@ -57,6 +57,7 @@ public class AADMailClientImpl implements AADMailClient {
                 .buildRequest()
                 .post();
     }
+/*
 
     private AADToken getToken() throws InterruptedException, ExecutionException, IOException {
         final LocalDateTime inTwoMinutes = LocalDateTime.now().plusMinutes(2L);
@@ -71,7 +72,9 @@ public class AADMailClientImpl implements AADMailClient {
         }
         return token;
     }
+*/
 
+/*
 
     private AADToken getNewAADToken() throws ExecutionException, InterruptedException, IOException {
         log.info("Henter nytt token fra Azure");
@@ -96,6 +99,7 @@ public class AADMailClientImpl implements AADMailClient {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime());
     }
+*/
 
     private Proxy getProxy() {
         return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(aadProperties.getProxyHost(), aadProperties.getProxyPort()));
@@ -106,6 +110,7 @@ public class AADMailClientImpl implements AADMailClient {
         ProxyOptions proxyOptions = new ProxyOptions(
                 ProxyOptions.Type.HTTP, new InetSocketAddress(aadProperties.getProxyHost(), aadProperties.getProxyPort()));
 
+        proxyOptions.setCredentials(aadProperties.getServiceuser(), aadProperties.getPassword());
         HttpClientOptions clientOptions = new HttpClientOptions();
         clientOptions.setProxyOptions(proxyOptions);
 
@@ -113,7 +118,7 @@ public class AADMailClientImpl implements AADMailClient {
 
         ClientSecretCredential clientSecretCredential = new ClientSecretCredentialBuilder()
                 .clientId(aadProperties.getClientId())
-                .clientSecret(aadProperties.getPassword())
+                .clientSecret(aadProperties.getClientSecret())
                 .tenantId(aadProperties.getTenant())
                 .httpClient(azHttpClient)
                 .build();
