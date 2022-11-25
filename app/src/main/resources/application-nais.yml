@@ -2,7 +2,7 @@ aad:
   authority: ${AAD_AUTHORITY}
   clientId:  ${AZURE_APP_CLIENT_ID}
   clientSecret:  ${AZURE_APP_CLIENT_SECRET}
-  serviceuser: ${email_from_address}
+  serviceuser: ${SERVICEUSER_EMAIL}
   password: ${serviceuser.password}
   proxyHost: ${PROXY_HOST}
   proxyPort: ${PROXY_PORT}
