@@ -96,3 +96,5 @@ spec:
       value: "8088"
     - name: TENANT
       value: {{ TENANT }}
+    - name: SERVICEUSER_EMAIL
+      value: {{ SERVICEUSER_EMAIL}}

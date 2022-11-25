@@ -29,5 +29,6 @@
   "TENANT": "nav.no",
   "PROXY_HOST": "webproxy-nais.nav.no",
   "PROXY_PORT": "8088",
-  "HTTP_PROXY": "http://webproxy-nais.nav.no:8088"
+  "HTTP_PROXY": "http://webproxy-nais.nav.no:8088",
+  "SERVICEUSER_EMAIL": "srvtilbakemeldings@nav.no"
 }

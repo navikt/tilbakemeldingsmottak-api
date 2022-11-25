@@ -29,5 +29,6 @@
   "AZURE_DEFAULT_SCOPE": "openid",
   "TENANT": "trygdeetaten.no",
   "PROXY_HOST": "webproxy-nais.nav.no",
-  "PROXY_PORT": 8088
+  "PROXY_PORT": 8088,
+  "SERVICEUSER_EMAIL": "srvtilbakemeldings@trygdeetaten.no"
 }
