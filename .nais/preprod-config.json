@@ -30,5 +30,5 @@
   "TENANT": "trygdeetaten.no",
   "PROXY_HOST": "webproxy-nais.nav.no",
   "PROXY_PORT": 8088,
-  "SERVICEUSER_EMAIL": "srvtilbakemeldings@trygdeetaten.no"
+  "SERVICEUSER_EMAIL": "srvtilbakemeldings@nav.no"
 }
