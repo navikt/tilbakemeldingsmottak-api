@@ -37,7 +37,7 @@ public class AzureEmailService implements EmailService {
         Message message = new Message();
         message.subject = subject;
         ItemBody body = new ItemBody();
-        body.contentType = BodyType.HTML;
+        body.contentType = BodyType.TEXT;
         body.content = content;
         message.body = body;
         LinkedList<Recipient> toRecipientsList = new LinkedList<>();
