@@ -45,8 +45,10 @@ public class AADMailClientImpl implements AADMailClient {
     }
 
     public void sendMailViaClient(Message message) {
+        log.debug("Skal sende melding:" + message.subject + ", " + message.body.content);
 
-        UserSendMailParameterSet sendMailParameterSet = UserSendMailParameterSet.newBuilder()
+        UserSendMailParameterSet sendMailParameterSet = UserSendMailParameterSet
+                .newBuilder()
                 .withMessage(message)
                 .withSaveToSentItems(null)
                 .build();
