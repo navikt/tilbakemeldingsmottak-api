@@ -54,10 +54,18 @@ public class AADMailClientImpl implements AADMailClient {
                 .build();
 
         GraphServiceClient graphClient = getGraphClient();
+/*
         graphClient.users(aadProperties.getServiceuser())
                 .sendMail(sendMailParameterSet)
                 .buildRequest()
                 .post();
+*/
+        graphClient.me()
+                .sendMail(sendMailParameterSet)
+                .buildRequest()
+                .post();
+
+
     }
 /*
 
