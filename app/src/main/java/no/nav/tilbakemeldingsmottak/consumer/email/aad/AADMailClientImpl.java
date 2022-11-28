@@ -50,21 +50,14 @@ public class AADMailClientImpl implements AADMailClient {
         UserSendMailParameterSet sendMailParameterSet = UserSendMailParameterSet
                 .newBuilder()
                 .withMessage(message)
-                .withSaveToSentItems(null)
+                .withSaveToSentItems(false)
                 .build();
 
         GraphServiceClient graphClient = getGraphClient();
-/*
         graphClient.users(aadProperties.getServiceuser())
                 .sendMail(sendMailParameterSet)
                 .buildRequest()
                 .post();
-*/
-        graphClient.me()
-                .sendMail(sendMailParameterSet)
-                .buildRequest()
-                .post();
-
 
     }
 /*
