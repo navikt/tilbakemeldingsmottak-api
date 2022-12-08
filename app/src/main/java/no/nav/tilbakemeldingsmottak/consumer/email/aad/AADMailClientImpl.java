@@ -113,7 +113,7 @@ public class AADMailClientImpl implements AADMailClient {
         ProxyOptions proxyOptions = new ProxyOptions(
                 ProxyOptions.Type.HTTP, new InetSocketAddress(aadProperties.getProxyHost(), aadProperties.getProxyPort()));
 
-        proxyOptions.setCredentials(aadProperties.getServiceuser(), aadProperties.getPassword());
+        //proxyOptions.setCredentials(aadProperties.getServiceuser(), aadProperties.getPassword());
         HttpClientOptions clientOptions = new HttpClientOptions();
         clientOptions.setProxyOptions(proxyOptions);
 
