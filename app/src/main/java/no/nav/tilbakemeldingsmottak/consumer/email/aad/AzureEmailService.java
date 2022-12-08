@@ -46,7 +46,7 @@ public class AzureEmailService implements EmailService {
         message.from = lagMottaker(emailFromAddress);
         message.sender = lagMottaker(emailFromAddress);
 
-        log.info("Send epost til " + mottaker);
+        log.info("Send epost fra: " + emailFromAddress + " til: " + mottaker);
         try {
             mailClient.sendMailViaClient(message);
         } catch (Exception e) {
