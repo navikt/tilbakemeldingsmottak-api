@@ -44,6 +44,7 @@ public class AzureEmailService implements EmailService {
         toRecipientsList.add(lagMottaker(mottaker == null ? emailToAddress : mottaker));
         message.toRecipients = toRecipientsList;
         message.from = lagMottaker(emailFromAddress);
+        message.sender = lagMottaker(emailFromAddress);
 
         log.info("Send epost til " + mottaker);
         try {
