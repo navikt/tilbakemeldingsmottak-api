@@ -4,16 +4,26 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.microsoft.graph.models.Message;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback;
 import no.nav.security.mock.oauth2.token.OAuth2TokenCallback;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
 import no.nav.tilbakemeldingsmottak.Application;
+import no.nav.tilbakemeldingsmottak.consumer.email.EmailService;
+import no.nav.tilbakemeldingsmottak.consumer.email.aad.AADMailClient;
+import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.data.ldap.AutoConfigureDataLdap;
@@ -69,8 +79,22 @@ public class ApplicationTest {
     @Autowired
     MockOAuth2Server mockOAuth2Server;
 
+    @Autowired
+    AADMailClient emailService;
+
+/*
+    @Mock
+    AADMailClient mailClient;
+
+    @InjectMocks
+    AzureEmailService emailService;
+*/
+
     @Value("${local.server.port}")
     private int serverPort;
+
+    @Captor
+    ArgumentCaptor<Message> messageCaptor;
 
     protected static final String CONSUMER_ID = "theclientid";
     private static final String URL_SERVICEKLAGE = "/rest/serviceklage";
