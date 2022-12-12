@@ -4,19 +4,12 @@ import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException;
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageMailException;
-import no.nav.tilbakemeldingsmottak.rest.common.epost.AbstractEmailService;
 import org.springframework.stereotype.Component;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
 import javax.inject.Inject;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.util.ByteArrayDataSource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -31,7 +24,8 @@ public class ServiceklageMailHelper {
 
     public void sendEmail(String fromAddress, String toAddress, String subject, String text, byte[] fysiskDokument) {
         try {
-            emailService.sendMessageWithAttachments(toAddress, subject, text, fysiskDokument, "klage.pdf");
+            List<String> mottakere =  new ArrayList<>(Arrays.asList(toAddress.split(";")));
+            emailService.sendMessageWithAttachments(mottakere, subject, text, fysiskDokument, "klage.pdf");
         } catch (SendEmailException e) {
             throw new ServiceklageMailException("Kan ikke sende mail");
         }

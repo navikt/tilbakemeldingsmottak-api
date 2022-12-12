@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Objects;
 
@@ -37,15 +39,27 @@ public class AzureEmailService implements EmailService {
 
     @Override
     public void sendSimpleMessage(String mottaker, String subject, String content) throws SendEmailException {
-        Message message = createMessage(mottaker, subject, content);
+        List<String> mottakere = Arrays.asList(mottaker);
+        sendSimpleMessage(mottakere, subject, content);
+    }
+
+    @Override
+    public void sendSimpleMessage(List<String> mottakere, String subject, String content) throws SendEmailException {
+        Message message = createMessage(mottakere, subject, content);
         sendMessage(message);
     }
 
     @Override
     public void sendMessageWithAttachments(String mottaker, String subject, String content, byte[] attachment, String attachmentName) throws SendEmailException {
-        Message message = createMessage(mottaker, subject, content);
+        List<String> mottakere = Arrays.asList(mottaker);
+        sendMessageWithAttachments(mottakere, subject, content, attachment, attachmentName);
+    }
 
-        LinkedList<Attachment> attachmentsList = new LinkedList<Attachment>();
+    @Override
+    public void sendMessageWithAttachments(List<String> mottakere, String subject, String content, byte[] attachment, String attachmentName) throws SendEmailException {
+        Message message = createMessage(mottakere, subject, content);
+
+        LinkedList<Attachment> attachmentsList = new LinkedList<>();
         FileAttachment attachments = new FileAttachment();
         attachments.name = attachmentName;
         attachments.contentType = "application/pdf"; // Assumes PDF
@@ -74,7 +88,7 @@ public class AzureEmailService implements EmailService {
     }
 
 
-    private Message createMessage(String mottaker, String subject, String content) {
+    private Message createMessage(List<String> mottakere, String subject, String content) {
         Message message = new Message();
         message.subject = subject;
         ItemBody body = new ItemBody();
@@ -82,7 +96,9 @@ public class AzureEmailService implements EmailService {
         body.content = content;
         message.body = body;
         LinkedList<Recipient> toRecipientsList = new LinkedList<>();
-        toRecipientsList.add(lagMottaker(mottaker == null ? emailToAddress : mottaker));
+        for (String mottaker : mottakere) {
+            toRecipientsList.add(lagMottaker(mottaker == null ? emailToAddress : mottaker));
+        }
         message.toRecipients = toRecipientsList;
         message.from = lagMottaker(emailFromAddress);
         message.sender = lagMottaker(emailFromAddress);
