@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Base64;
 import java.util.LinkedList;
 import java.util.Objects;
 
@@ -62,8 +61,9 @@ public class AzureEmailService implements EmailService {
     private void sendMessage(Message message) {
         assert Objects.requireNonNull(message.from).emailAddress != null;
         assert Objects.requireNonNull(Objects.requireNonNull(message.toRecipients).get(0)).emailAddress != null;
+        assert message.body != null;
 
-        log.info("Send epost fra: " + message.from.emailAddress.address + " til: " + message.toRecipients.get(0).emailAddress.address);
+        log.info("Send epost fra: " + message.from.emailAddress.address + " til: " + message.toRecipients.get(0).emailAddress.address + " body størrelse: " + message.body.content.length());
         try {
             mailClient.sendMailViaClient(message);
             log.info("Epost sendt");
