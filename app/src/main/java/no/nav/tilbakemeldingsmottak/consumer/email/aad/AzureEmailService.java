@@ -98,7 +98,7 @@ public class AzureEmailService implements EmailService {
         message.body = body;
         LinkedList<Recipient> toRecipientsList = new LinkedList<>();
         for (String mottaker : mottakere) {
-            toRecipientsList.add(lagMottaker(mottaker == null ? emailToAddress : mottaker));
+            toRecipientsList.add(lagMottaker(mottaker == null ? emailToAddress : mottaker.trim()));
         }
         message.toRecipients = toRecipientsList;
         message.from = lagMottaker(emailFromAddress);
