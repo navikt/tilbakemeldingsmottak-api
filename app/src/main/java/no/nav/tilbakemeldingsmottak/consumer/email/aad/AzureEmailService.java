@@ -64,6 +64,7 @@ public class AzureEmailService implements EmailService {
         attachments.name = attachmentName;
         attachments.contentType = "application/pdf"; // Assumes PDF
         attachments.contentBytes = attachment;
+        attachments.oDataType = "#microsoft.graph.fileAttachment";
         attachmentsList.add(attachments);
         AttachmentCollectionResponse attachmentCollectionResponse = new AttachmentCollectionResponse();
         attachmentCollectionResponse.value = attachmentsList;
