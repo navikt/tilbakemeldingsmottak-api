@@ -9,7 +9,7 @@
   "LOGINSERVICE_OIDC_CALLBACKURI": "https://loginservice.nais.preprod.local/callback",
   "NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL": "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/.well-known/openid-configuration",
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.preprod.local/rest/v1/sts/token",
-  "JOURNALPOST_V1_URL": "https://dokarkiv-q1.nais.preprod.local/rest/journalpostapi/v10",
+  "JOURNALPOST_V1_URL": "https://dokarkiv-q1.nais.preprod.local/rest/journalpostapi/v1",
   "OPPGAVE_OPPGAVER_URL": "https://oppgave.nais.preprod.local/api/v1/oppgaver",
   "AKTOERREGISTER_IDENTER_URL": "https://app-q1.adeo.no/aktoerregister/api/v1",
   "EREG_API_URL": "https://modapp-q1.adeo.no/ereg/api",
