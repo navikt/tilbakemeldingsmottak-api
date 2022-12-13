@@ -10,6 +10,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 public class EmailServiceTest {
@@ -28,13 +30,15 @@ public class EmailServiceTest {
         String content = "This is a test message";
         String subject = "Test of messageService";
         String emailToAddress = "toMail@trygdeetaten.no";
-
-        emailService.sendSimpleMessage(emailToAddress, subject, content);
+        String emailToAddress2 = "extraReceiver@trygdeetaten.no";
+        List to = Arrays.asList(emailToAddress, emailToAddress2);
+        emailService.sendSimpleMessage(to, subject, content);
 
         Mockito.verify(mailClient).sendMailViaClient(emailCaptor.capture());
         Message value = emailCaptor.getValue();
         assertEquals(value.body.contentType, BodyType.HTML);
-        assertEquals(value.toRecipients.get(0).emailAddress.address, emailToAddress);
+        assertEquals(emailToAddress, value.toRecipients.get(0).emailAddress.address);
+        assertEquals(emailToAddress2, value.toRecipients.get(1).emailAddress.address);
         assertEquals(value.subject, subject);
 
     }

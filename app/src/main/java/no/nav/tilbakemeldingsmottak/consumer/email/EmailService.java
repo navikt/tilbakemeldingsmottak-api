@@ -1,7 +1,5 @@
 package no.nav.tilbakemeldingsmottak.consumer.email;
 
-import com.microsoft.graph.models.BodyType;
-
 import java.util.List;
 
 public interface EmailService {
