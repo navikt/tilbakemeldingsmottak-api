@@ -33,6 +33,10 @@ spec:
     requests:
       cpu: 1000m
       memory: 1Gi
+  azure:
+    application:
+      enabled: true
+      tenant: {{ TENANT }}
   ingresses:
   {{#each INGRESS as |url|}}
      - {{url}}
