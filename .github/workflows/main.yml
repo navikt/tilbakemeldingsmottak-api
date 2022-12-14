@@ -5,6 +5,9 @@ on:
       - 'main'
     paths-ignore:
       - '**.md'
+      - '.github/workflows/preprod-pipeline.yml'
+      - '.github/workflows/manual-deployment.yml'
+      - '.nais/preprod-fss/*'
   pull_request:
     branches:
       - 'main'
