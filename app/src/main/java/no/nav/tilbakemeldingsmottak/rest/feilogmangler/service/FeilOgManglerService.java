@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 
 @Service
 @Slf4j
@@ -26,7 +25,7 @@ public class FeilOgManglerService {
         this.emailService = emailService;
     }
 
-    public void meldFeilOgMangler(MeldFeilOgManglerRequest request) throws MessagingException {
+    public void meldFeilOgMangler(MeldFeilOgManglerRequest request) {
         emailService.sendSimpleMessage(emailToAddress, "Feil/mangel på nav.no meldt via skjema på nav.no", createContent(request));
         log.info("Melding om feil og mangler videresendt til " + emailToAddress);
     }

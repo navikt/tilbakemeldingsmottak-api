@@ -9,13 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 
 import static no.nav.tilbakemeldingsmottak.TestUtils.createSendRosRequest;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createSendRosRequestWithNavKontor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RosIT extends ApplicationTest {
 
@@ -28,12 +26,6 @@ public class RosIT extends ApplicationTest {
         ResponseEntity<SendRosResponse> response = restTemplate.exchange(URL_ROS, HttpMethod.POST, requestEntity, SendRosResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-/*
-
-        MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertTrue(message.getContent().toString().contains(request.getHvemRoses().text));
-        assertTrue(message.getContent().toString().contains(request.getMelding()));
-*/
     }
 
     @Test
@@ -44,11 +36,5 @@ public class RosIT extends ApplicationTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-/*
-        MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertTrue(message.getContent().toString().contains(request.getHvemRoses().text));
-        assertTrue(message.getContent().toString().contains(request.getNavKontor()));
-        assertTrue(message.getContent().toString().contains(request.getMelding()));
-*/
     }
 }

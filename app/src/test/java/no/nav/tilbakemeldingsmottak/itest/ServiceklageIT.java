@@ -2,19 +2,16 @@ package no.nav.tilbakemeldingsmottak.itest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.microsoft.graph.models.Message;
 import lombok.SneakyThrows;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.transaction.TestTransaction;
 
-//import javax.mail.internet.MimeMessage;
 import java.util.Arrays;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -35,8 +32,6 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.YTELSE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.*;
 import static no.nav.tilbakemeldingsmottak.config.Constants.*;
 import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.*;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService.SUBJECT_JOURNALPOST_FEILET;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService.SUBJECT_OPPGAVE_FEILET;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ServiceklageIT extends ApplicationTest {
@@ -221,17 +216,6 @@ class ServiceklageIT extends ApplicationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         assertEquals(serviceklageRepository.count(), 0);
-/*
-
-        Mockito.verify(mailClient).sendMailViaClient(messageCaptor.capture());
-        Message message = messageCaptor.getValue();
-        assertEquals(message.subject, SUBJECT_JOURNALPOST_FEILET);
-        assertEquals(message.from.emailAddress.address, "srvtilbakemeldings@preprod.local");
-        assertEquals(message.toRecipients.get(0).emailAddress.address, "nav.serviceklager@preprod.local");
-        assertNotNull(response.getBody());
-
-        assertEquals("Feil ved opprettelse av journalpost, klage videresendt til " + message.toRecipients.get(0).emailAddress.address, response.getBody().getMessage());
-*/
     }
 
     @Test
@@ -247,15 +231,6 @@ class ServiceklageIT extends ApplicationTest {
 
         assertEquals(serviceklageRepository.count(), 1);
 
-/*
-        MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertEquals(message.getSubject(), SUBJECT_OPPGAVE_FEILET);
-        assertEquals(message.getSender().toString(), "srvtilbakemeldings@preprod.local");
-        assertEquals(message.getRecipients(Message.RecipientType.TO)[0].toString(), "nav.serviceklager@preprod.local");
-        assertNotNull(response.getBody());
-
-        assertEquals("Feil ved opprettelse av oppgave, journalpostId videresendt til " + message.getRecipients(Message.RecipientType.TO)[0], response.getBody().getMessage());
-*/
     }
 
     @Test
@@ -439,23 +414,4 @@ class ServiceklageIT extends ApplicationTest {
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
-/*
-    @Test
-    @SneakyThrows
-    void safJournalpostManglerSkalKaste204() {
-        OpprettServiceklageRequest msg = createOpprettServiceklageRequestPrivatperson();
-        ResponseEntity<OpprettServiceklageResponse> opprettResponse = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, new HttpEntity<>(msg, createHeaders(AZURE_ISSUER, msg.getInnmelder().getPersonnummer())), OpprettServiceklageResponse.class);
-
-        assertEquals(serviceklageRepository.count(), 1);
-        Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
-
-        String fremmetDato = serviceklage.getFremmetDato().toString();
-
-        KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
-        request.setFremmetDato(fremmetDato);
-        ResponseEntity<HentDokumentResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + 88, HttpMethod.GET, new HttpEntity<>(createHeaders(LOGINSERVICE_ISSUER, SAKSBEHANDLER)), HentDokumentResponse.class);
-
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-    }
-*/
 }

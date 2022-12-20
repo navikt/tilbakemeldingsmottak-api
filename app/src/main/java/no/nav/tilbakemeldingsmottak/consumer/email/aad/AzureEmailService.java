@@ -33,7 +33,6 @@ public class AzureEmailService implements EmailService {
     @Value("${email_from_address}")
     private String emailFromAddress;
 
-    private static final String NO_REPLY_ADDRESSE = "do-not-reply@nav.no";
 
     @Override
     public void sendSimpleMessage(String mottaker, String subject, String content) throws SendEmailException {
