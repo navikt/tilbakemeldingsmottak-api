@@ -9,12 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 
 import static no.nav.tilbakemeldingsmottak.TestUtils.createMeldFeilOgManglerRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FeilOgManglerIT extends ApplicationTest {
 
@@ -28,9 +26,5 @@ public class FeilOgManglerIT extends ApplicationTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        MimeMessage message = smtpServer.getReceivedMessages()[0];
-        assertTrue(message.getContent().toString().contains(request.getEpost()));
-        assertTrue(message.getContent().toString().contains(request.getFeiltype().text));
-        assertTrue(message.getContent().toString().contains(request.getMelding()));
     }
 }

@@ -1,7 +1,7 @@
 {
   "NAMESPACE": "teamserviceklage",
   "SPRING_DATASOURCE_URL": "jdbc:oracle:thin:@a01dbfl033.adeo.no:1521/SERVICEKLAGE_Q1",
-  "AZUREAD_CLIENTID": "0090b6e1-ffcc-4c37-bc21-049f7d1f0fe5",
+  "AZUREAD_CLIENTID": "0877a4df-2851-4ffb-8d0b-3b5be744fd8e",
   "NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL": "https://security-token-service.nais.preprod.local/rest/v1/sts/.well-known/openid-configuration",
   "SECURITYTOKENSERVICE_URL": "https://sts-q1.preprod.local/SecurityTokenServiceProvider/",
   "NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL": "https://login.microsoftonline.com/NAVtestB2C.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten_ver1",
@@ -25,5 +25,10 @@
   "SECRETS_PATH": "/kv/preprod/fss/tilbakemeldingsmottak-api/teamserviceklage",
   "SAF_URL": "https://saf-q1.dev.intern.nav.no/graphql",
   "SAF_HENTDOKUMENT_URL": "https://saf-q1.dev.intern.nav.no/rest/hentdokument",
-  "TENANT": "trygdeetaten.no"
+  "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
+  "AZURE_DEFAULT_SCOPE": "openid",
+  "TENANT": "trygdeetaten.no",
+  "PROXY_HOST": "webproxy-nais.nav.no",
+  "PROXY_PORT": 8088,
+  "SERVICEUSER_EMAIL": "srvtilbakemeldings@trygdeetaten.no"
 }

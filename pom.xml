@@ -19,7 +19,11 @@
 
     <properties>
         <!-- Keep up to date with parent version -->
-        <spring-boot.version>2.5.12</spring-boot.version>
+        <spring-boot.version>2.5.13</spring-boot.version>
+
+        <microsoft-graph.version>5.41.0</microsoft-graph.version>
+        <microsoft-graph-core.version>2.0.14</microsoft-graph-core.version>
+        <azure.identity.version>1.7.0</azure.identity.version>
 
         <!-- NAV internal dependencies -->
         <token-support.version>1.3.7</token-support.version>
@@ -31,15 +35,15 @@
 
         <!-- Dependencies that should be on the latest version -->
         <httpclient.version>4.5.13</httpclient.version>
-        <okhttp3.version>4.9.3</okhttp3.version>
+        <okhttp3.version>4.10.0</okhttp3.version>
         <rxjava.version>3.1.4</rxjava.version>
-        <jackson-bom.version>2.13.2</jackson-bom.version>
+        <jackson-bom.version>2.13.3</jackson-bom.version>
         <javax.inject.version>1</javax.inject.version>
         <logstash-logback-encoder.version>7.1.1</logstash-logback-encoder.version>
         <lombok.version>1.18.24</lombok.version>
-        <mockito-junit-jupiter.version>4.4.0</mockito-junit-jupiter.version>
+        <mockito-junit-jupiter.version>4.5.1</mockito-junit-jupiter.version>
         <resilience4j.version>1.7.1</resilience4j.version>
-        <greenmail.version>1.6.8</greenmail.version>
+        <greenmail.version>1.6.9</greenmail.version>
         <itextpdf.version>5.5.13.3</itextpdf.version>
         <cxf.version>3.5.2</cxf.version>
         <micrometer.version>1.8.5</micrometer.version>
@@ -93,6 +97,29 @@
                 <version>${spring-boot.version}</version>
             </dependency>
 
+
+            <dependency>
+                <groupId>com.microsoft.graph</groupId>
+                <artifactId>microsoft-graph-core</artifactId>
+                <version>${microsoft-graph-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.microsoft.graph</groupId>
+                <artifactId>microsoft-graph</artifactId>
+                <version>${microsoft-graph.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.azure</groupId>
+                <artifactId>azure-identity</artifactId>
+                <version>${azure.identity.version}</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${okhttp3.version}</version>
+            </dependency>
             <!--Security-->
             <!-- Lås nimbus-jose-jwt til versjon som er kompatibel med com.nimbusds:oauth2-oidc-sdk:6.5.
             Ellers får man runtime-feil på token-validering, med nyeste publiserte versjon 9.0 av nimbus-jose-jwt. -->
@@ -315,6 +342,20 @@
             </extension>
         </extensions>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

@@ -5,6 +5,10 @@ metadata:
   namespace: teamserviceklage
   labels:
     team: teamserviceklage
+  annotations:
+    nais.io/read-only-file-system: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: "320M"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   image: {{image}}
   port: 8080
@@ -41,6 +45,12 @@ spec:
   {{#each INGRESS as |url|}}
      - {{url}}
   {{/each}}
+  azure:
+    application:
+      enabled: true
+      tenant: {{ TENANT }}
+#  tokenx:
+#    enabled: true
   vault:
     enabled: true
     paths:
@@ -54,14 +64,10 @@ spec:
   env:
     - name: SPRING_DATASOURCE_URL
       value: {{ SPRING_DATASOURCE_URL }}
-    - name: AZUREAD_CLIENTID
-      value: {{ AZUREAD_CLIENTID }}
     - name: NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL
       value: {{ NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL }}
     - name: SECURITYTOKENSERVICE_URL
       value: {{ SECURITYTOKENSERVICE_URL }}
-    - name: NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL
-      value: {{ NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL }}
     - name: LOGINSERVICE_ACCEPTED_AUDIENCE
       value: {{ LOGINSERVICE_ACCEPTED_AUDIENCE }}
     - name: LOGINSERVICE_OIDC_CALLBACKURI
@@ -86,3 +92,13 @@ spec:
       value: {{ SAF_URL }}
     - name: SAF_HENTDOKUMENT_URL
       value: {{SAF_HENTDOKUMENT_URL}}
+    - name: AZURE_DEFAULT_SCOPE
+      value: {{AZURE_DEFAULT_SCOPE}}
+    - name: PROXY_HOST
+      value: {{ PROXY_HOST }}
+    - name: PROXY_PORT
+      value: "8088"
+    - name: TENANT
+      value: {{ TENANT }}
+    - name: SERVICEUSER_EMAIL
+      value: {{ SERVICEUSER_EMAIL}}

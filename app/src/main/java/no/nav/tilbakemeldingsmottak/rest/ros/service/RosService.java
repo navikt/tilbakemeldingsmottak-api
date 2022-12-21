@@ -3,22 +3,19 @@ package no.nav.tilbakemeldingsmottak.rest.ros.service;
 import static no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType.NAV_KONTOR;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.rest.common.epost.AbstractEmailService;
+import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 
 @Service
 @Slf4j
 public class RosService {
 
-    private AbstractEmailService emailService;
+    private AzureEmailService emailService;
 
     @Value("${email_nav_support_address}")
     private String emailToAddress;
@@ -28,25 +25,12 @@ public class RosService {
     private String springMailHost;
 
     @Inject
-    public RosService(AbstractEmailService emailService) {
+    public RosService(AzureEmailService emailService) {
         this.emailService = emailService;
     }
 
-    public void sendRos(SendRosRequest request) throws MessagingException {
-        sendEmail(request);
-    }
-
-    private void sendEmail(SendRosRequest request) throws MessagingException {
-        MimeMessage message = emailService.getEmailSender().createMimeMessage();
-        message.setHeader("Content-Encoding", "UTF-8");
-        message.setContent(createContent(request), "text/html; charset=UTF-8");
-        MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
-        helper.setTo(emailToAddress);
-        helper.setFrom(emailFromAddress);
-        helper.setSubject("Ros til NAV sendt inn via skjema på nav.no");
-        //logEmailProps();
-        emailService.sendMail(message);
-
+    public void sendRos(SendRosRequest request) {
+        emailService.sendSimpleMessage(emailToAddress, "Ros til NAV sendt inn via skjema på nav.no", createContent(request));
         log.info("Ros til NAV videresendt til " + emailToAddress);
     }
 
@@ -60,10 +44,6 @@ public class RosService {
         content.addParagraph("Melding", request.getMelding());
 
         return content.getContentString();
-    }
-
-    private void logEmailProps() {
-        log.info("springMailHost="+springMailHost+"\nemailToAddress="+emailToAddress+"\nemailFromAddress="+emailFromAddress);
     }
 
 }

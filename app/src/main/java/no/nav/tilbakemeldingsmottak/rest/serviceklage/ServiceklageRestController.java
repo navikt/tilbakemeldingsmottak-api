@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
@@ -20,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Slf4j
 @Protected
@@ -41,9 +41,10 @@ public class ServiceklageRestController {
             throws DocumentException {
 
         log.info("Mottatt serviceklage via skjema på nav.no");
-        boolean innlogget = oidcUtils.getSubject(selvbetjening) != null ? true : oidcUtils.getSubjectForIssuer(AZURE_ISSUER).isPresent();
+        String paloggetBruker = oidcUtils.getSubject(selvbetjening);
+        boolean innlogget = paloggetBruker != null;
         log.info("Bruker er innlogget " + innlogget);
-        opprettServiceklageValidator.validateRequest(request);
+        opprettServiceklageValidator.validateRequest(request, paloggetBruker);
         OpprettServiceklageResponse opprettServiceklageResponse = opprettServiceklageService.opprettServiceklage(request, innlogget);
         return ResponseEntity
                 .status(HttpStatus.OK)

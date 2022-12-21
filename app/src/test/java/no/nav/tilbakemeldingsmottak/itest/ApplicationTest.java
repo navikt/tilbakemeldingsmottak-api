@@ -4,16 +4,26 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.microsoft.graph.models.Message;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback;
 import no.nav.security.mock.oauth2.token.OAuth2TokenCallback;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
 import no.nav.tilbakemeldingsmottak.Application;
+import no.nav.tilbakemeldingsmottak.consumer.email.EmailService;
+import no.nav.tilbakemeldingsmottak.consumer.email.aad.AADMailClient;
+import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.data.ldap.AutoConfigureDataLdap;
@@ -40,7 +50,6 @@ import java.util.*;
 
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static no.nav.tilbakemeldingsmottak.TestUtils.*;
 import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
@@ -70,8 +79,22 @@ public class ApplicationTest {
     @Autowired
     MockOAuth2Server mockOAuth2Server;
 
+    @Autowired
+    AADMailClient emailService;
+
+/*
+    @Mock
+    AADMailClient mailClient;
+
+    @InjectMocks
+    AzureEmailService emailService;
+*/
+
     @Value("${local.server.port}")
     private int serverPort;
+
+    @Captor
+    ArgumentCaptor<Message> messageCaptor;
 
     protected static final String CONSUMER_ID = "theclientid";
     private static final String URL_SERVICEKLAGE = "/rest/serviceklage";
@@ -182,7 +205,7 @@ public class ApplicationTest {
     HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(INNLOGGET_BRUKER));
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(LOGINSERVICE_ISSUER, INNLOGGET_BRUKER));
         return headers;
     }
 
@@ -190,6 +213,18 @@ public class ApplicationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user));
+        return headers;
+    }
+
+    HttpHeaders createHeaders(String issuer, String user, Boolean addCookie) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String token = getToken(issuer, user);
+
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user));
+        if (addCookie) {
+            headers.add("Cookie", "selvbetjening-idtoken="+token);
+        }
         return headers;
     }
 
@@ -214,7 +249,7 @@ public class ApplicationTest {
         boolean loggedIn = mockOAuth2Server.enqueueCallback(oAuth2TokenCallback);
         return mockOAuth2Server.issueToken(
                 issuerId,
-                "theclientid",
+                CONSUMER_ID,
                 oAuth2TokenCallback
             ).serialize();
     }
