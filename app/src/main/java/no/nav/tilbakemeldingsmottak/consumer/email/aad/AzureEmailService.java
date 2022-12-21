@@ -55,6 +55,7 @@ public class AzureEmailService implements EmailService {
     @Override
     public void sendMessageWithAttachments(List<String> mottakere, String subject, String content, byte[] attachment, String attachmentName) throws SendEmailException {
         Message message = createMessage(mottakere, subject, content);
+        log.info("Skal sende epost med vedlegg");
 
         LinkedList<Attachment> attachmentsList = new LinkedList<>();
         FileAttachment attachments = new FileAttachment();
