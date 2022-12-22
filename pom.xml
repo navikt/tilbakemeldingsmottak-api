@@ -45,7 +45,7 @@
         <resilience4j.version>1.7.1</resilience4j.version>
         <greenmail.version>1.6.9</greenmail.version>
         <itextpdf.version>5.5.13.3</itextpdf.version>
-        <cxf.version>3.5.2</cxf.version>
+        <cxf.version>4.0.0</cxf.version>
         <micrometer.version>1.8.5</micrometer.version>
         <wiremock.version>2.27.2</wiremock.version>
         <json-smart.version>2.4.8</json-smart.version>
