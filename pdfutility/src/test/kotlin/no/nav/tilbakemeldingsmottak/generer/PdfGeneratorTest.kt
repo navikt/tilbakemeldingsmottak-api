@@ -52,7 +52,8 @@ internal class PdfGeneratorTest {
         }
         map.put(key+11, null)
         map.put(key+12, tekst+12)
-        map.put(key+13, "En kjempelang ledetekst Enkjempelangledetekstsomstrekkersegoverflerelinjer13Enkjempelangledetekstsomstrekkersegoverflerelinjer13" )
+        map.put(key+13, "En kjempelang tekst Enkjempelangledetekstsomstrekkersegoverflerelinjer13Enkjempelangledetekstsomstrekkersegoverflerelinjer13" )
+        map.put(key+14, "En kjempelang tekst som strekker seg over flere linjer14\n\tPunkt 1\n\tPunkt2\nEn kjempelang tekst")
         return map
     }
 
