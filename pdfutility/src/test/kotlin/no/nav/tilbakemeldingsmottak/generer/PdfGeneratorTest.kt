@@ -16,7 +16,7 @@ internal class PdfGeneratorTest {
         val erPdfa = Validerer().isPDFa(klagePdf)
         assertTrue(erPdfa)
 
-        writeBytesToFile(klagePdf, "src/test/resources/delme4.pdf")
+        //writeBytesToFile(klagePdf, "src/test/resources/delme4.pdf")
     }
 
     @Test
