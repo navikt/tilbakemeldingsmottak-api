@@ -15,11 +15,13 @@
     <modules>
         <module>web</module>
         <module>app</module>
+        <module>domain</module>
+        <module>pdfutility</module>
     </modules>
 
     <properties>
         <!-- Keep up to date with parent version -->
-        <spring-boot.version>2.5.13</spring-boot.version>
+        <spring-boot.version>3.0.2</spring-boot.version>
 
         <microsoft-graph.version>5.41.0</microsoft-graph.version>
         <microsoft-graph-core.version>2.0.14</microsoft-graph-core.version>
@@ -37,8 +39,9 @@
         <httpclient.version>4.5.13</httpclient.version>
         <okhttp3.version>4.10.0</okhttp3.version>
         <rxjava.version>3.1.4</rxjava.version>
-        <jackson-bom.version>2.13.3</jackson-bom.version>
+        <jackson-bom.version>2.14.1</jackson-bom.version>
         <javax.inject.version>1</javax.inject.version>
+        <javax.xml-bind.version>2.3.0</javax.xml-bind.version>
         <logstash-logback-encoder.version>7.1.1</logstash-logback-encoder.version>
         <lombok.version>1.18.24</lombok.version>
         <mockito-junit-jupiter.version>4.5.1</mockito-junit-jupiter.version>
@@ -347,7 +350,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <annotationProcessorPaths>
+                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>

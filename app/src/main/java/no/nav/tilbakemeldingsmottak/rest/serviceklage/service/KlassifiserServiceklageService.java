@@ -1,7 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
 import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.NONE;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.NONE;
 import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
@@ -23,12 +23,12 @@ import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Answer;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionType;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
+import no.nav.tilbakemeldingsmottak.serviceklage.Answer;
+import no.nav.tilbakemeldingsmottak.serviceklage.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.serviceklage.Question;
+import no.nav.tilbakemeldingsmottak.serviceklage.QuestionType;
+import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;

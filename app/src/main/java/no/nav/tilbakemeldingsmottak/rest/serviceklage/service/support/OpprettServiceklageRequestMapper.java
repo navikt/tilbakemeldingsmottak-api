@@ -1,14 +1,14 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support;
 
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
+import no.nav.tilbakemeldingsmottak.serviceklage.Klagetype;
+import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 

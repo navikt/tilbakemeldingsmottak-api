@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.repository;
 
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
+import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import org.springframework.data.repository.CrudRepository;
 
 /**

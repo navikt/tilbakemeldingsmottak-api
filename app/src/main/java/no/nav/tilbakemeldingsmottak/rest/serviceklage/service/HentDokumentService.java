@@ -11,9 +11,8 @@ import no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument.HentDokumentRespon
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat;
 import no.nav.tilbakemeldingsmottak.exceptions.JournalpostManglerDokumentException;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostIkkeFunnetFunctionalException;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentDokumentResponse;
+import no.nav.tilbakemeldingsmottak.serviceklage.HentDokumentResponse;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Service;
 
@@ -51,10 +50,4 @@ public class HentDokumentService {
                 .build();
     }
 
-    private HentDokumentResponse logAndCreateEmptyResponse() throws DocumentException {
-        log.info("Fant ingen gyldige dokumenter knyttet til oppgaven, returnerer tom pdf.");
-        return HentDokumentResponse.builder()
-                .dokument(pdfService.opprettTomPdf())
-                .build();
-    }
 }

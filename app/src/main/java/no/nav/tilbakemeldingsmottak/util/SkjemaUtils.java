@@ -1,7 +1,7 @@
 package no.nav.tilbakemeldingsmottak.util;
 
 import lombok.NoArgsConstructor;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
+import no.nav.tilbakemeldingsmottak.serviceklage.Question;
 
 import java.util.Collections;
 import java.util.List;

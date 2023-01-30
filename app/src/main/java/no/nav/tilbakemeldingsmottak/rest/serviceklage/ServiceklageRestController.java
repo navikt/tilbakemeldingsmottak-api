@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
+import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Slf4j
 @Protected

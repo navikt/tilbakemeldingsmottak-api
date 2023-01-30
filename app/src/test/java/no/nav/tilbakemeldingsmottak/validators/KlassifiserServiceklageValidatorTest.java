@@ -5,13 +5,13 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createHentSkjemaResponseWit
 import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequest;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequestForvaltningsklage;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequestIkkeServiceklage;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_MUNTLIG_ANSWER;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_MUNTLIG_ANSWER;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.serviceklage.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.KlassifiserServiceklageValidator;
 import org.junit.jupiter.api.Test;
 

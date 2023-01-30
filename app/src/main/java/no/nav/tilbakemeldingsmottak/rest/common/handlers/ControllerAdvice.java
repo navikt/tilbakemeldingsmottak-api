@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.common.handlers;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.itextpdf.text.pdf.PdfException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.exceptions.JwtTokenMissingException;
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException;
@@ -39,6 +40,16 @@ public class ControllerAdvice {
                 .message(ex.getMessage())
                 .build());
     }
+
+    @ExceptionHandler(PdfException.class)
+    public ResponseEntity<ErrorResponse> pdfGenerationExceptionHandler(HttpServletRequest request, Exception ex) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        log.error("Feil ved generering av PDF " + ex.getMessage(), ex);
+        return ResponseEntity.status(status).body(ErrorResponse.builder()
+                .message(ex.getMessage())
+                .build());
+    }
+
 
     @ExceptionHandler(value={JwtTokenMissingException.class, JwtTokenUnauthorizedException.class})
     public ResponseEntity<ErrorResponse> loginRequiredExceptionHandler(HttpServletRequest request, Exception ex) {
