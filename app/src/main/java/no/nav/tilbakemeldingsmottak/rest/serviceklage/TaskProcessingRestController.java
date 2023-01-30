@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
-import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
@@ -47,7 +46,7 @@ public class TaskProcessingRestController {
     @PutMapping(value = "/klassifiser")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "klassifiserServiceklage"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request,
-                                                                                   @RequestParam String oppgaveId) throws DocumentException {
+                                                                                   @RequestParam String oppgaveId)  {
         log.info("Mottatt kall om å klassifisere serviceklage med oppgaveId={}", oppgaveId);
 
         if (NEI.equals(request.getFulgtBrukerveiledningGosys()) || NEI.equals(request.getKommunalBehandling())) {
@@ -91,7 +90,7 @@ public class TaskProcessingRestController {
     @Transactional
     @GetMapping(value = "/hentdokument/{oppgaveId}")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId) throws DocumentException {
+    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId)  {
         HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
         assertIkkeFerdigstilt(hentOppgaveResponseTo);
         assertHarJournalpost(hentOppgaveResponseTo);

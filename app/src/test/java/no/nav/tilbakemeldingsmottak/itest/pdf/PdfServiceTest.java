@@ -58,8 +58,10 @@ class PdfServiceTest {
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
         assertTrue(content.contains("OBS! Klagen er sendt inn uinnlogget"));
 
+/*
         File file = new File(this.getClass().getClassLoader().getResource(".").getFile() + "/serviceklagePrivatePerson.pdf");
         Files.write(file.toPath(), pdf);
+*/
     }
 
     @Test

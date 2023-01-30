@@ -11,8 +11,6 @@ import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 import lombok.SneakyThrows;
 import no.nav.tilbakemeldingsmottak.consumer.aktoer.domain.IdentInfoForAktoer;
 import no.nav.tilbakemeldingsmottak.consumer.norg2.Enhet;
@@ -38,8 +36,12 @@ import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvBedrift;
 import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvPerson;
 import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvType;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.util.StreamUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -397,12 +399,9 @@ public class TestUtils {
     }
 
     public static String getStringFromByteArrayPdf(byte[] bytes) throws IOException {
-        PdfReader reader = new PdfReader(bytes);
-        int numPages = reader.getNumberOfPages();
-        StringBuilder s = new StringBuilder();
-        for (int i = 1; i <= numPages; i++) {
-            s.append(PdfTextExtractor.getTextFromPage(reader, i));
-        }
-        return s.toString();
+        InputStream documentStream = new ByteArrayInputStream(bytes);
+        PDDocument document = PDDocument.load(documentStream);
+        PDFTextStripper stripper = new PDFTextStripper();
+        return stripper.getText(document);
     }
 }

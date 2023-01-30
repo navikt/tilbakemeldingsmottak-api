@@ -9,7 +9,6 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
@@ -70,7 +69,7 @@ public class KlassifiserServiceklageService {
     private static final String JA = "Ja";
     private static final String ANNET = "Annet";
 
-    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo) throws DocumentException {
+    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo) {
         if (KOMMUNAL_KLAGE.equals(request.getBehandlesSomServiceklage())) {
             log.info("Klagen har blitt markert som en kommunal klage. Oppretter oppgave om sletting av dokument.");
             opprettSlettingOppgave(hentOppgaveResponseTo);
@@ -94,7 +93,7 @@ public class KlassifiserServiceklageService {
         }
     }
 
-    private void sendKvittering(Serviceklage serviceklage, HentOppgaveResponseTo hentOppgaveResponseTo) throws DocumentException, JsonProcessingException {
+    private void sendKvittering(Serviceklage serviceklage, HentOppgaveResponseTo hentOppgaveResponseTo) throws JsonProcessingException {
 
         String email = oicdUtils.getEmailForIssuer(LOGINSERVICE_ISSUER).orElseThrow(() -> new ServiceklageIkkeFunnetException("Fant ikke email-adresse i token"));
 

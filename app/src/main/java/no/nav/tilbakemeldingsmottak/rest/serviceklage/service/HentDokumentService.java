@@ -2,7 +2,6 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
 import static org.apache.cxf.common.util.CollectionUtils.isEmpty;
 
-import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.saf.SafJournalpostQueryService;
