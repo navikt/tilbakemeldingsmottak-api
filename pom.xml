@@ -25,10 +25,10 @@
 
         <microsoft-graph.version>5.41.0</microsoft-graph.version>
         <microsoft-graph-core.version>2.0.14</microsoft-graph-core.version>
-        <azure.identity.version>1.7.0</azure.identity.version>
+        <azure.identity.version>1.7.3</azure.identity.version>
 
         <!-- NAV internal dependencies -->
-        <token-support.version>1.3.7</token-support.version>
+        <token-support.version>2.1.7</token-support.version>
 
         <!-- Dependencies that are not yet bumped to latest version but should be -->
         <nimbus-jose-jwt.version>8.23</nimbus-jose-jwt.version>
@@ -48,7 +48,7 @@
         <resilience4j.version>1.7.1</resilience4j.version>
         <greenmail.version>1.6.9</greenmail.version>
         <itextpdf.version>5.5.13.3</itextpdf.version>
-        <cxf.version>3.5.2</cxf.version>
+        <cxf.version>4.0.0</cxf.version>
         <micrometer.version>1.8.5</micrometer.version>
         <wiremock.version>2.27.2</wiremock.version>
         <json-smart.version>2.4.8</json-smart.version>
