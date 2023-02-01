@@ -47,7 +47,6 @@
         <lombok.version>1.18.24</lombok.version>
         <mockito-junit-jupiter.version>4.5.1</mockito-junit-jupiter.version>
         <resilience4j.version>1.7.1</resilience4j.version>
-        <greenmail.version>1.6.9</greenmail.version>
         <itextpdf.version>5.5.13.3</itextpdf.version>
         <cxf.version>4.0.0</cxf.version>
         <micrometer.version>1.8.5</micrometer.version>
@@ -83,11 +82,6 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-actuator</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-mail</artifactId>
                 <version>${spring-boot.version}</version>
             </dependency>
             <dependency>
@@ -263,14 +257,6 @@
                 <version>${h2.version}</version>
                 <scope>test</scope>
             </dependency>
-<!--
-            <dependency>
-                <groupId>com.icegreen</groupId>
-                <artifactId>greenmail</artifactId>
-                <version>${greenmail.version}</version>
-                <scope>test</scope>
-            </dependency>
--->
             <dependency>
                 <groupId>com.itextpdf</groupId>
                 <artifactId>itextpdf</artifactId>

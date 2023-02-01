@@ -6,6 +6,7 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
+import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosResponse;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 
 @Slf4j
@@ -34,7 +34,7 @@ public class RosRestController {
     @Transactional
     @PostMapping
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "sendRos"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<SendRosResponse> sendRos(@RequestBody SendRosRequest request) throws MessagingException {
+    public ResponseEntity<SendRosResponse> sendRos(@RequestBody SendRosRequest request) throws SendEmailException {
         sendRosValidator.validateRequest(request);
         rosService.sendRos(request);
         return ResponseEntity
