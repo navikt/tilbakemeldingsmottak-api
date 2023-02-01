@@ -24,6 +24,8 @@ aad:
   password: srvDummy@nav.no
 no.nav.security:
   jwt:
+    mock:
+      enable: true
     client:
       registration:
         serviceuser:
@@ -36,15 +38,15 @@ no.nav.security:
           token-endpoint-url: http://localhost:${token.server.port}/reststs/token
     issuer:
       azuread:
-        accepted-audience: application
+        accepted-audience: aud-localhost
         cookie-name: azuread-idtoken
         discovery-url: http://localhost:${token.server.port}/azuread/.well-known/openid-configuration
       isso:
-        accepted-audience: application
+        accepted-audience: aud-localhost
         cookie-name: isso-idtoken
         discovery-url: http://localhost:${token.server.port}/isso/.well-known/openid-configuration
       reststs:
-        accepted-audience: application
+        accepted-audience: aud-localhost
         cookie-name: reststs-idtoken
         discovery-url: http://localhost:${token.server.port}/reststs/.well-known/openid-configuration
 norg2:
@@ -65,20 +67,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
-  mail:
-    defaultEncoding: UTF-8
-    host: localhost
-    password: ''
-    port: 2500
-    properties:
-      mail:
-        smtp:
-          auth: false
-          starttls:
-            enable: false
-            required: false
-    protocol: smtp
-    username: ''
 token:
   server:
     port: ${mock-oauth2-server.port}

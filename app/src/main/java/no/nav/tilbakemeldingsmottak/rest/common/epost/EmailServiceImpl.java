@@ -1,4 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.common.epost;
+/*
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -22,3 +23,4 @@ public class EmailServiceImpl extends AbstractEmailService{
         emailSender.send(message);
     }
 }
+*/

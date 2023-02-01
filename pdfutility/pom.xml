@@ -18,6 +18,7 @@
         <kotlin.version>1.7.22</kotlin.version>
         <tika-core.version>2.5.0</tika-core.version>
         <pdfbox.version>2.0.27</pdfbox.version>
+        <caffeine.version>2.9.3</caffeine.version>
     </properties>
 
     <dependencies>

@@ -35,10 +35,6 @@ const val INNRYKK = 50f
 
 class PdfGenerator {
 
-    val KANAL_SERVICEKLAGESKJEMA_ANSWER = "Serviceklageskjema på nav.no"
-    val STANDARD_LINJEAVSTAND = 1f
-
-
     fun genererPdf(tittel: String, varsling: String?, tekstMap: Map<String, String?>): ByteArray {
         return try {
             PdfBuilder(tittel)

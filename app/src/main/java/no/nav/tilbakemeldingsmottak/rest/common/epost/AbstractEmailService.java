@@ -1,4 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.common.epost;
+/*
 
 import lombok.Getter;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -21,3 +22,4 @@ public abstract class AbstractEmailService {
 
     public abstract void sendMail(MimeMessage message) throws MessagingException;
 }
+*/

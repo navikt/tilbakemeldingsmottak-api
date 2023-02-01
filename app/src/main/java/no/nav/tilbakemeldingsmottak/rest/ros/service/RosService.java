@@ -21,8 +21,6 @@ public class RosService {
     private String emailToAddress;
     @Value("${email_from_address}")
     private String emailFromAddress;
-    @Value("${spring.mail.host}")
-    private String springMailHost;
 
     @Inject
     public RosService(AzureEmailService emailService) {

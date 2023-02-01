@@ -36,7 +36,6 @@ import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvBedrift;
 import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvPerson;
 import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvType;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.util.StreamUtils;
