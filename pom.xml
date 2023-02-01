@@ -43,7 +43,7 @@
         <jackson-bom.version>2.14.1</jackson-bom.version>
         <javax.inject.version>1</javax.inject.version>
         <javax.xml-bind.version>2.3.0</javax.xml-bind.version>
-        <logstash-logback-encoder.version>7.1.1</logstash-logback-encoder.version>
+        <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
         <lombok.version>1.18.24</lombok.version>
         <mockito-junit-jupiter.version>4.5.1</mockito-junit-jupiter.version>
         <resilience4j.version>1.7.1</resilience4j.version>
@@ -200,6 +200,11 @@
                 <version>${javax.inject.version}</version>
             </dependency>
             <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>javax.activation-api</artifactId>
+                <version>1.2.0</version>
+            </dependency>
+            <dependency>
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
                 <version>${logstash-logback-encoder.version}</version>
@@ -267,11 +272,13 @@
                 <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>${jackson-bom.version}</version>
             </dependency>
+<!--
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-registry-prometheus</artifactId>
                 <version>${micrometer.version}</version>
             </dependency>
+-->
 
 
             <!--Selftest metrics-->
