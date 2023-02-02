@@ -38,6 +38,7 @@
         <spring-core.version>5.3.24</spring-core.version>
         <caffeine.version>2.9.3</caffeine.version>
         <netty-all.version>4.1.86.Final</netty-all.version>
+        <javax.activation.version>1.2.0</javax.activation.version>
 
         <!-- Dependencies that should be on the latest version -->
         <httpclient.version>4.5.13</httpclient.version>
