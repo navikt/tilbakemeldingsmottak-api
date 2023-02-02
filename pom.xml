@@ -21,7 +21,7 @@
 
     <properties>
         <!-- Keep up to date with parent version -->
-        <spring-boot.version>3.0.2</spring-boot.version>
+        <spring-boot.version>2.6.14</spring-boot.version>
 
         <microsoft-graph.version>5.41.0</microsoft-graph.version>
         <microsoft-graph-core.version>2.0.14</microsoft-graph-core.version>
