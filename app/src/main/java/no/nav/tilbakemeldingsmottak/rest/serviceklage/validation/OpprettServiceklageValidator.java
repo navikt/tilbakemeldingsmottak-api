@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
-import static no.nav.tilbakemeldingsmottak.serviceklage.Klagetype.LOKALT_NAV_KONTOR;
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype.LOKALT_NAV_KONTOR;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 import lombok.RequiredArgsConstructor;
