@@ -53,7 +53,6 @@
         <lombok.version>1.18.24</lombok.version>
         <mockito-junit-jupiter.version>4.5.1</mockito-junit-jupiter.version>
         <resilience4j.version>1.7.1</resilience4j.version>
-        <itextpdf.version>5.5.13.3</itextpdf.version>
         <micrometer.version>1.9.2</micrometer.version>
         <wiremock.version>2.27.2</wiremock.version>
         <json-smart.version>2.4.8</json-smart.version>
