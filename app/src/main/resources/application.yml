@@ -46,19 +46,6 @@ spring:
           merge:
             entity_copy_observer: allow
         generate_statistics: false
-  mail:
-    defaultEncoding: UTF-8
-    host: ${spring_mail_host}
-    password: ${SERVICEUSER_PASSWORD}
-    port: 26
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-    protocol: smtp
-    username: ${SERVICEUSER_USERNAME}
   main:
     banner-mode: 'off'
   transaction:

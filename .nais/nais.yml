@@ -45,10 +45,6 @@ spec:
   {{#each INGRESS as |url|}}
      - {{url}}
   {{/each}}
-  azure:
-    application:
-      enabled: true
-      tenant: {{ TENANT }}
 #  tokenx:
 #    enabled: true
   vault:

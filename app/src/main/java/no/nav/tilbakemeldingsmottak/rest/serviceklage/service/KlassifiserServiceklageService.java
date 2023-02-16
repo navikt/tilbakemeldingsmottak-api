@@ -1,7 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
 import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.NONE;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.NONE;
 import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
@@ -9,7 +9,6 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
@@ -23,12 +22,12 @@ import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Answer;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionType;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
+import no.nav.tilbakemeldingsmottak.serviceklage.Answer;
+import no.nav.tilbakemeldingsmottak.serviceklage.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.serviceklage.Question;
+import no.nav.tilbakemeldingsmottak.serviceklage.QuestionType;
+import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
@@ -70,7 +69,7 @@ public class KlassifiserServiceklageService {
     private static final String JA = "Ja";
     private static final String ANNET = "Annet";
 
-    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo) throws DocumentException {
+    public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo) {
         if (KOMMUNAL_KLAGE.equals(request.getBehandlesSomServiceklage())) {
             log.info("Klagen har blitt markert som en kommunal klage. Oppretter oppgave om sletting av dokument.");
             opprettSlettingOppgave(hentOppgaveResponseTo);
@@ -94,7 +93,7 @@ public class KlassifiserServiceklageService {
         }
     }
 
-    private void sendKvittering(Serviceklage serviceklage, HentOppgaveResponseTo hentOppgaveResponseTo) throws DocumentException, JsonProcessingException {
+    private void sendKvittering(Serviceklage serviceklage, HentOppgaveResponseTo hentOppgaveResponseTo) throws JsonProcessingException {
 
         String email = oicdUtils.getEmailForIssuer(LOGINSERVICE_ISSUER).orElseThrow(() -> new ServiceklageIkkeFunnetException("Fant ikke email-adresse i token"));
 

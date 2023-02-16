@@ -29,7 +29,7 @@ public class AuthenticationCheckRestController {
         {
 
         log.info("authenticationTest");
-        boolean loggetInn = oidcUtils.getSubject(innlogget) != null ? true : oidcUtils.getSubjectForIssuer(LOGINSERVICE_ISSUER).isPresent();
+        boolean loggetInn = oidcUtils.getSubject(innlogget) != null ? true : oidcUtils.getSubjectForFirstValidToken().isPresent();
         if (loggetInn) {
             return ResponseEntity
                     .status(HttpStatus.OK)

@@ -4,7 +4,7 @@ import no.nav.tilbakemeldingsmottak.consumer.aktoer.AktoerConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
+import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvType;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;

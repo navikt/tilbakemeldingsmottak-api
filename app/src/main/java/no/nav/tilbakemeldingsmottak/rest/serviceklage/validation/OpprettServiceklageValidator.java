@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype.LOKALT_NAV_KONTOR;
+import static no.nav.tilbakemeldingsmottak.serviceklage.Klagetype.LOKALT_NAV_KONTOR;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Component;
 

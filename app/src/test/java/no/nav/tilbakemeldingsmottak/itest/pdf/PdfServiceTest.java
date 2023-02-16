@@ -1,26 +1,23 @@
 package no.nav.tilbakemeldingsmottak.itest.pdf;
 
-import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvBedrift;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvPerson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatpersonLokaltKontor;
 import static no.nav.tilbakemeldingsmottak.TestUtils.getStringFromByteArrayPdf;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
-import com.itextpdf.text.DocumentException;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Innmelder;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Klagetype;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvBedrift;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvPerson;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
+import no.nav.tilbakemeldingsmottak.serviceklage.Innmelder;
+import no.nav.tilbakemeldingsmottak.serviceklage.Klagetype;
+import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvBedrift;
+import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvPerson;
+import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvType;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +27,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -51,17 +50,22 @@ class PdfServiceTest {
     }
 
     @Test
-    void happyPathPrivatperson() throws DocumentException, IOException {
+    void happyPathPrivatperson() throws IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest, false);
         String content = getStringFromByteArrayPdf(pdf);
 
         assertPdfContainsContentFromRequest(opprettServiceklageRequest, content);
         assertTrue(content.contains("OBS! Klagen er sendt inn uinnlogget"));
+
+/*
+        File file = new File(this.getClass().getClassLoader().getResource(".").getFile() + "/serviceklagePrivatePerson.pdf");
+        Files.write(file.toPath(), pdf);
+*/
     }
 
     @Test
-    void happyPathAnnenPerson() throws DocumentException, IOException {
+    void happyPathAnnenPerson() throws IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvPerson();
         byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest, false);
         String content = getStringFromByteArrayPdf(pdf);
@@ -71,7 +75,7 @@ class PdfServiceTest {
     }
 
     @Test
-    void happyPathBedrift() throws DocumentException, IOException {
+    void happyPathBedrift() throws IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
         byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest, false);
         String content = getStringFromByteArrayPdf(pdf);
@@ -81,7 +85,7 @@ class PdfServiceTest {
     }
 
     @Test
-    void happyPathMultipageKlagetekst() throws DocumentException, IOException {
+    void happyPathMultipageKlagetekst() throws IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         String langKlagetekst = RandomStringUtils.randomAlphabetic(10000);
         opprettServiceklageRequest.setKlagetekst(langKlagetekst);
@@ -93,7 +97,7 @@ class PdfServiceTest {
     }
 
     @Test
-    void happyPathLokaltKontor() throws DocumentException, IOException {
+    void happyPathLokaltKontor() throws IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatpersonLokaltKontor();
         byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest, false);
         String content = getStringFromByteArrayPdf(pdf);
@@ -103,7 +107,7 @@ class PdfServiceTest {
     }
 
     @Test
-    void happyPathSpesifisertKlagetype() throws DocumentException, IOException {
+    void happyPathSpesifisertKlagetype() throws IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         opprettServiceklageRequest.setKlagetyper(Collections.singletonList(Klagetype.ANNET));
         opprettServiceklageRequest.setKlagetypeUtdypning("Spesifisert");
@@ -115,7 +119,7 @@ class PdfServiceTest {
     }
 
     @Test
-    void happyPathInnlogget() throws DocumentException, IOException {
+    void happyPathInnlogget() throws IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest, true);
         String content = getStringFromByteArrayPdf(pdf);
@@ -134,7 +138,7 @@ class PdfServiceTest {
         assertContainsIfNotNull(content, request.getKlagetypeUtdypning());
         assertContainsIfNotNull(content, request.getEnhetsnummerPaaklaget());
         if (request.getGjelderSosialhjelp() != null) {
-            assertTrue(content.contains("Gjelder økonomisk sosialhjelp/sosiale tjenester: " + request.getGjelderSosialhjelp().text));
+            assertTrue(content.replace("\n"," ").contains("Gjelder økonomisk sosialhjelp/sosiale tjenester: " + request.getGjelderSosialhjelp().text));
         }
 
         assertInnmelder(request.getInnmelder(), content);

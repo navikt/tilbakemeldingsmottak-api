@@ -5,6 +5,7 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
+import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleResponse;
@@ -12,18 +13,15 @@ import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.service.BestillingA
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.validation.BestillSamtaleValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 
 @Slf4j
 @Protected
 @RestController
+@CrossOrigin(maxAge = 3600)
 @RequestMapping("/rest/bestilling-av-samtale")
 public class BestillingAvSamtaleRestController {
 
@@ -40,7 +38,7 @@ public class BestillingAvSamtaleRestController {
     @Transactional
     @PostMapping
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "sendRos"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<BestillSamtaleResponse> sendRos(@RequestBody BestillSamtaleRequest request) throws MessagingException {
+    public ResponseEntity<BestillSamtaleResponse> sendRos(@RequestBody BestillSamtaleRequest request) throws SendEmailException {
             bestillSamtaleValidator.validateRequest(request);
             bestillingAvSamtaleService.bestillSamtale(request);
             return ResponseEntity

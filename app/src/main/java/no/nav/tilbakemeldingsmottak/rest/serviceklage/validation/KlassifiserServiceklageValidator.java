@@ -1,17 +1,17 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.NONE;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.NONE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.DefaultAnswers;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.KlassifiserServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Question;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.QuestionType;
+import no.nav.tilbakemeldingsmottak.serviceklage.DefaultAnswers;
+import no.nav.tilbakemeldingsmottak.serviceklage.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.serviceklage.Question;
+import no.nav.tilbakemeldingsmottak.serviceklage.QuestionType;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

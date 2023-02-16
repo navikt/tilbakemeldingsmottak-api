@@ -3,14 +3,13 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
-import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
+import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
@@ -38,7 +37,7 @@ public class ServiceklageRestController {
     public ResponseEntity<OpprettServiceklageResponse>
             opprettServiceklage(@RequestBody OpprettServiceklageRequest request,
             @CookieValue(name = "selvbetjening-idtoken", required = false) String selvbetjening)
-            throws DocumentException {
+            {
 
         log.info("Mottatt serviceklage via skjema på nav.no");
         String paloggetBruker = oidcUtils.getSubject(selvbetjening);

@@ -3,7 +3,7 @@ package no.nav.tilbakemeldingsmottak.itest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import lombok.SneakyThrows;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.*;
+import no.nav.tilbakemeldingsmottak.serviceklage.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
@@ -31,7 +31,7 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.VENTE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.YTELSE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.*;
 import static no.nav.tilbakemeldingsmottak.config.Constants.*;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.*;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ServiceklageIT extends ApplicationTest {

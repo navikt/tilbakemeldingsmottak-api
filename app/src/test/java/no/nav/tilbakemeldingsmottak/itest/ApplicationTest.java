@@ -2,28 +2,22 @@ package no.nav.tilbakemeldingsmottak.itest;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
-import com.icegreen.greenmail.util.GreenMail;
-import com.icegreen.greenmail.util.ServerSetup;
 import com.microsoft.graph.models.Message;
+import com.nimbusds.jose.JOSEObjectType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback;
 import no.nav.security.mock.oauth2.token.OAuth2TokenCallback;
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server;
+import no.nav.security.token.support.spring.test.MockLoginController;
 import no.nav.tilbakemeldingsmottak.Application;
-import no.nav.tilbakemeldingsmottak.consumer.email.EmailService;
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AADMailClient;
-import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.data.ldap.AutoConfigureDataLdap;
@@ -58,6 +52,7 @@ import static no.nav.tilbakemeldingsmottak.config.Constants.RESTSTS_ISSUER;
 
 @ActiveProfiles("itest")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = {"spring.main.allow-bean-definition-overriding=true"},
         classes = {Application.class}
 )
 @ExtendWith(SpringExtension.class)
@@ -66,7 +61,7 @@ import static no.nav.tilbakemeldingsmottak.config.Constants.RESTSTS_ISSUER;
 @AutoConfigureTestEntityManager
 @AutoConfigureDataLdap
 @Transactional
-@EnableMockOAuth2Server()
+@EnableMockOAuth2Server(port = 1888)
 @AutoConfigureWireMock()
 public class ApplicationTest {
 
@@ -82,14 +77,6 @@ public class ApplicationTest {
     @Autowired
     AADMailClient emailService;
 
-/*
-    @Mock
-    AADMailClient mailClient;
-
-    @InjectMocks
-    AzureEmailService emailService;
-*/
-
     @Value("${local.server.port}")
     private int serverPort;
 
@@ -98,14 +85,11 @@ public class ApplicationTest {
 
     protected static final String CONSUMER_ID = "theclientid";
     private static final String URL_SERVICEKLAGE = "/rest/serviceklage";
-    protected GreenMail smtpServer;
     private static final String SRVUSER = "srvtilbakelendingse";
     private static final String INNLOGGET_BRUKER = "14117119611";
-    private static final String AUD ="application";
+    private static final String AUD ="aud-localhost";
 
 
-    @Value("${spring.mail.port}")
-    private int mailPort;
 
     @BeforeEach
     void setup() {
@@ -114,18 +98,6 @@ public class ApplicationTest {
         TestTransaction.flagForCommit();
         TestTransaction.end();
         TestTransaction.start();
-        smtpServer = new GreenMail(new ServerSetup(mailPort, null, "smtp"));
-        smtpServer.start();
-
-        Collection<Filter> filterCollection = webApplicationContext.getBeansOfType(Filter.class).values();
-        Filter[] filters = filterCollection.toArray(new Filter[0]);
-        MockMvcConfigurer mockMvcConfigurer = new MockMvcConfigurer() {
-            @Override
-            public void afterConfigurerAdded(ConfigurableMockMvcBuilder<?> builder) {
-                builder.addFilters(filters);
-            }
-        };
-        RestAssuredMockMvc.webAppContextSetup(webApplicationContext, mockMvcConfigurer);
 
         WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/OPPRETT_JOURNALPOST/journalpost/"))
                 .willReturn(WireMock.aResponse().withStatus(HttpStatus.CREATED.value())
@@ -199,13 +171,13 @@ public class ApplicationTest {
     @AfterEach
     void tearDown() {
         WireMock.reset();
-        smtpServer.stop();
     }
 
     HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(LOGINSERVICE_ISSUER, INNLOGGET_BRUKER));
+        headers.add("correlation_id", UUID.randomUUID().toString());
         return headers;
     }
 
@@ -213,6 +185,7 @@ public class ApplicationTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user));
+        headers.add("correlation_id", UUID.randomUUID().toString());
         return headers;
     }
 
@@ -222,6 +195,7 @@ public class ApplicationTest {
         String token = getToken(issuer, user);
 
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user));
+        headers.add("correlation_id", UUID.randomUUID().toString());
         if (addCookie) {
             headers.add("Cookie", "selvbetjening-idtoken="+token);
         }
@@ -242,14 +216,14 @@ public class ApplicationTest {
         OAuth2TokenCallback oAuth2TokenCallback = new DefaultOAuth2TokenCallback(
                 issuerId,
                 subject,
+                JOSEObjectType.JWT.getType(),
                 List.of(audience),
-                Collections.emptyMap(),
+                Map.of("acr","Level4"),
                 3600
         );
-        boolean loggedIn = mockOAuth2Server.enqueueCallback(oAuth2TokenCallback);
         return mockOAuth2Server.issueToken(
                 issuerId,
-                CONSUMER_ID,
+                MockLoginController.class.getSimpleName(),
                 oAuth2TokenCallback
             ).serialize();
     }

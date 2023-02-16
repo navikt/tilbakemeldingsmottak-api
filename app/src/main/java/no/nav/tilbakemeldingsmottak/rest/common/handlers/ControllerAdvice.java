@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.exceptions.JwtTokenMissingException;
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException;
-import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
-import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
-import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
-import no.nav.tilbakemeldingsmottak.exceptions.OppgaveAlleredeFerdigstiltException;
+import no.nav.tilbakemeldingsmottak.exceptions.*;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostIkkeFunnetFunctionalException;
 import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse;
@@ -39,6 +36,16 @@ public class ControllerAdvice {
                 .message(ex.getMessage())
                 .build());
     }
+
+    @ExceptionHandler(PdfException.class)
+    public ResponseEntity<ErrorResponse> pdfGenerationExceptionHandler(HttpServletRequest request, Exception ex) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        log.error("Feil ved generering av PDF " + ex.getMessage(), ex);
+        return ResponseEntity.status(status).body(ErrorResponse.builder()
+                .message(ex.getMessage())
+                .build());
+    }
+
 
     @ExceptionHandler(value={JwtTokenMissingException.class, JwtTokenUnauthorizedException.class})
     public ResponseEntity<ErrorResponse> loginRequiredExceptionHandler(HttpServletRequest request, Exception ex) {

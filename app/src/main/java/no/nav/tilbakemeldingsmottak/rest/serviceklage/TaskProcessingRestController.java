@@ -1,18 +1,20 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
-import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.*;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.HentDokumentService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.HentSkjemaService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserServiceklageService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.KlassifiserServiceklageValidator;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
+import no.nav.tilbakemeldingsmottak.serviceklage.HentDokumentResponse;
+import no.nav.tilbakemeldingsmottak.serviceklage.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +46,7 @@ public class TaskProcessingRestController {
     @PutMapping(value = "/klassifiser")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "klassifiserServiceklage"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request,
-                                                                                   @RequestParam String oppgaveId) throws DocumentException {
+                                                                                   @RequestParam String oppgaveId)  {
         log.info("Mottatt kall om å klassifisere serviceklage med oppgaveId={}", oppgaveId);
 
         if (NEI.equals(request.getFulgtBrukerveiledningGosys()) || NEI.equals(request.getKommunalBehandling())) {
@@ -88,7 +90,7 @@ public class TaskProcessingRestController {
     @Transactional
     @GetMapping(value = "/hentdokument/{oppgaveId}")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId) throws DocumentException {
+    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId)  {
         HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
         assertIkkeFerdigstilt(hentOppgaveResponseTo);
         assertHarJournalpost(hentOppgaveResponseTo);

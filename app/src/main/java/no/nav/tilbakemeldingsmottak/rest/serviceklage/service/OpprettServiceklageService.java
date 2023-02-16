@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
-import com.itextpdf.text.DocumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.joark.JournalpostConsumer;
@@ -16,10 +15,10 @@ import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveFunctionalE
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveTechnicalException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.OpprettServiceklageResponse;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.PaaVegneAvType;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
+import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageResponse;
+import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvType;
+import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettJournalpostRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettServiceklageRequestMapper;
@@ -54,7 +53,7 @@ public class OpprettServiceklageService {
     @Value("${email_from_address}")
     private String fromAddress;
 
-    public OpprettServiceklageResponse opprettServiceklage(OpprettServiceklageRequest request, boolean innlogget) throws DocumentException {
+    public OpprettServiceklageResponse opprettServiceklage(OpprettServiceklageRequest request, boolean innlogget) {
 
         byte[] fysiskDokument = pdfService.opprettServiceklagePdf(request, innlogget);
 

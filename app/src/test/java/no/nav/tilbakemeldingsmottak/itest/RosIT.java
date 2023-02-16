@@ -8,9 +8,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
-
 import static no.nav.tilbakemeldingsmottak.TestUtils.createSendRosRequest;
 import static no.nav.tilbakemeldingsmottak.TestUtils.createSendRosRequestWithNavKontor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,7 +17,7 @@ public class RosIT extends ApplicationTest {
     private static final String URL_ROS = "/rest/ros";
 
     @Test
-    void happyPath() throws MessagingException, IOException {
+    void happyPath() {
         SendRosRequest request = createSendRosRequest();
         HttpEntity<SendRosRequest> requestEntity = new HttpEntity<>(request, createHeaders());
         ResponseEntity<SendRosResponse> response = restTemplate.exchange(URL_ROS, HttpMethod.POST, requestEntity, SendRosResponse.class);
@@ -29,7 +26,7 @@ public class RosIT extends ApplicationTest {
     }
 
     @Test
-    void happyPathNavKontor() throws MessagingException, IOException {
+    void happyPathNavKontor() {
         SendRosRequest request = createSendRosRequestWithNavKontor();
         HttpEntity<SendRosRequest> requestEntity = new HttpEntity<>(request, createHeaders());
         ResponseEntity<SendRosResponse> response = restTemplate.exchange(URL_ROS, HttpMethod.POST, requestEntity, SendRosResponse.class);

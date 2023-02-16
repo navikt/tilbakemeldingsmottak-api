@@ -1,14 +1,14 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.ENHETSNUMMER_PAAKLAGET;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.FREMMET_DATO;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.INNSENDER;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.KANAL;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVARMETODE;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVARMETODE_UTDYPNING;
-import static no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.ENHETSNUMMER_PAAKLAGET;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.FREMMET_DATO;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.INNSENDER;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.SVARMETODE;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.SVARMETODE_UTDYPNING;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG;
 import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,10 +19,10 @@ import no.nav.tilbakemeldingsmottak.consumer.norg2.Norg2Consumer;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaSerializationException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Answer;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.DefaultAnswers;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.domain.Serviceklage;
+import no.nav.tilbakemeldingsmottak.serviceklage.Answer;
+import no.nav.tilbakemeldingsmottak.serviceklage.DefaultAnswers;
+import no.nav.tilbakemeldingsmottak.serviceklage.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
