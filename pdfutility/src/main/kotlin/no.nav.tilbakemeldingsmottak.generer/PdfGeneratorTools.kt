@@ -33,7 +33,8 @@ private const val FONT_INFORMASJON = 11
 private const val LINJEAVSTAND = 1.4f
 private const val LINJEAVSTAND_HEADER = 1f
 private const val LINJEAVSTAND_STOR = 30f
-
+private const val ARIAL_FONT_PATH = "fonts/arial/arial.ttf"
+private const val ARIALBOLD_FONT_PATH = "fonts/arial/arialbd.ttf"
 const val INNRYKK = 50f
 
 enum class TekstType {
@@ -225,15 +226,17 @@ class PageBuilder(private val pdfBuilder: PdfBuilder) {
         val pageSize = page.mediaBox
         val x = pageSize.lowerLeftX
         val y = pageSize.lowerLeftY
+        val arialFont = getFont(ARIAL_FONT_PATH)
 
-        val contentStream = PDPageContentStream(getPdDocument(), page, AppendMode.APPEND, true, false)
-        contentStream.setFont(PDType1Font.TIMES_ITALIC, 12f)
+        PDPageContentStream(getPdDocument(), page, AppendMode.APPEND, true, false).apply {
+            setFont(arialFont, FONT_VANLIG.toFloat())
+            beginText()
+            newLineAtOffset(x + pageSize.width - 50, y + 20)
+            showText("Side $sideTall")
+            endText()
+            close()
+        }
 
-        contentStream.beginText()
-        contentStream.newLineAtOffset(x + pageSize.width - 50, y + 20)
-        contentStream.showText("Side $sideTall")
-        contentStream.endText()
-        contentStream.close()
     }
 
     fun skrivDato(page: PDPage) {
@@ -241,15 +244,17 @@ class PageBuilder(private val pdfBuilder: PdfBuilder) {
         val x = pageSize.lowerLeftX
         val y = pageSize.lowerLeftY
         val dato = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+        val arialFont = getFont(ARIAL_FONT_PATH)
 
-        val contentStream = PDPageContentStream(getPdDocument(), page, AppendMode.APPEND, true, false)
-        contentStream.setFont(PDType1Font.TIMES_ITALIC, 12f)
+        PDPageContentStream(getPdDocument(), page, AppendMode.APPEND, true, false).apply {
+            setFont(arialFont, FONT_VANLIG.toFloat())
+            beginText()
+            newLineAtOffset(x + 20, y + 20)
+            showText(dato)
+            endText()
+            close()
+        }
 
-        contentStream.beginText()
-        contentStream.newLineAtOffset(x + 20, y + 20)
-        contentStream.showText(dato)
-        contentStream.endText()
-        contentStream.close()
     }
 }
 
@@ -264,8 +269,6 @@ class TextBuilder(private var pageBuilder: PageBuilder) {
     private val regex = Regex("\\u000D\\u000A|[\\u000A\\u000B\\u0009\\u000C\\u000D\\u0085\\u2028\\u2029]")
     private var arialFont: PDFont? = null
     private var arialBoldFont: PDFont? = null
-    private val ARIAL_FONT_PATH = "fonts/arial/arial.ttf"
-    private val ARIALBOLD_FONT_PATH = "fonts/arial/arialbd.ttf"
 
     // Logoen er øverst og flyttTilTopp() bestemmer hvor teksten starter. Høyden på siden (pageBuilder.getPage().mediaBox.height) er 842. Nederst på siden er 0.
     private val tekstStart = 700f
@@ -546,6 +549,5 @@ class TextBuilder(private var pageBuilder: PageBuilder) {
         }
         return this
     }
-
 
 }

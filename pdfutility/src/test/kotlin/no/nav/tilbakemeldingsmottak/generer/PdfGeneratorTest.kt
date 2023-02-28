@@ -123,11 +123,10 @@ internal class PdfGeneratorTest {
 
         // Når
         val klagePdf = PdfGenerator().genererPdf("Kvittering", null, map)
-        writeBytesToFile(klagePdf, "src/test/resources/delme4.pdf")
 
         // Så
         assertEquals(3, AntallSider().finnAntallSider(klagePdf))
-        
+
         assertDoesNotThrow { PDFTextLocator().getCoordiantes(klagePdf, "Side 1", 1) }
         assertDoesNotThrow { PDFTextLocator().getCoordiantes(klagePdf, "Side 2", 2) }
         assertDoesNotThrow { PDFTextLocator().getCoordiantes(klagePdf, "Side 3", 3) }
