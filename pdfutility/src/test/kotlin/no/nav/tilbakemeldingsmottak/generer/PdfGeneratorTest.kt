@@ -2,6 +2,8 @@ package no.nav.tilbakemeldingsmottak.generer
 
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 import java.io.File
 import kotlin.test.assertEquals
 
@@ -110,7 +112,7 @@ internal class PdfGeneratorTest {
     }
 
     @Test
-    fun `Skal lage 3 sider når teksten går over 3 sider`() {
+    fun `Skal ha riktig sidetall for hver side`() {
         // Gitt
         val map = mutableMapOf<String, String?>()
         map["key1"] = loremIpsum1
@@ -121,9 +123,19 @@ internal class PdfGeneratorTest {
 
         // Når
         val klagePdf = PdfGenerator().genererPdf("Kvittering", null, map)
+        writeBytesToFile(klagePdf, "src/test/resources/delme4.pdf")
 
         // Så
         assertEquals(3, AntallSider().finnAntallSider(klagePdf))
+        
+        assertDoesNotThrow { PDFTextLocator().getCoordiantes(klagePdf, "Side 1", 1) }
+        assertDoesNotThrow { PDFTextLocator().getCoordiantes(klagePdf, "Side 2", 2) }
+        assertDoesNotThrow { PDFTextLocator().getCoordiantes(klagePdf, "Side 3", 3) }
+
+        assertThrows<RuntimeException> { PDFTextLocator().getCoordiantes(klagePdf, "Side 1", 3) }
+        assertThrows<RuntimeException> { PDFTextLocator().getCoordiantes(klagePdf, "Side 2", 3) }
+        assertThrows<RuntimeException> { PDFTextLocator().getCoordiantes(klagePdf, "Side 3", 1) }
+
     }
 
     @Test

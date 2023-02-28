@@ -19,7 +19,10 @@ import org.springframework.core.io.ClassPathResource
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 private const val FONT_EKSTRA_STOR = 18
 private const val FONT_SUB_HEADER = 16
@@ -52,8 +55,10 @@ class PdfGenerator {
                 .flyttNedMed(LINJEAVSTAND_STOR)
                 .leggTilHeaderMidstilt(varsling, FONT_STOR)
                 .flyttNedMed(if (varsling != null) LINJEAVSTAND_STOR else 0f)
-                .legTilTekster(tekstMap)
+                .leggTilTekster(tekstMap)
                 .avsluttTekst()
+                .leggTilSideTall()
+                .leggTilDato()
                 .avsluttSide()
                 .leggTilFargeProfil()
                 .leggTilXMPMetablokk()
@@ -195,6 +200,57 @@ class PageBuilder(private val pdfBuilder: PdfBuilder) {
 
         return textBuilder
     }
+
+    @Throws(IOException::class)
+    fun leggTilSideTall(): PageBuilder {
+        val document = pdfBuilder.getPdDocument()
+        var sideTall = 1
+        for (page in document.pages) {
+            skrivSidetall(page, sideTall)
+            sideTall++
+        }
+        return this
+    }
+
+    @Throws(IOException::class)
+    fun leggTilDato(): PageBuilder {
+        val document = pdfBuilder.getPdDocument()
+        for (page in document.pages) {
+            skrivDato(page)
+        }
+        return this
+    }
+
+    fun skrivSidetall(page: PDPage, sideTall: Int) {
+        val pageSize = page.mediaBox
+        val x = pageSize.lowerLeftX
+        val y = pageSize.lowerLeftY
+
+        val contentStream = PDPageContentStream(getPdDocument(), page, AppendMode.APPEND, true, false)
+        contentStream.setFont(PDType1Font.TIMES_ITALIC, 12f)
+
+        contentStream.beginText()
+        contentStream.newLineAtOffset(x + pageSize.width - 50, y + 20)
+        contentStream.showText("Side $sideTall")
+        contentStream.endText()
+        contentStream.close()
+    }
+
+    fun skrivDato(page: PDPage) {
+        val pageSize = page.mediaBox
+        val x = pageSize.lowerLeftX
+        val y = pageSize.lowerLeftY
+        val dato = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+
+        val contentStream = PDPageContentStream(getPdDocument(), page, AppendMode.APPEND, true, false)
+        contentStream.setFont(PDType1Font.TIMES_ITALIC, 12f)
+
+        contentStream.beginText()
+        contentStream.newLineAtOffset(x + 20, y + 20)
+        contentStream.showText(dato)
+        contentStream.endText()
+        contentStream.close()
+    }
 }
 
 class TextBuilder(private var pageBuilder: PageBuilder) {
@@ -334,7 +390,7 @@ class TextBuilder(private var pageBuilder: PageBuilder) {
     }
 
     @Throws(IOException::class)
-    fun legTilTekster(tekstMap: Map<String, String?>): TextBuilder {
+    fun leggTilTekster(tekstMap: Map<String, String?>): TextBuilder {
         for (key in tekstMap.keys) {
             leggTilLedetekstOgTekst(key, tekstMap.get(key), FONT_VANLIG, LINJEAVSTAND / 1.4f)
         }
