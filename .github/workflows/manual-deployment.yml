@@ -84,6 +84,7 @@ jobs:
           CLUSTER: prod-fss
           RESOURCE: .nais/nais.yml
           VAR: image=${{env.docker_image}}
+          VARS: .nais/p-config.json
           DRY_RUN: false
 
 
