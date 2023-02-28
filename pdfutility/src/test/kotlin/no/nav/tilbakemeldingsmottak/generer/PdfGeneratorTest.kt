@@ -83,7 +83,7 @@ internal class PdfGeneratorTest {
 
         // Når
         val klagePdf = PdfGenerator().genererPdf("Kvittering", null, map)
-        val textPosition = PDFTextLocator.getCoordiantes(klagePdf, "augue sollicitudin", 2)
+        val textPosition = PDFTextLocator().getCoordiantes(klagePdf, "augue sollicitudin", 2)
 
         // Så
         assertEquals(2, AntallSider().finnAntallSider(klagePdf))
@@ -101,7 +101,7 @@ internal class PdfGeneratorTest {
 
         // Når
         val klagePdf = PdfGenerator().genererPdf("Kvittering", null, map)
-        val textPosition = PDFTextLocator.getCoordiantes(klagePdf, "key3", 2)
+        val textPosition = PDFTextLocator().getCoordiantes(klagePdf, "key3", 2)
 
         // Så
         assertEquals(2, AntallSider().finnAntallSider(klagePdf))
@@ -136,9 +136,7 @@ internal class PdfGeneratorTest {
 
         // Når
         val klagePdf = PdfGenerator().genererPdf("Kvittering", "Heisann", map)
-        val textPosition = PDFTextLocator.getCoordiantes(klagePdf, "key3", 2)
-
-        writeBytesToFile(klagePdf, "src/test/resources/delme5.pdf")
+        val textPosition = PDFTextLocator().getCoordiantes(klagePdf, "key3", 2)
 
         // Så
         assertEquals(2, AntallSider().finnAntallSider(klagePdf))

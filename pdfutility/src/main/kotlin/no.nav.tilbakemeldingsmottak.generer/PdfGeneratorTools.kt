@@ -440,6 +440,7 @@ class TextBuilder(private var pageBuilder: PageBuilder) {
     @Throws(IOException::class)
     fun flyttTilToppNySide(): TextBuilder {
         val yPosisjon = pageHeight - INNRYKK
+
         if (pageBuilder.nåværendeTekstType == TekstType.TEKST) {
             pageBuilder.getContentStream().newLineAtOffset(ledetekstBredde + INNRYKK, yPosisjon)
         } else {
