@@ -217,7 +217,6 @@ class TextBuilder(private var pageBuilder: PageBuilder) {
     private val tekstStart = 700f
 
     init {
-        println("init textbuilder")
         pageBuilder.getContentStream().beginText()
         pageWidth = pageBuilder.getPage().mediaBox.width
         pageHeight = pageBuilder.getPage().mediaBox.height
