@@ -203,10 +203,8 @@ class TextBuilder(private var pageBuilder: PageBuilder) {
     private val pageHeight: Float
     private val cellWidth: Float
     private val ledetekstBredde: Float
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    //    private val regex = Regex("\t")
     private val regex = Regex("\\u000D\\u000A|[\\u000A\\u000B\\u0009\\u000C\\u000D\\u0085\\u2028\\u2029]")
     private var arialFont: PDFont? = null
     private var arialBoldFont: PDFont? = null
@@ -272,7 +270,16 @@ class TextBuilder(private var pageBuilder: PageBuilder) {
         midstilt: Boolean
     ) {
         val height = font.fontDescriptor.fontBoundingBox.height / 1000 * fontSize
-        skrivTekst(ledetekst, ledetekstFont, fontSize, midstilt, linjeavstand, height, ledetekstBredde, TekstType.LEDETEKST)
+        skrivTekst(
+            ledetekst,
+            ledetekstFont,
+            fontSize,
+            midstilt,
+            linjeavstand,
+            height,
+            ledetekstBredde,
+            TekstType.LEDETEKST
+        )
 
         pageBuilder.getContentStream().newLineAtOffset(ledetekstBredde, 0f)
         skrivTekst(tekst, font, fontSize, midstilt, linjeavstand, height, null, TekstType.TEKST)

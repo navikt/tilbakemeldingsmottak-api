@@ -92,7 +92,7 @@ internal class PdfGeneratorTest {
     }
 
     @Test
-    fun `Skal lage 2 sider når neste key-value er på neste side`() {
+    fun `Skal lage 2 sider når neste key-value er på ny side`() {
         // Gitt
         val map = mutableMapOf<String, String?>()
         map["key1"] = loremIpsum1
@@ -107,6 +107,47 @@ internal class PdfGeneratorTest {
         assertEquals(2, AntallSider().finnAntallSider(klagePdf))
         assertEquals(50f, textPosition["x"], "Skal ha x-posisjon med 50 (INNRYKK)")
         assertEquals(791.8898f, textPosition["y"], "Skal ha y-posisjon med 791.8898 (toppen av siden)")
+    }
+
+    @Test
+    fun `Skal lage 3 sider når teksten går over 3 sider`() {
+        // Gitt
+        val map = mutableMapOf<String, String?>()
+        map["key1"] = loremIpsum1
+        map["key2"] = loremIpsum1
+        map["key3"] = loremIpsum1
+        map["key4"] = loremIpsum1
+
+
+        // Når
+        val klagePdf = PdfGenerator().genererPdf("Kvittering", null, map)
+
+        // Så
+        assertEquals(3, AntallSider().finnAntallSider(klagePdf))
+    }
+
+    @Test
+    fun `Skal lage 2 sider når man bruker varsling`() {
+        // Gitt
+        val map = mutableMapOf<String, String?>()
+        map["key1"] = loremIpsum1
+        map["key2"] = loremIpsum2
+        map["key3"] = loremIpsum3
+
+        // Når
+        val klagePdf = PdfGenerator().genererPdf("Kvittering", "Heisann", map)
+        val textPosition = PDFTextLocator.getCoordiantes(klagePdf, "key3", 2)
+
+        writeBytesToFile(klagePdf, "src/test/resources/delme5.pdf")
+
+        // Så
+        assertEquals(2, AntallSider().finnAntallSider(klagePdf))
+        assertEquals(50f, textPosition["x"], "Skal ha x-posisjon med 50 (INNRYKK)")
+        assertEquals(
+            751.9728f,
+            textPosition["y"],
+            "Skal ha y-posisjon med 751.9728 (litt lengre ned enn toppen av siden pga varsling)"
+        )
     }
 
 
