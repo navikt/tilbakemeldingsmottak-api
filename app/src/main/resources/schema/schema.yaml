@@ -201,6 +201,8 @@ questions:
   - answer: Korona-saken
   - answer: EØS-saken
   - answer: Åpningstider på NAV-kontoret
+  - answer: Språk
+  - answer: Klage
 
 - id: TEMA
   text: Hva gjelder serviceklagen?

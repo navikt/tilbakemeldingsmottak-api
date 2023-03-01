@@ -128,6 +128,28 @@ class PdfServiceTest {
         assertFalse(content.contains("OBS! Klagen er sendt inn uinnlogget"));
     }
 
+    @Test
+    void happyPathMedEmojis() throws IOException {
+        opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
+        String tekstMedEmojis = "Heisann 😊";
+        opprettServiceklageRequest.setKlagetekst(tekstMedEmojis);
+        byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest, true);
+        String content = getStringFromByteArrayPdf(pdf);
+
+        assertTrue(content.contains("Heisann"));
+        assertFalse(content.contains("😊"));
+    }
+
+    @Test
+    void happyPathMedKontrollKarakterer() throws IOException {
+        opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
+        String tekstMedEmojis = "Heisann \n\r\t\u0001\u0000sveisann";
+        opprettServiceklageRequest.setKlagetekst(tekstMedEmojis);
+        byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest, true);
+        String content = getStringFromByteArrayPdf(pdf);
+        assertTrue(content.contains("Heisann sveisann"));
+    }
+
     private void assertPdfContainsContentFromRequest(OpprettServiceklageRequest request, String content) {
         assertKlagetyper(request.getKlagetyper(), content);
         String now = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));

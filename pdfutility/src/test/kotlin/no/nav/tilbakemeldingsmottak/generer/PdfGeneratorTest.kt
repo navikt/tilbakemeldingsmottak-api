@@ -160,6 +160,61 @@ internal class PdfGeneratorTest {
     }
 
 
+    @Test
+    fun `Skal ikke kræsje med emojis`() {
+        // Gitt
+        val map = mutableMapOf<String, String?>()
+        val key = "Key"
+        val tekst = "Jan har en hund🐶med tre ben og to haler."
+        map[key] = tekst
+
+        // Så
+        assertDoesNotThrow { PdfGenerator().genererPdf("Kvittering", null, map) }
+    }
+
+    @Test
+    fun `Skal ikke kræsje på kontroll-karakterer`() {
+        // Gitt
+        val map = mutableMapOf<String, String?>()
+        val key = "Key"
+        val tekst = "Heisann \n\r\t\u0001\u0000sveisann"
+        map[key] = tekst
+
+        // Så
+        assertDoesNotThrow { PdfGenerator().genererPdf("Kvittering", null, map) }
+    }
+
+    @Test
+    fun `Skal ikke kræsje med StringIndexOutOfBoundsException`() {
+        // Gitt
+        val map = mutableMapOf<String, String?>()
+        val key = "Key"
+        val tekst = "Jan har en hund med tre ben og to haler. \n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n" +
+                "\t\n\n"
+        map[key] = tekst
+
+        // Så
+        assertDoesNotThrow { PdfGenerator().genererPdf("Kvittering", null, map) }
+    }
+
     fun writeBytesToFile(data: ByteArray, filePath: String) {
         File(filePath).writeBytes(data)
     }

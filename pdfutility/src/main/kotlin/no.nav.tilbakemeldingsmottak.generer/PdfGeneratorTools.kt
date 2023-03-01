@@ -22,6 +22,8 @@ import java.io.InputStream
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 
 private const val FONT_EKSTRA_STOR = 18
@@ -45,18 +47,38 @@ enum class TekstType {
 
 class PdfGenerator {
 
+    //    http://www.unicode.org/reports/tr18/
+    //    \p{L} – for å støtte alle bokstaver fra alle språk
+    //    \p{N} – for å støtte alle tall
+    //    \p{P} – for å støtte tegnsetting
+    //    \p{Z} – for å støtte whitespace separatorer
+    private fun fjernSpesielleKarakterer(text: String?): String? {
+        if (text == null) return null
+
+        val regex = "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
+        val pattern: Pattern = Pattern.compile(
+            regex,
+            Pattern.UNICODE_CHARACTER_CLASS
+        )
+        val matcher = pattern.matcher(text)
+        return matcher.replaceAll("")
+    }
+
     fun genererPdf(tittel: String, varsling: String?, tekstMap: Map<String, String?>): ByteArray {
+        val printbarTittel = fjernSpesielleKarakterer(tittel)
+        val printbarVarsling = fjernSpesielleKarakterer(varsling)
+        val printbarTekstMap = tekstMap.mapValues { fjernSpesielleKarakterer(it.value ) }
         return try {
-            PdfBuilder(tittel)
+            PdfBuilder(printbarTittel ?: "")
                 .startSide()
                 .leggTilNavLogo()
                 .startTekst()
                 .flyttTilTopp()
                 .leggTilHeaderMidstilt(tittel, FONT_SUB_HEADER)
                 .flyttNedMed(LINJEAVSTAND_STOR)
-                .leggTilHeaderMidstilt(varsling, FONT_STOR)
+                .leggTilHeaderMidstilt(printbarVarsling ?: "", FONT_STOR)
                 .flyttNedMed(if (varsling != null) LINJEAVSTAND_STOR else 0f)
-                .leggTilTekster(tekstMap)
+                .leggTilTekster(printbarTekstMap)
                 .avsluttTekst()
                 .leggTilSideTall()
                 .leggTilDato()
