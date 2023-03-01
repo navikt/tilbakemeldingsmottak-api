@@ -207,7 +207,7 @@ class PageBuilder(private val pdfBuilder: PdfBuilder) {
         val document = pdfBuilder.getPdDocument()
         var sideTall = 1
         for (page in document.pages) {
-            skrivSidetall(page, sideTall)
+            skrivSidetall(page, sideTall, document.pages.count)
             sideTall++
         }
         return this
@@ -222,7 +222,7 @@ class PageBuilder(private val pdfBuilder: PdfBuilder) {
         return this
     }
 
-    fun skrivSidetall(page: PDPage, sideTall: Int) {
+    fun skrivSidetall(page: PDPage, sideTall: Int, antallSidetall: Int) {
         val pageSize = page.mediaBox
         val x = pageSize.lowerLeftX
         val y = pageSize.lowerLeftY
@@ -231,8 +231,8 @@ class PageBuilder(private val pdfBuilder: PdfBuilder) {
         PDPageContentStream(getPdDocument(), page, AppendMode.APPEND, true, false).apply {
             setFont(arialFont, FONT_VANLIG.toFloat())
             beginText()
-            newLineAtOffset(x + pageSize.width - 50, y + 20)
-            showText("Side $sideTall")
+            newLineAtOffset(x + pageSize.width - 70, y + 20)
+            showText("Side $sideTall / $antallSidetall")
             endText()
             close()
         }
