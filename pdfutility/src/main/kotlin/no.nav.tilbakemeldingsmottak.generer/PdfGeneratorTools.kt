@@ -37,6 +37,7 @@ const val INNRYKK = 50f
 
 class PdfGenerator {
 
+    //    http://www.unicode.org/reports/tr18/
     //    \p{L} – for å støtte alle bokstaver fra alle språk
     //    \p{N} – for å støtte alle tall
     //    \p{P} – for å støtte tegnsetting
