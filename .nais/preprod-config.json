@@ -23,8 +23,6 @@
   "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
   "AZURE_DEFAULT_SCOPE": "openid",
   "TENANT": "trygdeetaten.no",
-  "PROXY_HOST": "webproxy-nais.nav.no",
-  "PROXY_PORT": 8088,
   "SERVICEUSER_EMAIL": "srvtilbakemeldings@trygdeetaten.no",
   "EMAIL_FROM_ADDRESS": "srvtilbakemeldings@nav.no",
   "EMAIL_SERVICEKLAGE_ADDRESS": "lars.stenstad@nav.no",

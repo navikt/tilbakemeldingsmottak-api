@@ -92,10 +92,6 @@ spec:
       value: {{SAF_HENTDOKUMENT_URL}}
     - name: AZURE_DEFAULT_SCOPE
       value: {{AZURE_DEFAULT_SCOPE}}
-    - name: PROXY_HOST
-      value: {{ PROXY_HOST }}
-    - name: PROXY_PORT
-      value: "8088"
     - name: TENANT
       value: {{ TENANT }}
     - name: SERVICEUSER_EMAIL
