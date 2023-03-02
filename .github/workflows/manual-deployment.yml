@@ -67,7 +67,7 @@ jobs:
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-fss
+          CLUSTER: dev-gcp
           RESOURCE: .nais/nais.yml
           VARS: .nais/preprod-config.json
           VAR: image=${{env.docker_image}}
@@ -81,7 +81,7 @@ jobs:
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-fss
+          CLUSTER: dev-gcp
           RESOURCE: .nais/nais.yml
           VAR: image=${{env.docker_image}}
           VARS: .nais/p-config.json

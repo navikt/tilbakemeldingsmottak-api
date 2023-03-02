@@ -7,7 +7,6 @@ on:
       - '**.md'
       - '.github/workflows/preprod-pipeline.yml'
       - '.github/workflows/manual-deployment.yml'
-      - '.nais/preprod-fss/*'
   pull_request:
     branches:
       - 'main'
@@ -15,7 +14,6 @@ on:
       - '**.md'
       - '.github/workflows/preprod-pipeline.yml'
       - '.github/workflows/manual-deployment.yml'
-      - '.nais/preprod-fss/*'
 
 jobs:
   bygg-app-main:
@@ -100,7 +98,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           PRINT_PAYLOAD: true
-          CLUSTER: prod-fss
+          CLUSTER: prod-gcp
           RESOURCE: .nais/nais.yml
           VARS: .nais/p-config.json
           DRY_RUN: false
