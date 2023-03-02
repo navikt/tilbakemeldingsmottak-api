@@ -12,6 +12,14 @@ metadata:
 spec:
   image: {{image}}
   port: 8080
+  accessPolicy:
+    inbound:
+      rules:
+        - application: tilbakemeldinger-api
+          namespace: personbruker
+          cluster: dev-fss
+        - application: tilbakemeldinger
+          namespace: personbruker
   liveness:
     path: /isAlive
     port: 8080
