@@ -47,15 +47,9 @@ spec:
   {{/each}}
 #  tokenx:
 #    enabled: true
-  vault:
-    enabled: true
-    paths:
-      - kvPath: {{ DB_PATH }}
-        mountPath: /var/run/secrets/nais.io/tilbakemeldingsmottak
-      - kvPath: {{ SRVUSER_PATH }}
-        mountPath: /var/run/secrets/nais.io/srvtilbakemeldingsmottak
-      - kvPath: {{ SECRETS_PATH }}
-        mountPath: /var/run/secrets/nais.io/vault
+
+  envFrom:
+    - secret: tilbakemeldingsmottak-api-google-secret
 
   env:
     - name: SPRING_DATASOURCE_URL
@@ -98,3 +92,13 @@ spec:
       value: {{ TENANT }}
     - name: SERVICEUSER_EMAIL
       value: {{ SERVICEUSER_EMAIL}}
+    - name: EMAIL_FROM_ADDRESS
+      value: {{ EMAIL_FROM_ADDRESS }}
+    - name: EMAIL_SERVICEKLAGE_ADDRESS
+      value: {{ EMAIL_SERVICEKLAGE_ADDRESS }}
+    - name: EMAIL_NAV_SUPPORT_ADDRESS
+      value: {{ EMAIL_NAV_SUPPORT_ADDRESS }}
+    - name: EMAIL_SAMISK_KONTAKT_ADDRESS
+      value: {{ EMAIL_SAMISK_KONTAKT_ADDRESS }}
+    - name: SPRING_EMAIL_HOST
+      value: {{ SPRING_EMAIL_HOST }}

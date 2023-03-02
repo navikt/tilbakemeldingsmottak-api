@@ -20,9 +20,6 @@
           "https://tilbakemeldingsmottak-q1.dev.intern.nav.no",
           "https://tilbakemeldingsmottak.dev-fss-pub.nais.io"
   ],
-  "DB_PATH": "/oracle/data/dev/creds/serviceklage_q1-user",
-  "SRVUSER_PATH": "/serviceuser/data/dev/srvtilbakemeldingsmottak",
-  "SECRETS_PATH": "/kv/preprod/fss/tilbakemeldingsmottak-api/teamserviceklage",
   "SAF_URL": "https://saf-q1.dev.intern.nav.no/graphql",
   "SAF_HENTDOKUMENT_URL": "https://saf-q1.dev.intern.nav.no/rest/hentdokument",
   "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
@@ -30,5 +27,10 @@
   "TENANT": "trygdeetaten.no",
   "PROXY_HOST": "webproxy-nais.nav.no",
   "PROXY_PORT": 8088,
-  "SERVICEUSER_EMAIL": "srvtilbakemeldings@trygdeetaten.no"
+  "SERVICEUSER_EMAIL": "srvtilbakemeldings@trygdeetaten.no",
+  "EMAIL_FROM_ADDRESS": "srvtilbakemeldings@nav.no",
+  "EMAIL_SERVICEKLAGE_ADDRESS": "nav.serviceklager@nav.no",
+  "EMAIL_NAV_SUPPORT_ADDRESS": "support@nav.no",
+  "EMAIL_SAMISK_SUPPORT_ADDRESS": "nav.kontaktsenter.finnmark.samisk.kontakt.bruker@nav.no",
+  "SPRING_MAIL_HOST": "smtp.adeo.no"
 }
