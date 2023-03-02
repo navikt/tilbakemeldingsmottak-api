@@ -12,14 +12,6 @@ metadata:
 spec:
   image: {{image}}
   port: 8080
-  accessPolicy:
-    inbound:
-      rules:
-        - application: tilbakemeldinger-api
-          namespace: personbruker
-          cluster: dev-fss
-        - application: tilbakemeldinger
-          namespace: personbruker
   liveness:
     path: /isAlive
     port: 8080
@@ -62,8 +54,6 @@ spec:
   env:
     - name: SPRING_DATASOURCE_URL
       value: {{ SPRING_DATASOURCE_URL }}
-    - name: NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL
-      value: {{ NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL }}
     - name: SECURITYTOKENSERVICE_URL
       value: {{ SECURITYTOKENSERVICE_URL }}
     - name: LOGINSERVICE_ACCEPTED_AUDIENCE

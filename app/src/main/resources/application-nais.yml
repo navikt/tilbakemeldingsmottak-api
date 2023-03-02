@@ -27,7 +27,3 @@ no.nav.security.jwt:
       accepted-audience: ${LOGINSERVICE_ACCEPTED_AUDIENCE}
       cookie-name: isso-idtoken
       discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL}
-    reststs:
-      accepted-audience: srvtilbakemeldings, srvtilbakemeldinge
-      cookie-name: reststs-idtoken
-      discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_RESTSTS_DISCOVERYURL}

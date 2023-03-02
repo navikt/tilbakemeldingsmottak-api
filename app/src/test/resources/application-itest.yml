@@ -45,10 +45,7 @@ no.nav.security:
         accepted-audience: aud-localhost
         cookie-name: isso-idtoken
         discovery-url: http://localhost:${token.server.port}/isso/.well-known/openid-configuration
-      reststs:
-        accepted-audience: aud-localhost
-        cookie-name: reststs-idtoken
-        discovery-url: http://localhost:${token.server.port}/reststs/.well-known/openid-configuration
+
 norg2:
   api:
     v1:
