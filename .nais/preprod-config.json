@@ -29,8 +29,8 @@
   "PROXY_PORT": 8088,
   "SERVICEUSER_EMAIL": "srvtilbakemeldings@trygdeetaten.no",
   "EMAIL_FROM_ADDRESS": "srvtilbakemeldings@nav.no",
-  "EMAIL_SERVICEKLAGE_ADDRESS": "nav.serviceklager@nav.no",
-  "EMAIL_NAV_SUPPORT_ADDRESS": "support@nav.no",
-  "EMAIL_SAMISK_SUPPORT_ADDRESS": "nav.kontaktsenter.finnmark.samisk.kontakt.bruker@nav.no",
-  "SPRING_MAIL_HOST": "smtp.adeo.no"
+  "EMAIL_SERVICEKLAGE_ADDRESS": "lars.stenstad@nav.no",
+  "EMAIL_NAV_SUPPORT_ADDRESS": "lars.stenstad@nav.no",
+  "EMAIL_SAMISK_SUPPORT_ADDRESS": "lars.stenstad@nav.no",
+  "SPRING_MAIL_HOST": "exchange.preprod.local"
 }
