@@ -152,7 +152,9 @@ class PdfServiceTest {
 
     private void assertPdfContainsContentFromRequest(OpprettServiceklageRequest request, String content) {
         assertKlagetyper(request.getKlagetyper(), content);
-        assertTrue(content.replace("\n", "").contains(request.getKlagetekst()));
+        String now = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        String regex = "Side [1-9] / [1-9]" + now;
+        assertTrue(content.replace("\n", "").replaceAll(regex, "").contains(request.getKlagetekst()));
         assertTrue(content.contains(KANAL_SERVICEKLAGESKJEMA_ANSWER));
         assertTrue(content.contains(LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
         assertTrue(content.contains(request.getOenskerAaKontaktes() ?
