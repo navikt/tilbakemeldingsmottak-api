@@ -16,9 +16,7 @@
   "NORG2_API_V1_URL": "https://app-q1.adeo.no/norg2/api/v1",
   "LOGINSERVICE_URL": "https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login",
   "INGRESS": [
-          "https://tilbakemeldingsmottak-q1.nais.preprod.local",
-          "https://tilbakemeldingsmottak-q1.dev.intern.nav.no",
-          "https://tilbakemeldingsmottak.dev-fss-pub.nais.io"
+      "https://tilbakemeldingsmottak-q1.intern.dev.nav.no"
   ],
   "SAF_URL": "https://saf-q1.dev.intern.nav.no/graphql",
   "SAF_HENTDOKUMENT_URL": "https://saf-q1.dev.intern.nav.no/rest/hentdokument",
