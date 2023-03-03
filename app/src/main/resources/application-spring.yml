@@ -1,0 +1,87 @@
+spring:
+  config:
+    activate:
+      on-profile: spring
+  datasource:
+    driver-class-name:  org.h2.Driver
+  flyway:
+    enabled: true
+    out-of-order: false
+    table: schema_version
+    validate-on-migrate: false
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        event:
+          merge:
+            entity_copy_observer: allow
+        generate_statistics: false
+    database-platform: org.hibernate.dialect.H2Dialect
+
+
+logging:
+  config: classpath:logback-spring.xml
+
+
+# TODO: Må endre på disse variablene
+Journalpost_v1_url: http://localhost:3000/OPPRETT_JOURNALPOST
+aktoerregister:
+  identer:
+    url: http://localhost:3000/AKTOER
+email_from_address: srvtilbakemeldings@preprod.local
+email_nav_support_address: nav-support@preprod.local
+email_samisk_kontakt_address: samisk-kontakt@preprod.local
+email_serviceklage_address: nav.serviceklager@preprod.local
+email_uu_address: uu@preprod.local
+ereg:
+  api:
+    url: http://localhost:3000/ereg
+hentdokument:
+  url: http://localhost:3000/hentdokument
+aad:
+  authority: https://localhost:3000/authority
+  clientId: 1111199999
+  serviceuser: srvDummy
+  password: srvDummy@nav.no
+  clientSecret: secret
+no.nav.security:
+  jwt:
+    mock:
+      enable: true
+    client:
+      registration:
+        serviceuser:
+          authentication:
+            client-auth-method: client_secret_basic
+            client-id: username
+            client-secret: password
+          grant-type: client_credentials
+          scope: openid
+          token-endpoint-url: http://localhost:9068/reststs/token
+    issuer:
+      azuread:
+        accepted-audience: aud-localhost
+        cookie-name: azuread-idtoken
+        discovery-url: http://localhost:9068/azuread/.well-known/openid-configuration
+      isso:
+        accepted-audience: aud-localhost
+        cookie-name: isso-idtoken
+        discovery-url: http://localhost:9068/isso/.well-known/openid-configuration
+
+norg2:
+  api:
+    v1:
+      url: http://localhost:3000/norg2
+oppgave_oppgaver_url: http://localhost:3000/OPPGAVE
+saf:
+  graphql:
+    url: http://localhost:3000/safgraphql
+security_token_service_token:
+  url: http://localhost:3000/STS
+serviceuser:
+  password: 123abc
+  username: tilbakemeldings
+loginservice:
+  url: http://localhost:3000/login
