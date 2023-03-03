@@ -34,7 +34,6 @@
         <!-- Spesifiserer eksplisitt for å unngå transitiv import av 8.x.x versjon som gjør at oppslag feiler -->
         <nimbus-jose-jwt.version>9.24.4</nimbus-jose-jwt.version>
 
-        <oracle.version>19.3.0.0</oracle.version>
         <spring-cloud-contract-wiremock.version>2.2.5.RELEASE</spring-cloud-contract-wiremock.version>
         <spring-core.version>5.3.24</spring-core.version>
         <caffeine.version>2.9.3</caffeine.version>
