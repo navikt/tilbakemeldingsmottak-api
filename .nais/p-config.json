@@ -1,6 +1,6 @@
 {
   "NAMESPACE": "teamserviceklage",
-  "SPRING_DATASOURCE_URL": "jdbc:oracle:thin:@a01dbfl043.adeo.no:1521/tilbakemeldingsmottak",
+  "DATABASE_NAME": "tilbakemeldingsmottak",
   "AZUREAD_CLIENTID": "45104d6a-f5bc-4e8c-b352-4bbfc9381f25",
   "SECURITYTOKENSERVICE_URL": "https://sts.adeo.no/SecurityTokenServiceProvider/",
   "NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL": "https://login.microsoftonline.com/navnob2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten",

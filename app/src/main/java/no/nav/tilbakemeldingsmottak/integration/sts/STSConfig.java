@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @author Ugur Alpay Cenar, Visma Consulting.
  */
 @Component
-@Profile({"nais", "local"})
+@Profile({"nais"})
 public class STSConfig {
 
 	@Value("${securityTokenService_url}")

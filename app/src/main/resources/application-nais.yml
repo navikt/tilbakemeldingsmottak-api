@@ -1,3 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DATABASE}?user=${DATABASE_USERNAME}&password=${DATABASE_PASSWORD}
+  flyway:
+    enabled: true
+    out-of-order: false
+    table: schema_version
+    validate-on-migrate: false
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        event:
+          merge:
+            entity_copy_observer: allow
+        generate_statistics: false
+  main:
+    banner-mode: 'off'
+  transaction:
+    default-timeout: 300s
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure: ERROR
+
+hentdokument:
+  url: ${SAF_HENTDOKUMENT_URL}
+saf:
+  graphql:
+    url: ${SAF_URL}
 aad:
   authority: ${AAD_AUTHORITY}
   clientId:  ${AZURE_APP_CLIENT_ID}
