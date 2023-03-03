@@ -10,7 +10,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @ConfigurationProperties(prefix = "aad")
 @Validated
-@Profile("nais | spring")
+@Profile("nais | local")
 public class AADProperties {
     @NotEmpty
     private String authority;

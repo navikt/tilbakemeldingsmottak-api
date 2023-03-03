@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-@Profile("nais | spring")
+@Profile("nais | local")
 @Component
 public class AADMailClientImpl implements AADMailClient {
 
