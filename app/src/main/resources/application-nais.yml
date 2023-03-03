@@ -23,14 +23,6 @@ spring:
   transaction:
     default-timeout: 300s
 
-logging:
-  config: classpath:logback-spring.xml
-  level:
-    org:
-      springframework:
-        boot:
-          autoconfigure: ERROR
-
 hentdokument:
   url: ${SAF_HENTDOKUMENT_URL}
 saf:

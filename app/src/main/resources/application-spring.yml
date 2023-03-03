@@ -21,10 +21,6 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
 
 
-logging:
-  config: classpath:logback-spring.xml
-
-
 # TODO: Må endre på disse variablene
 Journalpost_v1_url: http://localhost:3000/OPPRETT_JOURNALPOST
 aktoerregister:
