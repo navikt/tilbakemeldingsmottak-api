@@ -12,6 +12,11 @@
     <artifactId>app</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <otj-pg-embedded.version>1.0.1</otj-pg-embedded.version>
+        <flyway.version>9.6.0</flyway.version>
+    </properties>
+
 
     <dependencies>
 
@@ -137,6 +142,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -156,6 +162,11 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.opentable.components</groupId>
+            <artifactId>otj-pg-embedded</artifactId>
+            <version>${otj-pg-embedded.version}</version>
         </dependency>
 
         <dependency>
