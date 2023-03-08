@@ -40,10 +40,10 @@ jobs:
         distribution: 'temurin'
         java-version: '17.x'
 
-    - name: Set up Node 10
+    - name: Set up Node 14
       uses: actions/setup-node@v1
       with:
-        node-version: '10.14.2'
+        node-version: '14.21.3'
 
     - name: Build with maven
       env:
