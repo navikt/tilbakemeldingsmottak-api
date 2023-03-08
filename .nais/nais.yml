@@ -11,7 +11,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   image: {{image}}
-  port: 8080
+  port: 9069
   accessPolicy:
     inbound:
       rules:
@@ -19,13 +19,13 @@ spec:
           namespace: personbruker
   liveness:
     path: /isAlive
-    port: 8080
+    port: 9069
     initialDelay: 30
     failureThreshold: 10
     timeout: 20
   readiness:
     path: /isReady
-    port: 8080
+    port: 9069
     initialDelay: 100
     timeout: 20
   prometheus:
