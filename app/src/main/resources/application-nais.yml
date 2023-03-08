@@ -3,10 +3,14 @@ spring:
     activate:
       on-profile: nais
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DATABASE}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_DATABASE}?user=${DATABASE_USERNAME}&password=${DATABASE_PASSWORD}
+    hikari:
+      minimum-idle: 1
+      maximum-pool-size: 10
+      connection-timeout: 10000
+      idle-timeout: 10001
+      max-lifetime: 60001
+      leak-detection-threshold: 60000
   flyway:
     enabled: true
     out-of-order: false
