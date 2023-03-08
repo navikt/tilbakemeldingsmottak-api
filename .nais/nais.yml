@@ -64,8 +64,6 @@ spec:
     - secret: tilbakemeldingsmottak-api-google-secret
 
   env:
-    - name: SPRING_DATASOURCE_URL
-      value: {{ SPRING_DATASOURCE_URL }}
     - name: SECURITYTOKENSERVICE_URL
       value: {{ SECURITYTOKENSERVICE_URL }}
     - name: LOGINSERVICE_ACCEPTED_AUDIENCE
