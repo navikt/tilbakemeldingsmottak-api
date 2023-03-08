@@ -27,7 +27,7 @@ public class RepositoryConfig {
 
     @Bean
     @Primary
-    DataSource dataSource(final DataSourceProperties dataSourceProperties) throws SQLException {
+    DataSource dataSource(final DataSourceProperties dataSourceProperties) {
         System.out.println("Environment" + env.getProperty("DATABASE_URL"));
 
         JdbcDataSource dataSource = new JdbcDataSource();

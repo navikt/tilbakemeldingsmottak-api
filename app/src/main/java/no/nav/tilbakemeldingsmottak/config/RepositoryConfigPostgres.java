@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +34,9 @@ public class RepositoryConfigPostgres {
         dataSource.setUrl(dataSourceProperties.getUrl());
         dataSource.setUsername(dataSourceProperties.getUsername());
         dataSource.setPassword(dataSourceProperties.getPassword());
+        System.out.println("datasource url: " + dataSource.getUrl());
+        System.out.println("datasource username: " + dataSource.getUsername());
+
         return dataSource;
     }
 }
