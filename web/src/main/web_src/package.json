@@ -123,7 +123,7 @@
     "jest": "^24.8.0",
     "jest-fetch-mock": "1.7.5",
     "jsdom": "8.5.0",
-    "json-server": "^0.13.0",
+    "json-server": "^0.17.2",
     "less-loader": "^4.1.0",
     "mini-css-extract-plugin": "^0.4.0",
     "npm-run-all": "4.1.3",
