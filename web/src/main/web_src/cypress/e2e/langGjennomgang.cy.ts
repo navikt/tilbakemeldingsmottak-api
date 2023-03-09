@@ -23,7 +23,7 @@ describe('Lang gjennomgang', () => {
       .eq(0)
       .within(() => {
         cy.get('input').should('have.length', 7);
-        // cy.get('input').eq(0).should('have.value', 'Nei, annet');
+        cy.get('input').eq(0).should('have.value', 'Ja');
         cy.get('input').eq(0).check();
       });
 

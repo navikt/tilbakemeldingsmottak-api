@@ -14,7 +14,9 @@
     "lint": "node_modules/.bin/esw webpack.config.* src",
     "lint:watch": "npm run lint -- --watch",
     "test": "jest",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "cypress": "npx cypress open",
+    "cypress:headless": "npx cypress run"
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
