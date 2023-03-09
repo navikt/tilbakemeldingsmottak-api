@@ -18,6 +18,10 @@ on:
       - '.nais/preprod-fss/*'
 
 jobs:
+  test-frontend:
+    name: Test frontend
+    uses: ./.github/workflows/cypress.yml
+
   bygg-app-main:
     name: Bygg app/image, push til github
     runs-on: ubuntu-latest
@@ -42,10 +46,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '17.x'
-      - name: Set up Node 10
+      - name: Set up Node 14
         uses: actions/setup-node@v1
         with:
-          node-version: '10.14.2'
+          node-version: '14.21.3'
       - name: Build with maven
         env:
           GITHUB_USERNAME: x-access-token
@@ -74,7 +78,7 @@ jobs:
 
   deploy-main:
     name: Deploy to main
-    needs: bygg-app-main
+    needs: [test-frontend, bygg-app-main]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
