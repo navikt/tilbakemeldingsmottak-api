@@ -1,0 +1,28 @@
+on: workflow_call
+
+jobs:
+  test-frontend:
+    name: Cypress
+    runs-on: ubuntu-latest
+    env: 
+      working-directory: web/src/main/web_src
+    defaults:
+      run:
+        working-directory: ${{env.working-directory}}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '14.21.3'
+        cache: 'npm'
+        cache-dependency-path: ${{env.working-directory}}/package-lock.json
+    - name: Install dependencies
+      run: npm i
+    - uses: cypress-io/github-action@v5.1.0
+      with:
+        install: false
+        working-directory: ${{env.working-directory}}
+        start: npm start
+        wait-on: 'http://localhost:3000/serviceklage/takk'
+        config: video=false
+        config-file: cypress.config.ts
