@@ -1,7 +1,7 @@
 on: workflow_call
 
 jobs:
-  test-frontend:
+  cypress:
     name: Cypress
     runs-on: ubuntu-latest
     env: 
