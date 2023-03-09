@@ -46,7 +46,7 @@ describe('Kort gjennomgang', () => {
       });
 
     cy.fixture('klassifiser/neiTilAlt.json').then((body) => {
-      cy.wait('@klassifiser', { timeout: 100000 }).then((interception) => {
+      cy.wait('@klassifiser').then((interception) => {
         const requestBody = interception.request.body;
         expect(requestBody).to.deep.equal(body);
       });
