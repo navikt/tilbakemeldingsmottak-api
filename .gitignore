@@ -33,5 +33,4 @@ web/src/main/web_src/npm-debug.log
 node_modules/
 web/src/main/resources/public
 
-package-lock.json
 .DS_Store
