@@ -13,6 +13,10 @@ on:
       - '.github/workflows/main.yml'
 
 jobs:
+  test-frontend:
+    name: Test frontend
+    uses: ./.github/workflows/cypress.yml
+
   bygg-app-preprod-pipeline:
     name: Bygg app/image, push til github
     runs-on: ubuntu-latest
@@ -69,7 +73,7 @@ jobs:
 
   deploy-preprod-pipeline:
     name: Deploy to preprod-pipeline
-    needs: bygg-app-preprod-pipeline
+    needs: [test-frontend, bygg-app-preprod-pipeline]
     if: github.ref == 'refs/heads/preprod-pipeline'
     runs-on: ubuntu-latest
     steps:

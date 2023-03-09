@@ -75,7 +75,7 @@ jobs:
           RESOURCE: .nais/nais.yml
           VARS: .nais/preprod-config.json
           VAR: image=${{env.docker_image}}
-          DRY_RUN: true
+          DRY_RUN: false
   deploy-prod:
     needs: [test-frontend, build-and-push]
     if: github.event.inputs.environment == 'prod'
@@ -89,6 +89,6 @@ jobs:
           RESOURCE: .nais/nais.yml
           VAR: image=${{env.docker_image}}
           VARS: .nais/p-config.json
-          DRY_RUN: true
+          DRY_RUN: false
 
 

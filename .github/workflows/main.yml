@@ -18,6 +18,10 @@ on:
       - '.nais/preprod-fss/*'
 
 jobs:
+  test-frontend:
+    name: Test frontend
+    uses: ./.github/workflows/cypress.yml
+
   bygg-app-main:
     name: Bygg app/image, push til github
     runs-on: ubuntu-latest
@@ -74,7 +78,7 @@ jobs:
 
   deploy-main:
     name: Deploy to main
-    needs: bygg-app-main
+    needs: [test-frontend, bygg-app-main]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
