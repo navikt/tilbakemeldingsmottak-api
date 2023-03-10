@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
+import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
@@ -15,10 +16,12 @@ import no.nav.tilbakemeldingsmottak.serviceklage.HentDokumentResponse;
 import no.nav.tilbakemeldingsmottak.serviceklage.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
@@ -27,7 +30,7 @@ import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertIkkeFerdigsti
 import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertHarJournalpost;
 
 @Slf4j
-@Protected
+@Unprotected
 @RestController
 @RequestMapping("/rest/taskserviceklage")
 @RequiredArgsConstructor
@@ -90,7 +93,11 @@ public class TaskProcessingRestController {
     @Transactional
     @GetMapping(value = "/hentdokument/{oppgaveId}")
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId)  {
+    public ResponseEntity<HentDokumentResponse> hentDokument(@RequestHeader HttpHeaders headers, @PathVariable String oppgaveId)  {
+        System.out.println("Inne i hentDokument");
+        headers.forEach((key, value) -> {
+            System.out.println(String.format("Header '%s' = %s", key, value));
+        });
         HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
         assertIkkeFerdigstilt(hentOppgaveResponseTo);
         assertHarJournalpost(hentOppgaveResponseTo);

@@ -39,17 +39,21 @@ const webpackConfig = {
   },
   stats: "minimal",
   devServer: {
+    host: "0.0.0.0",
     stats: statsOutputSettings,
     contentBase: path.join(__dirname, "public"),
     historyApiFallback: true,
     hot: true,
-    proxy: {
-      "/rest/serviceklage": {
-        target: "http://localhost:8080",
-        secure: false,
-        changeOrigin: true
-      }
-    }
+    // proxy: {
+    //   "/rest/taskserviceklage": {
+    //     target: "'http://localhost:9069",
+    //     secure: false,
+    //     changeOrigin: true
+    //   }
+    // }
+  },
+  watchOptions: {
+      poll: 1000,
   },
   plugins: [
     new webpack.DefinePlugin({

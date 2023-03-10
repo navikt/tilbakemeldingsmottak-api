@@ -2,8 +2,9 @@ const isProdBuild = process.env.NODE_ENV === 'production';
 
 const config = {
 	services: {
-		serviceklageBackend: '/rest/taskserviceklage'
-	},
+		// serviceklageBackend: 'http://localhost:9069/rest/taskserviceklage',
+        serviceklageBackend: 'rest/taskserviceklage',
+    },
 	debug: true
 };
 

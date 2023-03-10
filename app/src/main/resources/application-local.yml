@@ -55,16 +55,16 @@ no.nav.security:
             client-secret: password
           grant-type: client_credentials
           scope: openid
-          token-endpoint-url: http://localhost:9068/reststs/token
+          token-endpoint-url: http://localhost:6969/reststs/token
     issuer:
       azuread:
         accepted-audience: aud-localhost
         cookie-name: azuread-idtoken
-        discovery-url: http://localhost:9068/azuread/.well-known/openid-configuration
+        discovery-url: http://localhost:6969/azuread/.well-known/openid-configuration
       isso:
         accepted-audience: aud-localhost
         cookie-name: isso-idtoken
-        discovery-url: http://localhost:9068/isso/.well-known/openid-configuration
+        discovery-url: http://localhost:6969/isso/.well-known/openid-configuration
 
 norg2:
   api:

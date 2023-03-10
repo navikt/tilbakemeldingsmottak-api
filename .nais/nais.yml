@@ -53,6 +53,10 @@ spec:
     application:
       enabled: true
       tenant: {{ TENANT }}
+      allowAllUsers: true
+    sidecar:
+      enabled: true
+      autoLogin: true
   ingresses:
   {{#each INGRESS as |url|}}
      - {{url}}
