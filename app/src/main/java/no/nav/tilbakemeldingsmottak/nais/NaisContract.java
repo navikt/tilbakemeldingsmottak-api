@@ -7,10 +7,12 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.nais.selftest.AbstractDependencyCheck;
-import no.nav.tilbakemeldingsmottak.nais.selftest.DependencyCheckResult;
-import no.nav.tilbakemeldingsmottak.nais.selftest.Importance;
-import no.nav.tilbakemeldingsmottak.nais.selftest.Result;
-import no.nav.tilbakemeldingsmottak.nais.selftest.SelftestResult;
+import no.nav.tilbakemeldingsmottak.model.SelftestResult;
+import no.nav.tilbakemeldingsmottak.model.SelfCheckResult;
+import no.nav.tilbakemeldingsmottak.model.DependencyCheckResult;
+import no.nav.tilbakemeldingsmottak.model.DependencyCheckResult.ImportanceEnum;
+
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -89,26 +91,26 @@ public class NaisContract {
 				.build();
 	}
 
-	private boolean isAnyVitalDependencyUnhealthy(List<Result> results) {
-		return results.stream().anyMatch((result) -> result.equals(Result.ERROR));
+	private boolean isAnyVitalDependencyUnhealthy(List<SelfCheckResult> results) {
+		return results.stream().anyMatch((result) -> result.equals(SelfCheckResult.ERROR));
 	}
 
 
-	private Result getOverallSelftestResult(List<DependencyCheckResult> results) {
-		if (results.stream().anyMatch((result) -> result.getResult().equals(Result.ERROR))) {
-			return Result.ERROR;
-		} else if (results.stream().anyMatch((result) -> result.getResult().equals(Result.WARNING))) {
-			return Result.WARNING;
+	private SelfCheckResult getOverallSelftestResult(List<DependencyCheckResult> results) {
+		if (results.stream().anyMatch((result) -> result.getResult().equals(SelfCheckResult.ERROR))) {
+			return SelfCheckResult.ERROR;
+		} else if (results.stream().anyMatch((result) -> result.getResult().equals(SelfCheckResult.WARNING))) {
+			return SelfCheckResult.WARNING;
 		}
 
-		return Result.OK;
+		return SelfCheckResult.OK;
 	}
 
 
 	private void checkCriticalDependencies(List<DependencyCheckResult> results) {
 
 		Flowable.fromIterable(dependencyCheckList)
-				.filter(dependency -> dependency.getImportance().equals(Importance.CRITICAL))
+				.filter(dependency -> dependency.getImportance().equals(ImportanceEnum.CRITICAL))
 				.parallel()
 				.runOn(Schedulers.io())
 				.map(payload -> payload.check().get())

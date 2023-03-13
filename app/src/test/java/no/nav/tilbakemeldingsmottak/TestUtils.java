@@ -19,8 +19,7 @@ import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJsonJournalpost;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
-import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
-import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.Tidsrom;
+import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest.FeiltypeEnum;
 import no.nav.tilbakemeldingsmottak.model.SendRosRequest;
@@ -35,6 +34,8 @@ import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvE
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.GjelderSosialhjelpEnum;
 import no.nav.tilbakemeldingsmottak.model.PaaVegneAvBedrift;
 import no.nav.tilbakemeldingsmottak.model.PaaVegneAvPerson;
+import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest.TidsromEnum;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.util.StreamUtils;
@@ -75,9 +76,9 @@ public class TestUtils {
     public static final String BESKRIVELSE_FEIL = "Det er en teknisk feil på nav.no";
     private static final Boolean ONSKER_KONTAKT = Boolean.TRUE;
 
-    public static final HvemRosesEnum HVEM_ROSES = HvemRosesEnum.KONTAKTSENTER;
+    public static final HvemRosesEnum HVEM_ROSES = HvemRosesEnum.NAV_KONTAKTSENTER;
     public static final String BESKRIVELSE_ROS = "Saksbehandleren var snill";
-    public static final HvemRosesEnum HVEM_ROSES_KONTOR = HvemRosesEnum.KONTOR;
+    public static final HvemRosesEnum HVEM_ROSES_KONTOR = HvemRosesEnum.NAV_KONTOR;
 
     public static final String NAV_ENHETSNAVN_1 = "NAV Evje og Hornnes";
     public static final String NAV_ENHETSNAVN_2 = "NAV Aremark";
@@ -210,7 +211,7 @@ public class TestUtils {
                 .fornavn(FORNAVN)
                 .etternavn(ETTERNAVN)
                 .telefonnummer(TELEFONNUMMER)
-                .tidsrom(Tidsrom.FORMIDDAG)
+                .tidsrom(TidsromEnum.FORMIDDAG)
                 .build();
     }
 

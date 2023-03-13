@@ -94,7 +94,7 @@ paths:
     post:
       tags:
         - bestilling-av-samtale-rest-controller
-      operationId: sendRos_1
+      operationId: bestillingAvSamtale
       requestBody:
         content:
           application/json:
@@ -198,72 +198,7 @@ paths:
             text/plain:
               schema:
                 type: string
-    put:
-      tags:
-        - nais-contract
-      operationId: isReady_3
-      responses:
-        "200":
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: string
-    post:
-      tags:
-        - nais-contract
-      operationId: isReady_2
-      responses:
-        "200":
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: string
-    delete:
-      tags:
-        - nais-contract
-      operationId: isReady_5
-      responses:
-        "200":
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: string
-    options:
-      tags:
-        - nais-contract
-      operationId: isReady_6
-      responses:
-        "200":
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: string
-    head:
-      tags:
-        - nais-contract
-      operationId: isReady_1
-      responses:
-        "200":
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: string
-    patch:
-      tags:
-        - nais-contract
-      operationId: isReady_4
-      responses:
-        "200":
-          description: OK
-          content:
-            text/plain:
-              schema:
-                type: string
+
 components:
   schemas:
     KlassifiserServiceklageRequest:
@@ -349,6 +284,10 @@ components:
         paaVegneAv:
           type: string
           enum:
+            - Bruker selv som privatperson
+            - På vegne av en annen privatperson
+            - På vegne av virksomhet
+          x-enum-varnames:
             - PRIVATPERSON
             - ANNEN_PERSON
             - BEDRIFT
@@ -365,6 +304,12 @@ components:
           items:
             type: string
             enum:
+              - Telefon
+              - Lokalt NAV-kontor
+              - NAVs digitale tjenester
+              - Brev
+              - Annet
+            x-enum-varnames:
               - TELEFON
               - LOKALT_NAV_KONTOR
               - NAV_DIGITALE_TJENESTER
@@ -375,9 +320,13 @@ components:
         gjelderSosialhjelp:
           type: string
           enum:
-            - JA
-            - NEI
-            - VET_IKKE
+            - Ja
+            - Nei
+            - Vet ikke
+          x-enum-varnames:
+              - JA
+              - NEI
+              - VET_IKKE
         klagetekst:
           type: string
         oenskerAaKontaktes:
@@ -413,6 +362,10 @@ components:
         hvemRoses:
           type: string
           enum:
+            - NAV Kontaktsenter
+            - NAVs digitale tjenester
+            - NAV-kontor
+          x-enum-varnames:
             - NAV_KONTAKTSENTER
             - NAV_DIGITALE_TJENESTER
             - NAV_KONTOR
@@ -435,6 +388,10 @@ components:
         feiltype:
           type: string
           enum:
+            - Teknisk feil
+            - Feil informasjon
+            - Feil på siden ved bruk av hjelpemiddelteknologi
+          x-enum-varnames:
             - TEKNISK_FEIL
             - FEIL_INFO
             - UNIVERSELL_UTFORMING
@@ -457,9 +414,13 @@ components:
         tidsrom:
           type: string
           enum:
-            - FORMIDDAG
-            - ETTERMIDDAG
-            - BEGGE
+            - 8.00-10.00
+            - 13.30-15.30
+            - 8.00-10.00 og 13.30-15.30
+          x-enum-varnames:
+              - FORMIDDAG
+              - ETTERMIDDAG
+              - BEGGE
     BestillSamtaleResponse:
       type: object
       properties:
@@ -560,12 +521,7 @@ components:
         endpoint:
           type: string
         result:
-          type: string
-          enum:
-            - UNPINGABLE
-            - OK
-            - WARNING
-            - ERROR
+          $ref: '#/components/schemas/SelfCheckResult'
         address:
           type: string
         errorMessage:
@@ -592,13 +548,15 @@ components:
         version:
           type: string
         result:
-          type: string
-          enum:
-            - UNPINGABLE
-            - OK
-            - WARNING
-            - ERROR
+          $ref: '#/components/schemas/SelfCheckResult'
         dependencyCheckResults:
           type: array
           items:
             $ref: '#/components/schemas/DependencyCheckResult'
+    SelfCheckResult:
+      type: string
+      enum:
+        - UNPINGABLE
+        - OK
+        - WARNING
+        - ERROR

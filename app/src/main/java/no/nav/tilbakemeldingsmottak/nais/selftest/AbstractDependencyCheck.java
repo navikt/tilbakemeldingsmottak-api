@@ -4,12 +4,16 @@ import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.timelimiter.TimeLimiter;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
+import no.nav.tilbakemeldingsmottak.model.DependencyCheckResult;
+import no.nav.tilbakemeldingsmottak.model.DependencyCheckResult.TypeEnum;
+import no.nav.tilbakemeldingsmottak.model.DependencyCheckResult.ImportanceEnum;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.vavr.control.Try;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.tilbakemeldingsmottak.model.SelfCheckResult;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -29,8 +33,8 @@ import java.util.function.Supplier;
 @Getter
 public abstract class AbstractDependencyCheck {
 
-	protected final DependencyType type;
-	protected final Importance importance;
+	protected final TypeEnum type;
+	protected final ImportanceEnum importance;
 	protected String name;
 	protected String address;
 	private final CircuitBreakerRegistry circuitBreakerRegistry;
@@ -43,7 +47,7 @@ public abstract class AbstractDependencyCheck {
 	private AtomicInteger dependency_status = new AtomicInteger();
 	private Gauge gauge;
 
-	public AbstractDependencyCheck(DependencyType type, String name, String address, Importance importance, MeterRegistry registry) {
+	public AbstractDependencyCheck(TypeEnum type, String name, String address, ImportanceEnum importance, MeterRegistry registry) {
 		this.type = type;
 		this.name = name;
 		this.address = address;
@@ -75,9 +79,8 @@ public abstract class AbstractDependencyCheck {
 						.address(getAddress())
 						.type(getType())
 						.importance(getImportance())
-						.result(getImportance().equals(Importance.CRITICAL) ? Result.ERROR : Result.WARNING)
+						.result(getImportance().equals(ImportanceEnum.CRITICAL) ? SelfCheckResult.ERROR : SelfCheckResult.WARNING)
 						.errorMessage("Call to dependency=" + getName() + " timed out or circuitbreaker tripped. ErrorMessage=" + getErrorMessageFromThrowable(throwable))
-						.throwable(throwable)
 						.build()
 				);
 	}
@@ -94,7 +97,7 @@ public abstract class AbstractDependencyCheck {
 			doCheck();
 			Instant end = Instant.now();
 			Long responseTime = Duration.between(start, end).toMillis();
-			return builder.result(Result.OK).responseTime(String.valueOf(responseTime) + "ms").build();
+			return builder.result(SelfCheckResult.OK).responseTime(String.valueOf(responseTime) + "ms").build();
 		};
 	}
 

@@ -32,7 +32,7 @@ class SendRosValidatorTest {
     @Test
     void shouldThrowExceptionIfKontorNotSet() {
         sendRosRequest = createSendRosRequest();
-        sendRosRequest.setHvemRoses(SendRosRequest.HvemRosesEnum.KONTOR);
+        sendRosRequest.setHvemRoses(SendRosRequest.HvemRosesEnum.NAV_KONTOR);
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> sendRosValidator.validateRequest(sendRosRequest));
         assertTrue(thrown.getMessage().contains("navKontor er påkrevd dersom hvemRoses=NAV_KONTOR"));

@@ -37,7 +37,7 @@ public class RosService {
         HtmlContent content = new HtmlContent();
 
         content.addParagraph("Hvem roses", request.getHvemRoses().getValue());
-        if(HvemRosesEnum.KONTOR.equals(request.getHvemRoses())) {
+        if(HvemRosesEnum.NAV_KONTOR.equals(request.getHvemRoses())) {
             content.addParagraph("NAV-kontor", request.getNavKontor());
         }
         content.addParagraph("Melding", request.getMelding());

@@ -10,7 +10,7 @@ public class SendRosValidator extends RequestValidator {
 
     public void validateRequest(SendRosRequest request) {
         isNotNull(request.getHvemRoses(), "hvemRoses");
-        if(HvemRosesEnum.KONTOR.equals(request.getHvemRoses())) {
+        if(HvemRosesEnum.NAV_KONTOR.equals(request.getHvemRoses())) {
             hasText(request.getNavKontor(), "navKontor", " dersom hvemRoses=NAV_KONTOR");
         }
         hasText(request.getMelding(), "melding");

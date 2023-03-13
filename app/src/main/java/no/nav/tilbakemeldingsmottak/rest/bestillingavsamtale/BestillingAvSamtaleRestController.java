@@ -7,10 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
-import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
-import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleResponse;
+import no.nav.tilbakemeldingsmottak.model.BestillSamtaleResponse;
+import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.service.BestillingAvSamtaleService;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.validation.BestillSamtaleValidator;
+import no.nav.tilbakemeldingsmottak.api.BestillingAvSamtaleRestControllerApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,7 @@ import javax.transaction.Transactional;
 @Protected
 @RestController
 @CrossOrigin(maxAge = 3600)
-@RequestMapping("/rest/bestilling-av-samtale")
-public class BestillingAvSamtaleRestController {
+public class BestillingAvSamtaleRestController implements BestillingAvSamtaleRestControllerApi {
 
     private final BestillingAvSamtaleService bestillingAvSamtaleService;
     private final BestillSamtaleValidator bestillSamtaleValidator;
@@ -36,9 +36,9 @@ public class BestillingAvSamtaleRestController {
     }
 
     @Transactional
-    @PostMapping
+    @Override
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "sendRos"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<BestillSamtaleResponse> sendRos(@RequestBody BestillSamtaleRequest request) throws SendEmailException {
+    public ResponseEntity<BestillSamtaleResponse> bestillingAvSamtale(@RequestBody BestillSamtaleRequest request) throws SendEmailException {
             bestillSamtaleValidator.validateRequest(request);
             bestillingAvSamtaleService.bestillSamtale(request);
             return ResponseEntity

@@ -1,17 +1,17 @@
 package no.nav.tilbakemeldingsmottak.nais.checks;
 
 import io.micrometer.core.instrument.MeterRegistry;
+import no.nav.tilbakemeldingsmottak.model.DependencyCheckResult.ImportanceEnum;
+import no.nav.tilbakemeldingsmottak.model.DependencyCheckResult.TypeEnum;
 import no.nav.tilbakemeldingsmottak.nais.selftest.AbstractDependencyCheck;
 import no.nav.tilbakemeldingsmottak.nais.selftest.ApplicationNotReadyException;
-import no.nav.tilbakemeldingsmottak.nais.selftest.DependencyType;
-import no.nav.tilbakemeldingsmottak.nais.selftest.Importance;
 import org.springframework.stereotype.Component;
 @Component
 public class ExampleCheck extends AbstractDependencyCheck {
 
 
     public ExampleCheck(MeterRegistry registry) {
-        super(DependencyType.REST, "exampleConsumer", "exampleEndpoint", Importance.WARNING, registry);
+        super(TypeEnum.REST, "exampleConsumer", "exampleEndpoint", ImportanceEnum.WARNING, registry);
     }
 
     @Override
