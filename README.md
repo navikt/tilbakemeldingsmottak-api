@@ -17,14 +17,6 @@ Hvordan bygge, teste og kjøre koden
 * applikasjonen bygger med mvn clean install
 * avhengigheter til [Internt repo](https://repo.adeo.no)
 
-## Kjøring lokalt 
-### For kjøring av applikasjonen med npm
-* Bruk node versjon 10.14.2
-* cd web\src\main\web_src
-* npm install --save --legacy-peer-deps
-* npm start
-* Kan gå til [http://localhost:3000/serviceklage/klassifiser](http://localhost:3000/serviceklage/klassifiser)
-
 ## Bygg og deploy til akseptansetestmiljø
 * Applikasjonen er PT satt opp for bygg mot Q1
 * merge din branch inn i [preprod-pipeline](https://github.com/navikt/tilbakemeldingsmottak-api/tree/preprod-pipeline)

@@ -229,10 +229,6 @@
             <artifactId>pdfutility</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>no.nav.tilbakemeldingsmottak</groupId>
-            <artifactId>web</artifactId>
-        </dependency>
 
         <!--Selftest metrics-->
         <dependency>
