@@ -378,6 +378,11 @@ class ServiceklageIT extends ApplicationTest {
         TestTransaction.start();
 
         HentSkjemaResponse hentSkjemaResponse = response.getBody();
+        System.out.println("???" + hentSkjemaResponse.getDefaultAnswers().getAnswers().get(ServiceklageConstants.INNSENDER));
+        System.out.println("???2" + INNSENDER);
+        for (String key: hentSkjemaResponse.getDefaultAnswers().getAnswers().keySet()) {
+            System.out.println(key + ": " + hentSkjemaResponse.getDefaultAnswers().getAnswers().get(key));
+        }
         assertNotNull(hentSkjemaResponse);
         assertEquals(hentSkjemaResponse.getDefaultAnswers().getAnswers().get(ServiceklageConstants.FREMMET_DATO), fremmetDato);
         assertEquals(hentSkjemaResponse.getDefaultAnswers().getAnswers().get(ServiceklageConstants.INNSENDER), INNSENDER);

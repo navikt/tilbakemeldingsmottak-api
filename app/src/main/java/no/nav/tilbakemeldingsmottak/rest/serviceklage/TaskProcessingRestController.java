@@ -18,8 +18,8 @@ import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import no.nav.tilbakemeldingsmottak.api.RestApi;
 import javax.transaction.Transactional;
+import no.nav.tilbakemeldingsmottak.api.TaskProcessingRestControllerApi;
 
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
@@ -29,9 +29,8 @@ import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertHarJournalpos
 @Slf4j
 @Protected
 @RestController
-@RequestMapping("/rest/taskserviceklage")
 @RequiredArgsConstructor
-public class TaskProcessingRestController implements RestApi {
+public class TaskProcessingRestController implements TaskProcessingRestControllerApi {
 
     private final KlassifiserServiceklageService klassifiserServiceklageService;
     private final HentSkjemaService hentSkjemaService;
@@ -43,10 +42,10 @@ public class TaskProcessingRestController implements RestApi {
     private final String NEI = "Nei";
 
     @Transactional
-    @PutMapping(value = "/klassifiser")
+    @Override
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "klassifiserServiceklage"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request,
-                                                                                   @RequestParam String oppgaveId)  {
+    public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestParam String oppgaveId,
+                                                                                   @RequestBody KlassifiserServiceklageRequest request)  {
         log.info("Mottatt kall om å klassifisere serviceklage med oppgaveId={}", oppgaveId);
 
         if (NEI.equals(request.getFULGTBRUKERVEILEDNINGGOSYS()) || NEI.equals(request.getKOMMUNALBEHANDLING())) {
@@ -74,7 +73,6 @@ public class TaskProcessingRestController implements RestApi {
     }
 
     @Transactional
-    @GetMapping(value = "/hentskjema/{oppgaveId}")
     @Override
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentSkjema"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<HentSkjemaResponse> hentSkjema(@PathVariable String oppgaveId) {
@@ -89,7 +87,6 @@ public class TaskProcessingRestController implements RestApi {
     }
 
     @Transactional
-    @GetMapping(value = "/hentdokument/{oppgaveId}")
     @Override
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId)  {

@@ -146,6 +146,7 @@
                                 <interfaceOnly>true</interfaceOnly>
                                 <swaggerAnnotations>true</swaggerAnnotations>
                                 <additionalModelTypeAnnotations>@lombok.Builder</additionalModelTypeAnnotations>
+                                <useTags>true</useTags>
                             </configOptions>
                         </configuration>
                     </execution>

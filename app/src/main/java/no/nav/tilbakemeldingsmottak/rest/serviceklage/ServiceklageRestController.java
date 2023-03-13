@@ -16,24 +16,22 @@ import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import no.nav.tilbakemeldingsmottak.api.RestApi;
+import no.nav.tilbakemeldingsmottak.api.ServiceklageRestControllerApi;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Slf4j
 @Protected
 @RestController
-@RequestMapping("/rest/serviceklage")
 @RequiredArgsConstructor
-public class ServiceklageRestController implements RestApi {
+public class ServiceklageRestController implements ServiceklageRestControllerApi {
 
     private final OpprettServiceklageService opprettServiceklageService;
     private final OpprettServiceklageValidator opprettServiceklageValidator;
     private final OidcUtils oidcUtils;
 
     @Transactional(dontRollbackOn = EksterntKallException.class)
-    @PostMapping
+    @Override
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "opprettServiceklage"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<OpprettServiceklageResponse>
             opprettServiceklage(@RequestBody OpprettServiceklageRequest request,

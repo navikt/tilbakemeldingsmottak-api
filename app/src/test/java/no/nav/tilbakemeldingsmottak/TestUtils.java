@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak;
 
-import static no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType.NAV_KONTAKTSENTER;
+import no.nav.tilbakemeldingsmottak.model.SendRosRequest.HvemRosesEnum;
 import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
 import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE;
 import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.ENHETSNUMMER_PAAKLAGET;
@@ -21,10 +21,9 @@ import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.Tidsrom;
-import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.Feiltype;
-import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
-import no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType;
-import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
+import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest;
+import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest.FeiltypeEnum;
+import no.nav.tilbakemeldingsmottak.model.SendRosRequest;
 import no.nav.tilbakemeldingsmottak.model.Answer;
 import no.nav.tilbakemeldingsmottak.model.DefaultAnswers;
 import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
@@ -72,13 +71,13 @@ public class TestUtils {
     public static final String KLAGETEKST = "Saksbehandleren var slem";
     public static final Boolean OENSKER_AA_KONTAKTES = Boolean.FALSE;
 
-    public static final Feiltype FEILTYPE = Feiltype.TEKNISK_FEIL;
+    public static final FeiltypeEnum FEILTYPE = FeiltypeEnum.TEKNISK_FEIL;
     public static final String BESKRIVELSE_FEIL = "Det er en teknisk feil på nav.no";
     private static final Boolean ONSKER_KONTAKT = Boolean.TRUE;
 
-    public static final HvemRosesType HVEM_ROSES = NAV_KONTAKTSENTER;
+    public static final HvemRosesEnum HVEM_ROSES = HvemRosesEnum.KONTAKTSENTER;
     public static final String BESKRIVELSE_ROS = "Saksbehandleren var snill";
-    public static final HvemRosesType HVEM_ROSES_KONTOR = HvemRosesType.NAV_KONTOR;
+    public static final HvemRosesEnum HVEM_ROSES_KONTOR = HvemRosesEnum.KONTOR;
 
     public static final String NAV_ENHETSNAVN_1 = "NAV Evje og Hornnes";
     public static final String NAV_ENHETSNAVN_2 = "NAV Aremark";

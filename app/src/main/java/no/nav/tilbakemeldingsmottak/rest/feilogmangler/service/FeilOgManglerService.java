@@ -3,7 +3,7 @@ package no.nav.tilbakemeldingsmottak.rest.feilogmangler.service;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent;
-import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
+import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +36,7 @@ public class FeilOgManglerService {
         if(request.getOnskerKontakt()) {
             content.addParagraph("Innsender ønsker å kontaktes på epost", request.getEpost());
         }
-        content.addParagraph("Hva slags feil", request.getFeiltype().text);
+        content.addParagraph("Hva slags feil", request.getFeiltype().getValue());
         content.addParagraph("Melding", request.getMelding());
 
         return content.getContentString();
