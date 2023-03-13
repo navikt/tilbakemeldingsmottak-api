@@ -25,17 +25,17 @@ import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.Feiltype;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.HvemRosesType;
 import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
-import no.nav.tilbakemeldingsmottak.serviceklage.Answer;
-import no.nav.tilbakemeldingsmottak.serviceklage.DefaultAnswers;
-import no.nav.tilbakemeldingsmottak.serviceklage.GjelderSosialhjelpType;
-import no.nav.tilbakemeldingsmottak.serviceklage.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.serviceklage.Innmelder;
-import no.nav.tilbakemeldingsmottak.serviceklage.Klagetype;
-import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvBedrift;
-import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvPerson;
-import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvType;
+import no.nav.tilbakemeldingsmottak.model.Answer;
+import no.nav.tilbakemeldingsmottak.model.DefaultAnswers;
+import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.model.Innmelder;
+import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.GjelderSosialhjelpEnum;
+import no.nav.tilbakemeldingsmottak.model.PaaVegneAvBedrift;
+import no.nav.tilbakemeldingsmottak.model.PaaVegneAvPerson;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.util.StreamUtils;
@@ -67,8 +67,8 @@ public class TestUtils {
     public static final String NAVN_BEDRIFT= "Bedrift AS";
     public static final String ORGANISASJONSNUMMER= "123456789";
 
-    public static final List<Klagetype> KLAGETYPER = Collections.singletonList(Klagetype.NAV_DIGITALE_TJENESTER);
-    public static final List<Klagetype> KLAGETYPER_NAV_KONTOR = Collections.singletonList(Klagetype.LOKALT_NAV_KONTOR);
+    public static final List<KlagetyperEnum> KLAGETYPER = Collections.singletonList(KlagetyperEnum.NAV_DIGITALE_TJENESTER);
+    public static final List<KlagetyperEnum> KLAGETYPER_NAV_KONTOR = Collections.singletonList(KlagetyperEnum.LOKALT_NAV_KONTOR);
     public static final String KLAGETEKST = "Saksbehandleren var slem";
     public static final Boolean OENSKER_AA_KONTAKTES = Boolean.FALSE;
 
@@ -131,7 +131,7 @@ public class TestUtils {
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatperson() {
         return OpprettServiceklageRequest.builder()
-                .paaVegneAv(PaaVegneAvType.PRIVATPERSON)
+                .paaVegneAv(PaaVegneAvEnum.PRIVATPERSON)
                 .innmelder(Innmelder.builder()
                         .navn(NAVN_INNMELDER)
                         .telefonnummer(TELEFONNUMMER)
@@ -145,7 +145,7 @@ public class TestUtils {
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPaaVegneAvPerson() {
         return OpprettServiceklageRequest.builder()
-                .paaVegneAv(PaaVegneAvType.ANNEN_PERSON)
+                .paaVegneAv(PaaVegneAvEnum.ANNEN_PERSON)
                 .innmelder(Innmelder.builder()
                         .navn(NAVN_INNMELDER)
                         .telefonnummer(TELEFONNUMMER)
@@ -165,7 +165,7 @@ public class TestUtils {
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPaaVegneAvBedrift() {
         return OpprettServiceklageRequest.builder()
-                .paaVegneAv(PaaVegneAvType.BEDRIFT)
+                .paaVegneAv(PaaVegneAvEnum.BEDRIFT)
                 .innmelder(Innmelder.builder()
                         .navn(NAVN_INNMELDER)
                         .telefonnummer(TELEFONNUMMER)
@@ -184,14 +184,14 @@ public class TestUtils {
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatpersonLokaltKontor() {
         return OpprettServiceklageRequest.builder()
-                .paaVegneAv(PaaVegneAvType.PRIVATPERSON)
+                .paaVegneAv(PaaVegneAvEnum.PRIVATPERSON)
                 .innmelder(Innmelder.builder()
                         .navn(NAVN_INNMELDER)
                         .telefonnummer(TELEFONNUMMER)
                         .personnummer(PERSONNUMMER)
                         .build())
                 .klagetyper(KLAGETYPER_NAV_KONTOR)
-                .gjelderSosialhjelp(GjelderSosialhjelpType.JA)
+                .gjelderSosialhjelp(GjelderSosialhjelpEnum.JA)
                 .klagetekst(KLAGETEKST)
                 .oenskerAaKontaktes(OENSKER_AA_KONTAKTES)
                 .build();
@@ -232,61 +232,61 @@ public class TestUtils {
 
     public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequest() {
         return KlassifiserServiceklageRequest.builder()
-                .behandlesSomServiceklage(BEHANDLES_SOM_SERVICEKLAGE)
-                .fremmetDato(FREMMET_DATO)
-                .innsender(INNSENDER)
-                .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
-                .paaklagetEnhetErBehandlende(PAAKLAGET_ENHET_ER_BEHANDLENDE)
-                .enhetsnummerPaaklaget(NAV_KONTOR_1)
-                .enhetsnummerBehandlende(NAV_KONTOR_2)
-                .gjelder(GJELDER)
-                .beskrivelse(BESKRIVELSE)
-                .ytelse(YTELSE)
-                .relatert(RELATERT)
-                .tema(TEMA)
-                .vente(VENTE)
-                .utfall(UTFALL)
-                .aarsak(AARSAK)
-                .tiltak(TILTAK)
-                .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)
-                .svarIkkeNoedvendig(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
-                .kvittering(KVITTERING)
+                .BEHANDLES_SOM_SERVICEKLAGE(BEHANDLES_SOM_SERVICEKLAGE)
+                .FREMMET_DATO(FREMMET_DATO)
+                .INNSENDER(INNSENDER)
+                .KANAL(KANAL_SERVICEKLAGESKJEMA_ANSWER)
+                .PAAKLAGET_ENHET_ER_BEHANDLENDE(PAAKLAGET_ENHET_ER_BEHANDLENDE)
+                .ENHETSNUMMER_PAAKLAGET(NAV_KONTOR_1)
+                .ENHETSNUMMER_BEHANDLENDE(NAV_KONTOR_2)
+                .GJELDER(GJELDER)
+                .BESKRIVELSE(BESKRIVELSE)
+                .YTELSE(YTELSE)
+                .RELATERT(RELATERT)
+                .TEMA(TEMA)
+                .VENTE(VENTE)
+                .UTFALL(UTFALL)
+                .AARSAK(AARSAK)
+                .TILTAK(TILTAK)
+                .SVARMETODE(SVAR_IKKE_NOEDVENDIG_ANSWER)
+                .SVAR_IKKE_NOEDVENDIG(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
+                .KVITTERING(KVITTERING)
                 .build();
     }
 
     public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequestIkkeServiceklage() {
         return KlassifiserServiceklageRequest.builder()
-                .behandlesSomServiceklage(BEHANDLES_IKKE_SOM_SERVICEKLAGE)
-                .fulgtBrukerveiledningGosys(FULGT_BRUKERVEILEDNING_GOSYS)
-                .innsender(INNSENDER)
-                .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
-                .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)
-                .svarIkkeNoedvendig(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
-                .kvittering(KVITTERING)
+                .BEHANDLES_SOM_SERVICEKLAGE(BEHANDLES_IKKE_SOM_SERVICEKLAGE)
+                .FULGT_BRUKERVEILEDNING_GOSYS(FULGT_BRUKERVEILEDNING_GOSYS)
+                .INNSENDER(INNSENDER)
+                .KANAL(KANAL_SERVICEKLAGESKJEMA_ANSWER)
+                .SVARMETODE(SVAR_IKKE_NOEDVENDIG_ANSWER)
+                .SVAR_IKKE_NOEDVENDIG(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
+                .KVITTERING(KVITTERING)
                 .build();
     }
 
     public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequestKommunalKlage() {
         return KlassifiserServiceklageRequest.builder()
-                .behandlesSomServiceklage(KOMMUNAL_KLAGE)
-                .kommunalBehandling(KOMMUNAL_BEHANDLING)
-                .innsender(INNSENDER)
-                .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
-                .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)
-                .svarIkkeNoedvendig(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
-                .kvittering(KVITTERING)
+                .BEHANDLES_SOM_SERVICEKLAGE(KOMMUNAL_KLAGE)
+                .KOMMUNAL_BEHANDLING(KOMMUNAL_BEHANDLING)
+                .INNSENDER(INNSENDER)
+                .KANAL(KANAL_SERVICEKLAGESKJEMA_ANSWER)
+                .SVARMETODE(SVAR_IKKE_NOEDVENDIG_ANSWER)
+                .SVAR_IKKE_NOEDVENDIG(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
+                .KVITTERING(KVITTERING)
                 .build();
     }
 
     public static KlassifiserServiceklageRequest createKlassifiserServiceklageRequestForvaltningsklage() {
         return KlassifiserServiceklageRequest.builder()
-                .behandlesSomServiceklage(FORVALTNINGSKLAGE)
-                .fulgtBrukerveiledningGosys(FULGT_BRUKERVEILEDNING_GOSYS)
-                .innsender(INNSENDER)
-                .kanal(KANAL_SERVICEKLAGESKJEMA_ANSWER)
-                .svarmetode(SVAR_IKKE_NOEDVENDIG_ANSWER)
-                .svarIkkeNoedvendig(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
-                .kvittering(KVITTERING)
+                .BEHANDLES_SOM_SERVICEKLAGE(FORVALTNINGSKLAGE)
+                .FULGT_BRUKERVEILEDNING_GOSYS(FULGT_BRUKERVEILEDNING_GOSYS)
+                .INNSENDER(INNSENDER)
+                .KANAL(KANAL_SERVICEKLAGESKJEMA_ANSWER)
+                .SVARMETODE(SVAR_IKKE_NOEDVENDIG_ANSWER)
+                .SVAR_IKKE_NOEDVENDIG(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
+                .KVITTERING(KVITTERING)
                 .build();
     }
 

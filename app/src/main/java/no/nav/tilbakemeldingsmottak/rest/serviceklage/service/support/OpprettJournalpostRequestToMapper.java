@@ -11,7 +11,7 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.domain.JournalpostType;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Sak;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Sakstype;
-import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -6,8 +6,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.exceptions.PdfException;
 import no.nav.tilbakemeldingsmottak.generer.PdfGenerator;
-import no.nav.tilbakemeldingsmottak.serviceklage.Klagetype;
-import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -62,11 +62,11 @@ public final class PdfService {
         if (!isBlank(request.getEnhetsnummerPaaklaget())) {
             klageMap.put("Påklaget enhet", request.getEnhetsnummerPaaklaget());
         }
-        klageMap.put("Klagetype", StringUtils.join(request.getKlagetyper().stream().map(k -> k.text).collect(Collectors.toList()), ", "));
-        if (request.getKlagetyper().contains(Klagetype.LOKALT_NAV_KONTOR)) {
-            klageMap.put("Gjelder økonomisk sosialhjelp/sosiale tjenester", request.getGjelderSosialhjelp().text);
+        klageMap.put("Klagetype", StringUtils.join(request.getKlagetyper().stream().map(KlagetyperEnum::getValue).collect(Collectors.toList()), ", "));
+        if (request.getKlagetyper().contains(KlagetyperEnum.LOKALT_NAV_KONTOR)) {
+            klageMap.put("Gjelder økonomisk sosialhjelp/sosiale tjenester", request.getGjelderSosialhjelp().getValue());
         }
-        if (request.getKlagetyper().contains(Klagetype.ANNET) && !isBlank(request.getKlagetypeUtdypning())) {
+        if (request.getKlagetyper().contains(KlagetyperEnum.ANNET) && !isBlank(request.getKlagetypeUtdypning())) {
             klageMap.put("Klagetype spesifisert i fritekst", request.getKlagetypeUtdypning());
 
         }

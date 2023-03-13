@@ -12,12 +12,12 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
-import no.nav.tilbakemeldingsmottak.serviceklage.Innmelder;
-import no.nav.tilbakemeldingsmottak.serviceklage.Klagetype;
-import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvBedrift;
-import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvPerson;
-import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvType;
+import no.nav.tilbakemeldingsmottak.model.Innmelder;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
+import no.nav.tilbakemeldingsmottak.model.PaaVegneAvBedrift;
+import no.nav.tilbakemeldingsmottak.model.PaaVegneAvPerson;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -109,7 +109,7 @@ class PdfServiceTest {
     @Test
     void happyPathSpesifisertKlagetype() throws IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
-        opprettServiceklageRequest.setKlagetyper(Collections.singletonList(Klagetype.ANNET));
+        opprettServiceklageRequest.setKlagetyper(Collections.singletonList(KlagetyperEnum.ANNET));
         opprettServiceklageRequest.setKlagetypeUtdypning("Spesifisert");
         byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest, false);
         String content = getStringFromByteArrayPdf(pdf);
@@ -162,21 +162,21 @@ class PdfServiceTest {
         assertContainsIfNotNull(content, request.getKlagetypeUtdypning());
         assertContainsIfNotNull(content, request.getEnhetsnummerPaaklaget());
         if (request.getGjelderSosialhjelp() != null) {
-            assertTrue(content.replace("\n"," ").contains("Gjelder økonomisk sosialhjelp/sosiale tjenester: " + request.getGjelderSosialhjelp().text));
+            assertTrue(content.replace("\n"," ").contains("Gjelder økonomisk sosialhjelp/sosiale tjenester: " + request.getGjelderSosialhjelp().getValue()));
         }
 
         assertInnmelder(request.getInnmelder(), content);
-        if (request.getPaaVegneAv().equals(PaaVegneAvType.ANNEN_PERSON)) {
+        if (request.getPaaVegneAv().equals(PaaVegneAvEnum.ANNEN_PERSON)) {
             assertAnnenPerson(request.getPaaVegneAvPerson(), content);
         }
-        if (request.getPaaVegneAv().equals(PaaVegneAvType.BEDRIFT)) {
+        if (request.getPaaVegneAv().equals(PaaVegneAvEnum.BEDRIFT)) {
             assertBedrift(request.getPaaVegneAvBedrift(), content);
         }
     }
 
-    private void assertKlagetyper(List<Klagetype> klagetyper, String content) {
-        for (Klagetype k : klagetyper) {
-            assertTrue(content.contains(k.text));
+    private void assertKlagetyper(List<KlagetyperEnum> klagetyper, String content) {
+        for (KlagetyperEnum k : klagetyper) {
+            assertTrue(content.contains(k.getValue()));
         }
     }
 

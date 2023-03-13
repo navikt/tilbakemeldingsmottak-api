@@ -7,11 +7,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
-import no.nav.tilbakemeldingsmottak.serviceklage.DefaultAnswers;
-import no.nav.tilbakemeldingsmottak.serviceklage.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.serviceklage.Question;
-import no.nav.tilbakemeldingsmottak.serviceklage.QuestionType;
+import no.nav.tilbakemeldingsmottak.model.DefaultAnswers;
+import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.Question;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -116,7 +115,7 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
 
     private boolean isFinalQuestion(Question question, String answered) {
         return NONE.equals(question.getNext()) ||
-                (question.getType() != QuestionType.CHECKBOX &&
+                (question.getType() != Question.TypeEnum.CHECKBOX &&
                         question.getAnswers() != null &&
                         NONE.equals(question.getAnswers().stream()
                             .filter(a -> a.getAnswer().equals(answered))

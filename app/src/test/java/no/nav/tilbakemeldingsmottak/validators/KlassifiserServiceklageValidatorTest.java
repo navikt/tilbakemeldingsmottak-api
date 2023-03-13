@@ -10,8 +10,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
-import no.nav.tilbakemeldingsmottak.serviceklage.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.KlassifiserServiceklageValidator;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +41,7 @@ class KlassifiserServiceklageValidatorTest {
     @Test
     void shouldThrowExceptionIfChoiceNotValid() {
         klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
-        klassifiserServiceklageRequest.setTema("Ugyldig valg");
+        klassifiserServiceklageRequest.setTEMA("Ugyldig valg");
 
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest, createHentSkjemaResponse()));
@@ -51,7 +51,7 @@ class KlassifiserServiceklageValidatorTest {
     @Test
     void shouldThrowExceptionIfTextIsBlank() {
         klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
-        klassifiserServiceklageRequest.setAarsak("");
+        klassifiserServiceklageRequest.setAARSAK("");
 
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest, createHentSkjemaResponse()));
@@ -61,7 +61,7 @@ class KlassifiserServiceklageValidatorTest {
     @Test
     void shouldThrowExceptionIfDateIsInvalid() {
         klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
-        klassifiserServiceklageRequest.setFremmetDato("123");
+        klassifiserServiceklageRequest.setFREMMETDATO("123");
 
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest, createHentSkjemaResponse()));
@@ -72,7 +72,7 @@ class KlassifiserServiceklageValidatorTest {
     void shouldThrowExceptionIfDefaultAnswerDoesntMatch() {
         klassifiserServiceklageRequest = createKlassifiserServiceklageRequest();
         HentSkjemaResponse hentSkjemaResponse = createHentSkjemaResponseWithDefaultAnswers();
-        klassifiserServiceklageRequest.setKanal(KANAL_MUNTLIG_ANSWER);
+        klassifiserServiceklageRequest.setKANAL(KANAL_MUNTLIG_ANSWER);
 
         Exception thrown = assertThrows(InvalidRequestException.class,
                 () -> klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest, hentSkjemaResponse));
