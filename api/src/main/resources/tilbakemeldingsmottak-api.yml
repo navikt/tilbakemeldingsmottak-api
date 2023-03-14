@@ -30,7 +30,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            'application/json':
               schema:
                 $ref: '#/components/schemas/KlassifiserServiceklageResponse'
   /rest/serviceklage:
@@ -55,7 +55,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            'application/json':
               schema:
                 $ref: '#/components/schemas/OpprettServiceklageResponse'
   /rest/ros:
@@ -74,7 +74,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            'application/json':
               schema:
                 $ref: '#/components/schemas/SendRosResponse'
   /rest/feil-og-mangler:
@@ -93,7 +93,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            'application/json':
               schema:
                 $ref: '#/components/schemas/MeldFeilOgManglerResponse'
   /rest/bestilling-av-samtale:
@@ -111,7 +111,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            'application/json':
               schema:
                 $ref: '#/components/schemas/BestillSamtaleResponse'
   /rest/taskserviceklage/hentskjema/{oppgaveId}:
@@ -130,7 +130,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            'application/json':
               schema:
                 $ref: '#/components/schemas/HentSkjemaResponse'
   /rest/taskserviceklage/hentdokument/{oppgaveId}:
@@ -149,7 +149,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            'application/json':
               schema:
                 $ref: '#/components/schemas/HentDokumentResponse'
   /rest/taskserviceklage/autentisert:
@@ -168,7 +168,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            'application/json':
               schema:
                 type: boolean
   /isAlive:
@@ -181,7 +181,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            'application/json':
               schema:
                 type: string
   /internal/selftest:
@@ -194,7 +194,7 @@ paths:
         "200":
           description: OK
           content:
-            '*/*':
+            'application/json':
               schema:
                 $ref: '#/components/schemas/SelftestResult'
   /isReady:
