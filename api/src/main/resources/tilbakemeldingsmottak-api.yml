@@ -1,6 +1,6 @@
-openapi: 3.0.1
+openapi: 3.0.3
 info:
-  title: OpenAPI definisjon
+  title: Tilbakemeldingsmottak-api
   version: v0
   description: Tilbakemeldingsmottak-api er en tjeneste som mottar serviceklager, feil, ris/ros og generelle tilbakemeldinger
     fra brukere. Det er også en tjeneste for saksbehandlere å klassifisere serviceklager.
