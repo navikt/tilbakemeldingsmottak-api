@@ -36,7 +36,7 @@ public class FeilOgManglerService {
         if(request.getOnskerKontakt()) {
             content.addParagraph("Innsender ønsker å kontaktes på epost", request.getEpost());
         }
-        content.addParagraph("Hva slags feil", request.getFeiltype().getValue());
+        content.addParagraph("Hva slags feil", request.getFeiltype().value);
         content.addParagraph("Melding", request.getMelding());
 
         return content.getContentString();

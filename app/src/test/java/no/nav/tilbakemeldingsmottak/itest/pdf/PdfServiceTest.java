@@ -162,7 +162,7 @@ class PdfServiceTest {
         assertContainsIfNotNull(content, request.getKlagetypeUtdypning());
         assertContainsIfNotNull(content, request.getEnhetsnummerPaaklaget());
         if (request.getGjelderSosialhjelp() != null) {
-            assertTrue(content.replace("\n"," ").contains("Gjelder økonomisk sosialhjelp/sosiale tjenester: " + request.getGjelderSosialhjelp().getValue()));
+            assertTrue(content.replace("\n"," ").contains("Gjelder økonomisk sosialhjelp/sosiale tjenester: " + request.getGjelderSosialhjelp().value));
         }
 
         assertInnmelder(request.getInnmelder(), content);
@@ -176,7 +176,7 @@ class PdfServiceTest {
 
     private void assertKlagetyper(List<KlagetyperEnum> klagetyper, String content) {
         for (KlagetyperEnum k : klagetyper) {
-            assertTrue(content.contains(k.getValue()));
+            assertTrue(content.contains(k.value));
         }
     }
 

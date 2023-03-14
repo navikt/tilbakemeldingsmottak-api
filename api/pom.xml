@@ -140,6 +140,7 @@
                             <generatorName>spring</generatorName>
                             <apiPackage>no.nav.tilbakemeldingsmottak.api</apiPackage>
                             <modelPackage>no.nav.tilbakemeldingsmottak.model</modelPackage>
+                            <templateDirectory>${project.basedir}/src/main/resources/custom-templates</templateDirectory>
                             <configOptions>
                                 <gradleBuildFile>false</gradleBuildFile>
                                 <exceptionHandler>false</exceptionHandler>

@@ -34,7 +34,7 @@ public class BestillingAvSamtaleService {
         content.addParagraph("Fornavn", request.getFornavn());
         content.addParagraph("Etternavn", request.getEtternavn());
         content.addParagraph("Telefonnummer", request.getTelefonnummer());
-        content.addParagraph("Tidsrom", request.getTidsrom().getValue());
+        content.addParagraph("Tidsrom", request.getTidsrom().value);
 
         return content.getContentString();
     }

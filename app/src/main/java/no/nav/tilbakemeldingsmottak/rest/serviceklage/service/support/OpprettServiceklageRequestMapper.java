@@ -24,12 +24,12 @@ public class OpprettServiceklageRequestMapper {
         return Serviceklage.builder()
                 .opprettetDato(currentDateTime)
                 .fremmetDato(currentDateTime.toLocalDate())
-                .innsender(request.getPaaVegneAv().getValue())
+                .innsender(request.getPaaVegneAv().value)
                 .klagenGjelderId(findKlagenGjelderId(request))
                 .innlogget(innlogget)
                 .klagetyper(mapKlagetype(request.getKlagetyper()))
                 .klagetypeUtdypning(request.getKlagetyper().contains(KlagetyperEnum.ANNET) ? request.getKlagetypeUtdypning() : null)
-                .gjelderSosialhjelp(request.getGjelderSosialhjelp() == null ? null : request.getGjelderSosialhjelp().getValue())
+                .gjelderSosialhjelp(request.getGjelderSosialhjelp() == null ? null : request.getGjelderSosialhjelp().value)
                 .klagetekst(request.getKlagetekst())
                 .svarmetode(mapSvarmetode(request.getOenskerAaKontaktes()))
                 .svarmetodeUtdypning(mapSvarmetodeUtdypning(request.getOenskerAaKontaktes()))
@@ -39,7 +39,7 @@ public class OpprettServiceklageRequestMapper {
     }
 
     private String mapKlagetype(List<KlagetyperEnum> klagetype) {
-        return StringUtils.join(klagetype.stream().map(KlagetyperEnum::getValue).collect(Collectors.toList()), ", ");
+        return StringUtils.join(klagetype.stream().map(x -> x.value).collect(Collectors.toList()), ", ");
     }
 
     private String mapSvarmetode(Boolean oenskerAaKontaktes) {

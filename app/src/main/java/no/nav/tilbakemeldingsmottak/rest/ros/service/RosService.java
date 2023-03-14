@@ -36,7 +36,7 @@ public class RosService {
     private String createContent(SendRosRequest request) {
         HtmlContent content = new HtmlContent();
 
-        content.addParagraph("Hvem roses", request.getHvemRoses().getValue());
+        content.addParagraph("Hvem roses", request.getHvemRoses().toString());
         if(HvemRosesEnum.NAV_KONTOR.equals(request.getHvemRoses())) {
             content.addParagraph("NAV-kontor", request.getNavKontor());
         }

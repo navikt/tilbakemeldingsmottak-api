@@ -62,9 +62,9 @@ public final class PdfService {
         if (!isBlank(request.getEnhetsnummerPaaklaget())) {
             klageMap.put("Påklaget enhet", request.getEnhetsnummerPaaklaget());
         }
-        klageMap.put("Klagetype", StringUtils.join(request.getKlagetyper().stream().map(KlagetyperEnum::getValue).collect(Collectors.toList()), ", "));
+        klageMap.put("Klagetype", StringUtils.join(request.getKlagetyper().stream().map(x -> x.value).collect(Collectors.toList()), ", "));
         if (request.getKlagetyper().contains(KlagetyperEnum.LOKALT_NAV_KONTOR)) {
-            klageMap.put("Gjelder økonomisk sosialhjelp/sosiale tjenester", request.getGjelderSosialhjelp().getValue());
+            klageMap.put("Gjelder økonomisk sosialhjelp/sosiale tjenester", request.getGjelderSosialhjelp().value);
         }
         if (request.getKlagetyper().contains(KlagetyperEnum.ANNET) && !isBlank(request.getKlagetypeUtdypning())) {
             klageMap.put("Klagetype spesifisert i fritekst", request.getKlagetypeUtdypning());
