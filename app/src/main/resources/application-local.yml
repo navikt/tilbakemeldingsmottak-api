@@ -57,14 +57,14 @@ no.nav.security:
           scope: openid
           token-endpoint-url: http://localhost:9068/reststs/token
     issuer:
+      tokenx:
+        discovery-url: https://fakedings.dev-gcp.nais.io/tokenx/.well-known/openid-configuration
+        accepted-audience: aud-localhost
       azuread:
         accepted-audience: aud-localhost
         cookie-name: azuread-idtoken
-        discovery-url: http://localhost:9068/azuread/.well-known/openid-configuration
-      isso:
-        accepted-audience: aud-localhost
-        cookie-name: isso-idtoken
-        discovery-url: http://localhost:9068/isso/.well-known/openid-configuration
+        discovery-url: https://fakedings.dev-gcp.nais.io/fake/.well-known/openid-configuration
+
 
 norg2:
   api:

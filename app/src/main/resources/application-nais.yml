@@ -60,7 +60,7 @@ no.nav.security.jwt:
       accepted-audience: ${AZURE_APP_CLIENT_ID}
       cookie-name: azuread-idtoken
       discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
-    isso:
-      accepted-audience: ${LOGINSERVICE_ACCEPTED_AUDIENCE}
-      cookie-name: isso-idtoken
-      discovery-url: ${NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL}
+    tokenx:
+      discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
+      accepted_audience: ${TOKEN_X_CLIENT_ID}
+

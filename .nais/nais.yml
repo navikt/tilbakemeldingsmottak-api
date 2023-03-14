@@ -57,8 +57,8 @@ spec:
   {{#each INGRESS as |url|}}
      - {{url}}
   {{/each}}
-#  tokenx:
-#    enabled: true
+  tokenx:
+    enabled: true
 
   envFrom:
     - secret: tilbakemeldingsmottak-api-google-secret
@@ -66,12 +66,6 @@ spec:
   env:
     - name: SECURITYTOKENSERVICE_URL
       value: {{ SECURITYTOKENSERVICE_URL }}
-    - name: LOGINSERVICE_ACCEPTED_AUDIENCE
-      value: {{ LOGINSERVICE_ACCEPTED_AUDIENCE }}
-    - name: LOGINSERVICE_OIDC_CALLBACKURI
-      value: {{ LOGINSERVICE_OIDC_CALLBACKURI }}
-    - name: NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL
-      value: {{ NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL }}
     - name: SECURITY_TOKEN_SERVICE_TOKEN_URL
       value: {{ SECURITY_TOKEN_SERVICE_TOKEN_URL }}
     - name: JOURNALPOST_V1_URL
