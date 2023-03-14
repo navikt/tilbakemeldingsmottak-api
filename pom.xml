@@ -59,8 +59,6 @@
         <wiremock.version>2.27.2</wiremock.version>
         <json-smart.version>2.4.8</json-smart.version>
         <rest-assured.version>5.0.1</rest-assured.version>
-        <otj-pg-embedded.version>1.0.1</otj-pg-embedded.version>
-        <flyway.version>9.6.0</flyway.version>
 
         <!-- Maven plugins -->
         <wagon-webdav-jackrabbit.version>3.5.1</wagon-webdav-jackrabbit.version>

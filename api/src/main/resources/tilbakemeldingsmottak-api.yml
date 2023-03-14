@@ -1,12 +1,15 @@
 openapi: 3.0.1
 info:
-  title: OpenAPI definition
+  title: OpenAPI definisjon
   version: v0
+  description: Tilbakemeldingsmottak-api er en tjeneste som mottar serviceklager, feil, ris/ros og generelle tilbakemeldinger
+    fra brukere. Det er også en tjeneste for saksbehandlere å klassifisere serviceklager.
 servers:
   - url: http://localhost:9069
-    description: Generated server url
+    description: Lokal utvikling
 paths:
   /rest/taskserviceklage/klassifiser:
+    description: Saksbehandler klassifiserer serviceklage som er sendt inn.
     put:
       tags:
         - task-processing-rest-controller
@@ -32,6 +35,7 @@ paths:
                 $ref: '#/components/schemas/KlassifiserServiceklageResponse'
   /rest/serviceklage:
     post:
+      description: Bruker sender inn serviceklage. Dette er klager på servicen man har fått fra NAV.
       tags:
         - serviceklage-rest-controller
       operationId: opprettServiceklage
@@ -55,6 +59,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/OpprettServiceklageResponse'
   /rest/ros:
+    description: Bruker sender inn ros til NAV om brukeren har hatt en god opplevelse med NAV.
     post:
       tags:
         - ros-rest-controller
@@ -73,6 +78,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SendRosResponse'
   /rest/feil-og-mangler:
+    description: Bruker sender inn feil og mangler på nav.no. Tekniske feil, feil informasjon eller for lav grad universell utforming for eksempel.
     post:
       tags:
         - feil-og-mangler-rest-controller
@@ -110,6 +116,7 @@ paths:
                 $ref: '#/components/schemas/BestillSamtaleResponse'
   /rest/taskserviceklage/hentskjema/{oppgaveId}:
     get:
+      description: Hent innsendt serviceklage skjema med spørsmål og svar.
       tags:
         - task-processing-rest-controller
       operationId: hentSkjema
@@ -128,6 +135,7 @@ paths:
                 $ref: '#/components/schemas/HentSkjemaResponse'
   /rest/taskserviceklage/hentdokument/{oppgaveId}:
     get:
+      description: Hent innsendt serviceklage dokument (PDF).
       tags:
         - task-processing-rest-controller
       operationId: hentDokument
@@ -146,6 +154,7 @@ paths:
                 $ref: '#/components/schemas/HentDokumentResponse'
   /rest/taskserviceklage/autentisert:
     get:
+      description: Sjekk om saksbehandler er logget inn eller ei.
       tags:
         - authentication-check-rest-controller
       operationId: isAuthenticated
@@ -164,6 +173,7 @@ paths:
                 type: boolean
   /isAlive:
     get:
+      description: Sjekk om applikasjonen er oppe og kjører.
       tags:
         - nais-contract
       operationId: isAlive
@@ -176,6 +186,7 @@ paths:
                 type: string
   /internal/selftest:
     get:
+      description: Sjekk om applikasjonen har oppdaterte pakker etc
       tags:
         - nais-contract
       operationId: selftest
@@ -188,6 +199,7 @@ paths:
                 $ref: '#/components/schemas/SelftestResult'
   /isReady:
     get:
+      description: Sjekk om applikasjonen er klar til å ta imot trafikk.
       tags:
         - nais-contract
       operationId: isReady
