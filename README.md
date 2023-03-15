@@ -50,7 +50,8 @@ Kjente feil | Løsning
 Docker image feiler | løs feil fra loggene,  oppdatter pr
 Bygget feiler | Sjekk loggene, oppdatter pr  
 
-
+## Regenerering av serviceklage PDF 
+Dersom det har gått feil i generering av PDF av serviceklage som har blitt lagt inn i arkivet, kan denne regenereres ved å benytte testen i ReGenereringAvPdf. Dette forutsetter at det bygges opp en xslx fil med data basert på serviceklagen i databasen og bruker informasjon og datoer i fra arkivet.
 
 ## Deploy til produksjon
 Håndteres av [Github workflow](https://github.com/navikt/tilbakemeldingsmottak-api/tree/main/.github/workflows)

@@ -21,22 +21,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public final class PdfService {
 
-    public byte[] opprettServiceklagePdf(OpprettServiceklageRequest request, boolean innlogget)  {
+    public byte[] opprettServiceklagePdf(OpprettServiceklageRequest request, boolean innlogget) {
+        return opprettServiceklagePdf(request, innlogget, LocalDateTime.now());
+    }
+
+    public byte[] opprettServiceklagePdf(OpprettServiceklageRequest request, boolean innlogget, LocalDateTime fremmet) {
         try {
             return new PdfGenerator().genererPdf(
                     KANAL_SERVICEKLAGESKJEMA_ANSWER,
                     !innlogget ? "OBS! Klagen er sendt inn uinnlogget" : null,
-                    lagKlageMap(request));
+                    lagKlageMap(request, fremmet));
         } catch (Exception e) {
-            throw new PdfException("Opprett serviceklage PDF", e );
+            throw new PdfException("Opprett serviceklage PDF", e);
         }
     }
 
-    private Map<String, String> lagKlageMap(OpprettServiceklageRequest request) {
+    private Map<String, String> lagKlageMap(OpprettServiceklageRequest request, LocalDateTime fremmet) {
         Map<String, String> klageMap = new HashMap<>();
 
         klageMap.put("Kanal", KANAL_SERVICEKLAGESKJEMA_ANSWER);
-        klageMap.put("Dato fremmet", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
+        klageMap.put("Dato fremmet", fremmet.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
         if (!isBlank(request.getInnmelder().getNavn())) {
             klageMap.put("Navn til innmelder", request.getInnmelder().getNavn());
         }
