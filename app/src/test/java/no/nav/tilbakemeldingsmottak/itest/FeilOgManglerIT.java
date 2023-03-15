@@ -1,7 +1,7 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
-import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerRequest;
-import no.nav.tilbakemeldingsmottak.rest.feilogmangler.domain.MeldFeilOgManglerResponse;
+import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest;
+import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

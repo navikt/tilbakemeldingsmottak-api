@@ -3,7 +3,17 @@ package no.nav.tilbakemeldingsmottak.itest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import lombok.SneakyThrows;
-import no.nav.tilbakemeldingsmottak.serviceklage.*;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageResponse;
+import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageResponse;
+import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.model.HentDokumentResponse;
+
+import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
+import no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
@@ -58,11 +68,11 @@ class ServiceklageIT extends ApplicationTest {
         assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
         assertNotNull(serviceklage.getOpprettetDato());
         assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
-        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
+        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).value);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertNotNull(serviceklage.getFremmetDato());
         assertTrue(serviceklage.getInnlogget());
-        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.PRIVATPERSON.text);
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvEnum.PRIVATPERSON.value);
         assertEquals(serviceklage.getKanal(), KANAL_SERVICEKLAGESKJEMA_ANSWER);
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
@@ -81,11 +91,11 @@ class ServiceklageIT extends ApplicationTest {
         assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
         assertNotNull(serviceklage.getOpprettetDato());
         assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
-        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
+        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).value);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertNotNull(serviceklage.getFremmetDato());
         assertFalse(serviceklage.getInnlogget());
-        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.PRIVATPERSON.text);
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvEnum.PRIVATPERSON.value);
         assertEquals(serviceklage.getKanal(), KANAL_SERVICEKLAGESKJEMA_ANSWER);
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
@@ -104,10 +114,10 @@ class ServiceklageIT extends ApplicationTest {
         assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
         assertNotNull(serviceklage.getOpprettetDato());
         assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
-        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
+        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).value);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertNotNull(serviceklage.getFremmetDato());
-        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.ANNEN_PERSON.text);
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvEnum.ANNEN_PERSON.value);
         assertEquals(serviceklage.getKanal(), KANAL_SERVICEKLAGESKJEMA_ANSWER);
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
@@ -127,10 +137,10 @@ class ServiceklageIT extends ApplicationTest {
         assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
         assertNotNull(serviceklage.getOpprettetDato());
         assertEquals(serviceklage.getKlagenGjelderId(), ORGANISASJONSNUMMER);
-        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
+        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).value);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertNotNull(serviceklage.getFremmetDato());
-        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.BEDRIFT.text);
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvEnum.BEDRIFT.value);
         assertEquals(serviceklage.getKanal(), KANAL_SERVICEKLAGESKJEMA_ANSWER);
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
@@ -148,9 +158,9 @@ class ServiceklageIT extends ApplicationTest {
         Serviceklage serviceklage = serviceklageRepository.findAll().iterator().next();
         assertNotNull(serviceklage.getServiceklageId());
         assertNotNull(serviceklage.getOpprettetDato());
-        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.PRIVATPERSON.text);
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvEnum.PRIVATPERSON.value);
         assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
-        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
+        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).value);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertNull(serviceklage.getSvarmetode());
         assertNull(serviceklage.getSvarmetodeUtdypning());
@@ -172,10 +182,10 @@ class ServiceklageIT extends ApplicationTest {
         assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
         assertNotNull(serviceklage.getOpprettetDato());
         assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
-        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).text);
+        assertEquals(serviceklage.getKlagetyper(), KLAGETYPER.get(0).value);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertNotNull(serviceklage.getFremmetDato());
-        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.ANNEN_PERSON.text);
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvEnum.ANNEN_PERSON.value);
         assertEquals(serviceklage.getKanal(), KANAL_SERVICEKLAGESKJEMA_ANSWER);
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), INNMELDER_MANGLER_FULLMAKT_ANSWER);
@@ -184,7 +194,7 @@ class ServiceklageIT extends ApplicationTest {
     @Test
     void happyPathFlereKlagetyper() {
         OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
-        request.setKlagetyper(Arrays.asList(Klagetype.BREV, Klagetype.TELEFON));
+        request.setKlagetyper(Arrays.asList(KlagetyperEnum.BREV, KlagetyperEnum.TELEFON));
         HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(LOGINSERVICE_ISSUER, request.getInnmelder().getPersonnummer(), true));
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
 
@@ -195,10 +205,10 @@ class ServiceklageIT extends ApplicationTest {
         assertEquals(serviceklage.getJournalpostId(), JOURNALPOST_ID);
         assertNotNull(serviceklage.getOpprettetDato());
         assertEquals(serviceklage.getKlagenGjelderId(), PERSONNUMMER);
-        assertEquals(serviceklage.getKlagetyper(), Klagetype.BREV.text + ", " + Klagetype.TELEFON.text);
+        assertEquals(serviceklage.getKlagetyper(), KlagetyperEnum.BREV.value + ", " + KlagetyperEnum.TELEFON.value);
         assertEquals(serviceklage.getKlagetekst(), KLAGETEKST);
         assertNotNull(serviceklage.getFremmetDato());
-        assertEquals(serviceklage.getInnsender(), PaaVegneAvType.PRIVATPERSON.text);
+        assertEquals(serviceklage.getInnsender(), PaaVegneAvEnum.PRIVATPERSON.value);
         assertEquals(serviceklage.getKanal(), KANAL_SERVICEKLAGESKJEMA_ANSWER);
         assertEquals(serviceklage.getSvarmetode(), SVAR_IKKE_NOEDVENDIG_ANSWER);
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
@@ -252,7 +262,7 @@ class ServiceklageIT extends ApplicationTest {
         String fremmetDato = serviceklageRepository.findAll().iterator().next().getFremmetDato().toString();
 
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
-        request.setFremmetDato(fremmetDato);
+        request.setFREMMETDATO(fremmetDato);
         HttpEntity<KlassifiserServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(LOGINSERVICE_ISSUER, SAKSBEHANDLER));
         ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + OPPGAVE_ID, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
 
@@ -296,7 +306,7 @@ class ServiceklageIT extends ApplicationTest {
         String fremmetDato = opprettetServiceklage.getFremmetDato().toString();
 
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequestKommunalKlage();
-        request.setFremmetDato(fremmetDato);
+        request.setFREMMETDATO(fremmetDato);
         HttpEntity<KlassifiserServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders());
         ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + opprettServiceklageResponse.getBody().getOppgaveId(), HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
 
@@ -319,7 +329,7 @@ class ServiceklageIT extends ApplicationTest {
     @SneakyThrows
     void enServiceklageSkalOpprettesOmDenMangler() {
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
-        HttpEntity<KlassifiserServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(AZURE_ISSUER, request.getInnsender()));
+        HttpEntity<KlassifiserServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(AZURE_ISSUER, request.getINNSENDER()));
         ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + OPPGAVE_ID, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -358,7 +368,7 @@ class ServiceklageIT extends ApplicationTest {
         String fremmetDato = serviceklageRepository.findAll().iterator().next().getFremmetDato().toString();
 
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
-        request.setFremmetDato(fremmetDato);
+        request.setFREMMETDATO(fremmetDato);
         ResponseEntity<HentSkjemaResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_SKJEMA + "/" + JOURNALPOST_ID, HttpMethod.GET, new HttpEntity<>(createHeaders(LOGINSERVICE_ISSUER, SAKSBEHANDLER)), HentSkjemaResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -388,7 +398,7 @@ class ServiceklageIT extends ApplicationTest {
         String fremmetDato = serviceklage.getFremmetDato().toString();
 
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
-        request.setFremmetDato(fremmetDato);
+        request.setFREMMETDATO(fremmetDato);
         assertNotNull(opprettResponse.getBody());
         ResponseEntity<HentDokumentResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + opprettResponse.getBody().getOppgaveId(), HttpMethod.GET, new HttpEntity<>(createHeaders(LOGINSERVICE_ISSUER, SAKSBEHANDLER)), HentDokumentResponse.class);
 
@@ -408,7 +418,7 @@ class ServiceklageIT extends ApplicationTest {
         String fremmetDato = serviceklage.getFremmetDato().toString();
 
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
-        request.setFremmetDato(fremmetDato);
+        request.setFREMMETDATO(fremmetDato);
         ResponseEntity<HentDokumentResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + 99, HttpMethod.GET, new HttpEntity<>(createHeaders(LOGINSERVICE_ISSUER, SAKSBEHANDLER)), HentDokumentResponse.class);
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());

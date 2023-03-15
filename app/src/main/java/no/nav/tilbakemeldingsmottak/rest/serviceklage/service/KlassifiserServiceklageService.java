@@ -22,11 +22,10 @@ import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
-import no.nav.tilbakemeldingsmottak.serviceklage.Answer;
-import no.nav.tilbakemeldingsmottak.serviceklage.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.serviceklage.Question;
-import no.nav.tilbakemeldingsmottak.serviceklage.QuestionType;
+import no.nav.tilbakemeldingsmottak.model.Answer;
+import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.Question;
 import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
@@ -70,7 +69,7 @@ public class KlassifiserServiceklageService {
     private static final String ANNET = "Annet";
 
     public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo) {
-        if (KOMMUNAL_KLAGE.equals(request.getBehandlesSomServiceklage())) {
+        if (KOMMUNAL_KLAGE.equals(request.getBEHANDLESSOMSERVICEKLAGE())) {
             log.info("Klagen har blitt markert som en kommunal klage. Oppretter oppgave om sletting av dokument.");
             opprettSlettingOppgave(hentOppgaveResponseTo);
         }
@@ -84,7 +83,7 @@ public class KlassifiserServiceklageService {
         ferdigstillOppgave(hentOppgaveResponseTo);
         log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.getId());
 
-        if (JA.equals(request.getKvittering())) {
+        if (JA.equals(request.getKVITTERING())) {
             try {
                 sendKvittering(serviceklage, hentOppgaveResponseTo);
             } catch (Exception e) {
@@ -136,7 +135,7 @@ public class KlassifiserServiceklageService {
                 questionAnswerMap.put(question, answersMap.get(questionId));
             }
 
-            if (q.getType().equals(QuestionType.RADIO)) {
+            if (q.getType().equals(Question.TypeEnum.RADIO)) {
                 Optional<Answer> answer = q.getAnswers().stream()
                         .filter(a -> a.getAnswer().equals(answersMap.get(questionId)))
                         .findFirst();
@@ -175,26 +174,26 @@ public class KlassifiserServiceklageService {
     }
 
     private void updateServiceklage(Serviceklage serviceklage, KlassifiserServiceklageRequest request) {
-        serviceklage.setBehandlesSomServiceklage(request.getBehandlesSomServiceklage());
-        serviceklage.setBehandlesSomServiceklageUtdypning(request.getBehandlesSomServiceklageUtdypning());
-        serviceklage.setFremmetDato(request.getFremmetDato() == null ? null : LocalDate.parse(request.getFremmetDato()));
-        serviceklage.setInnsender(request.getInnsender());
-        serviceklage.setKanal(request.getKanal());
-        serviceklage.setKanalUtdypning(request.getKanalUtdypning());
-        serviceklage.setEnhetsnummerPaaklaget(extractEnhetsnummer(request.getEnhetsnummerPaaklaget()));
-        serviceklage.setEnhetsnummerBehandlende(JA.equals(request.getPaaklagetEnhetErBehandlende()) ?
-                extractEnhetsnummer(request.getEnhetsnummerPaaklaget()) :
-                extractEnhetsnummer(request.getEnhetsnummerBehandlende()));
-        serviceklage.setGjelder(request.getGjelder());
-        serviceklage.setBeskrivelse(request.getBeskrivelse());
-        serviceklage.setYtelse(request.getYtelse());
-        serviceklage.setRelatert(request.getRelatert());
-        serviceklage.setTema(request.getTema());
+        serviceklage.setBehandlesSomServiceklage(request.getBEHANDLESSOMSERVICEKLAGE());
+        serviceklage.setBehandlesSomServiceklageUtdypning(request.getBEHANDLESSOMSERVICEKLAGEUTDYPNING());
+        serviceklage.setFremmetDato(request.getFREMMETDATO() == null ? null : LocalDate.parse(request.getFREMMETDATO()));
+        serviceklage.setInnsender(request.getINNSENDER());
+        serviceklage.setKanal(request.getKANAL());
+        serviceklage.setKanalUtdypning(request.getKANALUTDYPNING());
+        serviceklage.setEnhetsnummerPaaklaget(extractEnhetsnummer(request.getENHETSNUMMERPAAKLAGET()));
+        serviceklage.setEnhetsnummerBehandlende(JA.equals(request.getPAAKLAGETENHETERBEHANDLENDE()) ?
+                extractEnhetsnummer(request.getENHETSNUMMERPAAKLAGET()) :
+                extractEnhetsnummer(request.getENHETSNUMMERBEHANDLENDE()));
+        serviceklage.setGjelder(request.getGJELDER());
+        serviceklage.setBeskrivelse(request.getBESKRIVELSE());
+        serviceklage.setYtelse(request.getYTELSE());
+        serviceklage.setRelatert(request.getRELATERT());
+        serviceklage.setTema(request.getTEMA());
         serviceklage.setTemaUtdypning(mapTemaUtdypning(request));
-        serviceklage.setUtfall(request.getUtfall());
-        serviceklage.setAarsak(request.getAarsak());
-        serviceklage.setTiltak(request.getTiltak());
-        serviceklage.setSvarmetode(request.getSvarmetode());
+        serviceklage.setUtfall(request.getUTFALL());
+        serviceklage.setAarsak(request.getAARSAK());
+        serviceklage.setTiltak(request.getTILTAK());
+        serviceklage.setSvarmetode(request.getSVARMETODE());
         serviceklage.setSvarmetodeUtdypning(mapSvarmetodeUtdypning(request));
         serviceklage.setAvsluttetDato(LocalDateTime.now());
         try {
@@ -210,27 +209,27 @@ public class KlassifiserServiceklageService {
     }
 
     private String mapTemaUtdypning(KlassifiserServiceklageRequest request) {
-        if (!isBlank(request.getVente())) {
-            return request.getVente();
-        } else if (!isBlank(request.getTilgjengelighet())) {
-            return request.getTilgjengelighet();
-        } else if (!isBlank(request.getInformasjon())) {
-            return request.getInformasjon();
-        } else if (!isBlank(request.getVeiledning())) {
-            return request.getVeiledning();
-        } else if (!isBlank(request.getTemaUtdypning())) {
-            return request.getTemaUtdypning();
+        if (!isBlank(request.getVENTE())) {
+            return request.getVENTE();
+        } else if (!isBlank(request.getTILGJENGELIGHET())) {
+            return request.getTILGJENGELIGHET();
+        } else if (!isBlank(request.getINFORMASJON())) {
+            return request.getINFORMASJON();
+        } else if (!isBlank(request.getVEILEDNING())) {
+            return request.getVEILEDNING();
+        } else if (!isBlank(request.getTEMAUTDYPNING())) {
+            return request.getTEMAUTDYPNING();
         } else {
             return null;
         }
     }
 
     private String mapSvarmetodeUtdypning(KlassifiserServiceklageRequest request) {
-        if (!isBlank(request.getSvarIkkeNoedvendig())) {
-            if (request.getSvarIkkeNoedvendig().equals(ANNET)) {
-                return request.getSvarmetodeUtdypning();
+        if (!isBlank(request.getSVARIKKENOEDVENDIG())) {
+            if (request.getSVARIKKENOEDVENDIG().equals(ANNET)) {
+                return request.getSVARMETODEUTDYPNING();
             } else {
-                return request.getSvarIkkeNoedvendig();
+                return request.getSVARIKKENOEDVENDIG();
             }
         } else{
             return null;

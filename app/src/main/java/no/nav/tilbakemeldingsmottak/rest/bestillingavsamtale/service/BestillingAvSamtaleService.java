@@ -2,7 +2,7 @@ package no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.service;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
-import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
+import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class BestillingAvSamtaleService {
         content.addParagraph("Fornavn", request.getFornavn());
         content.addParagraph("Etternavn", request.getEtternavn());
         content.addParagraph("Telefonnummer", request.getTelefonnummer());
-        content.addParagraph("Tidsrom", request.getTidsrom().text);
+        content.addParagraph("Tidsrom", request.getTidsrom().value);
 
         return content.getContentString();
     }

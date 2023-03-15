@@ -1,7 +1,7 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
-import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
-import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleResponse;
+import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest;
+import no.nav.tilbakemeldingsmottak.model.BestillSamtaleResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;

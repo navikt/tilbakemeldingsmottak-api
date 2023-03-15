@@ -8,31 +8,29 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
-import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
-import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosResponse;
+import no.nav.tilbakemeldingsmottak.model.SendRosRequest;
+import no.nav.tilbakemeldingsmottak.model.SendRosResponse;
 import no.nav.tilbakemeldingsmottak.rest.ros.service.RosService;
 import no.nav.tilbakemeldingsmottak.rest.ros.validation.SendRosValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import no.nav.tilbakemeldingsmottak.api.RosRestControllerApi;
 
 import javax.transaction.Transactional;
 
 @Slf4j
 @Protected
 @RestController
-@RequestMapping("/rest/ros")
 @RequiredArgsConstructor
-public class RosRestController {
+public class RosRestController implements RosRestControllerApi {
 
     private final RosService rosService;
     private final SendRosValidator sendRosValidator;
 
     @Transactional
-    @PostMapping
+    @Override
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "sendRos"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<SendRosResponse> sendRos(@RequestBody SendRosRequest request) throws SendEmailException {
         sendRosValidator.validateRequest(request);

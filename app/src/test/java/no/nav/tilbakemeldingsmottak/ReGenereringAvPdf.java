@@ -1,8 +1,13 @@
 package no.nav.tilbakemeldingsmottak;
 
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
-import no.nav.tilbakemeldingsmottak.serviceklage.*;
 import org.junit.jupiter.api.Test;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.GjelderSosialhjelpEnum;
+import no.nav.tilbakemeldingsmottak.model.PaaVegneAvPerson;
+import no.nav.tilbakemeldingsmottak.model.Innmelder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +25,7 @@ public class ReGenereringAvPdf {
 
     private OpprettServiceklageRequest createOpprettServiceklageRequestPrivatperson(List<String> klage) {
         return OpprettServiceklageRequest.builder()
-                .paaVegneAv(PaaVegneAvType.PRIVATPERSON)
+                .paaVegneAv(PaaVegneAvEnum.PRIVATPERSON)
                 .innmelder(Innmelder.builder()
                         .navn(klage.get(32))
                         .telefonnummer(klage.get(33))
@@ -40,35 +45,35 @@ public class ReGenereringAvPdf {
         return LocalDateTime.parse(fremmetText.substring(0, 19), formatter);
     }
 
-    private List<Klagetype> konverterTilKlageType(List<String> klageTypeStrenger) {
-        List<Klagetype> typer = new LinkedList<>();
+    private List<KlagetyperEnum> konverterTilKlageType(List<String> klageTypeStrenger) {
+        List<KlagetyperEnum> typer = new LinkedList<>();
         for (String klageStreng : klageTypeStrenger) {
             typer.add(findByText(klageStreng.trim()));
         }
         return typer;
     }
 
-    private Klagetype findByText(String text) {
-        for (Klagetype v : Klagetype.values()) {
-            if (v.text.equalsIgnoreCase(text)) {
+    private KlagetyperEnum findByText(String text) {
+        for (KlagetyperEnum v : KlagetyperEnum.values()) {
+            if (v.value.equalsIgnoreCase(text)) {
                 return v;
             }
         }
         return null;
     }
 
-    private GjelderSosialhjelpType findSosialhjelpTypeText(String text) {
-        for (GjelderSosialhjelpType t : GjelderSosialhjelpType.values()) {
-            if (t.text.equalsIgnoreCase(text)) {
+    private GjelderSosialhjelpEnum findSosialhjelpTypeText(String text) {
+        for (GjelderSosialhjelpEnum t : GjelderSosialhjelpEnum.values()) {
+            if (t.value.equalsIgnoreCase(text)) {
                 return t;
             }
         }
-        return GjelderSosialhjelpType.VET_IKKE;
+        return GjelderSosialhjelpEnum.VET_IKKE;
     }
 
     private OpprettServiceklageRequest createOpprettServiceklageRequestPaaVegneAvPerson(List<String> klage) {
         return OpprettServiceklageRequest.builder()
-                .paaVegneAv(PaaVegneAvType.ANNEN_PERSON)
+                .paaVegneAv(PaaVegneAvEnum.ANNEN_PERSON)
                 .innmelder(Innmelder.builder()
                         .navn(klage.get(32))
                         .telefonnummer(klage.get(33))

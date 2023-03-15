@@ -4,7 +4,7 @@ import no.nav.tilbakemeldingsmottak.consumer.aktoer.AktoerConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
-import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvType;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -31,12 +31,12 @@ public class OpprettOppgaveRequestToMapper {
         this.aktoerConsumer = aktoerConsumerService;
     }
 
-    public OpprettOppgaveRequestTo mapServiceklageOppgave(String klagenGjelderId, PaaVegneAvType paaVegneAvType, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
+    public OpprettOppgaveRequestTo mapServiceklageOppgave(String klagenGjelderId, PaaVegneAvEnum paaVegneAvEnum, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
         return OpprettOppgaveRequestTo.builder()
                 .tildeltEnhetsnr(KLAGEINSTANS_ENHETSNR)
                 .prioritet(PRIORITET)
-                .aktoerId(paaVegneAvType.equals(PaaVegneAvType.BEDRIFT) ? null : aktoerConsumer.hentAktoerIdForIdent(klagenGjelderId).get(klagenGjelderId).getFirstIdent())
-                .orgnr(paaVegneAvType.equals(PaaVegneAvType.BEDRIFT) ? klagenGjelderId : null)
+                .aktoerId(paaVegneAvEnum.equals(PaaVegneAvEnum.BEDRIFT) ? null : aktoerConsumer.hentAktoerIdForIdent(klagenGjelderId).get(klagenGjelderId).getFirstIdent())
+                .orgnr(paaVegneAvEnum.equals(PaaVegneAvEnum.BEDRIFT) ? klagenGjelderId : null)
                 .aktivDato(LocalDate.now().toString())
                 .journalpostId(opprettJournalpostResponseTo.getJournalpostId())
                 .tema(SERVICEKLAGE_TEMA)

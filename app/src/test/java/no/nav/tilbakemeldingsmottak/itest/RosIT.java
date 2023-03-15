@@ -1,7 +1,7 @@
 package no.nav.tilbakemeldingsmottak.itest;
 
-import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosRequest;
-import no.nav.tilbakemeldingsmottak.rest.ros.domain.SendRosResponse;
+import no.nav.tilbakemeldingsmottak.model.SendRosRequest;
+import no.nav.tilbakemeldingsmottak.model.SendRosResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
