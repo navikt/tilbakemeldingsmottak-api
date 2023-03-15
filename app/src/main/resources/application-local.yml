@@ -18,7 +18,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres?user=postgres&password=postgres
+    url: jdbc:postgresql://localhost:5430/postgres?user=postgres&password=postgres
 
 
 # TODO: Må endre på disse variablene
