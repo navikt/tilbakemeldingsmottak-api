@@ -138,6 +138,10 @@ public class Serviceklage {
     @Size(max = 2000)
     private String svarmetodeUtdypning;
 
+    @Column(name = VEILEDNING)
+    @Size(max = 2000)
+    private String veiledning;
+
     @Column(name = AVSLUTTET_DATO)
     private LocalDateTime avsluttetDato;
 
