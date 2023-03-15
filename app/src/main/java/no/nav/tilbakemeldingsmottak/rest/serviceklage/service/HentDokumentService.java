@@ -11,7 +11,7 @@ import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat;
 import no.nav.tilbakemeldingsmottak.exceptions.JournalpostManglerDokumentException;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
-import no.nav.tilbakemeldingsmottak.serviceklage.HentDokumentResponse;
+import no.nav.tilbakemeldingsmottak.model.HentDokumentResponse;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Service;
 

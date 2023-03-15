@@ -6,8 +6,8 @@ import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KA
 import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import no.nav.tilbakemeldingsmottak.serviceklage.Klagetype;
-import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -24,12 +24,12 @@ public class OpprettServiceklageRequestMapper {
         return Serviceklage.builder()
                 .opprettetDato(currentDateTime)
                 .fremmetDato(currentDateTime.toLocalDate())
-                .innsender(request.getPaaVegneAv().text)
+                .innsender(request.getPaaVegneAv().value)
                 .klagenGjelderId(findKlagenGjelderId(request))
                 .innlogget(innlogget)
                 .klagetyper(mapKlagetype(request.getKlagetyper()))
-                .klagetypeUtdypning(request.getKlagetyper().contains(Klagetype.ANNET) ? request.getKlagetypeUtdypning() : null)
-                .gjelderSosialhjelp(request.getGjelderSosialhjelp() == null ? null : request.getGjelderSosialhjelp().text)
+                .klagetypeUtdypning(request.getKlagetyper().contains(KlagetyperEnum.ANNET) ? request.getKlagetypeUtdypning() : null)
+                .gjelderSosialhjelp(request.getGjelderSosialhjelp() == null ? null : request.getGjelderSosialhjelp().value)
                 .klagetekst(request.getKlagetekst())
                 .svarmetode(mapSvarmetode(request.getOenskerAaKontaktes()))
                 .svarmetodeUtdypning(mapSvarmetodeUtdypning(request.getOenskerAaKontaktes()))
@@ -38,8 +38,8 @@ public class OpprettServiceklageRequestMapper {
                 .build();
     }
 
-    private String mapKlagetype(List<Klagetype> klagetype) {
-        return StringUtils.join(klagetype.stream().map(k -> k.text).collect(Collectors.toList()), ", ");
+    private String mapKlagetype(List<KlagetyperEnum> klagetype) {
+        return StringUtils.join(klagetype.stream().map(x -> x.value).collect(Collectors.toList()), ", ");
     }
 
     private String mapSvarmetode(Boolean oenskerAaKontaktes) {

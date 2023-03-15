@@ -13,6 +13,10 @@ on:
       - '.github/workflows/main.yml'
 
 jobs:
+  test-frontend:
+    name: Test frontend
+    uses: ./.github/workflows/cypress.yml
+
   bygg-app-preprod-pipeline:
     name: Bygg app/image, push til github
     runs-on: ubuntu-latest
@@ -37,10 +41,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '17.x'
-      - name: Set up Node 10
+      - name: Set up Node 14
         uses: actions/setup-node@v1
         with:
-          node-version: '10.14.2'
+          node-version: '14.21.3'
       - name: Build with maven
         env:
           GITHUB_USERNAME: x-access-token
@@ -69,7 +73,7 @@ jobs:
 
   deploy-preprod-pipeline:
     name: Deploy to preprod-pipeline
-    needs: bygg-app-preprod-pipeline
+    needs: [test-frontend, bygg-app-preprod-pipeline]
     if: github.ref == 'refs/heads/preprod-pipeline'
     runs-on: ubuntu-latest
     steps:

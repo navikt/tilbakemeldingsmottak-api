@@ -11,15 +11,15 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.HentSkjemaService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserServiceklageService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.KlassifiserServiceklageValidator;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
-import no.nav.tilbakemeldingsmottak.serviceklage.HentDokumentResponse;
-import no.nav.tilbakemeldingsmottak.serviceklage.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.serviceklage.KlassifiserServiceklageResponse;
+import no.nav.tilbakemeldingsmottak.model.HentDokumentResponse;
+import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.transaction.Transactional;
+import no.nav.tilbakemeldingsmottak.api.TaskProcessingRestControllerApi;
 
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
@@ -29,9 +29,8 @@ import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertHarJournalpos
 @Slf4j
 @Protected
 @RestController
-@RequestMapping("/rest/taskserviceklage")
 @RequiredArgsConstructor
-public class TaskProcessingRestController {
+public class TaskProcessingRestController implements TaskProcessingRestControllerApi {
 
     private final KlassifiserServiceklageService klassifiserServiceklageService;
     private final HentSkjemaService hentSkjemaService;
@@ -43,13 +42,13 @@ public class TaskProcessingRestController {
     private final String NEI = "Nei";
 
     @Transactional
-    @PutMapping(value = "/klassifiser")
+    @Override
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "klassifiserServiceklage"}, percentiles = {0.5, 0.95}, histogram = true)
-    public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestBody KlassifiserServiceklageRequest request,
-                                                                                   @RequestParam String oppgaveId)  {
+    public ResponseEntity<KlassifiserServiceklageResponse> klassifiserServiceklage(@RequestParam String oppgaveId,
+                                                                                   @RequestBody KlassifiserServiceklageRequest request)  {
         log.info("Mottatt kall om å klassifisere serviceklage med oppgaveId={}", oppgaveId);
 
-        if (NEI.equals(request.getFulgtBrukerveiledningGosys()) || NEI.equals(request.getKommunalBehandling())) {
+        if (NEI.equals(request.getFULGTBRUKERVEILEDNINGGOSYS()) || NEI.equals(request.getKOMMUNALBEHANDLING())) {
             log.info("Videre behandling kreves, saksbehandler er informert og videresendt til Gosys.");
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -74,7 +73,7 @@ public class TaskProcessingRestController {
     }
 
     @Transactional
-    @GetMapping(value = "/hentskjema/{oppgaveId}")
+    @Override
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentSkjema"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<HentSkjemaResponse> hentSkjema(@PathVariable String oppgaveId) {
         HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
@@ -88,7 +87,7 @@ public class TaskProcessingRestController {
     }
 
     @Transactional
-    @GetMapping(value = "/hentdokument/{oppgaveId}")
+    @Override
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<HentDokumentResponse> hentDokument(@PathVariable String oppgaveId)  {
         HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);

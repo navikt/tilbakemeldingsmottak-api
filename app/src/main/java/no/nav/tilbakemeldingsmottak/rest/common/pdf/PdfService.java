@@ -6,8 +6,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.exceptions.PdfException;
 import no.nav.tilbakemeldingsmottak.generer.PdfGenerator;
-import no.nav.tilbakemeldingsmottak.serviceklage.Klagetype;
-import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -21,22 +21,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public final class PdfService {
 
-    public byte[] opprettServiceklagePdf(OpprettServiceklageRequest request, boolean innlogget)  {
+    public byte[] opprettServiceklagePdf(OpprettServiceklageRequest request, boolean innlogget) {
+        return opprettServiceklagePdf(request, innlogget, LocalDateTime.now());
+    }
+
+    public byte[] opprettServiceklagePdf(OpprettServiceklageRequest request, boolean innlogget, LocalDateTime fremmet) {
         try {
             return new PdfGenerator().genererPdf(
                     KANAL_SERVICEKLAGESKJEMA_ANSWER,
                     !innlogget ? "OBS! Klagen er sendt inn uinnlogget" : null,
-                    lagKlageMap(request));
+                    lagKlageMap(request, fremmet));
         } catch (Exception e) {
-            throw new PdfException("Opprett serviceklage PDF", e );
+            throw new PdfException("Opprett serviceklage PDF", e);
         }
     }
 
-    private Map<String, String> lagKlageMap(OpprettServiceklageRequest request) {
+    private Map<String, String> lagKlageMap(OpprettServiceklageRequest request, LocalDateTime fremmet) {
         Map<String, String> klageMap = new HashMap<>();
 
         klageMap.put("Kanal", KANAL_SERVICEKLAGESKJEMA_ANSWER);
-        klageMap.put("Dato fremmet", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
+        klageMap.put("Dato fremmet", fremmet.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
         if (!isBlank(request.getInnmelder().getNavn())) {
             klageMap.put("Navn til innmelder", request.getInnmelder().getNavn());
         }
@@ -62,11 +66,11 @@ public final class PdfService {
         if (!isBlank(request.getEnhetsnummerPaaklaget())) {
             klageMap.put("Påklaget enhet", request.getEnhetsnummerPaaklaget());
         }
-        klageMap.put("Klagetype", StringUtils.join(request.getKlagetyper().stream().map(k -> k.text).collect(Collectors.toList()), ", "));
-        if (request.getKlagetyper().contains(Klagetype.LOKALT_NAV_KONTOR)) {
-            klageMap.put("Gjelder økonomisk sosialhjelp/sosiale tjenester", request.getGjelderSosialhjelp().text);
+        klageMap.put("Klagetype", StringUtils.join(request.getKlagetyper().stream().map(x -> x.value).collect(Collectors.toList()), ", "));
+        if (request.getKlagetyper().contains(KlagetyperEnum.LOKALT_NAV_KONTOR)) {
+            klageMap.put("Gjelder økonomisk sosialhjelp/sosiale tjenester", request.getGjelderSosialhjelp().value);
         }
-        if (request.getKlagetyper().contains(Klagetype.ANNET) && !isBlank(request.getKlagetypeUtdypning())) {
+        if (request.getKlagetyper().contains(KlagetyperEnum.ANNET) && !isBlank(request.getKlagetypeUtdypning())) {
             klageMap.put("Klagetype spesifisert i fritekst", request.getKlagetypeUtdypning());
 
         }

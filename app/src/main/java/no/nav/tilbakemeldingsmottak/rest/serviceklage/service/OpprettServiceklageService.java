@@ -15,14 +15,14 @@ import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveFunctionalE
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveTechnicalException;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
-import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageResponse;
-import no.nav.tilbakemeldingsmottak.serviceklage.PaaVegneAvType;
-import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettJournalpostRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettServiceklageRequestMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
+import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -86,9 +86,9 @@ public class OpprettServiceklageService {
         }
     }
 
-    private OpprettOppgaveResponseTo forsoekOpprettOppgave(String id, PaaVegneAvType paaVegneAvType, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
+    private OpprettOppgaveResponseTo forsoekOpprettOppgave(String id, PaaVegneAvEnum paaVegneAvEnum, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
         try {
-            OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.mapServiceklageOppgave(id, paaVegneAvType, opprettJournalpostResponseTo);
+            OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.mapServiceklageOppgave(id, paaVegneAvEnum, opprettJournalpostResponseTo);
             return oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
         } catch (OpprettOppgaveFunctionalException | OpprettOppgaveTechnicalException e) {
             mailHelper.sendEmail(fromAddress, toAddress, SUBJECT_OPPGAVE_FEILET, TEXT_OPPGAVE_FEILET + opprettJournalpostResponseTo.getJournalpostId());

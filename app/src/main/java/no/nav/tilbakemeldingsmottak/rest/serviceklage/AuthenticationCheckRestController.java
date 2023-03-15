@@ -8,21 +8,20 @@ import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import no.nav.tilbakemeldingsmottak.api.AuthenticationCheckRestControllerApi;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 @Slf4j
 @Unprotected
 @RestController
-@RequestMapping("/rest/taskserviceklage")
 @RequiredArgsConstructor
-public class AuthenticationCheckRestController {
+public class AuthenticationCheckRestController implements AuthenticationCheckRestControllerApi {
 
     private final OidcUtils oidcUtils;
 
-    @GetMapping(value = "/autentisert")
+    @Override
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "opprettServiceklage"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<Boolean>
     isAuthenticated(@CookieValue(name = "isso-idtoken", required = false) String innlogget)

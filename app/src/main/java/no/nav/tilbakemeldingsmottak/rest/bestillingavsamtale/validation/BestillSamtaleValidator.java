@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.validation;
 
-import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.domain.BestillSamtaleRequest;
+import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 
 public class BestillSamtaleValidator extends RequestValidator {

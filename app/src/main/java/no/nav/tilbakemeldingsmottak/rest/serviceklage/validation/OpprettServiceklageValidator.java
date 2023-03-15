@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
-import static no.nav.tilbakemeldingsmottak.serviceklage.Klagetype.LOKALT_NAV_KONTOR;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,8 @@ import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
-import no.nav.tilbakemeldingsmottak.serviceklage.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Component;
 
@@ -53,7 +53,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
 
     private void validateCommonRequiredFields(OpprettServiceklageRequest request) {
         isNotNull(request.getKlagetyper(), "klagetyper");
-        if (request.getKlagetyper().contains(LOKALT_NAV_KONTOR)) {
+        if (request.getKlagetyper().contains(KlagetyperEnum.LOKALT_NAV_KONTOR)) {
             isNotNull(request.getGjelderSosialhjelp(), "gjelderSosialhjelp", " dersom klagetyper=LOKALT_NAV_KONTOR");
         }
         isNotNull(request.getPaaVegneAv(), "paaVegneAv");

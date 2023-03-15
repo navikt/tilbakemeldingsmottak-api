@@ -29,5 +29,4 @@ npm-debug.log
 
 **/application-local.properties
 
-package-lock.json
 .DS_Store
