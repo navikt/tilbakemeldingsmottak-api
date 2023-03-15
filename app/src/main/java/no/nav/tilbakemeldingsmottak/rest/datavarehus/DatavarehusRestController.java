@@ -31,7 +31,7 @@ public class DatavarehusRestController implements DatavarehusRestControllerApi {
 
     @Transactional
     @Override
-    @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "datavarehus"}, percentiles = {0.5, 0.95}, histogram = true)
+    @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "datavarehus-serviceklager"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<List<DatavarehusServiceklage>> hentServiceKlageDataForDatavarehus(@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime datoFra) {
         List<DatavarehusServiceklage> serviceklageData = datavarehusService.hentServiceklageData(datoFra);
         return ResponseEntity
