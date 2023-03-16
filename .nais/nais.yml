@@ -17,6 +17,11 @@ spec:
       rules:
         - application: tilbakemeldinger
           namespace: personbruker
+    outbound:
+      external:
+      {{#each outboundExternalHosts}}
+       - host: "{{this}}"
+      {{/each}}
   liveness:
     path: /isAlive
     port: 9069

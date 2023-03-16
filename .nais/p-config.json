@@ -11,7 +11,7 @@
   "JOURNALPOST_V1_URL": "https://dokarkiv.nais.adeo.no/rest/journalpostapi/v1",
   "OPPGAVE_OPPGAVER_URL": "https://oppgave.nais.adeo.no/api/v1/oppgaver",
   "AKTOERREGISTER_IDENTER_URL": "https://app.adeo.no/aktoerregister/api/v1",
-  "EREG_API_URL": "https://modapp.adeo.no/ereg/api",
+  "EREG_API_URL": "https://ereg-services.prod-fss-pub.nais.io",
   "NORG2_API_V1_URL": "https://app.adeo.no/norg2/api/v1",
   "LOGINSERVICE_URL": "https://loginservice.nais.adeo.no/login?redirect=https://tilbakemeldingsmottak.nais.adeo.no/login",
   "INGRESS": [
@@ -29,5 +29,8 @@
   "EMAIL_SERVICEKLAGE_ADDRESS": "nav.serviceklager@nav.no",
   "EMAIL_NAV_SUPPORT_ADDRESS": "support@nav.no",
   "EMAIL_SAMISK_SUPPORT_ADDRESS": "nav.kontaktsenter.finnmark.samisk.kontakt.bruker@nav.no",
-  "SPRING_MAIL_HOST": "smtp.adeo.no"
+  "SPRING_MAIL_HOST": "smtp.adeo.no",
+  "outboundExternalHosts": [
+    "ereg-services.prod-fss-pub.nais.io"
+  ]
 }
