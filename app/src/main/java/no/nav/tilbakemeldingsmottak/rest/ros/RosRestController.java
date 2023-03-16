@@ -6,6 +6,7 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.model.SendRosRequest;
@@ -21,7 +22,7 @@ import no.nav.tilbakemeldingsmottak.api.RosRestControllerApi;
 import javax.transaction.Transactional;
 
 @Slf4j
-@Protected
+@ProtectedWithClaims(issuer = "tokenx")
 @RestController
 @RequiredArgsConstructor
 public class RosRestController implements RosRestControllerApi {

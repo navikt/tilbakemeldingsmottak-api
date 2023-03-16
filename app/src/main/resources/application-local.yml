@@ -44,8 +44,7 @@ aad:
   clientSecret: secret
 no.nav.security:
   jwt:
-    mock:
-      enable: true
+    # FIXME: Må fjerne denne klienten
     client:
       registration:
         serviceuser:
@@ -58,12 +57,12 @@ no.nav.security:
           token-endpoint-url: http://localhost:9068/reststs/token
     issuer:
       tokenx:
-        discovery-url: https://fakedings.dev-gcp.nais.io/tokenx/.well-known/openid-configuration
-        accepted-audience: aud-localhost
+        discovery-url: http://localhost:6969/tokenx/.well-known/openid-configuration
+        accepted-audience: aud-localhost-tokenx
       azuread:
-        accepted-audience: aud-localhost
+        accepted-audience: aud-localhost-azureread
         cookie-name: azuread-idtoken
-        discovery-url: https://fakedings.dev-gcp.nais.io/fake/.well-known/openid-configuration
+        discovery-url: http://localhost:6969/azureread/.well-known/openid-configuration
 
 
 norg2:
