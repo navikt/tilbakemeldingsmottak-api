@@ -17,6 +17,7 @@ spec:
       rules:
         - application: tilbakemeldinger
           namespace: personbruker
+        - application: tilbakemeldingsmottak-frontend
     outbound:
       external:
       {{#each outboundExternalHosts}}
