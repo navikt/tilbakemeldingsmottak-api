@@ -32,8 +32,9 @@ import javax.inject.Inject;
 @Component
 public class OppgaveConsumer {
 
+    // FIXME: Bruk en annen klient
     @Inject
-    @Qualifier("serviceuserclient")
+    @Qualifier("arkivClient")
     private WebClient webClient;
 
     private final String oppgaveUrl;

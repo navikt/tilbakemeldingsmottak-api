@@ -30,8 +30,9 @@ import java.util.Map;
 @Component
 public class AktoerConsumer {
 
+    // FIXME: Bruk en annen klient
 	@Inject
-	@Qualifier("serviceuserclient")
+	@Qualifier("arkivClient")
 	private WebClient webClient;
 
 	private final String aktoerregisterurl;
