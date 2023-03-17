@@ -22,20 +22,22 @@ aad:
   clientId: 1111199999
   serviceuser: srvDummy
   password: srvDummy@nav.no
+
+
 no.nav.security:
   jwt:
     mock:
       enable: true
     client:
       registration:
-        serviceuser:
-          authentication:
-            client-auth-method: client_secret_basic
-            client-id: ${serviceuser.username}
-            client-secret: ${serviceuser.password}
+        arkiv:
+          token-endpoint-url: http://localhost:${token.server.port}/fake/token
           grant-type: client_credentials
-          scope: openid
-          token-endpoint-url: http://localhost:${token.server.port}/reststs/token
+          scope: scope
+          authentication:
+            client-id: fake
+            client-secret: someSecret
+            client-auth-method: client_secret_basic
     issuer:
       azuread:
         accepted-audience: aud-localhost

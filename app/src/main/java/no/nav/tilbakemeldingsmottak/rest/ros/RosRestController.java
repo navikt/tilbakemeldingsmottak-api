@@ -22,7 +22,7 @@ import no.nav.tilbakemeldingsmottak.api.RosRestControllerApi;
 import javax.transaction.Transactional;
 
 @Slf4j
-@ProtectedWithClaims(issuer = "tokenx")
+@Protected
 @RestController
 @RequiredArgsConstructor
 public class RosRestController implements RosRestControllerApi {
