@@ -1,0 +1,1 @@
+ALTER TABLE serviceklage ALTER COLUMN INNLOGGET TYPE boolean USING INNLOGGET::int::bool;
