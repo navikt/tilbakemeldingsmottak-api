@@ -14,7 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 @Profile("nais | local")
 @Component
@@ -25,12 +28,20 @@ public class AADMailClientImpl implements AADMailClient {
     private final AADProperties aadProperties;
 
     @Autowired
+    Environment env;
+
+    @Autowired
     public AADMailClientImpl(AADProperties aadProperties) {
         this.aadProperties = aadProperties;
     }
 
     public void sendMailViaClient(Message message) {
         log.debug("Skal sende melding:" + message.subject + ", " + message.body.content);
+
+        if (Arrays.asList(env.getActiveProfiles()).contains("local")) {
+            log.info("Skal ikke sende epost i local");
+            return;
+        }
 
         UserSendMailParameterSet sendMailParameterSet = UserSendMailParameterSet
                 .newBuilder()
