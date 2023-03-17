@@ -1,0 +1,14 @@
+{
+  "priority": 2,
+  "request": {
+    "urlPattern": "/rest/journalpostapi/v1/journalpost.*",
+    "method": "POST"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "arkiv.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

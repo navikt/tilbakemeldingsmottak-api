@@ -31,7 +31,7 @@ import java.net.URI;
 public class JournalpostConsumer {
 
 	@Inject
-	@Qualifier("serviceuserclient")
+	@Qualifier("arkivClient")
 	private WebClient webClient;
 
 	@Value("${Journalpost_v1_url}")

@@ -22,7 +22,8 @@ spring:
 
 
 # TODO: Må endre på disse variablene
-Journalpost_v1_url: http://localhost:3000/OPPRETT_JOURNALPOST
+
+Journalpost_v1_url: http://localhost:8092/rest/journalpostapi/v1
 aktoerregister:
   identer:
     url: http://localhost:3000/AKTOER
@@ -42,17 +43,16 @@ aad:
   clientSecret: secret
 no.nav.security:
   jwt:
-    # FIXME: Må fjerne denne klienten
     client:
       registration:
-        serviceuser:
-          authentication:
-            client-auth-method: client_secret_basic
-            client-id: username
-            client-secret: password
+        arkiv:
+          token-endpoint-url: https://fakedings.dev-gcp.nais.io/fake/token
           grant-type: client_credentials
-          scope: openid
-          token-endpoint-url: http://localhost:9068/reststs/token
+          scope: ${DOKARKIV_SCOPE}
+          authentication:
+            client-id: fake
+            client-secret: someSecret
+            client-auth-method: client_secret_basic
     issuer:
       tokenx:
         discovery-url: https://fakedings.dev-gcp.nais.io/fake/.well-known/openid-configuration

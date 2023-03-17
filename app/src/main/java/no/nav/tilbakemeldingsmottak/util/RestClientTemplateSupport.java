@@ -40,14 +40,14 @@ public class RestClientTemplateSupport {
     private ClientConfigurationProperties clientConfigurationProperties;
 
     @Bean
-    @Qualifier("serviceuserclient")
+    @Qualifier("arkivClient")
     @Scope("prototype")
-    WebClient stsClientRestTemplate(
+    WebClient arkivClient(
     ) {
 
         ClientProperties clientProperties =
-                Optional.ofNullable(clientConfigurationProperties.getRegistration().get("serviceuser"))
-                        .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for serviceuser"));
+                Optional.ofNullable(clientConfigurationProperties.getRegistration().get("arkiv"))
+                        .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for arkiv"));
 
         return buildWebClient(buildHttpClient(5000,60,60), clientProperties);
     }

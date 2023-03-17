@@ -8,7 +8,7 @@
   "LOGINSERVICE_OIDC_CALLBACKURI": "https://loginservice.nais.adeo.no/callback",
   "NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL": "https://login.microsoftonline.com/navno.onmicrosoft.com/.well-known/openid-configuration",
   "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.adeo.no/rest/v1/sts/token",
-  "JOURNALPOST_V1_URL": "https://dokarkiv.nais.adeo.no/rest/journalpostapi/v1",
+  "JOURNALPOST_V1_URL": "https://dokarkiv.prod-fss-pub.nais.io/rest/journalpostapi/v1",
   "OPPGAVE_OPPGAVER_URL": "https://oppgave.nais.adeo.no/api/v1/oppgaver",
   "AKTOERREGISTER_IDENTER_URL": "https://app.adeo.no/aktoerregister/api/v1",
   "EREG_API_URL": "https://ereg-services.prod-fss-pub.nais.io",
@@ -32,5 +32,6 @@
   "SPRING_MAIL_HOST": "smtp.adeo.no",
   "outboundExternalHosts": [
     "ereg-services.prod-fss-pub.nais.io"
-  ]
+  ],
+  "dokarkiv-scope": "api://prod-fss.teamdokumenthandtering.dokarkiv/.default"
 }

@@ -46,21 +46,22 @@ aad:
 no.nav.security.jwt:
   client:
     registration:
-      serviceuser:
-        authentication:
-          client-auth-method: client_secret_basic
-          client-id: ${serviceuser.username}
-          client-secret: ${serviceuser.password}
+      arkiv:
+        token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
         grant-type: client_credentials
-        scope: openid
-        token-endpoint-url: ${SECURITY_TOKEN_SERVICE_TOKEN_URL}
+        scope: ${DOKARKIV_SCOPE}
+        authentication:
+          client-id: ${AZURE_APP_CLIENT_ID}
+          client-secret: ${AZURE_APP_CLIENT_SECRET}
+          client-auth-method: client_secret_basic
 
   issuer:
+    tokenx:
+      discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
+      accepted_audience: ${TOKEN_X_CLIENT_ID}
     azuread:
       accepted-audience: ${AZURE_APP_CLIENT_ID}
       cookie-name: azuread-idtoken
       discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
-    tokenx:
-      discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
-      accepted_audience: ${TOKEN_X_CLIENT_ID}
+
 
