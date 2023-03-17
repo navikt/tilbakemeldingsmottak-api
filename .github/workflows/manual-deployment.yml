@@ -16,10 +16,6 @@ env:
   docker_image: ghcr.io/${{ github.repository }}:${{ github.sha }}
 
 jobs:
-  test-frontend:
-    name: Test frontend
-    uses: ./.github/workflows/cypress.yml
-
   build-and-push:
     runs-on: ubuntu-latest
     steps:

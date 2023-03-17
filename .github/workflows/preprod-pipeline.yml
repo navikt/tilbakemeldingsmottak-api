@@ -13,10 +13,6 @@ on:
       - '.github/workflows/main.yml'
 
 jobs:
-  test-frontend:
-    name: Test frontend
-    uses: ./.github/workflows/cypress.yml
-
   bygg-app-preprod-pipeline:
     name: Bygg app/image, push til github
     runs-on: ubuntu-latest

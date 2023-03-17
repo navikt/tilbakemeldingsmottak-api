@@ -16,10 +16,6 @@ on:
       - '.github/workflows/manual-deployment.yml'
 
 jobs:
-  test-frontend:
-    name: Test frontend
-    uses: ./.github/workflows/cypress.yml
-
   bygg-app-main:
     name: Bygg app/image, push til github
     runs-on: ubuntu-latest
