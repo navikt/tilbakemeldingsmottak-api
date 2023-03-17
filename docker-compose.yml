@@ -31,6 +31,7 @@ services:
         }'
   db:
     image: postgres:14.1-alpine
+    container_name: postgres-db
     restart: always
     environment:
       - POSTGRES_USER=postgres
@@ -39,6 +40,24 @@ services:
       - '5430:5432'
     volumes:
       - db:/var/lib/postgresql/data
+
+  arkiv-mock:
+    container_name: arkiv-mock
+    image: wiremock/wiremock
+    ports:
+      - "8092:8080"
+    volumes:
+      - ./stubs/joark:/home/wiremock
+
+  oppgave-mock:
+    container_name: oppgave-mock
+    image: wiremock/wiremock
+    ports:
+      - "8093:8080"
+    volumes:
+      - ./stubs/oppgave:/home/wiremock
+
+
 volumes:
   db:
     driver: local

@@ -69,7 +69,7 @@ norg2:
   api:
     v1:
       url: http://localhost:3000/norg2
-oppgave_oppgaver_url: http://localhost:3000/OPPGAVE
+oppgave_oppgaver_url: http://localhost:8093/api/v1/oppgaver
 saf:
   graphql:
     url: http://localhost:3000/safgraphql
