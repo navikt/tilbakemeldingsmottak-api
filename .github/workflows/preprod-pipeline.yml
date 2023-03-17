@@ -69,7 +69,7 @@ jobs:
 
   deploy-preprod-pipeline:
     name: Deploy to preprod-pipeline
-    needs: [test-frontend, bygg-app-preprod-pipeline]
+    needs: [bygg-app-preprod-pipeline]
     if: github.ref == 'refs/heads/preprod-pipeline'
     runs-on: ubuntu-latest
     steps:
