@@ -28,7 +28,7 @@ public class DatavarehusService {
             datoFra = OffsetDateTime.now().minusDays(1);
         }
 
-        List<Serviceklage> serviceklageData = serviceklageRepository.findAllByOpprettetDatoAfter(datoFra.toLocalDateTime());
+        List<Serviceklage> serviceklageData = serviceklageRepository.findAllByOpprettetDatoAfterOrAvsluttetDatoAfter(datoFra.toLocalDateTime(), datoFra.toLocalDateTime());
         log.info("Hentet {} serviceklager fra databasen fra dato {}", serviceklageData.size(), datoFra);
         return datavarehusServiceklageMapper.map(serviceklageData);
     }
