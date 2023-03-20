@@ -1,12 +1,12 @@
 {
   "priority": 2,
   "request": {
-    "urlPattern": "/norg2/api/v1/enhet.*",
+    "urlPattern": "/api/v1/oppgaver.*",
     "method": "GET"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "enheter.json",
+    "bodyFileName": "hent-oppgave.json",
     "headers": {
       "Content-Type": "application/json"
     }
