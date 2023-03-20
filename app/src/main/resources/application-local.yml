@@ -68,7 +68,7 @@ no.nav.security:
 norg2:
   api:
     v1:
-      url: http://localhost:3000/norg2
+      url: http://localhost:8094/norg2/api/v1
 oppgave_oppgaver_url: http://localhost:8093/api/v1/oppgaver
 saf:
   graphql:

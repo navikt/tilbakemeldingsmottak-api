@@ -12,7 +12,7 @@
   "OPPGAVE_OPPGAVER_URL": "https://oppgave.nais.preprod.local/api/v1/oppgaver",
   "AKTOERREGISTER_IDENTER_URL": "https://app-q1.adeo.no/aktoerregister/api/v1",
   "EREG_API_URL": "https://ereg-services.dev-fss-pub.nais.io",
-  "NORG2_API_V1_URL": "https://app-q1.adeo.no/norg2/api/v1",
+  "NORG2_API_V1_URL": "https://norg2.dev-fss-pub.nais.io/api/v1",
   "LOGINSERVICE_URL": "https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login",
   "INGRESS": [
       "https://tilbakemeldingsmottak-gcp.intern.dev.nav.no"
@@ -29,7 +29,8 @@
   "EMAIL_SAMISK_SUPPORT_ADDRESS": "lars.stenstad@nav.no",
   "SPRING_MAIL_HOST": "exchange.preprod.local",
   "outboundExternalHosts": [
-    "ereg-services.dev-fss-pub.nais.io"
+    "ereg-services.dev-fss-pub.nais.io",
+    "norg2.dev-fss-pub.nais.io"
   ],
   "dokarkiv-scope": "api://dev-fss.teamdokumenthandtering.dokarkiv-q1/.default"
 }

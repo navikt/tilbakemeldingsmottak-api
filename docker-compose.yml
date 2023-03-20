@@ -57,6 +57,14 @@ services:
     volumes:
       - ./stubs/oppgave:/home/wiremock
 
+  norg2-mock:
+    container_name: norg2-mock
+    image: wiremock/wiremock
+    ports:
+      - "8094:8080"
+    volumes:
+      - ./stubs/norg2:/home/wiremock
+
 
 volumes:
   db:
