@@ -34,7 +34,7 @@
     "saf.dev-fss-pub.nais.io",
     "oppgave-q1.dev-fss-pub.nais.io"
   ],
-  "dokarkiv-scope": "api://dev-fss.teamdokumenthandtering.dokarkiv-q1/.default",
+  "DOKARKIV_SCOPE": "api://dev-fss.teamdokumenthandtering.dokarkiv-q1/.default",
   "SAF_SCOPE": "api://dev-fss.teamdokumenthandtering.saf-q1/.default",
-  "OPPGAVE_SCOPE": "api://dev-fss.oppgavehandtering.oppgave/.default"
+  "OPPGAVE_SCOPE": "api://dev-fss.oppgavehandtering.oppgave-q1/.default"
 }

@@ -34,7 +34,7 @@
     "saf.prod-fss-pub.nais.io",
     "oppgave.prod-fss-pub.nais.io"
   ],
-  "dokarkiv-scope": "api://prod-fss.teamdokumenthandtering.dokarkiv/.default",
+  "DOKARKIV_SCOPE": "api://prod-fss.teamdokumenthandtering.dokarkiv/.default",
   "SAF_SCOPE": "api://prod-fss.teamdokumenthandtering.saf/.default",
   "OPPGAVE_SCOPE": "api://prod-fss.oppgavehandtering.oppgave/.default"
 }

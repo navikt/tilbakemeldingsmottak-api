@@ -107,4 +107,8 @@ spec:
     - name: SPRING_EMAIL_HOST
       value: {{ SPRING_EMAIL_HOST }}
     - name: DOKARKIV_SCOPE
-      value: {{dokarkiv-scope}}
+      value: {{ DOKARKIV_SCOPE }}
+    - name: SAF_SCOPE
+      value: {{ SAF_SCOPE }}
+    - name: OPPGAVE_SCOPE
+      value: {{ OPPGAVE_SCOPE }}
