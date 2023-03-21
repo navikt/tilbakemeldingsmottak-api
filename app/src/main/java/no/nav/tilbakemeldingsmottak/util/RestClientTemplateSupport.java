@@ -53,6 +53,19 @@ public class RestClientTemplateSupport {
     }
 
     @Bean
+    @Qualifier("oppgaveClient")
+    @Scope("prototype")
+    WebClient oppgaveClient(
+    ) {
+
+        ClientProperties clientProperties =
+                Optional.ofNullable(clientConfigurationProperties.getRegistration().get("oppgave"))
+                        .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for oppgave"));
+
+        return buildWebClient(buildHttpClient(5000,60,60), clientProperties);
+    }
+
+    @Bean
     @Qualifier("safclient")
     @Scope("prototype")
     WebClient safClientRestTemplate(

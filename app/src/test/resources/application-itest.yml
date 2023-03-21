@@ -47,6 +47,15 @@ no.nav.security:
             client-id: fake
             client-secret: someSecret
             client-auth-method: client_secret_basic
+
+        oppgave:
+          token-endpoint-url: http://localhost:${token.server.port}/fake/token
+          grant-type: client_credentials
+          scope: scope
+          authentication:
+            client-id: fake
+            client-secret: someSecret
+            client-auth-method: client_secret_basic
     issuer:
       azuread:
         accepted-audience: aud-localhost

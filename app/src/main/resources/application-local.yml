@@ -62,6 +62,15 @@ no.nav.security:
             client-secret: someSecret
             client-auth-method: client_secret_basic
 
+        oppgave:
+          token-endpoint-url: https://fakedings.dev-gcp.nais.io/fake/token
+          grant-type: client_credentials
+          scope: ${OPPGAVE_SCOPE}
+          authentication:
+            client-id: fake
+            client-secret: someSecret
+            client-auth-method: client_secret_basic
+
     issuer:
       tokenx:
         discovery-url: https://fakedings.dev-gcp.nais.io/fake/.well-known/openid-configuration
