@@ -38,8 +38,8 @@ public class AADMailClientImpl implements AADMailClient {
     public void sendMailViaClient(Message message) {
         log.debug("Skal sende melding:" + message.subject + ", " + message.body.content);
 
-        if (Arrays.asList(env.getActiveProfiles()).contains("local")) {
-            log.info("Skal ikke sende epost i local");
+        if (Arrays.asList(env.getActiveProfiles()).contains("local") || Arrays.asList(env.getActiveProfiles()).contains("nais")) {
+            log.info("Skal ikke sende epost");
             return;
         }
 
