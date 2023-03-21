@@ -2,18 +2,12 @@
   "NAMESPACE": "teamserviceklage",
   "DATABASE_NAME": "tilbakemeldingsmottak-dev",
   "AZUREAD_CLIENTID": "0877a4df-2851-4ffb-8d0b-3b5be744fd8e",
-  "SECURITYTOKENSERVICE_URL": "https://sts-q1.preprod.local/SecurityTokenServiceProvider/",
   "NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL": "https://login.microsoftonline.com/NAVtestB2C.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten_ver1",
-  "LOGINSERVICE_ACCEPTED_AUDIENCE": "38e07d31-659d-4595-939a-f18dce3446c5",
-  "LOGINSERVICE_OIDC_CALLBACKURI": "https://loginservice.nais.preprod.local/callback",
-  "NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL": "https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/.well-known/openid-configuration",
-  "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.preprod.local/rest/v1/sts/token",
   "JOURNALPOST_V1_URL": "https://dokarkiv.dev-fss-pub.nais.io/rest/journalpostapi/v1",
   "OPPGAVE_OPPGAVER_URL": "https://oppgave-q1.dev-fss-pub.nais.io/api/v1/oppgaver",
   "AKTOERREGISTER_IDENTER_URL": "https://app-q1.adeo.no/aktoerregister/api/v1",
   "EREG_API_URL": "https://ereg-services.dev-fss-pub.nais.io",
   "NORG2_API_V1_URL": "https://norg2.dev-fss-pub.nais.io/api/v1",
-  "LOGINSERVICE_URL": "https://loginservice.nais.preprod.local/login?redirect=https://tilbakemeldingsmottak-q1.nais.preprod.local/login",
   "INGRESS": [
       "https://tilbakemeldingsmottak-gcp.intern.dev.nav.no"
   ],

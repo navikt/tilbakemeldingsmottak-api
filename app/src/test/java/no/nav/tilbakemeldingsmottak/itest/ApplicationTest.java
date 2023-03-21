@@ -45,9 +45,7 @@ import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static no.nav.tilbakemeldingsmottak.TestUtils.*;
-import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
-import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
-import static no.nav.tilbakemeldingsmottak.config.Constants.RESTSTS_ISSUER;
+import static no.nav.tilbakemeldingsmottak.config.Constants.*;
 
 
 @ActiveProfiles("itest")
@@ -85,7 +83,6 @@ public class ApplicationTest {
 
     protected static final String CONSUMER_ID = "theclientid";
     private static final String URL_SERVICEKLAGE = "/rest/serviceklage";
-    private static final String SRVUSER = "srvtilbakelendingse";
     private static final String INNLOGGET_BRUKER = "14117119611";
     private static final String AUD ="aud-localhost";
 
@@ -134,10 +131,6 @@ public class ApplicationTest {
                         .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withBodyFile("oppgave/hentOppgaveResponse.json")));
 
-        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/STS"))
-                .willReturn(aResponse().withStatus(HttpStatus.OK.value())
-                        .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .withBody(String.format("{\"accessToken\": \"%s\", \"token_type\": \"%s\", \"expires_in\":3600}", getToken(RESTSTS_ISSUER, SRVUSER), "Bearer"))));
 
         WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/AKTOER/identer/"))
                 .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
@@ -176,7 +169,7 @@ public class ApplicationTest {
     HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(LOGINSERVICE_ISSUER, INNLOGGET_BRUKER));
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(TOKENX, INNLOGGET_BRUKER));
         headers.add("correlation_id", UUID.randomUUID().toString());
         return headers;
     }

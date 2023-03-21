@@ -176,25 +176,6 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/HentDokumentResponse'
-  /rest/taskserviceklage/autentisert:
-    get:
-      description: Sjekk om saksbehandler er logget inn eller ei.
-      tags:
-        - authentication-check-rest-controller
-      operationId: isAuthenticated
-      parameters:
-        - name: isso-idtoken
-          in: cookie
-          required: false
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            'application/json':
-              schema:
-                type: boolean
   /isAlive:
     get:
       description: Sjekk om applikasjonen er oppe og kjører.

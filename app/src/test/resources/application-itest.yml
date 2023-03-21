@@ -23,7 +23,6 @@ aad:
   serviceuser: srvDummy
   password: srvDummy@nav.no
 
-
 no.nav.security:
   jwt:
     mock:
@@ -57,14 +56,14 @@ no.nav.security:
             client-secret: someSecret
             client-auth-method: client_secret_basic
     issuer:
+      tokenx:
+        discoveryurl: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
+        accepted_audience: aud-localhost
+        cookie_name: tokenx
       azuread:
         accepted-audience: aud-localhost
         cookie-name: azuread-idtoken
         discovery-url: http://localhost:${token.server.port}/azuread/.well-known/openid-configuration
-      isso:
-        accepted-audience: aud-localhost
-        cookie-name: isso-idtoken
-        discovery-url: http://localhost:${token.server.port}/isso/.well-known/openid-configuration
 
 norg2:
   api:
@@ -74,11 +73,7 @@ oppgave_oppgaver_url: http://localhost:${wiremock.server.port}/OPPGAVE
 saf:
   graphql:
     url: http://localhost:${wiremock.server.port}/safgraphql
-security_token_service_token:
-  url: http://localhost:${wiremock.server.port}/STS
-serviceuser:
-  password: 123abc
-  username: tilbakemeldings
+
 spring:
   jpa:
     properties:

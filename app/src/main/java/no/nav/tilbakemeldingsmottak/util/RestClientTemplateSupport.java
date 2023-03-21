@@ -7,9 +7,6 @@ import no.nav.security.token.support.client.core.ClientProperties;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenResponse;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
-import no.nav.tilbakemeldingsmottak.config.MDCConstants;
-import no.nav.tilbakemeldingsmottak.integration.fasit.ServiceuserAlias;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,7 +14,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.*;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -118,25 +114,6 @@ public class RestClientTemplateSupport {
                     .build();
             return exchangeFunction.exchange(filtered);
         };
-    }
-
-    @Bean
-    @Qualifier("basicauthclient")
-    @Scope("prototype")
-    RestTemplate clientRestTemplate(
-            RestTemplateBuilder restTemplateBuilder,
-            ServiceuserAlias serviceuserAlias,
-            ClientHttpRequestFactory requestFactory) {
-        return restTemplateBuilder
-                .requestFactory(() -> requestFactory)
-                .basicAuthentication(serviceuserAlias.getUsername(), serviceuserAlias.getPassword())
-                .interceptors((request, body, execution)->{
-                    request.getHeaders().add(MDCConstants.MDC_CALL_ID, MDC.get(MDCConstants.MDC_CALL_ID));
-                    return execution.execute(request, body);
-                })
-                .setConnectTimeout(Duration.ofSeconds(5))
-                .setReadTimeout(Duration.ofSeconds(20))
-                .build();
     }
 
     @Bean

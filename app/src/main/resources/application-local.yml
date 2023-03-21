@@ -93,10 +93,3 @@ saf:
     url: http://localhost:8095/graphql
 hentdokument:
   url: http://localhost:8095/rest/hentdokument
-security_token_service_token:
-  url: http://localhost:3000/STS
-serviceuser:
-  password: 123abc
-  username: tilbakemeldings
-loginservice:
-  url: http://localhost:3000/login
