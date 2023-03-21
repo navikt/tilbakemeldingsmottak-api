@@ -17,8 +17,8 @@
   "INGRESS": [
       "https://tilbakemeldingsmottak-gcp.intern.dev.nav.no"
   ],
-  "SAF_URL": "https://saf-q1.dev.intern.nav.no/graphql",
-  "SAF_HENTDOKUMENT_URL": "https://saf-q1.dev.intern.nav.no/rest/hentdokument",
+  "SAF_URL": "https://saf.dev-fss-pub.nais.io/graphql",
+  "SAF_HENTDOKUMENT_URL": "https://saf.dev-fss-pub.nais.io/rest/hentdokument",
   "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
   "AZURE_DEFAULT_SCOPE": "openid",
   "TENANT": "trygdeetaten.no",
@@ -30,7 +30,10 @@
   "SPRING_MAIL_HOST": "exchange.preprod.local",
   "outboundExternalHosts": [
     "ereg-services.dev-fss-pub.nais.io",
-    "norg2.dev-fss-pub.nais.io"
+    "norg2.dev-fss-pub.nais.io",
+    "saf.dev-fss-pub.nais.io"
   ],
-  "dokarkiv-scope": "api://dev-fss.teamdokumenthandtering.dokarkiv-q1/.default"
+  "dokarkiv-scope": "api://dev-fss.teamdokumenthandtering.dokarkiv-q1/.default",
+  "SAF_SCOPE": "api://dev-fss.teamdokumenthandtering.saf-q1/.default"
+
 }

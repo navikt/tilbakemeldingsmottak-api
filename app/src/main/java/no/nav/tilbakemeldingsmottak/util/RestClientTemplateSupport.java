@@ -57,7 +57,11 @@ public class RestClientTemplateSupport {
     @Scope("prototype")
     WebClient safClientRestTemplate(
     ) {
-        return buildWebClient(buildHttpClient(5000,60,60));
+        ClientProperties clientProperties =
+                Optional.ofNullable(clientConfigurationProperties.getRegistration().get("saf-maskintilmaskin"))
+                        .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for arkiv"));
+
+        return buildWebClient(buildHttpClient(5000,60,60), clientProperties);
     }
 
     private HttpClient buildHttpClient(int connection_timeout, int readTimeout, int writeTimeout) {

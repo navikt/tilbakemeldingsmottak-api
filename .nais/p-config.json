@@ -19,8 +19,8 @@
           "https://tilbakemeldingsmottak.intern.nav.no",
           "https://tilbakemeldingsmottak.prod-fss-pub.nais.io"
   ],
-  "SAF_URL": "https://saf.intern.nav.no/graphql",
-  "SAF_HENTDOKUMENT_URL": "https://saf.intern.nav.no/rest/hentdokument",
+  "SAF_URL": "https://saf.prod-fss-pub.nais.io/graphql",
+  "SAF_HENTDOKUMENT_URL": "https://saf.prod-fss-pub.nais.io/rest/hentdokument",
   "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
   "AZURE_DEFAULT_SCOPE": "openid",
   "TENANT": "nav.no",
@@ -32,7 +32,9 @@
   "SPRING_MAIL_HOST": "smtp.adeo.no",
   "outboundExternalHosts": [
     "ereg-services.prod-fss-pub.nais.io",
-    "norg2.prod-fss-pub.nais.io"
+    "norg2.prod-fss-pub.nais.io",
+    "saf.prod-fss-pub.nais.io"
   ],
-  "dokarkiv-scope": "api://prod-fss.teamdokumenthandtering.dokarkiv/.default"
+  "dokarkiv-scope": "api://prod-fss.teamdokumenthandtering.dokarkiv/.default",
+  "SAF_SCOPE": "api://prod-fss.teamdokumenthandtering.saf/.default"
 }

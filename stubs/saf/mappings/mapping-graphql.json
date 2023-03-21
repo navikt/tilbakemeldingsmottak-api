@@ -1,0 +1,14 @@
+{
+  "priority": 2,
+  "request": {
+    "urlPattern": "/graphql.*",
+    "method": "POST"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "graphql-hent-journalpost.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
+import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
@@ -27,7 +28,8 @@ import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertIkkeFerdigsti
 import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertHarJournalpost;
 
 @Slf4j
-@Protected
+// FIXME: Legg til autentisering
+@Unprotected
 @RestController
 @RequiredArgsConstructor
 public class TaskProcessingRestController implements TaskProcessingRestControllerApi {

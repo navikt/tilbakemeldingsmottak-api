@@ -33,8 +33,7 @@ email_samisk_kontakt_address: samisk-kontakt@preprod.local
 email_serviceklage_address: nav.serviceklager@preprod.local
 email_uu_address: uu@preprod.local
 ereg.api.url: https://ereg-services.dev-fss-pub.nais.io
-hentdokument:
-  url: http://localhost:3000/hentdokument
+
 aad:
   authority: https://localhost:3000/authority
   clientId: 1111199999
@@ -72,7 +71,9 @@ norg2:
 oppgave_oppgaver_url: http://localhost:8093/api/v1/oppgaver
 saf:
   graphql:
-    url: http://localhost:3000/safgraphql
+    url: http://localhost:8095/graphql
+hentdokument:
+  url: http://localhost:8095/rest/hentdokument
 security_token_service_token:
   url: http://localhost:3000/STS
 serviceuser:

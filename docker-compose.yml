@@ -65,6 +65,14 @@ services:
     volumes:
       - ./stubs/norg2:/home/wiremock
 
+  saf-mock:
+    container_name: saf-mock
+    image: wiremock/wiremock
+    ports:
+      - "8095:8080"
+    volumes:
+      - ./stubs/saf:/home/wiremock
+
 
 volumes:
   db:
