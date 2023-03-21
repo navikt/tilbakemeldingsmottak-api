@@ -59,7 +59,7 @@ public class RestClientTemplateSupport {
     ) {
         ClientProperties clientProperties =
                 Optional.ofNullable(clientConfigurationProperties.getRegistration().get("saf-maskintilmaskin"))
-                        .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for arkiv"));
+                        .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for saf-maskintilmaskin"));
 
         return buildWebClient(buildHttpClient(5000,60,60), clientProperties);
     }
