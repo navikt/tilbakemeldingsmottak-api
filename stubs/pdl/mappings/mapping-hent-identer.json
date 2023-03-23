@@ -1,12 +1,12 @@
 {
   "priority": 2,
   "request": {
-    "urlPattern": "/safgraphql.*",
+    "urlPattern": "/pdlgraphql.*",
     "method": "POST"
   },
   "response": {
     "status": 200,
-    "bodyFileName": "graphql-hent-journalpost.json",
+    "bodyFileName": "hent-identer.json",
     "headers": {
       "Content-Type": "application/json"
     }

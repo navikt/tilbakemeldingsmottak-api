@@ -73,6 +73,14 @@ services:
     volumes:
       - ./stubs/saf:/home/wiremock
 
+  pdl-mock:
+    container_name: pdl-mock
+    image: wiremock/wiremock
+    ports:
+      - "8096:8080"
+    volumes:
+      - ./stubs/pdl:/home/wiremock
+
 
 volumes:
   db:

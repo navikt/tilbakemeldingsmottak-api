@@ -24,9 +24,6 @@ spring:
 # TODO: Må endre på disse variablene
 
 Journalpost_v1_url: http://localhost:8092/rest/journalpostapi/v1
-aktoerregister:
-  identer:
-    url: http://localhost:3000/AKTOER
 email_from_address: srvtilbakemeldings@preprod.local
 email_nav_support_address: nav-support@preprod.local
 email_samisk_kontakt_address: samisk-kontakt@preprod.local
@@ -82,7 +79,6 @@ no.nav.security:
 #        cookie-name: azuread-idtoken
 #        discovery-url: http://localhost:6969/azureread/.well-known/openid-configuration
 
-
 norg2:
   api:
     v1:
@@ -90,6 +86,11 @@ norg2:
 oppgave_oppgaver_url: http://localhost:8093/api/v1/oppgaver
 saf:
   graphql:
-    url: http://localhost:8095/graphql
+    url: http://localhost:8095/safgraphql
 hentdokument:
   url: http://localhost:8095/rest/hentdokument
+
+# PDL
+graphql:
+  endpoint:
+    url: http://localhost:8096/pdlgraphql

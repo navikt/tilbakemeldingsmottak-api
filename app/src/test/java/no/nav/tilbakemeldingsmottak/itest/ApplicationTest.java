@@ -132,23 +132,16 @@ public class ApplicationTest {
                         .withBodyFile("oppgave/hentOppgaveResponse.json")));
 
 
-        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/AKTOER/identer/"))
+        WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/pdlgraphql"))
                 .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
                         .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
-                        .withBodyFile("aktoer/aktoerResponse.json")));
+                        .withBodyFile("pdl/hentIdenterResponse.json")));
 
         WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/norg2/enhet"))
                 .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
                         .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(createNorg2Response())));
 
-/*
-        WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/safgraphql")).withRequestBody(containing("queryJournalpostId:88"))
-                .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
-                        .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
-                        .withBody(createSafGraphqlNoDocumentsResponse())));
-
-*/
         WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/safgraphql"))
                 .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
                         .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)

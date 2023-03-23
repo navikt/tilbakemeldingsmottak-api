@@ -82,3 +82,7 @@ no.nav.security.jwt:
       cookie-name: azuread-idtoken
       discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
 
+# PDL
+graphql:
+  endpoint:
+    url: ${PDL_URL}

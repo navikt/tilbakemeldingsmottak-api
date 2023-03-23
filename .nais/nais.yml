@@ -74,8 +74,6 @@ spec:
       value: {{ JOURNALPOST_V1_URL }}
     - name: OPPGAVE_OPPGAVER_URL
       value: {{ OPPGAVE_OPPGAVER_URL }}
-    - name: AKTOERREGISTER_IDENTER_URL
-      value: {{ AKTOERREGISTER_IDENTER_URL }}
     - name: EREG_API_URL
       value: {{ EREG_API_URL }}
     - name: NORG2_API_V1_URL
@@ -106,3 +104,5 @@ spec:
       value: {{ SAF_SCOPE }}
     - name: OPPGAVE_SCOPE
       value: {{ OPPGAVE_SCOPE }}
+    - name: PDL_URL
+      value: {{ PDL_URL }}

@@ -1,7 +1,4 @@
 Journalpost_v1_url: http://localhost:${wiremock.server.port}/OPPRETT_JOURNALPOST
-aktoerregister:
-  identer:
-    url: http://localhost:${wiremock.server.port}/AKTOER
 email_from_address: srvtilbakemeldings@preprod.local
 email_nav_support_address: nav-support@preprod.local
 email_samisk_kontakt_address: samisk-kontakt@preprod.local
@@ -73,6 +70,11 @@ oppgave_oppgaver_url: http://localhost:${wiremock.server.port}/OPPGAVE
 saf:
   graphql:
     url: http://localhost:${wiremock.server.port}/safgraphql
+
+# PDL
+graphql:
+  endpoint:
+    url: http://localhost:${wiremock.server.port}/pdlgraphql
 
 spring:
   jpa:

@@ -15,17 +15,12 @@ import java.util.concurrent.TimeUnit;
 @EnableCaching
 @Configuration
 public class CacheConfig {
-	public static final String AKTOER_CACHE = "aktoerCache";
 	public static final String NORG2_CACHE = "norgCache";
 
 	@Bean
     CacheManager cacheManager() {
 		SimpleCacheManager manager = new SimpleCacheManager();
 		manager.setCaches(Arrays.asList(
-				new CaffeineCache(AKTOER_CACHE, Caffeine.newBuilder()
-						.expireAfterWrite(50, TimeUnit.MINUTES)
-						.maximumSize(10000)
-						.build()),
 				new CaffeineCache(NORG2_CACHE, Caffeine.newBuilder()
 						.expireAfterWrite(50, TimeUnit.MINUTES)
 						.maximumSize(10000)
