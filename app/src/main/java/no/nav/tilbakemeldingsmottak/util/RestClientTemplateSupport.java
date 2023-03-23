@@ -14,6 +14,10 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.*;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -71,6 +75,22 @@ public class RestClientTemplateSupport {
                         .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for saf-maskintilmaskin"));
 
         return buildWebClient(buildHttpClient(5000,60,60), clientProperties);
+    }
+
+    @Bean(name="webClient")
+    WebClient webClient(
+            ClientRegistrationRepository clientRegistrationRepository,
+            OAuth2AuthorizedClientService authorizedClientService
+    ) {
+        var oauth = new ServletOAuth2AuthorizedClientExchangeFilterFunction(
+                new AuthorizedClientServiceOAuth2AuthorizedClientManager(
+                        clientRegistrationRepository, authorizedClientService
+                )
+        );
+        oauth.setDefaultClientRegistrationId("pdl");
+        return WebClient.builder()
+                .apply(oauth.oauth2Configuration())
+                .build();
     }
 
     private HttpClient buildHttpClient(int connection_timeout, int readTimeout, int writeTimeout) {

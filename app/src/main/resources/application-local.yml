@@ -16,10 +16,25 @@ spring:
             entity_copy_observer: allow
         generate_statistics: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-
   datasource:
     url: jdbc:postgresql://localhost:5430/postgres?user=postgres&password=postgres
+  security:
+    oauth2:
+      client:
+        registration:
+          pdl:
+            authorization-grant-type: client_credentials
+            client-id: fake
+            client-secret: someSecret
+        provider:
+          pdl:
+            token-uri: https://fakedings.dev-gcp.nais.io/fake/token
 
+pdl:
+  authorization_grant_type: client_credentials
+  client_id: fake
+  client_secret: someSecret
+  token_uri: https://fakedings.dev-gcp.nais.io/fake/token
 
 # TODO: Må endre på disse variablene
 

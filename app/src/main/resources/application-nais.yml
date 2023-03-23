@@ -29,6 +29,18 @@ spring:
     banner-mode: 'off'
   transaction:
     default-timeout: 300s
+  security:
+    oauth2:
+      client:
+        registration:
+          pdl:
+            authorization-grant-type: client_credentials
+            client-id: ${AZURE_APP_CLIENT_ID}
+            client-secret: ${AZURE_APP_CLIENT_SECRET}
+            scope: ${PDL_SCOPE}
+        provider:
+          pdl:
+            token-uri: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
 
 hentdokument:
   url: ${SAF_HENTDOKUMENT_URL}
@@ -73,6 +85,7 @@ no.nav.security.jwt:
           client-jwk: ${AZURE_APP_JWK}
           client-auth-method: private_key_jwt
 
+
   issuer:
     tokenx:
       discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
@@ -86,3 +99,4 @@ no.nav.security.jwt:
 graphql:
   endpoint:
     url: ${PDL_URL}
+

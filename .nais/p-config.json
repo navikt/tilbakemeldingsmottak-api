@@ -30,5 +30,6 @@
   ],
   "DOKARKIV_SCOPE": "api://prod-fss.teamdokumenthandtering.dokarkiv/.default",
   "SAF_SCOPE": "api://prod-fss.teamdokumenthandtering.saf/.default",
-  "OPPGAVE_SCOPE": "api://prod-fss.oppgavehandtering.oppgave/.default"
+  "OPPGAVE_SCOPE": "api://prod-fss.oppgavehandtering.oppgave/.default",
+  "PDL_SCOPE": "api://prod-fss.pdl.pdl-api/.default"
 }
