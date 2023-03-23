@@ -106,3 +106,5 @@ spec:
       value: {{ OPPGAVE_SCOPE }}
     - name: PDL_URL
       value: {{ PDL_URL }}
+    - name: PDL_SCOPE
+      value: {{ PDL_SCOPE }}

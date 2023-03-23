@@ -8,7 +8,7 @@
         <logger name="jdbc.sql" level="${log.level.jdbc.sql:-INFO}" />
         <logger name="org.hibernate.SQL" level="${log.level.org.hibernate.SQL:-INFO}" />
         <logger name="org.hibernate.SQL_SLOW" level="${log.level.org.hibernate.SQL_SLOW:-INFO}" />
-        <logger name="com.zaxxer.hikari" level="DEBUG" />
+        <logger name="com.zaxxer.hikari" level="ERROR" />
         <logger name="org.hibernate.type" level="${log.level.org.hibernate.type:-INFO}" />
         <logger name="org.hibernate" level="${log.level.org.hibernate:-INFO}" />
         <logger name="ch.qos.logback" level="${log.level.ch.qos.logback:-INFO}" />
