@@ -36,8 +36,6 @@ public class PdlService {
     private final QueryExecutor queryExecutor;
 
     public Identliste hentIdenter(String ident, List<IdentGruppe> grupper, Boolean historikk) {
-//        QueryExecutor queryExecutor = new QueryExecutor("halla", (Client) webClient);
-
         try {
             return queryExecutor.hentIdenter("{identer {ident gruppe historisk}}", ident, grupper, historikk);
         } catch (GraphQLRequestExecutionException | GraphQLRequestPreparationException e) {

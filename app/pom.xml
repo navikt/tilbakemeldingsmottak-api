@@ -85,13 +85,6 @@
             <artifactId>spring-security-oauth2-client</artifactId>
             <version>5.7.6</version>
         </dependency>
-        <dependency>
-            <groupId>org.projectreactor</groupId>
-            <artifactId>reactor-spring</artifactId>
-            <version>1.0.1.RELEASE</version>
-        </dependency>
-
-
 
         <!--Security-->
         <dependency>
