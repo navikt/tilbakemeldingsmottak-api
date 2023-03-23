@@ -35,6 +35,7 @@ pdl:
   client_id: fake
   client_secret: someSecret
   token_uri: https://fakedings.dev-gcp.nais.io/fake/token
+  url: http://localhost:8096/pdlgraphql
 
 # TODO: Må endre på disse variablene
 
@@ -78,6 +79,15 @@ no.nav.security:
           token-endpoint-url: https://fakedings.dev-gcp.nais.io/fake/token
           grant-type: client_credentials
           scope: ${OPPGAVE_SCOPE}
+          authentication:
+            client-id: fake
+            client-secret: someSecret
+            client-auth-method: client_secret_basic
+
+        pdl:
+          token-endpoint-url: https://fakedings.dev-gcp.nais.io/fake/token
+          grant-type: client_credentials
+          scope: ${PDL_SCOPE}
           authentication:
             client-id: fake
             client-secret: someSecret

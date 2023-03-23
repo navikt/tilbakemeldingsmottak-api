@@ -9,21 +9,19 @@ import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.*;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +36,9 @@ public class RestClientTemplateSupport {
 
     @Autowired
     private ClientConfigurationProperties clientConfigurationProperties;
+
+    @Value("${pdl.url}")
+    String pdlUrl;
 
     @Bean
     @Qualifier("arkivClient")
@@ -78,19 +79,25 @@ public class RestClientTemplateSupport {
     }
 
     @Bean(name="webClient")
-    WebClient webClient(
-            ClientRegistrationRepository clientRegistrationRepository,
-            OAuth2AuthorizedClientService authorizedClientService
-    ) {
-        var oauth = new ServletOAuth2AuthorizedClientExchangeFilterFunction(
-                new AuthorizedClientServiceOAuth2AuthorizedClientManager(
-                        clientRegistrationRepository, authorizedClientService
-                )
-        );
-        oauth.setDefaultClientRegistrationId("pdl");
+    WebClient webClient() {
+
+        ClientProperties clientProperties =
+                Optional.ofNullable(clientConfigurationProperties.getRegistration().get("pdl"))
+                        .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for pdl"));
+
+        HttpClient httpClient = buildHttpClient(5000,60,60);
         return WebClient.builder()
-                .apply(oauth.oauth2Configuration())
+                .baseUrl(pdlUrl)
+                .defaultHeader("Content-Type", "application/json").defaultUriVariables(Collections.singletonMap("url", pdlUrl))
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(MAX_FILE_SIZE))
+                        .build())
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .filter(bearerTokenExchange(clientProperties))
                 .build();
+
     }
 
     private HttpClient buildHttpClient(int connection_timeout, int readTimeout, int writeTimeout) {
