@@ -18,9 +18,9 @@
   "TENANT": "trygdeetaten.no",
   "SERVICEUSER_EMAIL": "srvtilbakemeldings@trygdeetaten.no",
   "EMAIL_FROM_ADDRESS": "srvtilbakemeldings@nav.no",
-  "EMAIL_SERVICEKLAGE_ADDRESS": "lars.stenstad@nav.no",
-  "EMAIL_NAV_SUPPORT_ADDRESS": "lars.stenstad@nav.no",
-  "EMAIL_SAMISK_SUPPORT_ADDRESS": "lars.stenstad@nav.no",
+  "EMAIL_SERVICEKLAGE_ADDRESS": "stulenmorten@gmail.com",
+  "EMAIL_NAV_SUPPORT_ADDRESS": "stulenmorten@gmail.com",
+  "EMAIL_SAMISK_SUPPORT_ADDRESS": "stulenmorten@gmail.com",
   "SPRING_MAIL_HOST": "exchange.preprod.local",
   "outboundExternalHosts": [
     "ereg-services.dev-fss-pub.nais.io",
