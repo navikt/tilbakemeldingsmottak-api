@@ -51,15 +51,4 @@ public class PdlService {
         return identer.get(0).getIdent();
     }
 
-    // https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_oauth2
-//    @Bean
-//    ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction(
-//            ReactiveClientRegistrationRepository clientRegistrations) {
-//        ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
-//                clientRegistrations, new UnAuthenticatedServerOAuth2AuthorizedClientRepository());
-//        oauth.setDefaultClientRegistrationId("pdl");
-//        return oauth;
-//    }
-
-
 }

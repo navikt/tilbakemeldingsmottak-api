@@ -78,6 +78,8 @@ public class RestClientTemplateSupport {
         return buildWebClient(buildHttpClient(5000,60,60), clientProperties);
     }
 
+    // Denne overskriver den genererte SpringConfiguration sin webClient (i target/generated-sources)
+    // Akkurat nå støttes bare én graphql server, men det kan støttes flere ved å følge denne: https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_more_than_one_graphql_servers
     @Bean(name="webClient")
     WebClient webClient() {
 
@@ -85,19 +87,7 @@ public class RestClientTemplateSupport {
                 Optional.ofNullable(clientConfigurationProperties.getRegistration().get("pdl"))
                         .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for pdl"));
 
-        HttpClient httpClient = buildHttpClient(5000,60,60);
-        return WebClient.builder()
-                .baseUrl(pdlUrl)
-                .defaultHeader("Content-Type", "application/json").defaultUriVariables(Collections.singletonMap("url", pdlUrl))
-                .exchangeStrategies(ExchangeStrategies.builder()
-                        .codecs(configurer -> configurer
-                                .defaultCodecs()
-                                .maxInMemorySize(MAX_FILE_SIZE))
-                        .build())
-                .clientConnector(new ReactorClientHttpConnector(httpClient))
-                .filter(bearerTokenExchange(clientProperties))
-                .build();
-
+        return buildWebClientWithUrl(buildHttpClient(5000,60,60), clientProperties, pdlUrl);
     }
 
     private HttpClient buildHttpClient(int connection_timeout, int readTimeout, int writeTimeout) {
@@ -119,6 +109,20 @@ public class RestClientTemplateSupport {
                 .filter(bearerTokenExchange(clientProperties))
                 .build();
 
+    }
+
+    private WebClient buildWebClientWithUrl(HttpClient httpClient, ClientProperties clientProperties, String url)  {
+        return WebClient.builder()
+                .baseUrl(url)
+                .defaultHeader("Content-Type", "application/json").defaultUriVariables(Collections.singletonMap("url", url))
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(MAX_FILE_SIZE))
+                        .build())
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .filter(bearerTokenExchange(clientProperties))
+                .build();
     }
 
     private WebClient buildWebClient(HttpClient httpClient)  {

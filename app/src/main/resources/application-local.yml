@@ -18,23 +18,8 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     url: jdbc:postgresql://localhost:5430/postgres?user=postgres&password=postgres
-  security:
-    oauth2:
-      client:
-        registration:
-          pdl:
-            authorization-grant-type: client_credentials
-            client-id: fake
-            client-secret: someSecret
-        provider:
-          pdl:
-            token-uri: https://fakedings.dev-gcp.nais.io/fake/token
 
 pdl:
-  authorization_grant_type: client_credentials
-  client_id: fake
-  client_secret: someSecret
-  token_uri: https://fakedings.dev-gcp.nais.io/fake/token
   url: http://localhost:8096/pdlgraphql
 
 # TODO: Må endre på disse variablene
@@ -48,11 +33,12 @@ email_uu_address: uu@preprod.local
 ereg.api.url: https://ereg-services.dev-fss-pub.nais.io
 
 aad:
-  authority: https://localhost:3000/authority
+  authority: authority
   clientId: 1111199999
   serviceuser: srvDummy
   password: srvDummy@nav.no
   clientSecret: secret
+
 no.nav.security:
   jwt:
     client:
@@ -97,12 +83,6 @@ no.nav.security:
       tokenx:
         discovery-url: https://fakedings.dev-gcp.nais.io/fake/.well-known/openid-configuration
         accepted-audience: tokenx
-#        discovery-url: http://localhost:6969/tokenx/.well-known/openid-configuration
-#        accepted-audience: aud-localhost-tokenx
-#      azuread:
-#        accepted-audience: aud-localhost-azureread
-#        cookie-name: azuread-idtoken
-#        discovery-url: http://localhost:6969/azureread/.well-known/openid-configuration
 
 norg2:
   api:
@@ -115,7 +95,6 @@ saf:
 hentdokument:
   url: http://localhost:8095/rest/hentdokument
 
-# PDL
 graphql:
   endpoint:
-    url: http://localhost:8096/pdlgraphql
+    url: ${pdl.url}

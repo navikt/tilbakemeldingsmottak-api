@@ -96,8 +96,6 @@ spec:
       value: {{ EMAIL_NAV_SUPPORT_ADDRESS }}
     - name: EMAIL_SAMISK_KONTAKT_ADDRESS
       value: {{ EMAIL_SAMISK_KONTAKT_ADDRESS }}
-    - name: SPRING_EMAIL_HOST
-      value: {{ SPRING_EMAIL_HOST }}
     - name: DOKARKIV_SCOPE
       value: {{ DOKARKIV_SCOPE }}
     - name: SAF_SCOPE

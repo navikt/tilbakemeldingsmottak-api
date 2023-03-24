@@ -21,7 +21,6 @@
   "EMAIL_SERVICEKLAGE_ADDRESS": "nav.serviceklager@nav.no",
   "EMAIL_NAV_SUPPORT_ADDRESS": "support@nav.no",
   "EMAIL_SAMISK_SUPPORT_ADDRESS": "nav.kontaktsenter.finnmark.samisk.kontakt.bruker@nav.no",
-  "SPRING_MAIL_HOST": "smtp.adeo.no",
   "outboundExternalHosts": [
     "ereg-services.prod-fss-pub.nais.io",
     "norg2.prod-fss-pub.nais.io",

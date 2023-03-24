@@ -52,6 +52,15 @@ no.nav.security:
             client-id: fake
             client-secret: someSecret
             client-auth-method: client_secret_basic
+
+        pdl:
+          token-endpoint-url: http://localhost:${token.server.port}/fake/token
+          grant-type: client_credentials
+          scope: scope
+          authentication:
+            client-id: fake
+            client-secret: someSecret
+            client-auth-method: client_secret_basic
     issuer:
       tokenx:
         discoveryurl: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
@@ -70,11 +79,11 @@ oppgave_oppgaver_url: http://localhost:${wiremock.server.port}/OPPGAVE
 saf:
   graphql:
     url: http://localhost:${wiremock.server.port}/safgraphql
-
-# PDL
+pdl:
+  url: http://localhost:${wiremock.server.port}/pdlgraphql
 graphql:
   endpoint:
-    url: http://localhost:${wiremock.server.port}/pdlgraphql
+    url: ${pdl.url}
 
 spring:
   jpa:
