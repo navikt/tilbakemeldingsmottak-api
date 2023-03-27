@@ -114,6 +114,30 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/BestillSamtaleResponse'
+
+  /rest/datavarehus/serviceklage:
+    get:
+      description: Hent serviceklage data for datavarehus basert på dato
+      tags:
+        - datavarehus-rest-controller
+      operationId: hentServiceKlageDataForDatavarehus
+      parameters:
+        - name: datoFra
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DatavarehusServiceklage'
+
   /rest/taskserviceklage/hentskjema/{oppgaveId}:
     get:
       description: Hent innsendt serviceklage skjema med spørsmål og svar.
@@ -438,6 +462,72 @@ components:
       properties:
         message:
           type: string
+    DatavarehusServiceklage:
+      type: object
+      properties:
+        journalpost_id:
+          type: string
+        opprettet_dato:
+          type: string
+        klagen_gjelder_id:
+          type: string
+        klagetyper:
+          type: string
+          description: Komma-separert liste av klagetyper
+        gjelder_sosialhjelp:
+          type: string
+        klagetekst:
+          type: string
+        behandles_som_serviceklage:
+          type: string
+        behandles_som_serviceklage_utdypning:
+          type: string
+        fremmet_dato:
+          type: string
+        innsender:
+          type: string
+        kanal:
+          type: string
+        kanal_utdypning:
+          type: string
+        enhetsnummer_paaklaget:
+          type: string
+        enhetsnummer_behandlende:
+          type: string
+        gjelder:
+          type: string
+        beskrivelse:
+          type: string
+        ytelse:
+          type: string
+        tema:
+          type: string
+        tema_utdypning:
+          type: string
+        veiledning:
+          type: string
+        utfall:
+          type: string
+        aarsak:
+          type: string
+        tiltak:
+          type: string
+        svarmetode:
+          type: string
+        svarmetode_utdypning:
+          type: string
+        avsluttet_dato:
+          type: string
+        skjema_versjon:
+          type: string
+        klassifisering_json:
+          type: string
+        relatert:
+          type: string
+        klagetype_utdypning:
+          type: string
+        innlogget:
+          type: boolean
     Answer:
       type: object
       properties:

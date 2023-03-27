@@ -9,11 +9,14 @@ import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentFunctionalExce
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostIkkeFunnetFunctionalException;
 import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -53,6 +56,14 @@ public class ControllerAdvice {
         log.warn("Autentisering feilet ved kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
         return ResponseEntity.status(status).body(ErrorResponse.builder()
                 .message(status.getReasonPhrase())
+                .build());
+    }
+
+    @ExceptionHandler(value = {MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class })
+    public ResponseEntity<ErrorResponse> failedParametersHandler(HttpServletRequest request, Exception ex) {
+        log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
+                .message(ex.getMessage())
                 .build());
     }
 
