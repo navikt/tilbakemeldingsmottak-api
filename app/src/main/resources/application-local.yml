@@ -19,23 +19,39 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5430/postgres?user=postgres&password=postgres
 
+norg2:
+  api:
+    v1:
+      url: http://localhost:8094/norg2/api/v1
+
+oppgave_oppgaver_url: http://localhost:8093/api/v1/oppgaver
+
+saf:
+  graphql:
+    url: http://localhost:8095/safgraphql
+
+hentdokument:
+  url: http://localhost:8095/rest/hentdokument
+
+graphql:
+  endpoint:
+    url: ${pdl.url}
+
 pdl:
   url: http://localhost:8096/pdlgraphql
 
-# TODO: Må endre på disse variablene
+ereg.api.url: https://ereg-services.dev-fss-pub.nais.io
 
 Journalpost_v1_url: http://localhost:8092/rest/journalpostapi/v1
-email_from_address: srvtilbakemeldings@preprod.local
-email_nav_support_address: nav-support@preprod.local
-email_samisk_kontakt_address: samisk-kontakt@preprod.local
-email_serviceklage_address: nav.serviceklager@preprod.local
-email_uu_address: uu@preprod.local
-ereg.api.url: https://ereg-services.dev-fss-pub.nais.io
+
+email_from_address: srvtilbakemeldings@trygdeetaten.no
+email_nav_support_address: nav-support@trygdeetaten.no
+email_samisk_kontakt_address: samisk-kontakt@trygdeetaten.no
+email_serviceklage_address: nav-serviceklager@trygdeetaten.no
 
 aad:
   authority: authority
   clientId: 1111199999
-  serviceuser: srvDummy
   password: srvDummy@nav.no
   clientSecret: secret
 
@@ -87,17 +103,3 @@ no.nav.security:
         discovery-url: http://localhost:6969/azuread/.well-known/openid-configuration
         accepted-audience: azuread-client-id
 
-norg2:
-  api:
-    v1:
-      url: http://localhost:8094/norg2/api/v1
-oppgave_oppgaver_url: http://localhost:8093/api/v1/oppgaver
-saf:
-  graphql:
-    url: http://localhost:8095/safgraphql
-hentdokument:
-  url: http://localhost:8095/rest/hentdokument
-
-graphql:
-  endpoint:
-    url: ${pdl.url}

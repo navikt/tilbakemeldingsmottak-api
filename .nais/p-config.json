@@ -16,7 +16,6 @@
   "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
   "AZURE_DEFAULT_SCOPE": "openid",
   "TENANT": "nav.no",
-  "SERVICEUSER_EMAIL": "srvtilbakemeldings@nav.no",
   "EMAIL_FROM_ADDRESS": "srvtilbakemeldings@nav.no",
   "EMAIL_SERVICEKLAGE_ADDRESS": "nav.serviceklager@nav.no",
   "EMAIL_NAV_SUPPORT_ADDRESS": "support@nav.no",

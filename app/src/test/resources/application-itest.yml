@@ -17,7 +17,6 @@ management:
 aad:
   authority: https://localhost:${wiremock.server.port}/authority
   clientId: 1111199999
-  serviceuser: srvDummy
   password: srvDummy@nav.no
 
 no.nav.security:

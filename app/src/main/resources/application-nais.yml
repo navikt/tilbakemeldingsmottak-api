@@ -32,15 +32,19 @@ spring:
 
 hentdokument:
   url: ${SAF_HENTDOKUMENT_URL}
+
 saf:
   graphql:
     url: ${SAF_URL}
+
+graphql:
+  endpoint:
+    url: ${PDL_URL}
+
 aad:
   authority: ${AAD_AUTHORITY}
   clientId:  ${AZURE_APP_CLIENT_ID}
   clientSecret:  ${AZURE_APP_CLIENT_SECRET}
-  serviceuser: ${SERVICEUSER_EMAIL}
-  password: ${SERVICEUSER_PASSWORD}
   tenant: ${TENANT}
 
 no.nav.security.jwt:
@@ -89,6 +93,3 @@ no.nav.security.jwt:
       accepted-audience: ${AZURE_APP_CLIENT_ID}
       discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
 
-graphql:
-  endpoint:
-    url: ${PDL_URL}

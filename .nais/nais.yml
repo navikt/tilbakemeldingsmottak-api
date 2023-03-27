@@ -90,8 +90,6 @@ spec:
       value: {{AZURE_DEFAULT_SCOPE}}
     - name: TENANT
       value: {{ TENANT }}
-    - name: SERVICEUSER_EMAIL
-      value: {{ SERVICEUSER_EMAIL}}
     - name: EMAIL_FROM_ADDRESS
       value: {{ EMAIL_FROM_ADDRESS }}
     - name: EMAIL_SERVICEKLAGE_ADDRESS
