@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface ServiceklageRepository extends CrudRepository<Serviceklage, Long> {
     Serviceklage findByJournalpostId(String journalpostId);
-    List<Serviceklage> findAllByOpprettetDatoAfter(LocalDateTime opprettetDato);
+    List<Serviceklage> findAllByOpprettetDatoAfterOrAvsluttetDatoAfter(LocalDateTime opprettetDato, LocalDateTime avsluttetDato);
 }
