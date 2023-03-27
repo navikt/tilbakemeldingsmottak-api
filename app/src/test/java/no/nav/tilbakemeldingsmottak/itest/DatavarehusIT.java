@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import no.nav.tilbakemeldingsmottak.model.DatavarehusServiceklage;
 
@@ -15,7 +16,7 @@ public class DatavarehusIT extends ApplicationTest {
 
     @Test
     void happyPath() {
-        HttpEntity requestEntity = new HttpEntity(null, createHeaders());
+        HttpEntity requestEntity = new HttpEntity(null, createHeaders(AZURE_ISSUER,"12345", "datavarehus"));
         ResponseEntity<DatavarehusServiceklage[]> response = restTemplate.exchange(URL_DATAVAREHUS, HttpMethod.GET, requestEntity, DatavarehusServiceklage[].class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());

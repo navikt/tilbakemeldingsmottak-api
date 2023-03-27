@@ -188,6 +188,27 @@ public class ApplicationTest {
         return headers;
     }
 
+    HttpHeaders createHeaders(String issuer, String user, String role) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user, role));
+        headers.add("correlation_id", UUID.randomUUID().toString());
+        return headers;
+    }
+
+    HttpHeaders createHeaders(String issuer, String user, String role, Boolean addCookie) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String token = getToken(issuer, user);
+
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user, role));
+        headers.add("correlation_id", UUID.randomUUID().toString());
+        if (addCookie) {
+            headers.add("Cookie", "selvbetjening-idtoken="+token);
+        }
+        return headers;
+    }
+
 
     private String getToken(String user) {
         return token(AZURE_ISSUER, user, AUD);
@@ -195,6 +216,10 @@ public class ApplicationTest {
 
     public String getToken(String issuer, String user) {
         return token(issuer, user, AUD);
+    }
+
+    public String getToken(String issuer, String user, String role) {
+        return tokenWithClaims(issuer, user, AUD, Map.of("roles", role));
     }
 
 
@@ -212,6 +237,21 @@ public class ApplicationTest {
                 MockLoginController.class.getSimpleName(),
                 oAuth2TokenCallback
             ).serialize();
+    }
+    private String tokenWithClaims(String issuerId, String subject, String audience, Map<String, String> claims)  {
+        OAuth2TokenCallback oAuth2TokenCallback = new DefaultOAuth2TokenCallback(
+                issuerId,
+                subject,
+                JOSEObjectType.JWT.getType(),
+                List.of(audience),
+                claims,
+                3600
+        );
+        return mockOAuth2Server.issueToken(
+                issuerId,
+                MockLoginController.class.getSimpleName(),
+                oAuth2TokenCallback
+        ).serialize();
     }
 
 

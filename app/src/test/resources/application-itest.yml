@@ -65,10 +65,8 @@ no.nav.security:
       tokenx:
         discoveryurl: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
         accepted_audience: aud-localhost
-        cookie_name: tokenx
       azuread:
         accepted-audience: aud-localhost
-        cookie-name: azuread-idtoken
         discovery-url: http://localhost:${token.server.port}/azuread/.well-known/openid-configuration
 
 norg2:
