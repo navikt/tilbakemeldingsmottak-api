@@ -7,28 +7,55 @@ services:
       TZ: Europe/Oslo
       SERVER_PORT: 6969
       JSON_CONFIG: '{
-        "interactiveLogin": true,
-        "httpServer": "NettyWrapper",
-        "tokenCallbacks": [
-          {
-            "issuerId": "tokenx",
-            "tokenExpiry": 600000,
-            "requestMappings": [
-              {
-                "requestParam": "scope",
-                "match": "*",
-                "claims": {
-                  "sub": "tilbakemeldingsmottak",
-                  "aud": "aud-localhost-tokenx",
-                  "NAVident": "A123456",
-                  "name": "Test Testesen",
-                  "groups": ["admin-group"]
-                }
+      "interactiveLogin": true,
+      "httpServer": "NettyWrapper",
+      "tokenCallbacks": [
+        {
+          "issuerId": "tokenx",
+          "tokenExpiry": 600000,
+          "requestMappings": [
+            {
+              "requestParam": "scope",
+              "match": "*",
+              "claims": {
+                "sub": "tilbakemeldingsmottak-api",
+                "aud": "tokenx-client-id",
+                "NAVident": "A123456",
+                "name": "Test Testesen"
               }
-            ]
-          }
-        ]
-        }'
+            }
+          ]
+        },
+        {
+          "issuerId": "azuread",
+          "tokenExpiry": 600000,
+          "requestMappings": [
+            {
+              "requestParam": "scope",
+              "match": "openid frontend",
+              "claims": {
+                "sub": "tilbakemeldingsmottak-api",
+                "aud": "azuread-client-id",
+                "NAVident": "A123456",
+                "name": "Test Testesen",
+                "roles": ["serviceklage-klassifisering"]
+              }
+            },
+            {
+              "requestParam": "scope",
+              "match": "openid datavarehus",
+              "claims": {
+                "sub": "tilbakemeldingsmottak-api",
+                "aud": "azuread-client-id",
+                "NAVident": "A123456",
+                "name": "Test Testesen",
+                "roles": ["datavarehus"]
+              }
+            }
+          ]
+        }
+      ]
+    }'
   db:
     image: postgres:14.1-alpine
     container_name: postgres-db

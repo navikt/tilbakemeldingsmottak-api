@@ -81,8 +81,11 @@ no.nav.security:
 
     issuer:
       tokenx:
-        discovery-url: https://fakedings.dev-gcp.nais.io/fake/.well-known/openid-configuration
-        accepted-audience: tokenx
+        discovery-url: http://localhost:6969/tokenx/.well-known/openid-configuration
+        accepted-audience: tokenx-client-id
+      azuread:
+        discovery-url: http://localhost:6969/azuread/.well-known/openid-configuration
+        accepted-audience: azuread-client-id
 
 norg2:
   api:

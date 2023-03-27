@@ -23,8 +23,7 @@ import no.nav.tilbakemeldingsmottak.api.RosRestControllerApi;
 import javax.transaction.Transactional;
 
 @Slf4j
-// FIXME: Legg på autentisering
-@Unprotected
+@ProtectedWithClaims(issuer = "tokenx")
 @RestController
 @RequiredArgsConstructor
 public class RosRestController implements RosRestControllerApi {

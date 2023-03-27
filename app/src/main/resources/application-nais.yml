@@ -87,7 +87,6 @@ no.nav.security.jwt:
       accepted_audience: ${TOKEN_X_CLIENT_ID}
     azuread:
       accepted-audience: ${AZURE_APP_CLIENT_ID}
-      cookie-name: azuread-idtoken
       discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
 
 graphql:

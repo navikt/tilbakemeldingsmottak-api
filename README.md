@@ -9,32 +9,45 @@ oppretter en kontroll oppgave som følges opp av ansvarlig enhet.
 
 # Komme i gang
 
-Hvordan bygge, teste og kjøre koden
+Applikasjonen kjører Java 17. Hvordan bygge, teste og kjøre koden:
 
 ## Bygging lokalt
-* Applikasjonen benytter java 17, dette må være installert
-* toolchain.xml må settes opp i ~/m2/toolchain.xml
-* applikasjonen bygger med mvn clean install
-* avhengigheter til [Internt repo](https://repo.adeo.no)
+* Kjør `mvn clean install`
+* Kjør `docker-compose up` for å kjøre opp mocks og database lokalt
+* Kjør Spring Boot applikasjonen i IntelliJ
+
+### Autentisering
+
+Det er to måter å autentisere seg mot applikasjonen på; `tokenx` og `azuread`. En mock auth server kjøres via docker-compose og kan brukes til å generere gyldige tokens lokalt. 
+Vi skiller på Azure AD brukere som skal klassifisere serviceklager og brukere som skal hente ut data til datavarehuset. 
+
+- For tokenx:
+  - Gå til `http://localhost:6969/tokenx/debugger` og velg "Get a token" med hva som helst i user objektet
+- For azuread (brukere som skal klassifisere serviceklager):
+  - Gå til `http://localhost:6969/azuread/debugger` og bytt ut `somescope` med `frontend`. Velg deretter "Get a token" med hva som helst i user objektet
+- For azuread (brukere som skal hente ut data til datavarehuset):
+    - Gå til `http://localhost:6969/azuread/debugger` og bytt ut `somescope` med `datavarehus`. Velg deretter "Get a token" med hva som helst i user objektet
+
 
 ## Bygg og deploy til akseptansetestmiljø
-* Applikasjonen er PT satt opp for bygg mot Q1
-* merge din branch inn i [preprod-pipeline](https://github.com/navikt/tilbakemeldingsmottak-api/tree/preprod-pipeline)
+* Applikasjonen er satt opp for bygg mot `dev-gcp`
+* Merge din branch inn i [preprod-pipeline](https://github.com/navikt/tilbakemeldingsmottak-api/tree/preprod-pipeline)
   * Da blir appliakskjonen deployet og du kan se status [her](https://github.com/navikt/tilbakemeldingsmottak-api/actions)
     * Kun merge til prod krever PR
+
 ### Test i miljøet
 For å teste appliaksjonen er en avhengig av å ha:
-1. en test-ident for saksbehandler opprettet i [Ida](https://ida.nais.adeo.no/)
-   - brukeren må ha nasjonal tilgang, tilgang til gosys, enhet 4200 og tema SRV Serviceklage
-2. testperson opprettet i [dolly](https://dolly.nais.preprod.local/)
+1. En test-ident for saksbehandler opprettet i [Ida](https://ida.nais.adeo.no/)
+   - Brukeren må ha nasjonal tilgang, tilgang til gosys, enhet 4200 og tema SRV Serviceklage
+2. Testperson opprettet i [dolly](https://dolly.nais.preprod.local/)
 
 Innsending gjøres via 
     [Ditt nav](http://www.dev.nav.no/person/dittnav) eller innlogget/uinlogget fra [Kontakt oss/Tilbakemelding](https://www.dev.nav.no/person/kontakt-oss/nb/tilbakemeldinger) 
 
 Saksbehandling gjøres via [Gosys](https://gosys-nais-q1.nais.preprod.local/gosys/)
-- logg på med test-saksbehandler
+- Logg på med test-saksbehandler
 *When it fails*
-* under bygg av docker image eller deploy må det gjennomføres ny commit i branch.  
+* Under bygg av docker image eller deploy må det gjennomføres ny commit i branch.  
 Dette må gjøres fordi det må genereres nytt dockerimage da disse må være unike
 
 Kjente feil | Løsning  

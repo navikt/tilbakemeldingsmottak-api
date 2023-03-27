@@ -18,6 +18,10 @@ spec:
         - application: tilbakemeldinger
           namespace: personbruker
         - application: tilbakemeldingsmottak-frontend
+          permissions:
+            roles:
+              - serviceklage-klassifisering
+
     outbound:
       external:
       {{#each outboundExternalHosts}}
