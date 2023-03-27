@@ -108,3 +108,5 @@ spec:
       value: {{ PDL_URL }}
     - name: PDL_SCOPE
       value: {{ PDL_SCOPE }}
+    - name: AAD_EMAIL
+      value: {{ AAD_EMAIL }}

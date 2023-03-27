@@ -17,7 +17,8 @@ management:
 aad:
   authority: https://localhost:${wiremock.server.port}/authority
   clientId: 1111199999
-  password: srvDummy@nav.no
+  clientSecret: secret
+  email: dummy@dummy.com
 
 no.nav.security:
   jwt:

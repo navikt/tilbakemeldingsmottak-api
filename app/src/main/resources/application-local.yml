@@ -52,8 +52,9 @@ email_serviceklage_address: nav-serviceklager@trygdeetaten.no
 aad:
   authority: authority
   clientId: 1111199999
-  password: srvDummy@nav.no
   clientSecret: secret
+  email: srvtilbakemeldings@trygdeetaten.no
+  tenant: tenant
 
 no.nav.security:
   jwt:

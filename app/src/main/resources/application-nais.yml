@@ -45,6 +45,7 @@ aad:
   authority: ${AAD_AUTHORITY}
   clientId:  ${AZURE_APP_CLIENT_ID}
   clientSecret:  ${AZURE_APP_CLIENT_SECRET}
+  email: ${AAD_EMAIL}
   tenant: ${TENANT}
 
 no.nav.security.jwt:

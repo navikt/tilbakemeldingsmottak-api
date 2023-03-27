@@ -50,7 +50,7 @@ public class AADMailClientImpl implements AADMailClient {
                 .build();
 
         GraphServiceClient graphClient = getGraphClient();
-        graphClient.users("srvtilbakemeldings@trygdeetaten.no")
+        graphClient.users(aadProperties.getEmail())
                 .sendMail(sendMailParameterSet)
                 .buildRequest()
                 .post();

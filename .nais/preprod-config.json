@@ -16,6 +16,7 @@
   "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
   "AZURE_DEFAULT_SCOPE": "openid",
   "TENANT": "trygdeetaten.no",
+  "AAD_EMAIL": "srvtilbakemeldings@trygdeetaten.no",
   "EMAIL_FROM_ADDRESS": "srvtilbakemeldings@trygdeetaten.no",
   "EMAIL_SERVICEKLAGE_ADDRESS": "stulenmorten@gmail.com",
   "EMAIL_NAV_SUPPORT_ADDRESS": "stulenmorten@gmail.com",
