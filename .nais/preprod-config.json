@@ -1,32 +1,38 @@
 {
   "NAMESPACE": "teamserviceklage",
   "DATABASE_NAME": "tilbakemeldingsmottak-dev",
-  "AZUREAD_CLIENTID": "0877a4df-2851-4ffb-8d0b-3b5be744fd8e",
-  "NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL": "https://login.microsoftonline.com/NAVtestB2C.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten_ver1",
+
   "JOURNALPOST_V1_URL": "https://dokarkiv.dev-fss-pub.nais.io/rest/journalpostapi/v1",
   "OPPGAVE_OPPGAVER_URL": "https://oppgave-q1.dev-fss-pub.nais.io/api/v1/oppgaver",
   "EREG_API_URL": "https://ereg-services.dev-fss-pub.nais.io",
   "NORG2_API_V1_URL": "https://norg2.dev-fss-pub.nais.io/api/v1",
-  "INGRESS": [
-      "https://tilbakemeldingsmottak-gcp.intern.dev.nav.no"
-  ],
   "SAF_URL": "https://saf.dev-fss-pub.nais.io/graphql",
   "SAF_HENTDOKUMENT_URL": "https://saf.dev-fss-pub.nais.io/rest/hentdokument",
   "PDL_URL": "https://pdl-api.dev-fss-pub.nais.io/graphql",
+
+  "INGRESS": [
+      "https://tilbakemeldingsmottak-gcp.intern.dev.nav.no"
+  ],
+
+  "outboundExternalHosts": [
+    "ereg-services.dev-fss-pub.nais.io",
+    "norg2.dev-fss-pub.nais.io",
+    "saf.dev-fss-pub.nais.io",
+    "oppgave-q1.dev-fss-pub.nais.io",
+    "pdl-api.dev-fss-pub.nais.io"
+  ],
+
   "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
+  "NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL": "https://login.microsoftonline.com/NAVtestB2C.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten_ver1",
   "AZURE_DEFAULT_SCOPE": "openid",
   "TENANT": "trygdeetaten.no",
+
   "AAD_EMAIL": "srvtilbakemeldings@trygdeetaten.no",
   "EMAIL_FROM_ADDRESS": "srvtilbakemeldings@trygdeetaten.no",
   "EMAIL_SERVICEKLAGE_ADDRESS": "stulenmorten@gmail.com",
   "EMAIL_NAV_SUPPORT_ADDRESS": "stulenmorten@gmail.com",
   "EMAIL_SAMISK_SUPPORT_ADDRESS": "stulenmorten@gmail.com",
-  "outboundExternalHosts": [
-    "ereg-services.dev-fss-pub.nais.io",
-    "norg2.dev-fss-pub.nais.io",
-    "saf.dev-fss-pub.nais.io",
-    "oppgave-q1.dev-fss-pub.nais.io"
-  ],
+
   "DOKARKIV_SCOPE": "api://dev-fss.teamdokumenthandtering.dokarkiv-q1/.default",
   "SAF_SCOPE": "api://dev-fss.teamdokumenthandtering.saf-q1/.default",
   "OPPGAVE_SCOPE": "api://dev-fss.oppgavehandtering.oppgave-q1/.default",
