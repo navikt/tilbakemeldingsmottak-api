@@ -92,5 +92,5 @@ no.nav.security.jwt:
       accepted_audience: ${TOKEN_X_CLIENT_ID}
     azuread:
       accepted-audience: ${AZURE_APP_CLIENT_ID}
-      discovery-url: ${AZURE_APP_WELL_KNOWN_URL}
+      discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
 
