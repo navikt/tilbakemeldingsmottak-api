@@ -9,6 +9,8 @@ import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.pdl.PdlFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.pdl.PdlGraphqlException;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
@@ -113,11 +115,12 @@ public class OpprettServiceklageValidator extends RequestValidator {
     private void validateFnr(String fnr) {
         personnummerValidator.validate(fnr);
 
-        // FIXME: Legg til validering?
-//        Map<String, IdentInfoForAktoer> identer = aktoerConsumer.hentAktoerIdForIdent(fnr);
-//        if (identer == null || identer.get(fnr) == null || identer.get(fnr).getIdenter() == null) {
-//            throw new InvalidIdentException("Feil i validering av personnummer");
-//        }
+        try {
+            pdlService.hentAktorIdForIdent(fnr);
+        } catch (PdlFunctionalException | PdlGraphqlException e) {
+            throw new InvalidIdentException("Feil i validering av personnummer");
+        }
+
     }
 
     private void validateOrgnr(String orgnr) {

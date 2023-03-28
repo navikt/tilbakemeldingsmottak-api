@@ -3,15 +3,18 @@ package no.nav.tilbakemeldingsmottak.validators;
 import static no.nav.tilbakemeldingsmottak.TestUtils.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+import io.vavr.collection.List;
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
+import no.nav.tilbakemeldingsmottak.graphql.Identliste;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
@@ -281,15 +284,15 @@ class OpprettServiceklageValidatorTest {
         assertTrue(thrown.getMessage().contains("enhetsnummerPaaklaget må ha fire siffer"));
     }
 
-    // FIXME: Legg til test?
-//    @Test
-//    void shouldThrowExceptionIfPersonnummerNotValid() {
-//        when(aktoerConsumer.hentAktoerIdForIdent(anyString())).thenReturn(createInvalidHentAktoerIdForIdentResponse(PERSONNUMMER));
-//        opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
-//        Exception thrown = assertThrows(InvalidIdentException.class,
-//                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-//        assertTrue(thrown.getMessage().contains("Feil i validering av personnummer"));
-//    }
+    @Test
+    void shouldThrowExceptionIfPersonnummerResponseIsEmpty() {
+        when(pdlService.hentIdenter(anyString(), anyList())).thenReturn(Identliste.builder().build());
+        when(pdlService.hentAktorIdForIdent(anyString())).thenCallRealMethod();
+        opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
+        Exception thrown = assertThrows(InvalidIdentException.class,
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
+        assertTrue(thrown.getMessage().contains("Feil i validering av personnummer"));
+    }
 
     @Test
     void shouldThrowExceptionIfOrganisasjonsnummerNotValid() {

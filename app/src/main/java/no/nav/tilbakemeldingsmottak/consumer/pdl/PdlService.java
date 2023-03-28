@@ -1,30 +1,16 @@
 package no.nav.tilbakemeldingsmottak.consumer.pdl;
 
-
-import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import lombok.RequiredArgsConstructor;
+import no.nav.tilbakemeldingsmottak.exceptions.pdl.PdlFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.pdl.PdlGraphqlException;
 import no.nav.tilbakemeldingsmottak.graphql.IdentGruppe;
 import no.nav.tilbakemeldingsmottak.graphql.IdentInformasjon;
 import no.nav.tilbakemeldingsmottak.graphql.Identliste;
 import no.nav.tilbakemeldingsmottak.graphql.util.QueryExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
-import javax.inject.Inject;
-import javax.ws.rs.client.Client;
 import java.util.List;
 
 // Relevante linker:
@@ -35,19 +21,21 @@ import java.util.List;
 public class PdlService {
     private final QueryExecutor queryExecutor;
 
-    public Identliste hentIdenter(String ident, List<IdentGruppe> grupper, Boolean historikk) {
+    public Identliste hentIdenter(String ident, List<IdentGruppe> grupper) throws PdlGraphqlException {
         try {
-            return queryExecutor.hentIdenter("{identer {ident gruppe historisk}}", ident, grupper, historikk);
+            return queryExecutor.hentIdenter("{identer {ident gruppe historisk}}", ident, grupper, false);
         } catch (GraphQLRequestExecutionException | GraphQLRequestPreparationException e) {
-            throw new RuntimeException(e);
+            throw new PdlGraphqlException("Graphql query mot PDL feilet", new RuntimeException(e));
         }
     }
 
-    public String hentAktorIdForIdent(String ident) {
-        List<IdentInformasjon> identer = hentIdenter(ident, List.of(IdentGruppe.AKTORID), false).getIdenter();
-        if (identer.isEmpty()) {
-            throw new RuntimeException("Fant ingen aktørId for ident");
+    public String hentAktorIdForIdent(String ident) throws PdlFunctionalException {
+        List<IdentInformasjon> identer = hentIdenter(ident, List.of(IdentGruppe.AKTORID)).getIdenter();
+
+        if (identer == null || identer.isEmpty()) {
+            throw new PdlFunctionalException("Fant ingen aktørId for ident", new RuntimeException("Ingen aktørId"));
         }
+
         return identer.get(0).getIdent();
     }
 

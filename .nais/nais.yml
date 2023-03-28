@@ -18,8 +18,10 @@ spec:
         - application: tilbakemeldinger
           namespace: personbruker
         - application: tilbakemeldingsmottak-frontend
-          permissions:
+          permissions: # FIXME: Test med frontend
             roles:
+              - serviceklage-klassifisering
+            scopes:
               - serviceklage-klassifisering
 
     outbound:
