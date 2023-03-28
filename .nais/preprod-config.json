@@ -19,11 +19,11 @@
     "norg2.dev-fss-pub.nais.io",
     "saf.dev-fss-pub.nais.io",
     "oppgave-q1.dev-fss-pub.nais.io",
-    "pdl-api.dev-fss-pub.nais.io"
+    "pdl-api.dev-fss-pub.nais.io",
+    "dokarkiv.dev-fss-pub.nais.io"
   ],
 
   "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
-  "NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL": "https://login.microsoftonline.com/NAVtestB2C.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten_ver1",
   "AZURE_DEFAULT_SCOPE": "openid",
   "TENANT": "trygdeetaten.no",
 

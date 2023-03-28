@@ -18,12 +18,13 @@
     "ereg-services.prod-fss-pub.nais.io",
     "norg2.prod-fss-pub.nais.io",
     "saf.prod-fss-pub.nais.io",
-    "oppgave.prod-fss-pub.nais.io"
+    "oppgave.prod-fss-pub.nais.io",
+    "pdl-api.prod-fss-pub.nais.io",
+    "dokarkiv.prod-fss-pub.nais.io"
   ],
 
 
   "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
-  "NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL": "https://login.microsoftonline.com/navnob2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten",
   "AZURE_DEFAULT_SCOPE": "openid",
   "TENANT": "nav.no",
 
