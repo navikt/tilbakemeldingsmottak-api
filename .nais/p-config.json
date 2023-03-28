@@ -1,33 +1,41 @@
 {
   "NAMESPACE": "teamserviceklage",
   "DATABASE_NAME": "tilbakemeldingsmottak",
-  "AZUREAD_CLIENTID": "45104d6a-f5bc-4e8c-b352-4bbfc9381f25",
-  "SECURITYTOKENSERVICE_URL": "https://sts.adeo.no/SecurityTokenServiceProvider/",
-  "NO_NAV_SECURITY_JWT_ISSUER_AZUREAD_DISCOVERYURL": "https://login.microsoftonline.com/navnob2c.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1A_idporten",
-  "LOGINSERVICE_ACCEPTED_AUDIENCE": "9b4e07a3-4f4c-4bab-b866-87f62dff480d",
-  "LOGINSERVICE_OIDC_CALLBACKURI": "https://loginservice.nais.adeo.no/callback",
-  "NO_NAV_SECURITY_JWT_ISSUER_ISSO_DISCOVERYURL": "https://login.microsoftonline.com/navno.onmicrosoft.com/.well-known/openid-configuration",
-  "SECURITY_TOKEN_SERVICE_TOKEN_URL": "https://security-token-service.nais.adeo.no/rest/v1/sts/token",
-  "JOURNALPOST_V1_URL": "https://dokarkiv.nais.adeo.no/rest/journalpostapi/v1",
-  "OPPGAVE_OPPGAVER_URL": "https://oppgave.nais.adeo.no/api/v1/oppgaver",
-  "AKTOERREGISTER_IDENTER_URL": "https://app.adeo.no/aktoerregister/api/v1",
-  "EREG_API_URL": "https://modapp.adeo.no/ereg/api",
-  "NORG2_API_V1_URL": "https://app.adeo.no/norg2/api/v1",
-  "LOGINSERVICE_URL": "https://loginservice.nais.adeo.no/login?redirect=https://tilbakemeldingsmottak.nais.adeo.no/login",
+
+  "JOURNALPOST_V1_URL": "https://dokarkiv.prod-fss-pub.nais.io/rest/journalpostapi/v1",
+  "OPPGAVE_OPPGAVER_URL": "https://oppgave.prod-fss-pub.nais.io/api/v1/oppgaver",
+  "EREG_API_URL": "https://ereg-services.prod-fss-pub.nais.io",
+  "NORG2_API_V1_URL": "https://norg2.prod-fss-pub.nais.io/norg2/api/v1",
+  "SAF_URL": "https://saf.prod-fss-pub.nais.io/graphql",
+  "SAF_HENTDOKUMENT_URL": "https://saf.prod-fss-pub.nais.io/rest/hentdokument",
+  "PDL_URL": "https://pdl-api.prod-fss-pub.nais.io/graphql",
+
   "INGRESS": [
-          "https://tilbakemeldingsmottak.nais.adeo.no",
-          "https://tilbakemeldingsmottak.intern.nav.no",
-          "https://tilbakemeldingsmottak.prod-fss-pub.nais.io"
+      "https://tilbakemeldingsmottak-gcp.intern.nav.no"
   ],
-  "SAF_URL": "https://saf.intern.nav.no/graphql",
-  "SAF_HENTDOKUMENT_URL": "https://saf.intern.nav.no/rest/hentdokument",
+
+  "outboundExternalHosts": [
+    "ereg-services.prod-fss-pub.nais.io",
+    "norg2.prod-fss-pub.nais.io",
+    "saf.prod-fss-pub.nais.io",
+    "oppgave.prod-fss-pub.nais.io",
+    "pdl-api.prod-fss-pub.nais.io",
+    "dokarkiv.prod-fss-pub.nais.io"
+  ],
+
+
   "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
   "AZURE_DEFAULT_SCOPE": "openid",
   "TENANT": "nav.no",
-  "SERVICEUSER_EMAIL": "srvtilbakemeldings@nav.no",
+
+  "AAD_EMAIL": "srvtilbakemeldings@nav.no",
   "EMAIL_FROM_ADDRESS": "srvtilbakemeldings@nav.no",
   "EMAIL_SERVICEKLAGE_ADDRESS": "nav.serviceklager@nav.no",
   "EMAIL_NAV_SUPPORT_ADDRESS": "support@nav.no",
   "EMAIL_SAMISK_SUPPORT_ADDRESS": "nav.kontaktsenter.finnmark.samisk.kontakt.bruker@nav.no",
-  "SPRING_MAIL_HOST": "smtp.adeo.no"
+
+  "DOKARKIV_SCOPE": "api://prod-fss.teamdokumenthandtering.dokarkiv/.default",
+  "SAF_SCOPE": "api://prod-fss.teamdokumenthandtering.saf/.default",
+  "OPPGAVE_SCOPE": "api://prod-fss.oppgavehandtering.oppgave/.default",
+  "PDL_SCOPE": "api://prod-fss.pdl.pdl-api/.default"
 }

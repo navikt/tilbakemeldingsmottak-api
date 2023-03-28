@@ -16,10 +16,6 @@ env:
   docker_image: ghcr.io/${{ github.repository }}:${{ github.sha }}
 
 jobs:
-  test-frontend:
-    name: Test frontend
-    uses: ./.github/workflows/cypress.yml
-
   build-and-push:
     runs-on: ubuntu-latest
     steps:
@@ -63,7 +59,7 @@ jobs:
         tags: ${{ env.docker_image }}
 
   deploy-preprod:
-    needs: [test-frontend, build-and-push]
+    needs: [build-and-push]
     if: github.event.inputs.environment == 'preprod'
     runs-on: ubuntu-latest
     steps:
@@ -77,7 +73,7 @@ jobs:
           VAR: image=${{env.docker_image}}
           DRY_RUN: false
   deploy-prod:
-    needs: [test-frontend, build-and-push]
+    needs: [build-and-push]
     if: github.event.inputs.environment == 'prod'
     runs-on: ubuntu-latest
     steps:

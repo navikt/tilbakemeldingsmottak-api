@@ -3,13 +3,14 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.tilbakemeldingsmottak.consumer.aktoer.AktoerConsumer;
-import no.nav.tilbakemeldingsmottak.consumer.aktoer.domain.IdentInfoForAktoer;
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.pdl.PdlFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.pdl.PdlGraphqlException;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
@@ -24,9 +25,10 @@ import java.util.Map;
 public class OpprettServiceklageValidator extends RequestValidator {
 
     private final EregConsumer eregConsumer;
-    private final AktoerConsumer aktoerConsumer;
     private final OidcUtils oidcUtils;
     private final PersonnummerValidator personnummerValidator;
+
+    private final PdlService pdlService;
 
 
     private static final int ENHETSNUMMER_LENGTH = 4;
@@ -113,10 +115,12 @@ public class OpprettServiceklageValidator extends RequestValidator {
     private void validateFnr(String fnr) {
         personnummerValidator.validate(fnr);
 
-        Map<String, IdentInfoForAktoer> identer = aktoerConsumer.hentAktoerIdForIdent(fnr);
-        if (identer == null || identer.get(fnr) == null || identer.get(fnr).getIdenter() == null) {
+        try {
+            pdlService.hentAktorIdForIdent(fnr);
+        } catch (PdlFunctionalException | PdlGraphqlException e) {
             throw new InvalidIdentException("Feil i validering av personnummer");
         }
+
     }
 
     private void validateOrgnr(String orgnr) {

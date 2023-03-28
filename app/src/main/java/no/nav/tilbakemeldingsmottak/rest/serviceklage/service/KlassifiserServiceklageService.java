@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.NONE;
 import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -94,7 +94,8 @@ public class KlassifiserServiceklageService {
 
     private void sendKvittering(Serviceklage serviceklage, HentOppgaveResponseTo hentOppgaveResponseTo) throws JsonProcessingException {
 
-        String email = oicdUtils.getEmailForIssuer(LOGINSERVICE_ISSUER).orElseThrow(() -> new ServiceklageIkkeFunnetException("Fant ikke email-adresse i token"));
+        // FIXME: Sjekk om dette blir riktig. Var tidligere LOGINSERVICE_ISSUER
+        String email = oicdUtils.getEmailForIssuer(AZURE_ISSUER).orElseThrow(() -> new ServiceklageIkkeFunnetException("Fant ikke email-adresse i token"));
 
         LinkedHashMap<String, String> questionAnswerMap = createQuestionAnswerMap(serviceklage, hentOppgaveResponseTo);
 

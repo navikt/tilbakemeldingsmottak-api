@@ -19,9 +19,7 @@ public class AADProperties {
     @NotEmpty
     private String clientSecret;
     @NotEmpty
-    private String serviceuser;
-    @NotEmpty
-    private String password;
+    private String email;
     private String tenant;
 
 }

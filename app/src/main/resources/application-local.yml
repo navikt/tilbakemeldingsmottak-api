@@ -16,68 +16,91 @@ spring:
             entity_copy_observer: allow
         generate_statistics: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-
   datasource:
     url: jdbc:postgresql://localhost:5430/postgres?user=postgres&password=postgres
-
-
-# TODO: Må endre på disse variablene
-Journalpost_v1_url: http://localhost:3000/OPPRETT_JOURNALPOST
-aktoerregister:
-  identer:
-    url: http://localhost:3000/AKTOER
-email_from_address: srvtilbakemeldings@preprod.local
-email_nav_support_address: nav-support@preprod.local
-email_samisk_kontakt_address: samisk-kontakt@preprod.local
-email_serviceklage_address: nav.serviceklager@preprod.local
-email_uu_address: uu@preprod.local
-ereg:
-  api:
-    url: http://localhost:3000/ereg
-hentdokument:
-  url: http://localhost:3000/hentdokument
-aad:
-  authority: https://localhost:3000/authority
-  clientId: 1111199999
-  serviceuser: srvDummy
-  password: srvDummy@nav.no
-  clientSecret: secret
-no.nav.security:
-  jwt:
-    mock:
-      enable: true
-    client:
-      registration:
-        serviceuser:
-          authentication:
-            client-auth-method: client_secret_basic
-            client-id: username
-            client-secret: password
-          grant-type: client_credentials
-          scope: openid
-          token-endpoint-url: http://localhost:9068/reststs/token
-    issuer:
-      tokenx:
-        discovery-url: https://fakedings.dev-gcp.nais.io/tokenx/.well-known/openid-configuration
-        accepted-audience: aud-localhost
-      azuread:
-        accepted-audience: aud-localhost
-        cookie-name: azuread-idtoken
-        discovery-url: https://fakedings.dev-gcp.nais.io/fake/.well-known/openid-configuration
-
 
 norg2:
   api:
     v1:
-      url: http://localhost:3000/norg2
-oppgave_oppgaver_url: http://localhost:3000/OPPGAVE
+      url: http://localhost:8094/norg2/api/v1
+
+oppgave_oppgaver_url: http://localhost:8093/api/v1/oppgaver
+
 saf:
   graphql:
-    url: http://localhost:3000/safgraphql
-security_token_service_token:
-  url: http://localhost:3000/STS
-serviceuser:
-  password: 123abc
-  username: tilbakemeldings
-loginservice:
-  url: http://localhost:3000/login
+    url: http://localhost:8095/safgraphql
+
+hentdokument:
+  url: http://localhost:8095/rest/hentdokument
+
+graphql:
+  endpoint:
+    url: ${pdl.url}
+
+pdl:
+  url: http://localhost:8096/pdlgraphql
+
+ereg.api.url: https://ereg-services.dev-fss-pub.nais.io
+
+Journalpost_v1_url: http://localhost:8092/rest/journalpostapi/v1
+
+email_from_address: srvtilbakemeldings@trygdeetaten.no
+email_nav_support_address: nav-support@trygdeetaten.no
+email_samisk_kontakt_address: samisk-kontakt@trygdeetaten.no
+email_serviceklage_address: nav-serviceklager@trygdeetaten.no
+
+aad:
+  authority: authority
+  clientId: 1111199999
+  clientSecret: secret
+  email: srvtilbakemeldings@trygdeetaten.no
+  tenant: tenant
+
+no.nav.security:
+  jwt:
+    client:
+      registration:
+        arkiv:
+          token-endpoint-url: https://fakedings.dev-gcp.nais.io/fake/token
+          grant-type: client_credentials
+          scope: ${DOKARKIV_SCOPE}
+          authentication:
+            client-id: fake
+            client-secret: someSecret
+            client-auth-method: client_secret_basic
+
+        saf-maskintilmaskin:
+          token-endpoint-url: https://fakedings.dev-gcp.nais.io/fake/token
+          grant-type: client_credentials
+          scope: ${SAF_SCOPE}
+          authentication:
+            client-id: fake
+            client-secret: someSecret
+            client-auth-method: client_secret_basic
+
+        oppgave:
+          token-endpoint-url: https://fakedings.dev-gcp.nais.io/fake/token
+          grant-type: client_credentials
+          scope: ${OPPGAVE_SCOPE}
+          authentication:
+            client-id: fake
+            client-secret: someSecret
+            client-auth-method: client_secret_basic
+
+        pdl:
+          token-endpoint-url: https://fakedings.dev-gcp.nais.io/fake/token
+          grant-type: client_credentials
+          scope: ${PDL_SCOPE}
+          authentication:
+            client-id: fake
+            client-secret: someSecret
+            client-auth-method: client_secret_basic
+
+    issuer:
+      tokenx:
+        discovery-url: http://localhost:6969/tokenx/.well-known/openid-configuration
+        accepted-audience: tokenx-client-id
+      azuread:
+        discovery-url: http://localhost:6969/azuread/.well-known/openid-configuration
+        accepted-audience: azuread-client-id
+

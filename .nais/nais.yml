@@ -17,6 +17,18 @@ spec:
       rules:
         - application: tilbakemeldinger
           namespace: personbruker
+        - application: tilbakemeldingsmottak-frontend
+          permissions: # FIXME: Test med frontend
+            roles:
+              - serviceklage-klassifisering
+            scopes:
+              - serviceklage-klassifisering
+
+    outbound:
+      external:
+      {{#each outboundExternalHosts}}
+       - host: "{{this}}"
+      {{/each}}
   liveness:
     path: /isAlive
     port: 9069
@@ -64,22 +76,14 @@ spec:
     - secret: tilbakemeldingsmottak-api-google-secret
 
   env:
-    - name: SECURITYTOKENSERVICE_URL
-      value: {{ SECURITYTOKENSERVICE_URL }}
-    - name: SECURITY_TOKEN_SERVICE_TOKEN_URL
-      value: {{ SECURITY_TOKEN_SERVICE_TOKEN_URL }}
     - name: JOURNALPOST_V1_URL
       value: {{ JOURNALPOST_V1_URL }}
     - name: OPPGAVE_OPPGAVER_URL
       value: {{ OPPGAVE_OPPGAVER_URL }}
-    - name: AKTOERREGISTER_IDENTER_URL
-      value: {{ AKTOERREGISTER_IDENTER_URL }}
     - name: EREG_API_URL
       value: {{ EREG_API_URL }}
     - name: NORG2_API_V1_URL
       value: {{ NORG2_API_V1_URL }}
-    - name: LOGINSERVICE_URL
-      value: {{ LOGINSERVICE_URL }}
     - name: SAF_URL
       value: {{ SAF_URL }}
     - name: SAF_HENTDOKUMENT_URL
@@ -88,8 +92,6 @@ spec:
       value: {{AZURE_DEFAULT_SCOPE}}
     - name: TENANT
       value: {{ TENANT }}
-    - name: SERVICEUSER_EMAIL
-      value: {{ SERVICEUSER_EMAIL}}
     - name: EMAIL_FROM_ADDRESS
       value: {{ EMAIL_FROM_ADDRESS }}
     - name: EMAIL_SERVICEKLAGE_ADDRESS
@@ -98,5 +100,15 @@ spec:
       value: {{ EMAIL_NAV_SUPPORT_ADDRESS }}
     - name: EMAIL_SAMISK_KONTAKT_ADDRESS
       value: {{ EMAIL_SAMISK_KONTAKT_ADDRESS }}
-    - name: SPRING_EMAIL_HOST
-      value: {{ SPRING_EMAIL_HOST }}
+    - name: DOKARKIV_SCOPE
+      value: {{ DOKARKIV_SCOPE }}
+    - name: SAF_SCOPE
+      value: {{ SAF_SCOPE }}
+    - name: OPPGAVE_SCOPE
+      value: {{ OPPGAVE_SCOPE }}
+    - name: PDL_URL
+      value: {{ PDL_URL }}
+    - name: PDL_SCOPE
+      value: {{ PDL_SCOPE }}
+    - name: AAD_EMAIL
+      value: {{ AAD_EMAIL }}

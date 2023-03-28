@@ -7,23 +7,21 @@ import no.nav.security.token.support.client.core.ClientProperties;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenResponse;
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService;
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties;
-import no.nav.tilbakemeldingsmottak.config.MDCConstants;
-import no.nav.tilbakemeldingsmottak.integration.fasit.ServiceuserAlias;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.*;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -39,15 +37,31 @@ public class RestClientTemplateSupport {
     @Autowired
     private ClientConfigurationProperties clientConfigurationProperties;
 
+    @Value("${pdl.url}")
+    String pdlUrl;
+
     @Bean
-    @Qualifier("serviceuserclient")
+    @Qualifier("arkivClient")
     @Scope("prototype")
-    WebClient stsClientRestTemplate(
+    WebClient arkivClient(
     ) {
 
         ClientProperties clientProperties =
-                Optional.ofNullable(clientConfigurationProperties.getRegistration().get("serviceuser"))
-                        .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for serviceuser"));
+                Optional.ofNullable(clientConfigurationProperties.getRegistration().get("arkiv"))
+                        .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for arkiv"));
+
+        return buildWebClient(buildHttpClient(5000,60,60), clientProperties);
+    }
+
+    @Bean
+    @Qualifier("oppgaveClient")
+    @Scope("prototype")
+    WebClient oppgaveClient(
+    ) {
+
+        ClientProperties clientProperties =
+                Optional.ofNullable(clientConfigurationProperties.getRegistration().get("oppgave"))
+                        .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for oppgave"));
 
         return buildWebClient(buildHttpClient(5000,60,60), clientProperties);
     }
@@ -57,7 +71,23 @@ public class RestClientTemplateSupport {
     @Scope("prototype")
     WebClient safClientRestTemplate(
     ) {
-        return buildWebClient(buildHttpClient(5000,60,60));
+        ClientProperties clientProperties =
+                Optional.ofNullable(clientConfigurationProperties.getRegistration().get("saf-maskintilmaskin"))
+                        .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for saf-maskintilmaskin"));
+
+        return buildWebClient(buildHttpClient(5000,60,60), clientProperties);
+    }
+
+    // Denne overskriver den genererte SpringConfiguration sin webClient (i target/generated-sources)
+    // Akkurat nå støttes bare én graphql server, men det kan støttes flere ved å følge denne: https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_more_than_one_graphql_servers
+    @Bean(name="webClient")
+    WebClient webClient() {
+
+        ClientProperties clientProperties =
+                Optional.ofNullable(clientConfigurationProperties.getRegistration().get("pdl"))
+                        .orElseThrow(() -> new RuntimeException("Fant ikke konfigurering for pdl"));
+
+        return buildWebClientWithUrl(buildHttpClient(5000,60,60), clientProperties, pdlUrl);
     }
 
     private HttpClient buildHttpClient(int connection_timeout, int readTimeout, int writeTimeout) {
@@ -81,6 +111,20 @@ public class RestClientTemplateSupport {
 
     }
 
+    private WebClient buildWebClientWithUrl(HttpClient httpClient, ClientProperties clientProperties, String url)  {
+        return WebClient.builder()
+                .baseUrl(url)
+                .defaultHeader("Content-Type", "application/json").defaultUriVariables(Collections.singletonMap("url", url))
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(MAX_FILE_SIZE))
+                        .build())
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .filter(bearerTokenExchange(clientProperties))
+                .build();
+    }
+
     private WebClient buildWebClient(HttpClient httpClient)  {
         return WebClient.builder()
                 .exchangeStrategies(ExchangeStrategies.builder()
@@ -101,25 +145,6 @@ public class RestClientTemplateSupport {
                     .build();
             return exchangeFunction.exchange(filtered);
         };
-    }
-
-    @Bean
-    @Qualifier("basicauthclient")
-    @Scope("prototype")
-    RestTemplate clientRestTemplate(
-            RestTemplateBuilder restTemplateBuilder,
-            ServiceuserAlias serviceuserAlias,
-            ClientHttpRequestFactory requestFactory) {
-        return restTemplateBuilder
-                .requestFactory(() -> requestFactory)
-                .basicAuthentication(serviceuserAlias.getUsername(), serviceuserAlias.getPassword())
-                .interceptors((request, body, execution)->{
-                    request.getHeaders().add(MDCConstants.MDC_CALL_ID, MDC.get(MDCConstants.MDC_CALL_ID));
-                    return execution.execute(request, body);
-                })
-                .setConnectTimeout(Duration.ofSeconds(5))
-                .setReadTimeout(Duration.ofSeconds(20))
-                .build();
     }
 
     @Bean
