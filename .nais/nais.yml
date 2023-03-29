@@ -64,6 +64,7 @@ spec:
   azure:
     application:
       enabled: true
+      allowAllUsers: true
       tenant: {{ TENANT }}
   ingresses:
   {{#each INGRESS as |url|}}
