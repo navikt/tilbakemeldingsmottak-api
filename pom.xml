@@ -31,7 +31,7 @@
         <azure.identity.version>1.7.3</azure.identity.version>
 
         <!-- NAV internal dependencies -->
-        <token-support.version>2.1.7</token-support.version>
+        <token-support.version>3.0.9</token-support.version>
         <mock-oauth2-server.version>0.5.7</mock-oauth2-server.version>
         <!-- Spesifiserer eksplisitt for å unngå transitiv import av 8.x.x versjon som gjør at oppslag feiler -->
         <nimbus-jose-jwt.version>9.24.4</nimbus-jose-jwt.version>
