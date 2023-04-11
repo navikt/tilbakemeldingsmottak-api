@@ -5,7 +5,7 @@
   "JOURNALPOST_V1_URL": "https://dokarkiv.dev-fss-pub.nais.io/rest/journalpostapi/v1",
   "OPPGAVE_OPPGAVER_URL": "https://oppgave-q1.dev-fss-pub.nais.io/api/v1/oppgaver",
   "EREG_API_URL": "https://ereg-services.dev-fss-pub.nais.io",
-  "NORG2_API_V1_URL": "https://norg2.dev-fss-pub.nais.io/api/v1",
+  "NORG2_API_V1_URL": "https://norg2.dev-fss-pub.nais.io/norg2/api/v1",
   "SAF_URL": "https://saf.dev-fss-pub.nais.io/graphql",
   "SAF_HENTDOKUMENT_URL": "https://saf.dev-fss-pub.nais.io/rest/hentdokument",
   "PDL_URL": "https://pdl-api.dev-fss-pub.nais.io/graphql",
