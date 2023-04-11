@@ -16,20 +16,14 @@ services:
           "requestMappings": [
             {
               "requestParam": "scope",
-              "match": "*",
+              "match": "openid somescope",
               "claims": {
                 "sub": "tilbakemeldingsmottak-api",
                 "aud": "azuread-client-id",
                 "NAVident": "A123456",
                 "name": "Test Testesen"
               }
-            }
-          ]
-        },
-        {
-          "issuerId": "azuread",
-          "tokenExpiry": 600000,
-          "requestMappings": [
+            },
             {
               "requestParam": "scope",
               "match": "openid frontend",
@@ -37,7 +31,7 @@ services:
                 "sub": "tilbakemeldingsmottak-api",
                 "aud": "azuread-client-id",
                 "NAVident": "A123456",
-                "name": "Test Testesen",
+                "name": "Test frontend",
                 "scp": "defaultaccess serviceklage-klassifisering"
               }
             },
@@ -48,7 +42,7 @@ services:
                 "sub": "tilbakemeldingsmottak-api",
                 "aud": "azuread-client-id",
                 "NAVident": "A123456",
-                "name": "Test Testesen",
+                "name": "Test Testesen datavarehus",
                 "scp": "defaultaccess datavarehus"
               }
             }
