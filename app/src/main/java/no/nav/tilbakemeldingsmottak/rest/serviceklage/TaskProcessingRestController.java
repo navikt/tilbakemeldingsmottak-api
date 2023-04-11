@@ -27,7 +27,7 @@ import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertIkkeFerdigsti
 import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertHarJournalpost;
 
 @Slf4j
-@ProtectedWithClaims(issuer = "azuread", claimMap = {"scp=serviceklage-klassifisering"})
+@ProtectedWithClaims(issuer = "azuread")
 @RestController
 @RequiredArgsConstructor
 public class TaskProcessingRestController implements TaskProcessingRestControllerApi {
