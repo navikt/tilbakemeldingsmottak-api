@@ -21,7 +21,7 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 @Slf4j
-@ProtectedWithClaims(issuer = "azuread", claimMap = {"roles=datavarehus"})
+@ProtectedWithClaims(issuer = "azuread", claimMap = {"scp=defaultaccess datavarehus"})
 @RestController
 @RequiredArgsConstructor
 public class DatavarehusRestController implements DatavarehusRestControllerApi {

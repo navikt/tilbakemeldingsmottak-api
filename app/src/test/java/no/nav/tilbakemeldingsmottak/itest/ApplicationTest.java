@@ -188,20 +188,20 @@ public class ApplicationTest {
         return headers;
     }
 
-    HttpHeaders createHeaders(String issuer, String user, String role) {
+    HttpHeaders createHeaders(String issuer, String user, String scope) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user, role));
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user, scope));
         headers.add("correlation_id", UUID.randomUUID().toString());
         return headers;
     }
 
-    HttpHeaders createHeaders(String issuer, String user, String role, Boolean addCookie) {
+    HttpHeaders createHeaders(String issuer, String user, String scope, Boolean addCookie) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String token = getToken(issuer, user);
 
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user, role));
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user, scope));
         headers.add("correlation_id", UUID.randomUUID().toString());
         if (addCookie) {
             headers.add("Cookie", "selvbetjening-idtoken="+token);
@@ -218,8 +218,8 @@ public class ApplicationTest {
         return token(issuer, user, AUD);
     }
 
-    public String getToken(String issuer, String user, String role) {
-        return tokenWithClaims(issuer, user, AUD, Map.of("roles", role));
+    public String getToken(String issuer, String user, String scope) {
+        return tokenWithClaims(issuer, user, AUD, Map.of("scp", "defaultaccess " + scope));
     }
 
 
