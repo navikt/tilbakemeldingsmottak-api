@@ -46,6 +46,7 @@ public class HentDokumentConsumer implements HentDokument {
 	@Retryable(include = AbstractTilbakemeldingsmottakTechnicalException.class, backoff = @Backoff(delay = 3, multiplier = 500))
 	public HentDokumentResponseTo hentDokument(String journalpostId, String dokumentInfoId, String variantFormat, String token) {
 		HttpHeaders httpHeaders = createAuthHeaderFromToken(token);
+        log.info("Henter dokument fra saf journalpostId={}, dokumentInfoId={}, variantFormat={}", journalpostId, dokumentInfoId, variantFormat);
 		byte[] dokument = webClient
 				.method(HttpMethod.GET)
 				.uri(this.hentDokumentUrl + "/"+journalpostId+"/" +dokumentInfoId + "/" + variantFormat)
