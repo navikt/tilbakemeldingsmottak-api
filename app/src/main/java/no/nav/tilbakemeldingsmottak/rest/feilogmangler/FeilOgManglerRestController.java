@@ -20,7 +20,7 @@ import no.nav.tilbakemeldingsmottak.api.FeilOgManglerRestControllerApi;
 
 import javax.transaction.Transactional;
 
-@ProtectedWithClaims(issuer = "tokenx")
+@ProtectedWithClaims(issuer = "azuread")
 @RestController
 @Slf4j
 @RequiredArgsConstructor

@@ -97,9 +97,6 @@ no.nav.security:
             client-auth-method: client_secret_basic
 
     issuer:
-      tokenx:
-        discovery-url: http://localhost:6969/tokenx/.well-known/openid-configuration
-        accepted-audience: tokenx-client-id
       azuread:
         discovery-url: http://localhost:6969/azuread/.well-known/openid-configuration
         accepted-audience: azuread-client-id

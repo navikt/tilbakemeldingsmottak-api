@@ -62,9 +62,6 @@ no.nav.security:
             client-secret: someSecret
             client-auth-method: client_secret_basic
     issuer:
-      tokenx:
-        discoveryurl: http://localhost:${mock-oauth2-server.port}/tokenx/.well-known/openid-configuration
-        accepted_audience: aud-localhost
       azuread:
         accepted-audience: aud-localhost
         discovery-url: http://localhost:${token.server.port}/azuread/.well-known/openid-configuration

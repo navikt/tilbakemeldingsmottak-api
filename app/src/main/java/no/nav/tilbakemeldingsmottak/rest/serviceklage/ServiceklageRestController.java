@@ -21,7 +21,7 @@ import no.nav.tilbakemeldingsmottak.api.ServiceklageRestControllerApi;
 import javax.transaction.Transactional;
 
 @Slf4j
-@ProtectedWithClaims(issuer = "tokenx")
+@ProtectedWithClaims(issuer = "azuread")
 @RestController
 @RequiredArgsConstructor
 public class ServiceklageRestController implements ServiceklageRestControllerApi {

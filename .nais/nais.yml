@@ -70,8 +70,6 @@ spec:
   {{#each INGRESS as |url|}}
      - {{url}}
   {{/each}}
-  tokenx:
-    enabled: true
 
   envFrom:
     - secret: tilbakemeldingsmottak-api-google-secret

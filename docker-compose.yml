@@ -11,7 +11,7 @@ services:
       "httpServer": "NettyWrapper",
       "tokenCallbacks": [
         {
-          "issuerId": "tokenx",
+          "issuerId": "azuread",
           "tokenExpiry": 600000,
           "requestMappings": [
             {
@@ -19,7 +19,7 @@ services:
               "match": "*",
               "claims": {
                 "sub": "tilbakemeldingsmottak-api",
-                "aud": "tokenx-client-id",
+                "aud": "azuread-client-id",
                 "NAVident": "A123456",
                 "name": "Test Testesen"
               }

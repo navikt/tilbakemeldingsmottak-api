@@ -162,7 +162,7 @@ public class ApplicationTest {
     HttpHeaders createHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(TOKENX, INNLOGGET_BRUKER));
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(AZURE_ISSUER, INNLOGGET_BRUKER));
         headers.add("correlation_id", UUID.randomUUID().toString());
         return headers;
     }

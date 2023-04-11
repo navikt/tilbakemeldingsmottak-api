@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 @Slf4j
-@ProtectedWithClaims(issuer = "tokenx")
+@ProtectedWithClaims(issuer = "azuread")
 @RestController
 @CrossOrigin(maxAge = 3600)
 public class BestillingAvSamtaleRestController implements BestillingAvSamtaleRestControllerApi {
