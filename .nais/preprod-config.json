@@ -30,5 +30,26 @@
   "TENANT": "trygdeetaten.no",
   "PROXY_HOST": "webproxy-nais.nav.no",
   "PROXY_PORT": 8088,
-  "SERVICEUSER_EMAIL": "srvtilbakemeldings@trygdeetaten.no"
+  "SERVICEUSER_EMAIL": "srvtilbakemeldings@trygdeetaten.no",
+  "OUTBOUND_EXTERNAL_HOST": [
+    "security-token-service.nais.preprod.local",
+    "sts-q1.preprod.local",
+    "loginservice.nais.preprod.local",
+    "dokarkiv-q1.nais.preprod.local",
+    "oppgave.nais.preprod.local",
+    "app-q1.adeo.no",
+    "modapp-q1.adeo.no",
+    "saf-q1.dev.intern.nav.no",
+    "webproxy-nais.nav.no"
+  ],
+  "OUTBOUND_EXTERNAL_PORTS": [
+    {
+      "host": "a01dbfl033.adeo.no",
+      "ports": {
+        "name": "oracle",
+        "port": 1521,
+        "protocol": "TCP"
+      }
+    }
+  ]
 }

@@ -40,7 +40,24 @@ spec:
   azure:
     application:
       enabled: true
-      tenant: {{ TENANT }}
+      tenant: {{ TENANT }
+      accessPolicy:
+        inbound:
+          rules:
+            - application: tilbakemeldinger
+              namespace: personbruker
+        outbound:
+          external:
+          {{#each OUTBOUND_EXTERNAL_HOST as |this|}}
+             - host: "{{this}}"
+          {{/each}}
+          {{#each OUTBOUND_EXTERNAL_PORTS as |this|}}
+              - host: "{{this.host}}"
+              - ports:
+                  - name: "{{this.ports.name}}"
+                    port: "{{this.ports.port}}"
+                    protocol: "{{this.ports.protocol}}"
+          {{/each}}
   ingresses:
   {{#each INGRESS as |url|}}
      - {{url}}
