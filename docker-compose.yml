@@ -21,6 +21,7 @@ services:
                 "sub": "tilbakemeldingsmottak-api",
                 "aud": "azuread-client-id",
                 "NAVident": "A123456",
+                "pid": "12345678910",
                 "name": "Test Testesen"
               }
             },
@@ -32,6 +33,7 @@ services:
                 "aud": "azuread-client-id",
                 "NAVident": "A123456",
                 "name": "Test frontend",
+                "pid": "12345678910",
                 "scp": "defaultaccess serviceklage-klassifisering"
               }
             },
@@ -42,6 +44,7 @@ services:
                 "sub": "tilbakemeldingsmottak-api",
                 "aud": "azuread-client-id",
                 "NAVident": "A123456",
+                "pid": "12345678910",
                 "name": "Test Testesen datavarehus",
                 "scp": "defaultaccess datavarehus"
               }

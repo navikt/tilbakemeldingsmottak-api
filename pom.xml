@@ -57,7 +57,7 @@
         <wiremock.version>2.27.2</wiremock.version>
         <json-smart.version>2.4.8</json-smart.version>
         <rest-assured.version>5.0.1</rest-assured.version>
-        <graphql-java.version>20.0</graphql-java.version>
+        <graphql-java.version>20.1</graphql-java.version>
         <spring-security-oauth2.version>5.7.6</spring-security-oauth2.version>
 
         <!-- Maven plugins -->
