@@ -17,8 +17,7 @@ import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -34,10 +33,10 @@ public class OpprettServiceklageValidator extends RequestValidator {
     private static final int ENHETSNUMMER_LENGTH = 4;
 
     public void validateRequest(OpprettServiceklageRequest request) {
-        validateRequest(request, null);
+        validateRequest(request, Optional.empty());
     }
 
-    public void validateRequest(OpprettServiceklageRequest request, String paloggetBruker) {
+    public void validateRequest(OpprettServiceklageRequest request, Optional<String> paloggetBruker) {
         validateCommonRequiredFields(request);
 
         switch(request.getPaaVegneAv()) {
@@ -63,7 +62,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
         hasText(request.getKlagetekst(), "klagetekst");
     }
 
-    private void validatePaaVegneAvPrivatperson(OpprettServiceklageRequest request, String paloggetBruker) {
+    private void validatePaaVegneAvPrivatperson(OpprettServiceklageRequest request, Optional<String> paloggetBruker) {
         hasText(request.getInnmelder().getNavn(), "innmelder.navn", " dersom paaVegneAv=PRIVATPERSON");
         hasText(request.getInnmelder().getPersonnummer(), "innmelder.personnummer", " dersom paaVegneAv=PRIVATPERSON");
         isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes", " dersom paaVegneAv=PRIVATPERSON");
@@ -131,9 +130,9 @@ public class OpprettServiceklageValidator extends RequestValidator {
         }
     }
 
-    private void validateRequestFnrMatchesTokenFnr(String fnr, String paloggetBruker) {
-        if (paloggetBruker != null
-                && !fnr.equals(paloggetBruker)) {
+    private void validateRequestFnrMatchesTokenFnr(String fnr, Optional<String> paloggetBruker) {
+        if (paloggetBruker.isPresent()
+                && !fnr.equals(paloggetBruker.get())) {
             throw new InvalidRequestException("innmelder.personnummer samsvarer ikke med brukertoken");
         }
     }

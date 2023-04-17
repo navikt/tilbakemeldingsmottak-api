@@ -68,7 +68,7 @@ class OpprettServiceklageValidatorTest {
     @Test
     void happyPathInnlogget() {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
-        opprettServiceklageValidator.validateRequest(opprettServiceklageRequest, opprettServiceklageRequest.getInnmelder().getPersonnummer());
+        opprettServiceklageValidator.validateRequest(opprettServiceklageRequest, Optional.of(opprettServiceklageRequest.getInnmelder().getPersonnummer()));
     }
 
     @Test
@@ -307,7 +307,7 @@ class OpprettServiceklageValidatorTest {
     void shouldThrowExceptionIfPersonnummerDoesntMatchTokenIdent() {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         Exception thrown = assertThrows(InvalidRequestException.class,
-                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest,"12345678901"));
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest,Optional.of("12345678901")));
         assertTrue(thrown.getMessage().contains("innmelder.personnummer samsvarer ikke med brukertoken"));
     }
 }

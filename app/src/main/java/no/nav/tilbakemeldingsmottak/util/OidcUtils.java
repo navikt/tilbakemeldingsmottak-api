@@ -41,6 +41,21 @@ public class OidcUtils {
         }
     }
 
+    public Optional<String> getPidForIssuer(String issuer) {
+        JwtToken userToken = tokenValidationContextHolder.getTokenValidationContext().getJwtToken(issuer);
+        if (userToken == null) {
+            return Optional.empty();
+        } else {
+            try {
+                var pid = userToken.getJwtTokenClaims().getStringClaim("pid");
+                if (pid == null) return Optional.empty();
+                return Optional.of(pid);
+            } catch (Exception e) {
+                throw new RuntimeException("Feil i parsing av token",e);
+            }
+        }
+    }
+
     public String getFirstValidToken() {
         return tokenValidationContextHolder.getTokenValidationContext().getFirstValidToken().map(JwtToken::getTokenAsString)
                 .orElseThrow(() -> new RuntimeException("Finner ikke validert OIDC-token"));

@@ -175,15 +175,15 @@ public class ApplicationTest {
         return headers;
     }
 
-    HttpHeaders createHeaders(String issuer, String user, Boolean addCookie) {
+    HttpHeaders createHeaders(String issuer, String user, Boolean loggedIn) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        String token = getToken(issuer, user);
 
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user));
         headers.add("correlation_id", UUID.randomUUID().toString());
-        if (addCookie) {
-            headers.add("Cookie", "selvbetjening-idtoken="+token);
+        if (loggedIn) {
+            headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user));
+        } else {
+            headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getTokenWithOutPid(issuer, user));
         }
         return headers;
     }
@@ -196,30 +196,21 @@ public class ApplicationTest {
         return headers;
     }
 
-    HttpHeaders createHeaders(String issuer, String user, String scope, Boolean addCookie) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        String token = getToken(issuer, user);
-
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + getToken(issuer, user, scope));
-        headers.add("correlation_id", UUID.randomUUID().toString());
-        if (addCookie) {
-            headers.add("Cookie", "selvbetjening-idtoken="+token);
-        }
-        return headers;
-    }
-
 
     private String getToken(String user) {
         return token(AZURE_ISSUER, user, AUD);
     }
 
     public String getToken(String issuer, String user) {
-        return token(issuer, user, AUD);
+        return tokenWithClaims(issuer, user, AUD, Map.of("acr","Level4", "pid", user));
     }
 
     public String getToken(String issuer, String user, String scope) {
         return tokenWithClaims(issuer, user, AUD, Map.of("scp", "defaultaccess " + scope));
+    }
+
+    public String getTokenWithOutPid(String issuer, String user) {
+        return token(issuer, user, AUD);
     }
 
 

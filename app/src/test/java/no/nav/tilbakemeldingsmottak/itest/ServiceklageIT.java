@@ -234,7 +234,7 @@ class ServiceklageIT extends ApplicationTest {
         WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/OPPGAVE")).willReturn(aResponse().withStatus(500)));
 
         OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
-        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(AZURE_ISSUER, SAKSBEHANDLER));
+        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(AZURE_ISSUER, request.getInnmelder().getPersonnummer()));
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());

@@ -39,12 +39,6 @@ paths:
       tags:
         - serviceklage-rest-controller
       operationId: opprettServiceklage
-      parameters:
-        - name: selvbetjening-idtoken
-          in: cookie
-          required: false
-          schema:
-            type: string
       requestBody:
         content:
           application/json:

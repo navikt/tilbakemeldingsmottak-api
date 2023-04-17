@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import no.nav.tilbakemeldingsmottak.api.ServiceklageRestControllerApi;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -34,15 +36,16 @@ public class ServiceklageRestController implements ServiceklageRestControllerApi
     @Override
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "opprettServiceklage"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<OpprettServiceklageResponse>
-            opprettServiceklage(@RequestBody OpprettServiceklageRequest request,
-            @CookieValue(name = "selvbetjening-idtoken", required = false) String selvbetjening)
-            {
+            opprettServiceklage(@RequestBody OpprettServiceklageRequest request) {
 
         log.info("Mottatt serviceklage via skjema på nav.no");
-        String paloggetBruker = oidcUtils.getSubject(selvbetjening);
-        boolean innlogget = paloggetBruker != null;
+        Optional<String> paloggetBruker = oidcUtils.getPidForIssuer(AZURE_ISSUER);
+
+        boolean innlogget = paloggetBruker.isPresent();
         log.info("Bruker er innlogget " + innlogget);
+
         opprettServiceklageValidator.validateRequest(request, paloggetBruker);
+
         OpprettServiceklageResponse opprettServiceklageResponse = opprettServiceklageService.opprettServiceklage(request, innlogget);
         return ResponseEntity
                 .status(HttpStatus.OK)
