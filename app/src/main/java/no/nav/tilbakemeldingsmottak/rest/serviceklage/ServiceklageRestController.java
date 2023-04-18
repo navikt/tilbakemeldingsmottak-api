@@ -1,12 +1,12 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.config.Constants.IDPORTEN_ISSUER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import no.nav.security.token.support.core.api.Protected;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
@@ -23,7 +23,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 @Slf4j
-@ProtectedWithClaims(issuer = "azuread")
+@Protected
 @RestController
 @RequiredArgsConstructor
 public class ServiceklageRestController implements ServiceklageRestControllerApi {
@@ -39,7 +39,7 @@ public class ServiceklageRestController implements ServiceklageRestControllerApi
             opprettServiceklage(@RequestBody OpprettServiceklageRequest request) {
 
         log.info("Mottatt serviceklage via skjema på nav.no");
-        Optional<String> paloggetBruker = oidcUtils.getPidForIssuer(AZURE_ISSUER);
+        Optional<String> paloggetBruker = oidcUtils.getPidForIssuer(IDPORTEN_ISSUER);
 
         boolean innlogget = paloggetBruker.isPresent();
         log.info("Bruker er innlogget " + innlogget);

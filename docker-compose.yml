@@ -19,10 +19,7 @@ services:
               "match": "openid somescope",
               "claims": {
                 "sub": "tilbakemeldingsmottak-api",
-                "aud": "azuread-client-id",
-                "NAVident": "A123456",
-                "pid": "12345678910",
-                "name": "Test Testesen"
+                "aud": "azuread-client-id"
               }
             },
             {
@@ -47,6 +44,23 @@ services:
                 "pid": "12345678910",
                 "name": "Test Testesen datavarehus",
                 "scp": "defaultaccess datavarehus"
+              }
+            }
+          ]
+        },
+        {
+          "issuerId": "idporten",
+          "tokenExpiry": 600000,
+          "requestMappings": [
+            {
+              "requestParam": "scope",
+              "match": "openid somescope",
+              "claims": {
+                "sub": "tilbakemeldingsmottak-api",
+                "aud": "idporten-client-id",
+                "NAVident": "A123456",
+                "pid": "12345678910",
+                "name": "Test Testesen"
               }
             }
           ]

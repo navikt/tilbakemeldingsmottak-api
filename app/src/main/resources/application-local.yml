@@ -100,4 +100,7 @@ no.nav.security:
       azuread:
         discovery-url: http://localhost:6969/azuread/.well-known/openid-configuration
         accepted-audience: azuread-client-id
+      idporten:
+        discovery-url: http://localhost:6969/idporten/.well-known/openid-configuration
+        accepted-audience: idporten-client-id
 
