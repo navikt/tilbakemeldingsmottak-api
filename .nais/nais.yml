@@ -27,6 +27,8 @@ spec:
       {{#each outboundExternalHosts}}
        - host: "{{this}}"
       {{/each}}
+  tokenx:
+    enabled: true
   liveness:
     path: /isAlive
     port: 9069
