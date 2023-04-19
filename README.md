@@ -18,10 +18,12 @@ Applikasjonen kjører Java 17. Hvordan bygge, teste og kjøre koden:
 
 ### Autentisering
 
-Denne applikasjonen autentiseres med issuer `azuread`. En mock auth server kjøres via docker-compose og kan brukes til å generere gyldige tokens lokalt. 
-Vi skiller på Azure AD brukere som skal klassifisere serviceklager og brukere som skal hente ut data til datavarehuset. 
+Denne applikasjonen autentiseres med issuers `azuread` og `tokenx`. En mock auth server kjøres via docker-compose og kan brukes til å generere gyldige tokens lokalt. 
+TokenX brukes til å skille mellom innlogget og uinlogget innsending av serviceklager. Vi skiller også på Azure AD brukere som skal klassifisere serviceklager og brukere som skal hente ut data til datavarehuset. 
 
-- For azuread (vanlig client_credentials):
+- For tokenx (brukere som er innlogget og sender inn serviceklage):
+    - Gå til `http://localhost:6969/tokenx/debugger` og velg "Get a token" med hva som helst i user objektet. Et `pid` claim er lagt på i tokenet
+- For azuread (vanlig `client_credentials`, ikke-innlogget server-til-server kommunikasjon):
   - Gå til `http://localhost:6969/azuread/debugger` og velg "Get a token" med hva som helst i user objektet
 - For azuread (brukere som skal klassifisere serviceklager):
   - Gå til `http://localhost:6969/azuread/debugger` og bytt ut `somescope` med `frontend`. Velg deretter "Get a token" med hva som helst i user objektet
