@@ -90,7 +90,7 @@ no.nav.security.jwt:
     azuread:
       accepted-audience: ${AZURE_APP_CLIENT_ID}
       discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
-    idporten:
+    tokenx:
       discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
       accepted_audience: ${TOKEN_X_CLIENT_ID}
 

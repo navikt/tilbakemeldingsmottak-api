@@ -49,7 +49,7 @@ services:
           ]
         },
         {
-          "issuerId": "idporten",
+          "issuerId": "tokenx",
           "tokenExpiry": 600000,
           "requestMappings": [
             {
@@ -57,7 +57,7 @@ services:
               "match": "openid somescope",
               "claims": {
                 "sub": "tilbakemeldingsmottak-api",
-                "aud": "idporten-client-id",
+                "aud": "tokenx-client-id",
                 "NAVident": "A123456",
                 "pid": "12345678910",
                 "name": "Test Testesen"

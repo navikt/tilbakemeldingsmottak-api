@@ -58,7 +58,7 @@ class ServiceklageIT extends ApplicationTest {
     @Test
     public void happyPathPrivatperson() {
         OpprettServiceklageRequest msg = createOpprettServiceklageRequestPrivatperson();
-        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(msg, createHeaders(AZURE_ISSUER, msg.getInnmelder().getPersonnummer(), true));
+        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(msg, createHeaders(TOKENX_ISSUER, msg.getInnmelder().getPersonnummer(), true));
 
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -82,7 +82,7 @@ class ServiceklageIT extends ApplicationTest {
     public void happyPathPrivatpersonIkkePaLogget() {
         OpprettServiceklageRequest msg = createOpprettServiceklageRequestPrivatperson();
 
-        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(msg, createHeaders(AZURE_ISSUER, "srvtilbakemeldings", false));
+        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(msg, createHeaders(AZURE_ISSUER, msg.getInnmelder().getPersonnummer(), false));
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -104,7 +104,7 @@ class ServiceklageIT extends ApplicationTest {
    @Test
     void happyPathAnnenPerson() {
         OpprettServiceklageRequest request = createOpprettServiceklageRequestPaaVegneAvPerson();
-        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(AZURE_ISSUER, request.getInnmelder().getPersonnummer(),true));
+        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(TOKENX_ISSUER, request.getInnmelder().getPersonnummer(),true));
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());

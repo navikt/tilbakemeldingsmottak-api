@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.IDPORTEN_ISSUER;
+import static no.nav.tilbakemeldingsmottak.config.Constants.TOKENX_ISSUER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
@@ -39,7 +39,7 @@ public class ServiceklageRestController implements ServiceklageRestControllerApi
             opprettServiceklage(@RequestBody OpprettServiceklageRequest request) {
 
         log.info("Mottatt serviceklage via skjema på nav.no");
-        Optional<String> paloggetBruker = oidcUtils.getPidForIssuer(IDPORTEN_ISSUER);
+        Optional<String> paloggetBruker = oidcUtils.getPidForIssuer(TOKENX_ISSUER);
 
         boolean innlogget = paloggetBruker.isPresent();
         log.info("Bruker er innlogget " + innlogget);

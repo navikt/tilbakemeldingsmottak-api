@@ -65,6 +65,9 @@ no.nav.security:
       azuread:
         accepted-audience: aud-localhost
         discovery-url: http://localhost:${token.server.port}/azuread/.well-known/openid-configuration
+      tokenx:
+        accepted-audience: aud-localhost
+        discovery-url: http://localhost:${token.server.port}/tokenx/.well-known/openid-configuration
 
 norg2:
   api:
