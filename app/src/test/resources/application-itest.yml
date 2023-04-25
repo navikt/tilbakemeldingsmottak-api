@@ -5,89 +5,91 @@ email_samisk_kontakt_address: samisk-kontakt@preprod.local
 email_serviceklage_address: nav.serviceklager@preprod.local
 email_uu_address: uu@preprod.local
 ereg:
-  api:
-    url: http://localhost:${wiremock.server.port}/ereg
+    api:
+        url: http://localhost:${wiremock.server.port}/ereg
 hentdokument:
-  url: http://localhost:${wiremock.server.port}/hentdokument
+    url: http://localhost:${wiremock.server.port}/hentdokument
 management:
-  metrics:
-    export:
-      prometheus:
-        enabled: true
+    metrics:
+        export:
+            prometheus:
+                enabled: true
 aad:
-  authority: https://localhost:${wiremock.server.port}/authority
-  clientId: 1111199999
-  clientSecret: secret
-  email: dummy@dummy.com
+    authority: https://localhost:${wiremock.server.port}/authority
+    clientId: 1111199999
+    clientSecret: secret
+    email: dummy@dummy.com
 
 no.nav.security:
-  jwt:
-    mock:
-      enable: true
-    client:
-      registration:
-        arkiv:
-          token-endpoint-url: http://localhost:${token.server.port}/fake/token
-          grant-type: client_credentials
-          scope: scope
-          authentication:
-            client-id: fake
-            client-secret: someSecret
-            client-auth-method: client_secret_basic
+    jwt:
+        mock:
+            enable: true
+        client:
+            registration:
+                arkiv:
+                    token-endpoint-url: http://localhost:${token.server.port}/fake/token
+                    grant-type: client_credentials
+                    scope: scope
+                    authentication:
+                        client-id: fake
+                        client-secret: someSecret
+                        client-auth-method: client_secret_basic
 
-        saf-maskintilmaskin:
-          token-endpoint-url: http://localhost:${token.server.port}/fake/token
-          grant-type: client_credentials
-          scope: scope
-          authentication:
-            client-id: fake
-            client-secret: someSecret
-            client-auth-method: client_secret_basic
+                saf-maskintilmaskin:
+                    token-endpoint-url: http://localhost:${token.server.port}/fake/token
+                    grant-type: client_credentials
+                    scope: scope
+                    authentication:
+                        client-id: fake
+                        client-secret: someSecret
+                        client-auth-method: client_secret_basic
 
-        oppgave:
-          token-endpoint-url: http://localhost:${token.server.port}/fake/token
-          grant-type: client_credentials
-          scope: scope
-          authentication:
-            client-id: fake
-            client-secret: someSecret
-            client-auth-method: client_secret_basic
+                oppgave:
+                    token-endpoint-url: http://localhost:${token.server.port}/fake/token
+                    grant-type: client_credentials
+                    scope: scope
+                    authentication:
+                        client-id: fake
+                        client-secret: someSecret
+                        client-auth-method: client_secret_basic
 
-        pdl:
-          token-endpoint-url: http://localhost:${token.server.port}/fake/token
-          grant-type: client_credentials
-          scope: scope
-          authentication:
-            client-id: fake
-            client-secret: someSecret
-            client-auth-method: client_secret_basic
-    issuer:
-      azuread:
-        accepted-audience: aud-localhost
-        discovery-url: http://localhost:${token.server.port}/azuread/.well-known/openid-configuration
-      tokenx:
-        accepted-audience: aud-localhost
-        discovery-url: http://localhost:${token.server.port}/tokenx/.well-known/openid-configuration
+                pdl:
+                    token-endpoint-url: http://localhost:${token.server.port}/fake/token
+                    grant-type: client_credentials
+                    scope: scope
+                    authentication:
+                        client-id: fake
+                        client-secret: someSecret
+                        client-auth-method: client_secret_basic
+        issuer:
+            azuread:
+                accepted-audience: aud-localhost
+                discovery-url: http://localhost:${token.server.port}/azuread/.well-known/openid-configuration
+            tokenx:
+                accepted-audience: aud-localhost
+                discovery-url: http://localhost:${token.server.port}/tokenx/.well-known/openid-configuration
 
 norg2:
-  api:
-    v1:
-      url: http://localhost:${wiremock.server.port}/norg2
+    api:
+        v1:
+            url: http://localhost:${wiremock.server.port}/norg2
 oppgave_oppgaver_url: http://localhost:${wiremock.server.port}/OPPGAVE
 saf:
-  graphql:
-    url: http://localhost:${wiremock.server.port}/safgraphql
+    graphql:
+        url: http://localhost:${wiremock.server.port}/safgraphql
 pdl:
-  url: http://localhost:${wiremock.server.port}/pdlgraphql
+    url: http://localhost:${wiremock.server.port}/pdlgraphql
 graphql:
-  endpoint:
-    url: ${pdl.url}
+    endpoint:
+        url: ${pdl.url}
 
 spring:
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+    jpa:
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.H2Dialect
 token:
-  server:
-    port: ${mock-oauth2-server.port}
+    server:
+        port: ${mock-oauth2-server.port}
+
+gcp_team_project_id: gcp-team-project-id
