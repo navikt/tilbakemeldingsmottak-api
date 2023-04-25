@@ -60,6 +60,10 @@ spec:
         databases:
           - name: {{ DATABASE_NAME }}
             envVarPrefix: DATABASE
+    bigQueryDatasets:
+      - name: serviceklager
+        permission: READWRITE
+        description: Datasett for serviceklager
 
   azure:
     application:
