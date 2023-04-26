@@ -30,12 +30,11 @@ public class OidcUtils {
 
     public Optional<String> getEmailForIssuer(String issuer) {
         JwtToken userToken = tokenValidationContextHolder.getTokenValidationContext().getJwtToken(issuer);
-        log.info("Usertoken: {}", userToken.getTokenAsString());
         if (userToken == null) {
             return Optional.empty();
         } else {
             try {
-                return Optional.of(userToken.getJwtTokenClaims().getStringClaim("upn"));
+                return Optional.of(userToken.getJwtTokenClaims().getStringClaim("preferred_username"));
             } catch (Exception e) {
                 throw new RuntimeException("Feil i parsing av token",e);
             }
