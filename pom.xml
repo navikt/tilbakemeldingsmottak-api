@@ -68,7 +68,7 @@
         <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
         <openapi-generator-maven-plugin.version>6.4.0</openapi-generator-maven-plugin.version>
-        <graphql-maven-plugin.version>1.18.10</graphql-maven-plugin.version>
+        <graphql-maven-plugin.version>1.18.11</graphql-maven-plugin.version>
 
         <!-- Project config -->
         <java.version>17</java.version>
