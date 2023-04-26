@@ -23,8 +23,7 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 @Slf4j
 @Unprotected
-// FIXME: Legg til autentisering
-//@ProtectedWithClaims(issuer = "azuread", claimMap = {"scp=defaultaccess datavarehus"})
+@ProtectedWithClaims(issuer = "azuread", claimMap = {"scp=defaultaccess datavarehus"})
 @RestController
 @RequiredArgsConstructor
 public class DatavarehusRestController implements DatavarehusRestControllerApi {

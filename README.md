@@ -19,7 +19,7 @@ Applikasjonen kjører Java 17. Hvordan bygge, teste og kjøre koden:
 ### Autentisering
 
 Denne applikasjonen autentiseres med issuers `azuread` og `tokenx`. En mock auth server kjøres via docker-compose og kan brukes til å generere gyldige tokens lokalt. 
-TokenX brukes til å skille mellom innlogget og uinlogget innsending av serviceklager. Vi skiller også på Azure AD brukere som skal klassifisere serviceklager og brukere som skal hente ut data til datavarehuset. 
+TokenX brukes til å skille mellom innlogget og uinlogget innsending av serviceklager. 
 
 - For tokenx (brukere som er innlogget og sender inn serviceklage):
     - Gå til `http://localhost:6969/tokenx/debugger` og velg "Get a token" med hva som helst i user objektet. Et `pid` claim er lagt på i tokenet
@@ -27,8 +27,6 @@ TokenX brukes til å skille mellom innlogget og uinlogget innsending av servicek
   - Gå til `http://localhost:6969/azuread/debugger` og velg "Get a token" med hva som helst i user objektet
 - For azuread (brukere som skal klassifisere serviceklager):
   - Gå til `http://localhost:6969/azuread/debugger` og bytt ut `somescope` med `frontend`. Velg deretter "Get a token" med hva som helst i user objektet
-- For azuread (brukere som skal hente ut data til datavarehuset):
-    - Gå til `http://localhost:6969/azuread/debugger` og bytt ut `somescope` med `datavarehus`. Velg deretter "Get a token" med hva som helst i user objektet
 
 
 ## Bygg og deploy til akseptansetestmiljø
@@ -60,8 +58,8 @@ Bygget feiler | Sjekk loggene, oppdatter pr
 ## Regenerering av serviceklage PDF 
 Dersom det har gått feil i generering av PDF av serviceklage som har blitt lagt inn i arkivet, kan denne regenereres ved å benytte testen i ReGenereringAvPdf. Dette forutsetter at det bygges opp en xslx fil med data basert på serviceklagen i databasen og bruker informasjon og datoer i fra arkivet.
 
-## Big Query
-Det legges inn data for serviceklager i Big Query (`tilbakemeldingsmottak_metrics`) for at datavarehus skal kunne hente ut statistikk på dette.
+## Big Query og datavarehus
+Det legges inn data for serviceklager i Big Query (`tilbakemeldingsmottak_metrics`) for at datavarehus skal kunne hente ut statistikk på dette. Det er implementert et endepunkt som datavarehuset var tiltenkt å bruke, men dette ble erstattet med Big Query.
 
 ## Deploy til produksjon
 Håndteres av [Github workflow](https://github.com/navikt/tilbakemeldingsmottak-api/tree/main/.github/workflows)
