@@ -30,7 +30,7 @@ public class OidcUtils {
 
     public Optional<String> getEmailForIssuer(String issuer) {
         JwtToken userToken = tokenValidationContextHolder.getTokenValidationContext().getJwtToken(issuer);
-        log.info("Usertoken: {}", userToken);
+        log.info("Usertoken: {}", userToken.getTokenAsString());
         if (userToken == null) {
             return Optional.empty();
         } else {
