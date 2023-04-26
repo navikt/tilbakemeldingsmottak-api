@@ -26,6 +26,9 @@ public class ServiceklagerBigQuery {
     }
 
     private DateTime getDateTime(LocalDateTime localDateTime) {
+        if (localDateTime == null) {
+            return null;
+        }
         return new DateTime(localDateTime.toEpochSecond(getOffset(localDateTime)));
     }
 
