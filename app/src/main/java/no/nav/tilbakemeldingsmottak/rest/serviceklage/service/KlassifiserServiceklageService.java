@@ -92,15 +92,15 @@ public class KlassifiserServiceklageService {
             try {
                 sendKvittering(serviceklage, hentOppgaveResponseTo);
             } catch (Exception e) {
-                log.warn("Kunne ikke produsere kvittering på mail", e.getMessage());
+                log.warn("Kunne ikke produsere kvittering på mail", e);
             }
         }
     }
 
     private void sendKvittering(Serviceklage serviceklage, HentOppgaveResponseTo hentOppgaveResponseTo) throws JsonProcessingException {
 
-        // FIXME: Sjekk om dette blir riktig. Var tidligere LOGINSERVICE_ISSUER
         String email = oicdUtils.getEmailForIssuer(AZURE_ISSUER).orElseThrow(() -> new ServiceklageIkkeFunnetException("Fant ikke email-adresse i token"));
+        log.info("Kvittering på innsendt klassifiseringsskjema sendes til epost: {}", email);
 
         LinkedHashMap<String, String> questionAnswerMap = createQuestionAnswerMap(serviceklage, hentOppgaveResponseTo);
 
