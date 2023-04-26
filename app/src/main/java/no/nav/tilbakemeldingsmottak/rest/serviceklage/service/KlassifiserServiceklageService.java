@@ -11,6 +11,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklageEventTypeEnum;
+import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
@@ -55,6 +57,7 @@ public class KlassifiserServiceklageService {
     private final ServiceklageMailHelper mailHelper;
     private final OidcUtils oicdUtils;
     private final OpprettOppgaveRequestToMapper opprettOppgaveRequestToMapper;
+    private final ServiceklagerBigQuery serviceklagerBigQuery;
 
     @Value("${email_serviceklage_address}")
     private String toAddress;
@@ -77,6 +80,8 @@ public class KlassifiserServiceklageService {
         Serviceklage serviceklage = getOrCreateServiceklage(hentOppgaveResponseTo.getJournalpostId());
         updateServiceklage(serviceklage, request);
         serviceklageRepository.save(serviceklage);
+        serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventTypeEnum.KLASSIFISER_SERVICEKLAGE);
+
         log.info("Serviceklage med serviceklageId={} er klassifisert som {}", serviceklage.getServiceklageId(), serviceklage.getTema());
 
         log.info("Ferdigstille oppgave med oppgaveId={} og versjonsnummer={}", hentOppgaveResponseTo.getId(), hentOppgaveResponseTo.getVersjon());

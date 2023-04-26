@@ -87,4 +87,3 @@ jobs:
           VARS: .nais/p-config.json
           DRY_RUN: false
 
-

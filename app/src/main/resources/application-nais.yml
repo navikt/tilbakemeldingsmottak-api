@@ -41,6 +41,9 @@ graphql:
   endpoint:
     url: ${PDL_URL}
 
+gcp_team_project_id: ${GCP_TEAM_PROJECT_ID}
+big_query_dataset: ${BIG_QUERY_DATASET}
+
 aad:
   authority: ${AAD_AUTHORITY}
   clientId:  ${AZURE_APP_CLIENT_ID}
@@ -93,5 +96,3 @@ no.nav.security.jwt:
     tokenx:
       discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
       accepted_audience: ${TOKEN_X_CLIENT_ID}
-
-
