@@ -49,6 +49,9 @@ email_nav_support_address: nav-support@trygdeetaten.no
 email_samisk_kontakt_address: samisk-kontakt@trygdeetaten.no
 email_serviceklage_address: nav-serviceklager@trygdeetaten.no
 
+gcp_team_project_id: gcp-team-project-id
+big_query_dataset: dataset
+
 aad:
   authority: authority
   clientId: 1111199999
@@ -104,4 +107,3 @@ no.nav.security:
         discovery-url: http://localhost:6969/tokenx/.well-known/openid-configuration
         accepted-audience: tokenx-client-id
 
-gcp_team_project_id: gcp-team-project-id

@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BigQueryServiceConfig {
 
-
     @Value("${gcp_team_project_id}")
     private String projectId;
 

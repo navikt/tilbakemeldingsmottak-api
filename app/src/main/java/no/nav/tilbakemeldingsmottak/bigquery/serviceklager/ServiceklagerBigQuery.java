@@ -1,4 +1,4 @@
-package no.nav.tilbakemeldingsmottak.bigquery;
+package no.nav.tilbakemeldingsmottak.bigquery.serviceklager;
 
 import com.google.api.client.util.DateTime;
 import com.google.cloud.bigquery.BigQuery;
@@ -7,11 +7,13 @@ import com.google.cloud.bigquery.TableId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.util.Arrays;
 import java.util.HashMap;
 
 @Component
@@ -19,23 +21,26 @@ import java.util.HashMap;
 @Slf4j
 public class ServiceklagerBigQuery {
 
-    private final BigQuery bigQueryClient;
+    @Value("${big_query_dataset}")
+    private String dataset;
 
-    private ZoneOffset getOffset(LocalDateTime localDateTime) {
-        return ZoneId.of("Europe/Oslo").getRules().getOffset(localDateTime);
-    }
+    private final Environment env;
+    private final BigQuery bigQueryClient;
+    public static final String TABLE_NAME = "serviceklager";
 
     private DateTime getDateTime(LocalDateTime localDateTime) {
         if (localDateTime == null) {
             return null;
         }
-        return new DateTime(localDateTime.toEpochSecond(getOffset(localDateTime)));
+        var epoch = localDateTime.atZone(ZoneId.of("Europe/Oslo")).toInstant().toEpochMilli();
+        return new DateTime(epoch);
     }
 
-    public void insertServiceklage(Serviceklage serviceklage) {
+    public void insertServiceklage(Serviceklage serviceklage, ServiceklageEventTypeEnum eventType) {
 
         try {
             var map = new HashMap<String, Object>();
+            map.put("event_type", eventType.toString());
             map.put("serviceklage_id", serviceklage.getServiceklageId());
             map.put("journalpost_id", serviceklage.getJournalpostId());
             map.put("opprettet_dato", getDateTime(serviceklage.getOpprettetDato()));
@@ -67,19 +72,19 @@ public class ServiceklagerBigQuery {
             map.put("klagetype_utdypning", serviceklage.getKlagetypeUtdypning());
             map.put("innlogget", serviceklage.getInnlogget());
 
-            log.info(map.toString());
+            InsertAllRequest request = InsertAllRequest.newBuilder(TableId.of(dataset, TABLE_NAME)).addRow(map).build();
 
-            InsertAllRequest request = InsertAllRequest.newBuilder(TableId.of("serviceklager", "serviceklager")).addRow(map).build();
+            log.info("Inserting rows into table: {} ", request.getRows().toString());
 
-            log.info("Inserting rows into table");
-            log.info(request.getRows().toString());
+            if (Arrays.asList(env.getActiveProfiles()).contains("local")) {
+                log.info("Skal ikke legge til rader i big query i lokal env");
+                return;
+            }
 
             var insertAllResponse = bigQueryClient.insertAll(request);
             if (insertAllResponse.hasErrors()) {
                 insertAllResponse.getInsertErrors().forEach((k, v) -> log.error("Error inserting row: " + k + " " + v.toString()));
-                log.error("insertAllResponse has errors");
             }
-            log.info(insertAllResponse.toString());
         } catch (Exception e) {
             log.error("Error inserting into BigQuery", e);
         }

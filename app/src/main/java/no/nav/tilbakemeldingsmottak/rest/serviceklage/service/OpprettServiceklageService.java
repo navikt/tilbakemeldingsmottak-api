@@ -2,7 +2,8 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.bigquery.ServiceklagerBigQuery;
+import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklageEventTypeEnum;
+import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery;
 import no.nav.tilbakemeldingsmottak.consumer.joark.JournalpostConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
@@ -38,7 +39,7 @@ public class OpprettServiceklageService {
     public static final String TEXT_JOURNALPOST_FEILET = "Manuell journalføring og opprettelse av oppgave kreves. Klagen ligger vedlagt.";
     public static final String SUBJECT_OPPGAVE_FEILET = "Automatisk opprettelse av oppgave feilet";
     public static final String TEXT_OPPGAVE_FEILET = "Manuell opprettelse av oppgave kreves for serviceklage med journalpostId=";
-    
+
     private final ServiceklageRepository serviceklageRepository;
     private final OpprettServiceklageRequestMapper opprettServiceklageRequestMapper;
     private final OpprettJournalpostRequestToMapper opprettJournalpostRequestToMapper;
@@ -64,7 +65,7 @@ public class OpprettServiceklageService {
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request, innlogget);
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
         serviceklageRepository.save(serviceklage);
-        serviceklagerBigQuery.insertServiceklage(serviceklage);
+        serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventTypeEnum.OPPRETT_SERVICEKLAGE);
         log.info("Serviceklage med serviceklageId= {} opprettet", serviceklage.getServiceklageId());
 
         OpprettOppgaveResponseTo opprettOppgaveResponseTo = forsoekOpprettOppgave(serviceklage.getKlagenGjelderId(), request.getPaaVegneAv(), opprettJournalpostResponseTo);
