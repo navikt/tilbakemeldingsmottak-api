@@ -61,7 +61,7 @@ spec:
           - name: {{ DATABASE_NAME }}
             envVarPrefix: DATABASE
     bigQueryDatasets:
-      - name: serviceklager
+      - name: tilbakemeldingsmottak_metrics
         permission: READWRITE
         description: Datasett for serviceklager
 
@@ -115,3 +115,5 @@ spec:
       value: {{ PDL_SCOPE }}
     - name: AAD_EMAIL
       value: {{ AAD_EMAIL }}
+    - name: BIG_QUERY_DATASET
+      value: {{ BIG_QUERY_DATASET }}
