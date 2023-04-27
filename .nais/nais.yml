@@ -17,6 +17,8 @@ spec:
       rules:
         - application: tilbakemeldinger
           namespace: personbruker
+        - application: samisk-samtale-bestilling
+          namespace: personbruker
         - application: tilbakemeldingsmottak-frontend
           permissions:
             scopes:
