@@ -32,7 +32,8 @@
   "EMAIL_FROM_ADDRESS": "srvtilbakemeldings@trygdeetaten.no",
   "EMAIL_SERVICEKLAGE_ADDRESS": "stulenmorten@gmail.com",
   "EMAIL_NAV_SUPPORT_ADDRESS": "stulenmorten@gmail.com",
-  "EMAIL_SAMISK_SUPPORT_ADDRESS": "stulenmorten@gmail.com",
+  "EMAIL_SAMISK_KONTAKT_ADDRESS": "stulenmorten@gmail.com",
+
 
   "DOKARKIV_SCOPE": "api://dev-fss.teamdokumenthandtering.dokarkiv-q1/.default",
   "SAF_SCOPE": "api://dev-fss.teamdokumenthandtering.saf-q1/.default",

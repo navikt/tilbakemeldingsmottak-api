@@ -33,7 +33,7 @@
   "EMAIL_FROM_ADDRESS": "srvtilbakemeldings@nav.no",
   "EMAIL_SERVICEKLAGE_ADDRESS": "nav.serviceklager@nav.no",
   "EMAIL_NAV_SUPPORT_ADDRESS": "support@nav.no",
-  "EMAIL_SAMISK_SUPPORT_ADDRESS": "nav.kontaktsenter.finnmark.samisk.kontakt.bruker@nav.no",
+  "EMAIL_SAMISK_KONTAKT_ADDRESS": "nav.kontaktsenter.finnmark.samisk.kontakt.bruker@nav.no",
 
   "DOKARKIV_SCOPE": "api://prod-fss.teamdokumenthandtering.dokarkiv/.default",
   "SAF_SCOPE": "api://prod-fss.teamdokumenthandtering.saf/.default",

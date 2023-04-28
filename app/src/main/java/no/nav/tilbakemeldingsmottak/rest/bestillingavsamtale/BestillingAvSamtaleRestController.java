@@ -37,7 +37,7 @@ public class BestillingAvSamtaleRestController implements BestillingAvSamtaleRes
 
     @Transactional
     @Override
-    @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "sendRos"}, percentiles = {0.5, 0.95}, histogram = true)
+    @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "bestill-samtale"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<BestillSamtaleResponse> bestillingAvSamtale(@RequestBody BestillSamtaleRequest request) throws SendEmailException {
             bestillSamtaleValidator.validateRequest(request);
             bestillingAvSamtaleService.bestillSamtale(request);
