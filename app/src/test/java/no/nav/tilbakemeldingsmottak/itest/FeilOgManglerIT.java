@@ -8,7 +8,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-
 import static no.nav.tilbakemeldingsmottak.TestUtils.createMeldFeilOgManglerRequest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

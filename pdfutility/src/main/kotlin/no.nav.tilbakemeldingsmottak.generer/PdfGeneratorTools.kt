@@ -22,7 +22,6 @@ import java.io.InputStream
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.*
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 
@@ -57,8 +56,8 @@ class PdfGenerator {
 
         val regex = "[^\\p{L}\\p{N}\\p{P}\\p{Z}]"
         val pattern: Pattern = Pattern.compile(
-            regex,
-            Pattern.UNICODE_CHARACTER_CLASS
+                regex,
+                Pattern.UNICODE_CHARACTER_CLASS
         )
         val matcher = pattern.matcher(text)
         return matcher.replaceAll("")
@@ -67,25 +66,25 @@ class PdfGenerator {
     fun genererPdf(tittel: String, varsling: String?, tekstMap: Map<String, String?>): ByteArray {
         val printbarTittel = fjernSpesielleKarakterer(tittel)
         val printbarVarsling = fjernSpesielleKarakterer(varsling)
-        val printbarTekstMap = tekstMap.mapValues { fjernSpesielleKarakterer(it.value ) }
+        val printbarTekstMap = tekstMap.mapValues { fjernSpesielleKarakterer(it.value) }
         return try {
             PdfBuilder(printbarTittel ?: "")
-                .startSide()
-                .leggTilNavLogo()
-                .startTekst()
-                .flyttTilTopp()
-                .leggTilHeaderMidstilt(tittel, FONT_SUB_HEADER)
-                .flyttNedMed(LINJEAVSTAND_STOR)
-                .leggTilHeaderMidstilt(printbarVarsling ?: "", FONT_STOR)
-                .flyttNedMed(if (varsling != null) LINJEAVSTAND_STOR else 0f)
-                .leggTilTekster(printbarTekstMap)
-                .avsluttTekst()
-                .leggTilSideTall()
-                .leggTilDato()
-                .avsluttSide()
-                .leggTilFargeProfil()
-                .leggTilXMPMetablokk()
-                .generer()
+                    .startSide()
+                    .leggTilNavLogo()
+                    .startTekst()
+                    .flyttTilTopp()
+                    .leggTilHeaderMidstilt(tittel, FONT_SUB_HEADER)
+                    .flyttNedMed(LINJEAVSTAND_STOR)
+                    .leggTilHeaderMidstilt(printbarVarsling ?: "", FONT_STOR)
+                    .flyttNedMed(if (varsling != null) LINJEAVSTAND_STOR else 0f)
+                    .leggTilTekster(printbarTekstMap)
+                    .avsluttTekst()
+                    .leggTilSideTall()
+                    .leggTilDato()
+                    .avsluttSide()
+                    .leggTilFargeProfil()
+                    .leggTilXMPMetablokk()
+                    .generer()
         } catch (e: IOException) {
             throw RuntimeException("Kunne ikke generere PDF", e)
         }
@@ -169,8 +168,8 @@ class PageBuilder(private val pdfBuilder: PdfBuilder) {
         nåværendeTekstType = TekstType.NORMAL
         try {
             logo = JPEGFactory.createFromStream(
-                pdfBuilder.getPdDocument(),
-                PageBuilder::class.java.getResourceAsStream("/icons/navlogo.jpg")
+                    pdfBuilder.getPdDocument(),
+                    PageBuilder::class.java.getResourceAsStream("/icons/navlogo.jpg")
             )
             contentStream = PDPageContentStream(pdfBuilder.getPdDocument(), page, AppendMode.APPEND, true)
         } catch (e: IOException) {
@@ -344,22 +343,22 @@ class TextBuilder(private var pageBuilder: PageBuilder) {
 
     @Throws(IOException::class)
     private fun skrivLedetekstOgTekst(
-        ledetekst: String, ledetekstFont: PDFont,
-        tekst: String, font: PDFont,
-        fontSize: Int,
-        linjeavstand: Float,
-        midstilt: Boolean
+            ledetekst: String, ledetekstFont: PDFont,
+            tekst: String, font: PDFont,
+            fontSize: Int,
+            linjeavstand: Float,
+            midstilt: Boolean
     ) {
         val height = font.fontDescriptor.fontBoundingBox.height / 1000 * fontSize
         skrivTekst(
-            ledetekst,
-            ledetekstFont,
-            fontSize,
-            midstilt,
-            linjeavstand,
-            height,
-            ledetekstBredde,
-            TekstType.LEDETEKST
+                ledetekst,
+                ledetekstFont,
+                fontSize,
+                midstilt,
+                linjeavstand,
+                height,
+                ledetekstBredde,
+                TekstType.LEDETEKST
         )
 
         pageBuilder.getContentStream().newLineAtOffset(ledetekstBredde, 0f)
@@ -371,14 +370,14 @@ class TextBuilder(private var pageBuilder: PageBuilder) {
     }
 
     private fun skrivTekst(
-        tekst: String,
-        font: PDFont,
-        fontSize: Int,
-        midstilt: Boolean,
-        linjeavstand: Float,
-        height: Float,
-        bredde: Float? = null,
-        type: TekstType = TekstType.NORMAL
+            tekst: String,
+            font: PDFont,
+            fontSize: Int,
+            midstilt: Boolean,
+            linjeavstand: Float,
+            height: Float,
+            bredde: Float? = null,
+            type: TekstType = TekstType.NORMAL
     ) {
         pageBuilder.nåværendeTekstType = type
         val konvertertTekst = regex.replace(tekst, " ")
@@ -393,7 +392,7 @@ class TextBuilder(private var pageBuilder: PageBuilder) {
                 val antallkarakterer = 60
                 linje = konvertertTekst.substring(startIndex, startIndex + antallkarakterer - 1)
                 pageBuilder.getContentStream()
-                    .showText(konvertertTekst.substring(startIndex, startIndex + antallkarakterer))
+                        .showText(konvertertTekst.substring(startIndex, startIndex + antallkarakterer))
             } else if (midstilt) {
                 skrivLinjeMidtstilt(linje, font, fontSize)
             } else {
@@ -435,13 +434,13 @@ class TextBuilder(private var pageBuilder: PageBuilder) {
 
     @Throws(IOException::class)
     private fun skrivLedetekstOgTekst(
-        tekst: String,
-        font: PDFont,
-        fontSize: Int,
-        linjeavstand: Float,
-        midstilt: Boolean,
-        bredde: Float? = null,
-        initiellStartIndex: Int? = 0
+            tekst: String,
+            font: PDFont,
+            fontSize: Int,
+            linjeavstand: Float,
+            midstilt: Boolean,
+            bredde: Float? = null,
+            initiellStartIndex: Int? = 0
     ) {
         val konvertertTekst = regex.replace(tekst, " ")
         var startIndex = initiellStartIndex ?: 0
@@ -483,11 +482,11 @@ class TextBuilder(private var pageBuilder: PageBuilder) {
 
 
     private fun leggTilOrdFeiler(
-        sb: StringBuilder,
-        nestOrd: String,
-        font: PDFont,
-        fontSize: Int,
-        bredde: Float? = null
+            sb: StringBuilder,
+            nestOrd: String,
+            font: PDFont,
+            fontSize: Int,
+            bredde: Float? = null
     ): Boolean {
         try {
             val linje = sb.toString() + nestOrd
@@ -562,12 +561,12 @@ class TextBuilder(private var pageBuilder: PageBuilder) {
 
     @Throws(IOException::class)
     fun leggTilLedetekstOgTekst(
-        tekst: String?,
-        flyttNedMed: Int
+            tekst: String?,
+            flyttNedMed: Int
     ): TextBuilder {
         if (tekst != null) {
             leggTilHeaderMidstilt(tekst, FONT_SUB_HEADER)
-                .flyttNedMed(flyttNedMed.toFloat())
+                    .flyttNedMed(flyttNedMed.toFloat())
         }
         return this
     }

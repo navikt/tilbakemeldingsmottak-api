@@ -6,7 +6,7 @@ import lombok.Value;
 @Value
 @Builder
 public class OpprettJournalpostResponseTo {
-	private String journalpostId;
-	private String journalstatus;
-	private String melding;
+    private String journalpostId;
+    private String journalstatus;
+    private String melding;
 }

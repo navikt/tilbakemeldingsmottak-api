@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak.bigquery.serviceklager;
 
 
-
 public enum ServiceklageEventTypeEnum {
     OPPRETT_SERVICEKLAGE("OPPRETT_SERVICEKLAGE"),
     KLASSIFISER_SERVICEKLAGE("KLASSIFISER_SERVICEKLAGE");

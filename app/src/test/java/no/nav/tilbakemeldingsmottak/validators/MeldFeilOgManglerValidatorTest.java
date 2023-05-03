@@ -1,16 +1,16 @@
 package no.nav.tilbakemeldingsmottak.validators;
 
-import static no.nav.tilbakemeldingsmottak.TestUtils.createMeldFeilOgManglerRequest;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.validation.MeldFeilOgManglerValidator;
 import org.junit.jupiter.api.Test;
 
+import static no.nav.tilbakemeldingsmottak.TestUtils.createMeldFeilOgManglerRequest;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class MeldFeilOgManglerValidatorTest {
-    
+
     private MeldFeilOgManglerValidator meldFeilOgManglerValidator = new MeldFeilOgManglerValidator();
     private MeldFeilOgManglerRequest meldFeilOgManglerRequest;
 

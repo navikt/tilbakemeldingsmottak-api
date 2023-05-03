@@ -12,21 +12,21 @@ import java.util.UUID;
 @Slf4j
 public class MDCPopulationInterceptor extends AbstractInterceptor {
 
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-		String callId = getHeaderValuesFromRequest(request, UUID.randomUUID().toString(),
-				"nav-callid", "nav-call-id", "x_callId", "callid");
-		addValueToMDC(callId, MDCConstants.MDC_CALL_ID);
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        String callId = getHeaderValuesFromRequest(request, UUID.randomUUID().toString(),
+                "nav-callid", "nav-call-id", "x_callId", "callid");
+        addValueToMDC(callId, MDCConstants.MDC_CALL_ID);
 
-		String consumerId = getHeaderValuesFromRequest(request, "tilbakemeldingsmottak",
-				"nav-consumerid", "nav-consumer-id", "x_consumerid", "consumerid");
-		addValueToMDC(consumerId, MDCConstants.MDC_CONSUMER_ID);
+        String consumerId = getHeaderValuesFromRequest(request, "tilbakemeldingsmottak",
+                "nav-consumerid", "nav-consumer-id", "x_consumerid", "consumerid");
+        addValueToMDC(consumerId, MDCConstants.MDC_CONSUMER_ID);
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-		MDC.clear();
-	}
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+        MDC.clear();
+    }
 }

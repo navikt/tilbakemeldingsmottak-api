@@ -10,13 +10,13 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 @Configuration
 public class RestConfig {
 
-	@Bean
+    @Bean
     ClientHttpRequestFactory requestFactory(HttpClient httpClient) {
-		return new HttpComponentsClientHttpRequestFactory(httpClient);
-	}
+        return new HttpComponentsClientHttpRequestFactory(httpClient);
+    }
 
-	@Bean
-	HttpClient httpClient() {
-		return HttpClients.createDefault();
-	}
+    @Bean
+    HttpClient httpClient() {
+        return HttpClients.createDefault();
+    }
 }

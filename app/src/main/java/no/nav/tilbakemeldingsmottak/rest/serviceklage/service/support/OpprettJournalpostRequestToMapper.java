@@ -1,16 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.tilbakemeldingsmottak.consumer.joark.domain.AvsenderMottaker;
-import no.nav.tilbakemeldingsmottak.consumer.joark.domain.AvsenderMottakerIdType;
-import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Bruker;
-import no.nav.tilbakemeldingsmottak.consumer.joark.domain.BrukerIdType;
-import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Dokument;
-import no.nav.tilbakemeldingsmottak.consumer.joark.domain.DokumentVariant;
-import no.nav.tilbakemeldingsmottak.consumer.joark.domain.JournalpostType;
-import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
-import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Sak;
-import no.nav.tilbakemeldingsmottak.consumer.joark.domain.Sakstype;
+import no.nav.tilbakemeldingsmottak.consumer.joark.domain.*;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +19,7 @@ public class OpprettJournalpostRequestToMapper {
 
     public OpprettJournalpostRequestTo map(OpprettServiceklageRequest request, byte[] fysiskDokument, boolean innlogget) {
         OpprettJournalpostRequestTo opprettJournalpostRequestTo = OpprettJournalpostRequestTo.builder()
-                .avsenderMottaker( AvsenderMottaker.builder()
+                .avsenderMottaker(AvsenderMottaker.builder()
                         .id(request.getInnmelder().getPersonnummer())
                         .idType(request.getInnmelder().getPersonnummer() != null ? AvsenderMottakerIdType.FNR : null)
                         .navn(request.getInnmelder().getNavn())

@@ -1,330 +1,330 @@
 version: '1'
 
 questions:
-- id: BEHANDLES_SOM_SERVICEKLAGE
-  text: Skal klagen behandles etter serviceklagerutinen?
-  type: RADIO
-  answers:
-  - answer: Ja
-  - answer: Ja, men inneholder også andre elementer
-    questions:
-    - id: FULGT_BRUKERVEILEDNING_GOSYS
-      text: Har du knyttet dokumentet til andre aktuelle tema og sørget for at henvendelsen behandles? Jf. brukerveiledningen for Gosys
-      type: RADIO
-      answers:
-      - answer: Ja
-      - answer: Nei
-        button:
-          text: Lukk og gå tilbake til Gosys
-        next: none
-  - answer: Nei, innsender har ikke fullmakt på vegne av bruker
-    questions:
-    - id: KVITTERING
-      text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
-      type: RADIO
-      answers:
-      - answer: Ja
-        next: none
-      - answer: Nei
-        next: none
-  - answer: Nei, serviceklagen gjelder kommunale tjenester eller ytelser
-    questions:
-    - id: KOMMUNAL_BEHANDLING
-      text: Har du sørget for journalføring og behandling i kommunalt arkiv/fagsystem?
-      type: RADIO
-      answers:
-      - answer: Ja
-        button:
-          text: Fullfør
-          info: Trykk fullfør for å ferdigstille oppgaven. Dokumentet vil bli slettet.
-      - answer: Nei
-        button:
-          text: Lukk og gå tilbake til Gosys
-        next: none
-    - id: KVITTERING
-      text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
-      type: RADIO
-      answers:
-      - answer: Ja
-        next: none
-      - answer: Nei
-        next: none
-  - answer: Nei, en forvaltningsklage
-    questions:
-    - id: FULGT_BRUKERVEILEDNING_GOSYS
-      text: Har du knyttet dokumentet til andre aktuelle tema og sørget for at henvendelsen behandles? Jf. brukerveiledningen for Gosys
-      type: RADIO
-      answers:
-      - answer: Ja
-        button:
-          text: Fullfør
-          info: Trykk fullfør for å ferdigstille oppgaven.
-      - answer: Nei
-        button:
-          text: Lukk og gå tilbake til Gosys
-        next: none
-    - id: KVITTERING
-      text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
-      type: RADIO
-      answers:
-      - answer: Ja
-        next: none
-      - answer: Nei
-        next: none
-  - answer: Nei, Skriv til oss
-    questions:
-    - id: FULGT_BRUKERVEILEDNING_GOSYS
-      text: Har du knyttet dokumentet til andre aktuelle tema og sørget for at henvendelsen behandles? Jf. brukerveiledningen for Gosys
-      type: RADIO
-      answers:
-      - answer: Ja
-        button:
-          text: Fullfør
-          info: Trykk fullfør for å ferdigstille oppgaven.
-      - answer: Nei
-        button:
-          text: Lukk og gå tilbake til Gosys
-        next: none
-    - id: KVITTERING
-      text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
-      type: RADIO
-      answers:
-      - answer: Ja
-        next: none
-      - answer: Nei
-        next: none
-      next: none
-  - answer: Nei, annet
-    questions:
-    - id: KVITTERING
-      text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
-      type: RADIO
-      answers:
-      - answer: Ja
-        next: none
-      - answer: Nei
-        next: none
-      next: none
+    -   id: BEHANDLES_SOM_SERVICEKLAGE
+        text: Skal klagen behandles etter serviceklagerutinen?
+        type: RADIO
+        answers:
+            -   answer: Ja
+            -   answer: Ja, men inneholder også andre elementer
+                questions:
+                    -   id: FULGT_BRUKERVEILEDNING_GOSYS
+                        text: Har du knyttet dokumentet til andre aktuelle tema og sørget for at henvendelsen behandles? Jf. brukerveiledningen for Gosys
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                            -   answer: Nei
+                                button:
+                                    text: Lukk og gå tilbake til Gosys
+                                next: none
+            -   answer: Nei, innsender har ikke fullmakt på vegne av bruker
+                questions:
+                    -   id: KVITTERING
+                        text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                                next: none
+                            -   answer: Nei
+                                next: none
+            -   answer: Nei, serviceklagen gjelder kommunale tjenester eller ytelser
+                questions:
+                    -   id: KOMMUNAL_BEHANDLING
+                        text: Har du sørget for journalføring og behandling i kommunalt arkiv/fagsystem?
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                                button:
+                                    text: Fullfør
+                                    info: Trykk fullfør for å ferdigstille oppgaven. Dokumentet vil bli slettet.
+                            -   answer: Nei
+                                button:
+                                    text: Lukk og gå tilbake til Gosys
+                                next: none
+                    -   id: KVITTERING
+                        text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                                next: none
+                            -   answer: Nei
+                                next: none
+            -   answer: Nei, en forvaltningsklage
+                questions:
+                    -   id: FULGT_BRUKERVEILEDNING_GOSYS
+                        text: Har du knyttet dokumentet til andre aktuelle tema og sørget for at henvendelsen behandles? Jf. brukerveiledningen for Gosys
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                                button:
+                                    text: Fullfør
+                                    info: Trykk fullfør for å ferdigstille oppgaven.
+                            -   answer: Nei
+                                button:
+                                    text: Lukk og gå tilbake til Gosys
+                                next: none
+                    -   id: KVITTERING
+                        text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                                next: none
+                            -   answer: Nei
+                                next: none
+            -   answer: Nei, Skriv til oss
+                questions:
+                    -   id: FULGT_BRUKERVEILEDNING_GOSYS
+                        text: Har du knyttet dokumentet til andre aktuelle tema og sørget for at henvendelsen behandles? Jf. brukerveiledningen for Gosys
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                                button:
+                                    text: Fullfør
+                                    info: Trykk fullfør for å ferdigstille oppgaven.
+                            -   answer: Nei
+                                button:
+                                    text: Lukk og gå tilbake til Gosys
+                                next: none
+                    -   id: KVITTERING
+                        text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                                next: none
+                            -   answer: Nei
+                                next: none
+                        next: none
+            -   answer: Nei, annet
+                questions:
+                    -   id: KVITTERING
+                        text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                                next: none
+                            -   answer: Nei
+                                next: none
+                        next: none
 
-- id: FREMMET_DATO
-  text: Angi dato bruker fremmet serviceklagen
-  type: DATE
+    -   id: FREMMET_DATO
+        text: Angi dato bruker fremmet serviceklagen
+        type: DATE
 
-- id: INNSENDER
-  text: Hvem sendte inn serviceklagen?
-  type: RADIO
-  answers:
-  - answer: Bruker selv som privatperson
-  - answer: På vegne av en annen privatperson
-  - answer: På vegne av virksomhet
+    -   id: INNSENDER
+        text: Hvem sendte inn serviceklagen?
+        type: RADIO
+        answers:
+            -   answer: Bruker selv som privatperson
+            -   answer: På vegne av en annen privatperson
+            -   answer: På vegne av virksomhet
 
-- id: KANAL
-  text: Angi kanal for serviceklagen
-  type: RADIO
-  answers:
-  - answer: Serviceklageskjema på nav.no
-  - answer: Digital kanal på nav.no
-  - answer: Annen skriftlig kanal fra bruker
-  - answer: Muntlig fra bruker
-  - answer: Annet
-    questions:
-    - id: KANAL_UTDYPNING
-      text: Spesifiser
-      type: TEXT
-      banner:
-        message: Ikke identifiser bruker eller ansatt
-        type: WARN
+    -   id: KANAL
+        text: Angi kanal for serviceklagen
+        type: RADIO
+        answers:
+            -   answer: Serviceklageskjema på nav.no
+            -   answer: Digital kanal på nav.no
+            -   answer: Annen skriftlig kanal fra bruker
+            -   answer: Muntlig fra bruker
+            -   answer: Annet
+                questions:
+                    -   id: KANAL_UTDYPNING
+                        text: Spesifiser
+                        type: TEXT
+                        banner:
+                            message: Ikke identifiser bruker eller ansatt
+                            type: WARN
 
-- id: PAAKLAGET_ENHET_ER_BEHANDLENDE
-  text: Er klagen behandlet i enheten det klages på?
-  type: RADIO
-  answers:
-  - answer: Ja
-  - answer: Nei
-    questions:
-    - id: ENHETSNUMMER_BEHANDLENDE
-      text: Angi enhetsnummer til enheten som behandler klagen
-      type: DATALIST
+    -   id: PAAKLAGET_ENHET_ER_BEHANDLENDE
+        text: Er klagen behandlet i enheten det klages på?
+        type: RADIO
+        answers:
+            -   answer: Ja
+            -   answer: Nei
+                questions:
+                    -   id: ENHETSNUMMER_BEHANDLENDE
+                        text: Angi enhetsnummer til enheten som behandler klagen
+                        type: DATALIST
 
-- id: ENHETSNUMMER_PAAKLAGET
-  text: Angi enhetsnummer til enheten det klages på
-  type: DATALIST
+    -   id: ENHETSNUMMER_PAAKLAGET
+        text: Angi enhetsnummer til enheten det klages på
+        type: DATALIST
 
-- id: GJELDER
-  text: Hva mener du serviceklagen gjelder?
-  type: RADIO
-  answers:
-  - answer: Gjelder én ytelse eller tjeneste
-  - answer: Gjelder flere ting eller sammensatt situasjon
+    -   id: GJELDER
+        text: Hva mener du serviceklagen gjelder?
+        type: RADIO
+        answers:
+            -   answer: Gjelder én ytelse eller tjeneste
+            -   answer: Gjelder flere ting eller sammensatt situasjon
 
-- id: BESKRIVELSE
-  text: Gi en kort beskrivelse av serviceklagen
-  type: TEXT
-  banner:
-    message: Ikke identifiser bruker eller ansatt. Beskrivelsen blir brukt til læring.
-    type: WARN
-
-- id: YTELSE
-  text: Hvilken ytelse mm. er mest relevant for serviceklagen?
-  type: SELECT
-  answers:
-  - answer: ''
-  - answer: AFP - Avtalefestet pensjon
-  - answer: Alderspensjon
-  - answer: AAP - Arbeidsavklaringspenger
-  - answer: Arbeidsmarkedsloven
-  - answer: Barnebidragsområdet
-  - answer: Barnepensjon
-  - answer: Barnetrygd
-  - answer: Barns sykdom
-  - answer: Bil
-  - answer: Dagpenger
-  - answer: Eneforsørger
-  - answer: Foreldrepenger
-  - answer: Gjenlevende ektefelle
-  - answer: Grunnstønad/hjelpestønad
-  - answer: Hjelpemidler
-  - answer: Kontantstøtte
-  - answer: Medlemskap
-  - answer: Supplerende stønad
-  - answer: Sykepenger
-  - answer: Uførepensjon
-  - answer: Yrkesskade/yrkessykdom
-  - answer: Annet
-  - answer: Uspesifisert
-
-- id: RELATERT
-  text: Huk av dersom serviceklagen er relatert til
-  type: CHECKBOX
-  optional: true
-  answers:
-  - answer: Korona-saken
-  - answer: EØS-saken
-  - answer: Åpningstider på NAV-kontoret
-  - answer: Språk
-  - answer: Klage
-
-- id: TEMA
-  text: Hva gjelder serviceklagen?
-  type: RADIO
-  answers:
-  - answer: Vente på NAV
-    questions:
-    - id: VENTE
-      text: Vente på NAV
-      type: RADIO
-      answers:
-      - answer: Saksbehandlingstid
-      - answer: Svartid innsyn
-      - answer: Svartid telefon
-      - answer: Ventetid kontakt bruker
-      - answer: Svartid/ventetid i andre tilfeller
-      - answer: Annet
-  - answer: Tilgjengelighet
-    questions:
-    - id: TILGJENGELIGHET
-      text: Tilgjengelighet
-      type: RADIO
-      answers:
-      - answer: Mulighet til kontakt i dagens kanaler
-      - answer: Nedetid i NAVs løsninger
-      - answer: Ønsket kanal mangler
-      - answer: Annet
-  - answer: Informasjon
-    questions:
-    - id: INFORMASJON
-      text: Informasjon
-      type: RADIO
-      answers:
-      - answer: Muntlig over telefonen
-      - answer: Muntlig ved oppmøte/møte
-      - answer: På nav.no /andre brukerflater i NAV
-      - answer: I brev
-      - answer: Annet
-  - answer: Funksjonalitet i NAVs løsninger
-  - answer: Veiledning og oppfølging mot arbeid
-    questions:
-    - id: VEILEDNING
-      text: Veiledning og oppfølging mot arbeid
-      type: RADIO
-      answers:
-      - answer: Muntlig over telefon
-      - answer: Muntlig ved oppmøte/møte
-      - answer: På nav.no/andre brukerflater i NAV
-      - answer: Annet
-  - answer: NAV-ansattes oppførsel
-  - answer: Annet
-    questions:
-    - id: TEMA_UTDYPNING
-      text: Spesifiser
-      type: INPUT
-      banner:
-        message: Ikke identifiser bruker eller ansatt
-        type: WARN
-
-- id: UTFALL
-  text: Hva er utfallet av serviceklagen?
-  type: RADIO
-  answers:
-  - answer: a) Regler/rutiner/frister er fulgt - NAV har ivaretatt bruker godt
-  - answer: b) Regler/rutiner/frister er fulgt men NAV burde ivaretatt bruker bedre
-    questions:
-    - id: AARSAK
-      text: Hva er, etter din mening, de bakenforliggende årsakene?
-      type: TEXT
-      banner:
-        message: Ikke identifiser bruker eller ansatt
-        type: WARN
-    - id: TILTAK
-      text: Hvordan kan NAV hindre at det samme skjer igjen, etter din mening?
-      type: TEXT
-      banner:
-        message: Ikke identifiser bruker eller ansatt
-        type: WARN
-  - answer: c) Regler/rutiner/frister er brutt - NAV burde ivaretatt bruker bedre
-    questions:
-    - id: AARSAK
-      text: Hva er, etter din mening, de bakenforliggende årsakene?
-      type: TEXT
-      banner:
-        message: Ikke identifiser bruker eller ansatt
-        type: WARN
-    - id: TILTAK
-      text: Hvordan kan NAV hindre at det samme skjer igjen, etter din mening?
-      type: TEXT
-      banner:
-        message: Ikke identifiser bruker eller ansatt
-        type: WARN
-  - answer: d) Prøvd, men ikke klart å finne ut hva som har skjedd
-
-- id: SVARMETODE
-  text: Hvordan har bruker blitt svart?
-  type: RADIO
-  answers:
-  - answer: Møte
-  - answer: Telefon
-  - answer: Modia
-  - answer: Manuell post (brev)
-  - answer: E-post
-  - answer: Svar ikke nødvendig
-    questions:
-    - id: SVAR_IKKE_NOEDVENDIG
-      text: Svar ikke nødvendig
-      type: RADIO
-      answers:
-      - answer: Bruker ikke bedt om svar
-      - answer: Annet
-        questions:
-        - id: SVARMETODE_UTDYPNING
-          text: Spesifiser
-          type: TEXT
-          banner:
-            message: Ikke identifiser bruker eller ansatt
+    -   id: BESKRIVELSE
+        text: Gi en kort beskrivelse av serviceklagen
+        type: TEXT
+        banner:
+            message: Ikke identifiser bruker eller ansatt. Beskrivelsen blir brukt til læring.
             type: WARN
 
-- id: KVITTERING
-  text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
-  type: RADIO
-  answers:
-  - answer: Ja
-  - answer: Nei
+    -   id: YTELSE
+        text: Hvilken ytelse mm. er mest relevant for serviceklagen?
+        type: SELECT
+        answers:
+            -   answer: ''
+            -   answer: AFP - Avtalefestet pensjon
+            -   answer: Alderspensjon
+            -   answer: AAP - Arbeidsavklaringspenger
+            -   answer: Arbeidsmarkedsloven
+            -   answer: Barnebidragsområdet
+            -   answer: Barnepensjon
+            -   answer: Barnetrygd
+            -   answer: Barns sykdom
+            -   answer: Bil
+            -   answer: Dagpenger
+            -   answer: Eneforsørger
+            -   answer: Foreldrepenger
+            -   answer: Gjenlevende ektefelle
+            -   answer: Grunnstønad/hjelpestønad
+            -   answer: Hjelpemidler
+            -   answer: Kontantstøtte
+            -   answer: Medlemskap
+            -   answer: Supplerende stønad
+            -   answer: Sykepenger
+            -   answer: Uførepensjon
+            -   answer: Yrkesskade/yrkessykdom
+            -   answer: Annet
+            -   answer: Uspesifisert
+
+    -   id: RELATERT
+        text: Huk av dersom serviceklagen er relatert til
+        type: CHECKBOX
+        optional: true
+        answers:
+            -   answer: Korona-saken
+            -   answer: EØS-saken
+            -   answer: Åpningstider på NAV-kontoret
+            -   answer: Språk
+            -   answer: Klage
+
+    -   id: TEMA
+        text: Hva gjelder serviceklagen?
+        type: RADIO
+        answers:
+            -   answer: Vente på NAV
+                questions:
+                    -   id: VENTE
+                        text: Vente på NAV
+                        type: RADIO
+                        answers:
+                            -   answer: Saksbehandlingstid
+                            -   answer: Svartid innsyn
+                            -   answer: Svartid telefon
+                            -   answer: Ventetid kontakt bruker
+                            -   answer: Svartid/ventetid i andre tilfeller
+                            -   answer: Annet
+            -   answer: Tilgjengelighet
+                questions:
+                    -   id: TILGJENGELIGHET
+                        text: Tilgjengelighet
+                        type: RADIO
+                        answers:
+                            -   answer: Mulighet til kontakt i dagens kanaler
+                            -   answer: Nedetid i NAVs løsninger
+                            -   answer: Ønsket kanal mangler
+                            -   answer: Annet
+            -   answer: Informasjon
+                questions:
+                    -   id: INFORMASJON
+                        text: Informasjon
+                        type: RADIO
+                        answers:
+                            -   answer: Muntlig over telefonen
+                            -   answer: Muntlig ved oppmøte/møte
+                            -   answer: På nav.no /andre brukerflater i NAV
+                            -   answer: I brev
+                            -   answer: Annet
+            -   answer: Funksjonalitet i NAVs løsninger
+            -   answer: Veiledning og oppfølging mot arbeid
+                questions:
+                    -   id: VEILEDNING
+                        text: Veiledning og oppfølging mot arbeid
+                        type: RADIO
+                        answers:
+                            -   answer: Muntlig over telefon
+                            -   answer: Muntlig ved oppmøte/møte
+                            -   answer: På nav.no/andre brukerflater i NAV
+                            -   answer: Annet
+            -   answer: NAV-ansattes oppførsel
+            -   answer: Annet
+                questions:
+                    -   id: TEMA_UTDYPNING
+                        text: Spesifiser
+                        type: INPUT
+                        banner:
+                            message: Ikke identifiser bruker eller ansatt
+                            type: WARN
+
+    -   id: UTFALL
+        text: Hva er utfallet av serviceklagen?
+        type: RADIO
+        answers:
+            -   answer: a) Regler/rutiner/frister er fulgt - NAV har ivaretatt bruker godt
+            -   answer: b) Regler/rutiner/frister er fulgt men NAV burde ivaretatt bruker bedre
+                questions:
+                    -   id: AARSAK
+                        text: Hva er, etter din mening, de bakenforliggende årsakene?
+                        type: TEXT
+                        banner:
+                            message: Ikke identifiser bruker eller ansatt
+                            type: WARN
+                    -   id: TILTAK
+                        text: Hvordan kan NAV hindre at det samme skjer igjen, etter din mening?
+                        type: TEXT
+                        banner:
+                            message: Ikke identifiser bruker eller ansatt
+                            type: WARN
+            -   answer: c) Regler/rutiner/frister er brutt - NAV burde ivaretatt bruker bedre
+                questions:
+                    -   id: AARSAK
+                        text: Hva er, etter din mening, de bakenforliggende årsakene?
+                        type: TEXT
+                        banner:
+                            message: Ikke identifiser bruker eller ansatt
+                            type: WARN
+                    -   id: TILTAK
+                        text: Hvordan kan NAV hindre at det samme skjer igjen, etter din mening?
+                        type: TEXT
+                        banner:
+                            message: Ikke identifiser bruker eller ansatt
+                            type: WARN
+            -   answer: d) Prøvd, men ikke klart å finne ut hva som har skjedd
+
+    -   id: SVARMETODE
+        text: Hvordan har bruker blitt svart?
+        type: RADIO
+        answers:
+            -   answer: Møte
+            -   answer: Telefon
+            -   answer: Modia
+            -   answer: Manuell post (brev)
+            -   answer: E-post
+            -   answer: Svar ikke nødvendig
+                questions:
+                    -   id: SVAR_IKKE_NOEDVENDIG
+                        text: Svar ikke nødvendig
+                        type: RADIO
+                        answers:
+                            -   answer: Bruker ikke bedt om svar
+                            -   answer: Annet
+                                questions:
+                                    -   id: SVARMETODE_UTDYPNING
+                                        text: Spesifiser
+                                        type: TEXT
+                                        banner:
+                                            message: Ikke identifiser bruker eller ansatt
+                                            type: WARN
+
+    -   id: KVITTERING
+        text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
+        type: RADIO
+        answers:
+            -   answer: Ja
+            -   answer: Nei

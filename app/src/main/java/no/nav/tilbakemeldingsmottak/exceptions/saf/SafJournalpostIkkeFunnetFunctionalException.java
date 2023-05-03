@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class SafJournalpostIkkeFunnetFunctionalException extends AbstractTilbakemeldingsmottakFunctionalException {
 
-	public SafJournalpostIkkeFunnetFunctionalException(String message) {
-		super(message);
-	}
+    public SafJournalpostIkkeFunnetFunctionalException(String message) {
+        super(message);
+    }
 }

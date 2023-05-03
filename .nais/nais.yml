@@ -1,121 +1,121 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: tilbakemeldingsmottak-api
-  namespace: teamserviceklage
-  labels:
-    team: teamserviceklage
-  annotations:
-    nais.io/read-only-file-system: "false"
-    nginx.ingress.kubernetes.io/proxy-body-size: "320M"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    name: tilbakemeldingsmottak-api
+    namespace: teamserviceklage
+    labels:
+        team: teamserviceklage
+    annotations:
+        nais.io/read-only-file-system: "false"
+        nginx.ingress.kubernetes.io/proxy-body-size: "320M"
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
-  image: {{image}}
-  port: 9069
-  accessPolicy:
-    inbound:
-      rules:
-        - application: tilbakemeldinger
-          namespace: personbruker
-        - application: samisk-samtale-bestilling
-          namespace: personbruker
-        - application: tilbakemeldingsmottak-frontend
-          permissions:
-            scopes:
-              - serviceklage-klassifisering
-
-    outbound:
-      external:
-      {{#each outboundExternalHosts}}
-       - host: "{{this}}"
-      {{/each}}
-  tokenx:
-    enabled: true
-  liveness:
-    path: /isAlive
+    image: {{image}}
     port: 9069
-    initialDelay: 30
-    failureThreshold: 10
-    timeout: 20
-  readiness:
-    path: /isReady
-    port: 9069
-    initialDelay: 100
-    timeout: 20
-  prometheus:
-    enabled: true
-    path: /internal/metrics
-  replicas:
-    min: 1
-    max: 2
-    cpuThresholdPercentage: 50
-  resources:
-    limits:
-      cpu: 3000m
-      memory: 3Gi
-    requests:
-      cpu: 1000m
-      memory: 1Gi
-  gcp:
-    sqlInstances:
-      - type: POSTGRES_14
-        databases:
-          - name: {{ DATABASE_NAME }}
-            envVarPrefix: DATABASE
-    bigQueryDatasets:
-      - name: tilbakemeldingsmottak_metrics
-        permission: READWRITE
-        description: Datasett for serviceklager
+    accessPolicy:
+        inbound:
+            rules:
+                -   application: tilbakemeldinger
+                    namespace: personbruker
+                -   application: samisk-samtale-bestilling
+                    namespace: personbruker
+                -   application: tilbakemeldingsmottak-frontend
+                    permissions:
+                        scopes:
+                            - serviceklage-klassifisering
 
-  azure:
-    application:
-      enabled: true
-      allowAllUsers: true
-      tenant: {{ TENANT }}
-  ingresses:
-  {{#each INGRESS as |url|}}
-     - {{url}}
-  {{/each}}
+        outbound:
+            external:
+          { { #each outboundExternalHosts}}
+                -   host: "{{this}}"
+                              {{/each } }
+    tokenx:
+        enabled: true
+    liveness:
+        path: /isAlive
+        port: 9069
+        initialDelay: 30
+        failureThreshold: 10
+        timeout: 20
+    readiness:
+        path: /isReady
+        port: 9069
+        initialDelay: 100
+        timeout: 20
+    prometheus:
+        enabled: true
+        path: /internal/metrics
+    replicas:
+        min: 1
+        max: 2
+        cpuThresholdPercentage: 50
+    resources:
+        limits:
+            cpu: 3000m
+            memory: 3Gi
+        requests:
+            cpu: 1000m
+            memory: 1Gi
+    gcp:
+        sqlInstances:
+            -   type: POSTGRES_14
+                databases:
+                    -   name: { { DATABASE_NAME } }
+                        envVarPrefix: DATABASE
+        bigQueryDatasets:
+            -   name: tilbakemeldingsmottak_metrics
+                permission: READWRITE
+                description: Datasett for serviceklager
 
-  envFrom:
-    - secret: tilbakemeldingsmottak-api-google-secret
+    azure:
+        application:
+            enabled: true
+            allowAllUsers: true
+            tenant: { { TENANT } }
+    ingresses:
+  { { #each INGRESS as |url|}}
+        - {{url } }
+    {{/each}}
 
-  env:
-    - name: JOURNALPOST_V1_URL
-      value: {{ JOURNALPOST_V1_URL }}
-    - name: OPPGAVE_OPPGAVER_URL
-      value: {{ OPPGAVE_OPPGAVER_URL }}
-    - name: EREG_API_URL
-      value: {{ EREG_API_URL }}
-    - name: NORG2_API_V1_URL
-      value: {{ NORG2_API_V1_URL }}
-    - name: SAF_URL
-      value: {{ SAF_URL }}
-    - name: SAF_HENTDOKUMENT_URL
-      value: {{SAF_HENTDOKUMENT_URL}}
-    - name: AZURE_DEFAULT_SCOPE
-      value: {{AZURE_DEFAULT_SCOPE}}
-    - name: TENANT
-      value: {{ TENANT }}
-    - name: EMAIL_FROM_ADDRESS
-      value: {{ EMAIL_FROM_ADDRESS }}
-    - name: EMAIL_SERVICEKLAGE_ADDRESS
-      value: {{ EMAIL_SERVICEKLAGE_ADDRESS }}
-    - name: EMAIL_NAV_SUPPORT_ADDRESS
-      value: {{ EMAIL_NAV_SUPPORT_ADDRESS }}
-    - name: EMAIL_SAMISK_KONTAKT_ADDRESS
-      value: {{ EMAIL_SAMISK_KONTAKT_ADDRESS }}
-    - name: DOKARKIV_SCOPE
-      value: {{ DOKARKIV_SCOPE }}
-    - name: SAF_SCOPE
-      value: {{ SAF_SCOPE }}
-    - name: OPPGAVE_SCOPE
-      value: {{ OPPGAVE_SCOPE }}
-    - name: PDL_URL
-      value: {{ PDL_URL }}
-    - name: PDL_SCOPE
-      value: {{ PDL_SCOPE }}
-    - name: AAD_EMAIL
-      value: {{ AAD_EMAIL }}
-    - name: BIG_QUERY_DATASET
-      value: {{ BIG_QUERY_DATASET }}
+    envFrom:
+        -   secret: tilbakemeldingsmottak-api-google-secret
+
+    env:
+        -   name: JOURNALPOST_V1_URL
+            value: { { JOURNALPOST_V1_URL } }
+        -   name: OPPGAVE_OPPGAVER_URL
+            value: { { OPPGAVE_OPPGAVER_URL } }
+        -   name: EREG_API_URL
+            value: { { EREG_API_URL } }
+        -   name: NORG2_API_V1_URL
+            value: { { NORG2_API_V1_URL } }
+        -   name: SAF_URL
+            value: { { SAF_URL } }
+        -   name: SAF_HENTDOKUMENT_URL
+            value: {{SAF_HENTDOKUMENT_URL}}
+        -   name: AZURE_DEFAULT_SCOPE
+            value: {{AZURE_DEFAULT_SCOPE}}
+        -   name: TENANT
+            value: { { TENANT } }
+        -   name: EMAIL_FROM_ADDRESS
+            value: { { EMAIL_FROM_ADDRESS } }
+        -   name: EMAIL_SERVICEKLAGE_ADDRESS
+            value: { { EMAIL_SERVICEKLAGE_ADDRESS } }
+        -   name: EMAIL_NAV_SUPPORT_ADDRESS
+            value: { { EMAIL_NAV_SUPPORT_ADDRESS } }
+        -   name: EMAIL_SAMISK_KONTAKT_ADDRESS
+            value: { { EMAIL_SAMISK_KONTAKT_ADDRESS } }
+        -   name: DOKARKIV_SCOPE
+            value: { { DOKARKIV_SCOPE } }
+        -   name: SAF_SCOPE
+            value: { { SAF_SCOPE } }
+        -   name: OPPGAVE_SCOPE
+            value: { { OPPGAVE_SCOPE } }
+        -   name: PDL_URL
+            value: { { PDL_URL } }
+        -   name: PDL_SCOPE
+            value: { { PDL_SCOPE } }
+        -   name: AAD_EMAIL
+            value: { { AAD_EMAIL } }
+        -   name: BIG_QUERY_DATASET
+            value: { { BIG_QUERY_DATASET } }

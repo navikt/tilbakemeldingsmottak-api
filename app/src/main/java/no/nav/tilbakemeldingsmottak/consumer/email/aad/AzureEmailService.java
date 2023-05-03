@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.email.aad;
 
 import com.microsoft.graph.models.*;
-import com.microsoft.graph.models.BodyType;
 import com.microsoft.graph.requests.AttachmentCollectionPage;
 import com.microsoft.graph.requests.AttachmentCollectionResponse;
 import no.nav.tilbakemeldingsmottak.consumer.email.EmailService;
@@ -12,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class AzureEmailService implements EmailService {
@@ -21,18 +22,15 @@ public class AzureEmailService implements EmailService {
     private static final Logger log = LoggerFactory.getLogger(AzureEmailService.class);
 
     private final AADMailClient mailClient;
+    @Value("${email_nav_support_address}")
+    private String emailToAddress;
+    @Value("${email_from_address}")
+    private String emailFromAddress;
 
     @Autowired
     public AzureEmailService(AADMailClient mailClient) {
         this.mailClient = mailClient;
     }
-
-    @Value("${email_nav_support_address}")
-    private String emailToAddress;
-
-    @Value("${email_from_address}")
-    private String emailFromAddress;
-
 
     @Override
     public void sendSimpleMessage(String mottaker, String subject, String content) throws SendEmailException {

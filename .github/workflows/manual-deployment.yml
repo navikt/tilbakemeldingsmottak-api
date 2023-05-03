@@ -1,89 +1,90 @@
 name: Manually triggered deployment
+run-name: Manual ${{ github.event.inputs.environment }} deploy of branch ${{ github.head_ref || github.ref_name }}
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy'
-        required: true
-        default: 'preprod'
-        type: choice
-        options:
-          - none
-          - preprod
-          - prod
+    workflow_dispatch:
+        inputs:
+            environment:
+                description: 'Environment to deploy'
+                required: true
+                default: 'preprod'
+                type: choice
+                options:
+                    - none
+                    - preprod
+                    - prod
 env:
-  docker_image: ghcr.io/${{ github.repository }}:${{ github.sha }}
+    docker_image: ghcr.io/${{ github.repository }}:${{ github.sha }}
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Branch name
-      run: echo running on branch ${GITHUB_REF##*/}
+    build-and-push:
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v3
+            -   name: Branch name
+                run: echo running on branch ${GITHUB_REF##*/}
 
-    - name: Set timezone
-      uses: szenius/set-timezone@v1.0
-      with:
-        timezoneLinux: "Europe/Oslo"
+            -   name: Set timezone
+                uses: szenius/set-timezone@v1.0
+                with:
+                    timezoneLinux: "Europe/Oslo"
 
-    - uses: docker/login-action@v2
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+            -   uses: docker/login-action@v2
+                with:
+                    registry: ghcr.io
+                    username: ${{ github.actor }}
+                    password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Set up JDK
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '17.x'
+            -   name: Set up JDK
+                uses: actions/setup-java@v3
+                with:
+                    distribution: 'temurin'
+                    java-version: '17.x'
 
-    - name: Set up Node 14
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14.21.3'
+            -   name: Set up Node 14
+                uses: actions/setup-node@v1
+                with:
+                    node-version: '14.21.3'
 
-    - name: Build with maven
-      env:
-        GITHUB_USERNAME: x-access-token
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: mvn install --file pom.xml
+            -   name: Build with maven
+                env:
+                    GITHUB_USERNAME: x-access-token
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                run: mvn install --file pom.xml
 
-    - name: Build and publish Docker image
-      uses: docker/build-push-action@v3
-      with:
-        context: .
-        push: true
-        tags: ${{ env.docker_image }}
+            -   name: Build and publish Docker image
+                uses: docker/build-push-action@v3
+                with:
+                    context: .
+                    push: true
+                    tags: ${{ env.docker_image }}
 
-  deploy-preprod:
-    needs: [build-and-push]
-    if: github.event.inputs.environment == 'preprod'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: dev-gcp
-          RESOURCE: .nais/nais.yml
-          VARS: .nais/preprod-config.json
-          VAR: image=${{env.docker_image}}
-          DRY_RUN: false
-  deploy-prod:
-    needs: [build-and-push]
-    if: github.event.inputs.environment == 'prod'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-          CLUSTER: prod-gcp
-          RESOURCE: .nais/nais.yml
-          VAR: image=${{env.docker_image}}
-          VARS: .nais/p-config.json
-          DRY_RUN: false
+    deploy-preprod:
+        needs: [ build-and-push ]
+        if: github.event.inputs.environment == 'preprod'
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v3
+            -   uses: nais/deploy/actions/deploy@v1
+                env:
+                    APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+                    CLUSTER: dev-gcp
+                    RESOURCE: .nais/nais.yml
+                    VARS: .nais/preprod-config.json
+                    VAR: image=${{env.docker_image}}
+                    DRY_RUN: false
+    deploy-prod:
+        needs: [ build-and-push ]
+        if: github.event.inputs.environment == 'prod'
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v3
+            -   uses: nais/deploy/actions/deploy@v1
+                env:
+                    APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+                    CLUSTER: prod-gcp
+                    RESOURCE: .nais/nais.yml
+                    VAR: image=${{env.docker_image}}
+                    VARS: .nais/p-config.json
+                    DRY_RUN: false
 

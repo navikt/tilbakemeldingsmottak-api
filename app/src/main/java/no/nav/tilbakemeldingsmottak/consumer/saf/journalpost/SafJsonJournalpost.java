@@ -4,17 +4,17 @@ import java.io.Serializable;
 
 public class SafJsonJournalpost implements Serializable {
 
-	private DataJournalpost data;
+    private DataJournalpost data;
 
-	public DataJournalpost getData() {
-		return data;
-	}
+    public DataJournalpost getData() {
+        return data;
+    }
 
-	public void setData(DataJournalpost data) {
-		this.data = data;
-	}
+    public void setData(DataJournalpost data) {
+        this.data = data;
+    }
 
-	public SafJournalpostTo getJournalpost() {
-		return data.getJournalpost();
-	}
+    public SafJournalpostTo getJournalpost() {
+        return data.getJournalpost();
+    }
 }

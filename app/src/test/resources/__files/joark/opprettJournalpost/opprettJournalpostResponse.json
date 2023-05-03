@@ -1,5 +1,5 @@
 {
-  "journalpostId": "12345",
-  "journalstatus": "ENDELIG",
-  "melding": "string"
+    "journalpostId": "12345",
+    "journalstatus": "ENDELIG",
+    "melding": "string"
 }

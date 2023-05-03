@@ -1,18 +1,18 @@
 package no.nav.tilbakemeldingsmottak.rest.common.validation;
 
-import static java.lang.Character.getNumericValue;
-import static org.springframework.util.Assert.notNull;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import org.springframework.stereotype.Component;
+
+import static java.lang.Character.getNumericValue;
+import static org.springframework.util.Assert.notNull;
 
 @Component
 @RequiredArgsConstructor
 public class PersonnummerValidator {
 
-    private static final int[] CONTROL_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
-    private static final int[] CONTROL_DIGIT_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
+    private static final int[] CONTROL_DIGIT_C1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
+    private static final int[] CONTROL_DIGIT_C2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
     private static final int INVALID_CONTROL_DIGIT = 10;
     private static final int DEFAULT_MODULUS = 11;
     private static final int C1_POS = 9;

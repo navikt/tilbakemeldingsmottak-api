@@ -7,7 +7,7 @@ import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTech
  */
 public class EregTechnicalException extends AbstractTilbakemeldingsmottakTechnicalException {
 
-	public EregTechnicalException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public EregTechnicalException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

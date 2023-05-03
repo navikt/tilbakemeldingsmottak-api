@@ -1,15 +1,13 @@
 package no.nav.tilbakemeldingsmottak;
 
-import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
-import org.junit.jupiter.api.Test;
+import no.nav.tilbakemeldingsmottak.model.Innmelder;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.GjelderSosialhjelpEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.GjelderSosialhjelpEnum;
 import no.nav.tilbakemeldingsmottak.model.PaaVegneAvPerson;
-import no.nav.tilbakemeldingsmottak.model.Innmelder;
-
-import static org.junit.jupiter.api.Assertions.*;
+import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,6 +17,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ReGenereringAvPdf {
 

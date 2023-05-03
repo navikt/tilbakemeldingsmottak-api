@@ -16,10 +16,9 @@ import javax.annotation.PostConstruct;
 @Profile("nais")
 public class TableCreator {
 
+    private final BigQuery bigQueryClient;
     @Value("${big_query_dataset}")
     private String dataset;
-
-    private final BigQuery bigQueryClient;
 
     private TableId getTableId(String tableName) {
         return TableId.of(dataset, tableName);

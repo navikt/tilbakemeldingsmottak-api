@@ -4,7 +4,7 @@ import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTech
 
 public class SafJournalpostQueryTechnicalException extends AbstractTilbakemeldingsmottakTechnicalException {
 
-	public SafJournalpostQueryTechnicalException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public SafJournalpostQueryTechnicalException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

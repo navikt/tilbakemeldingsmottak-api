@@ -1,7 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
-import static org.apache.commons.lang3.StringUtils.isNumeric;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService;
@@ -11,26 +9,26 @@ import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.pdl.PdlFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.pdl.PdlGraphqlException;
-import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
-import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
+import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
+import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Component;
+
 import java.util.Optional;
+
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 @Component
 @RequiredArgsConstructor
 public class OpprettServiceklageValidator extends RequestValidator {
 
+    private static final int ENHETSNUMMER_LENGTH = 4;
     private final EregConsumer eregConsumer;
     private final OidcUtils oidcUtils;
     private final PersonnummerValidator personnummerValidator;
-
     private final PdlService pdlService;
-
-
-    private static final int ENHETSNUMMER_LENGTH = 4;
 
     public void validateRequest(OpprettServiceklageRequest request) {
         validateRequest(request, Optional.empty());
@@ -39,7 +37,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
     public void validateRequest(OpprettServiceklageRequest request, Optional<String> paloggetBruker) {
         validateCommonRequiredFields(request);
 
-        switch(request.getPaaVegneAv()) {
+        switch (request.getPaaVegneAv()) {
             case PRIVATPERSON:
                 validatePaaVegneAvPrivatperson(request, paloggetBruker);
                 break;
@@ -98,7 +96,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
         hasText(request.getPaaVegneAvBedrift().getOrganisasjonsnummer(), "paaVegneAvBedrift.organisasjonsnummer");
         isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes", " dersom paaVegneAv=BEDRIFT");
         hasText(request.getEnhetsnummerPaaklaget(), "enhetsnummerPaaklaget", " dersom paaVegneAv=BEDRIFT");
-        if(!isNumeric(request.getEnhetsnummerPaaklaget()) && request.getEnhetsnummerPaaklaget().length() != ENHETSNUMMER_LENGTH) {
+        if (!isNumeric(request.getEnhetsnummerPaaklaget()) && request.getEnhetsnummerPaaklaget().length() != ENHETSNUMMER_LENGTH) {
             throw new InvalidRequestException("enhetsnummerPaaklaget må ha fire siffer");
         }
         hasText(request.getEnhetsnummerPaaklaget(), "enhetsnummerPaaklaget", " dersom paaVegneAv=BEDRIFT");

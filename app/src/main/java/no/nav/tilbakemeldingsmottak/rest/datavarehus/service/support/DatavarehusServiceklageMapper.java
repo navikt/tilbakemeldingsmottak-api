@@ -1,7 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.datavarehus.service.support;
 
-import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import no.nav.tilbakemeldingsmottak.model.DatavarehusServiceklage;
+import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 public class DatavarehusServiceklageMapper {
 
     // Mapper fra Serviceklage (DAO) til DatavarehusServiceKlage (DTO) for å kunne separere hvilke felter som skal sendes til datavarehus
-    public List<DatavarehusServiceklage> map(List<Serviceklage> serviceklageList){
+    public List<DatavarehusServiceklage> map(List<Serviceklage> serviceklageList) {
         List<DatavarehusServiceklage> datavarehusServiceKlageList = new ArrayList<>();
         for (Serviceklage serviceklage : serviceklageList) {
             DatavarehusServiceklage datavarehusServiceklage = DatavarehusServiceklage.builder()

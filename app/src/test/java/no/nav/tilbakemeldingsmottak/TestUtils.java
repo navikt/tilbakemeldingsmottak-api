@@ -1,17 +1,5 @@
 package no.nav.tilbakemeldingsmottak;
 
-import no.nav.tilbakemeldingsmottak.graphql.IdentGruppe;
-import no.nav.tilbakemeldingsmottak.graphql.IdentInformasjon;
-import no.nav.tilbakemeldingsmottak.graphql.Identliste;
-import no.nav.tilbakemeldingsmottak.model.SendRosRequest.HvemRosesEnum;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.ENHETSNUMMER_PAAKLAGET;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
-import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.SneakyThrows;
@@ -21,23 +9,16 @@ import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJsonJournalpost;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
-import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest;
-import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest;
+import no.nav.tilbakemeldingsmottak.graphql.IdentGruppe;
+import no.nav.tilbakemeldingsmottak.graphql.IdentInformasjon;
+import no.nav.tilbakemeldingsmottak.graphql.Identliste;
+import no.nav.tilbakemeldingsmottak.model.*;
+import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest.TidsromEnum;
 import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest.FeiltypeEnum;
-import no.nav.tilbakemeldingsmottak.model.SendRosRequest;
-import no.nav.tilbakemeldingsmottak.model.Answer;
-import no.nav.tilbakemeldingsmottak.model.DefaultAnswers;
-import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.model.Innmelder;
-import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.GjelderSosialhjelpEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.GjelderSosialhjelpEnum;
-import no.nav.tilbakemeldingsmottak.model.PaaVegneAvBedrift;
-import no.nav.tilbakemeldingsmottak.model.PaaVegneAvPerson;
-import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest.TidsromEnum;
-
+import no.nav.tilbakemeldingsmottak.model.SendRosRequest.HvemRosesEnum;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.util.StreamUtils;
@@ -47,13 +28,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.*;
+import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 
 public class TestUtils {
 
@@ -67,8 +47,8 @@ public class TestUtils {
 
     public static final String NAVN_PERSON = "Paal Vegne Personsen";
 
-    public static final String NAVN_BEDRIFT= "Bedrift AS";
-    public static final String ORGANISASJONSNUMMER= "123456789";
+    public static final String NAVN_BEDRIFT = "Bedrift AS";
+    public static final String ORGANISASJONSNUMMER = "123456789";
 
     public static final List<KlagetyperEnum> KLAGETYPER = Collections.singletonList(KlagetyperEnum.NAV_DIGITALE_TJENESTER);
     public static final List<KlagetyperEnum> KLAGETYPER_NAV_KONTOR = Collections.singletonList(KlagetyperEnum.LOKALT_NAV_KONTOR);
@@ -77,35 +57,27 @@ public class TestUtils {
 
     public static final FeiltypeEnum FEILTYPE = FeiltypeEnum.TEKNISK_FEIL;
     public static final String BESKRIVELSE_FEIL = "Det er en teknisk feil på nav.no";
-    private static final Boolean ONSKER_KONTAKT = Boolean.TRUE;
-
     public static final HvemRosesEnum HVEM_ROSES = HvemRosesEnum.NAV_KONTAKTSENTER;
     public static final String BESKRIVELSE_ROS = "Saksbehandleren var snill";
     public static final HvemRosesEnum HVEM_ROSES_KONTOR = HvemRosesEnum.NAV_KONTOR;
-
     public static final String NAV_ENHETSNAVN_1 = "NAV Evje og Hornnes";
     public static final String NAV_ENHETSNAVN_2 = "NAV Aremark";
     public static final String NAV_ENHETSNAVN_3 = "NAV Bamble";
     public static final String NAV_ENHETSNAVN_4 = "NAV Nordkapp";
     public static final String NAV_ENHETSNAVN_5 = "NAV Smøla";
-
     public static final String NAV_ENHETSNR_1 = "0937";
     public static final String NAV_ENHETSNR_2 = "0118";
     public static final String NAV_ENHETSNR_3 = "0814";
     public static final String NAV_ENHETSNR_4 = "2019";
     public static final String NAV_ENHETSNR_5 = "1573";
-
     public static final String NAV_KONTOR_1 = NAV_ENHETSNAVN_1 + " - " + NAV_ENHETSNR_1;
     public static final String NAV_KONTOR_2 = NAV_ENHETSNAVN_2 + " - " + NAV_ENHETSNR_2;
     public static final String NAV_KONTOR_3 = NAV_ENHETSNAVN_3 + " - " + NAV_ENHETSNR_3;
     public static final String NAV_KONTOR_4 = NAV_ENHETSNAVN_4 + " - " + NAV_ENHETSNR_4;
     public static final String NAV_KONTOR_5 = NAV_ENHETSNAVN_5 + " - " + NAV_ENHETSNR_5;
-
     public static final String NAV_ENHET_STATUS = "Aktiv";
-
     public static final String FORNAVN = "Fred";
     public static final String ETTERNAVN = "Buljo";
-
     public static final String BEHANDLES_SOM_SERVICEKLAGE = "Ja";
     public static final String FREMMET_DATO = LocalDate.now().toString();
     public static final String INNSENDER = "Bruker selv som privatperson";
@@ -120,16 +92,14 @@ public class TestUtils {
     public static final String AARSAK = "Service har vært dårlig";
     public static final String TILTAK = "Gi bedre service";
     public static final String KVITTERING = "Nei";
-
     public static final String BEHANDLES_IKKE_SOM_SERVICEKLAGE = "Nei, annet";
     public static final String KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser";
     public static final String FORVALTNINGSKLAGE = "Nei, en forvaltningsklage";
     public static final String FULGT_BRUKERVEILEDNING_GOSYS = "Ja";
     public static final String KOMMUNAL_BEHANDLING = "Ja";
     public static final String SAKSBEHANDLER = "saksbehandler";
-
     public static final String DOKUMENT_INFO_ID = "dokumentInfoId";
-
+    private static final Boolean ONSKER_KONTAKT = Boolean.TRUE;
     private static ObjectMapper objectMapper = new ObjectMapper();
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatperson() {
@@ -330,14 +300,14 @@ public class TestUtils {
     public static Identliste createHentAktoerIdForIdentResponse(String aktoerId) {
         return Identliste.builder()
                 .withIdenter(List.of(IdentInformasjon.builder()
-                .withIdent(aktoerId)
-                .withGruppe(IdentGruppe.AKTORID)
-                .withHistorisk(false)
-                .build())).build();
+                        .withIdent(aktoerId)
+                        .withGruppe(IdentGruppe.AKTORID)
+                        .withHistorisk(false)
+                        .build())).build();
     }
 
     public static Identliste createEmptyHentAktoerIdForIdentResponse() {
-       return Identliste.builder().withIdenter(Collections.emptyList()).build();
+        return Identliste.builder().withIdenter(Collections.emptyList()).build();
     }
 
     @SneakyThrows

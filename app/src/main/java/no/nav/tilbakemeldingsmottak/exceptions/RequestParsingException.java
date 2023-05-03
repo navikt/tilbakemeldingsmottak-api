@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 public class RequestParsingException extends AbstractTilbakemeldingsmottakTechnicalException {
 
-	public RequestParsingException(String message) {
-		super(message);
-	}
+    public RequestParsingException(String message) {
+        super(message);
+    }
 }

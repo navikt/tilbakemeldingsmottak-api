@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 public class ServiceklageMailException extends AbstractTilbakemeldingsmottakTechnicalException {
 
-	public ServiceklageMailException(String message) {
-		super(message);
-	}
+    public ServiceklageMailException(String message) {
+        super(message);
+    }
 }

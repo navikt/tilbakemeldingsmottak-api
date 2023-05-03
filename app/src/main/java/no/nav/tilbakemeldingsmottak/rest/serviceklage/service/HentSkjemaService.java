@@ -1,16 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.ENHETSNUMMER_PAAKLAGET;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.FREMMET_DATO;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.INNSENDER;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.SVARMETODE;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.SVARMETODE_UTDYPNING;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG;
-import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +7,10 @@ import no.nav.tilbakemeldingsmottak.consumer.norg2.Enhet;
 import no.nav.tilbakemeldingsmottak.consumer.norg2.Norg2Consumer;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaSerializationException;
-import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.model.Answer;
 import no.nav.tilbakemeldingsmottak.model.DefaultAnswers;
 import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -35,20 +24,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.*;
+import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
+
 @Service
 @Slf4j
 public class HentSkjemaService {
-
-    private final ServiceklageRepository serviceklageRepository;
-    private final Norg2Consumer norg2Consumer;
-    private final String classpathSkjema;
-    private ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
     private static final String MESSAGE = "Feltet ble fylt ut under registrering av serviceklage";
     private static final String NEDLAGT = "nedlagt";
     private static final String ANNET = "Annet";
     private static final String SCHEMA_PATH = "classpath:schema/schema.yaml";
     private static final Charset CHARSET = Charset.forName("utf-8");
+    private final ServiceklageRepository serviceklageRepository;
+    private final Norg2Consumer norg2Consumer;
+    private final String classpathSkjema;
+    private ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
     public HentSkjemaService(@Value(SCHEMA_PATH) Resource schema,
                              ServiceklageRepository serviceklageRepository,
