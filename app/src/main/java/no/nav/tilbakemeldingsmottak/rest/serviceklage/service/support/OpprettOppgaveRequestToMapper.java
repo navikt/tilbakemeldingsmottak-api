@@ -1,9 +1,9 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support;
 
-import no.nav.tilbakemeldingsmottak.consumer.aktoer.AktoerConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
+import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
 import org.springframework.stereotype.Component;
 
@@ -24,18 +24,19 @@ public class OpprettOppgaveRequestToMapper {
     private static final String BESKRIVELSE_SLETTING = "Skal slettes da det ikke er en serviceklage";
     private static final Long DAGER_FRIST = 18L;
 
-    private AktoerConsumer aktoerConsumer;
+    private PdlService pdlService;
+
 
     @Inject
-    public OpprettOppgaveRequestToMapper(AktoerConsumer aktoerConsumerService) {
-        this.aktoerConsumer = aktoerConsumerService;
+    public OpprettOppgaveRequestToMapper(PdlService pdlService){
+        this.pdlService = pdlService;
     }
 
     public OpprettOppgaveRequestTo mapServiceklageOppgave(String klagenGjelderId, PaaVegneAvEnum paaVegneAvEnum, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
         return OpprettOppgaveRequestTo.builder()
                 .tildeltEnhetsnr(KLAGEINSTANS_ENHETSNR)
                 .prioritet(PRIORITET)
-                .aktoerId(paaVegneAvEnum.equals(PaaVegneAvEnum.BEDRIFT) ? null : aktoerConsumer.hentAktoerIdForIdent(klagenGjelderId).get(klagenGjelderId).getFirstIdent())
+                .aktoerId(paaVegneAvEnum.equals(PaaVegneAvEnum.BEDRIFT) ? null :  pdlService.hentAktorIdForIdent(klagenGjelderId))
                 .orgnr(paaVegneAvEnum.equals(PaaVegneAvEnum.BEDRIFT) ? klagenGjelderId : null)
                 .aktivDato(LocalDate.now().toString())
                 .journalpostId(opprettJournalpostResponseTo.getJournalpostId())

@@ -1,12 +1,8 @@
-hentdokument:
-  url: ${SAF_HENTDOKUMENT_URL}
-logging:
-  config: classpath:logback-spring.xml
-  level:
-    org:
-      springframework:
-        boot:
-          autoconfigure: ERROR
+server:
+  port: 9069
+  tomcat:
+    use-relative-redirects: true
+
 management:
   endpoint:
     prometheus:
@@ -23,30 +19,3 @@ management:
     export:
       prometheus:
         enabled: true
-saf:
-  graphql:
-    url: ${SAF_URL}
-server:
-  tomcat:
-    use-relative-redirects: true
-spring:
-  datasource:
-    driver-class-name: oracle.jdbc.pool.OracleDataSource
-  flyway:
-    enabled: true
-    out-of-order: false
-    table: schema_version
-    validate-on-migrate: false
-  jpa:
-    open-in-view: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.Oracle12cDialect
-        event:
-          merge:
-            entity_copy_observer: allow
-        generate_statistics: false
-  main:
-    banner-mode: 'off'
-  transaction:
-    default-timeout: 300s

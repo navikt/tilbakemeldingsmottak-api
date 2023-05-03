@@ -34,7 +34,22 @@ public class OidcUtils {
             return Optional.empty();
         } else {
             try {
-                return Optional.of(userToken.getJwtTokenClaims().getStringClaim("upn"));
+                return Optional.of(userToken.getJwtTokenClaims().getStringClaim("preferred_username"));
+            } catch (Exception e) {
+                throw new RuntimeException("Feil i parsing av token",e);
+            }
+        }
+    }
+
+    public Optional<String> getPidForIssuer(String issuer) {
+        JwtToken userToken = tokenValidationContextHolder.getTokenValidationContext().getJwtToken(issuer);
+        if (userToken == null) {
+            return Optional.empty();
+        } else {
+            try {
+                var pid = userToken.getJwtTokenClaims().getStringClaim("pid");
+                if (pid == null) return Optional.empty();
+                return Optional.of(pid);
             } catch (Exception e) {
                 throw new RuntimeException("Feil i parsing av token",e);
             }

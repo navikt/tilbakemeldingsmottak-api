@@ -4,7 +4,7 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.security.token.support.core.api.Protected;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.model.BestillSamtaleResponse;
@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 @Slf4j
-@Protected
+@ProtectedWithClaims(issuer = "azuread")
 @RestController
 @CrossOrigin(maxAge = 3600)
 public class BestillingAvSamtaleRestController implements BestillingAvSamtaleRestControllerApi {
@@ -37,7 +37,7 @@ public class BestillingAvSamtaleRestController implements BestillingAvSamtaleRes
 
     @Transactional
     @Override
-    @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "sendRos"}, percentiles = {0.5, 0.95}, histogram = true)
+    @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "bestill-samtale"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<BestillSamtaleResponse> bestillingAvSamtale(@RequestBody BestillSamtaleRequest request) throws SendEmailException {
             bestillSamtaleValidator.validateRequest(request);
             bestillingAvSamtaleService.bestillSamtale(request);

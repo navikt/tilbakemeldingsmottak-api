@@ -2,6 +2,8 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklageEventTypeEnum;
+import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery;
 import no.nav.tilbakemeldingsmottak.consumer.joark.JournalpostConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
@@ -13,11 +15,11 @@ import no.nav.tilbakemeldingsmottak.exceptions.joark.OpprettJournalpostFunctiona
 import no.nav.tilbakemeldingsmottak.exceptions.joark.OpprettJournalpostTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveTechnicalException;
-import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
-import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageResponse;
+import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
+import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettJournalpostRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettServiceklageRequestMapper;
@@ -33,6 +35,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OpprettServiceklageService {
 
+    public static final String SUBJECT_JOURNALPOST_FEILET = "Automatisk journalføring av serviceklage feilet";
+    public static final String TEXT_JOURNALPOST_FEILET = "Manuell journalføring og opprettelse av oppgave kreves. Klagen ligger vedlagt.";
+    public static final String SUBJECT_OPPGAVE_FEILET = "Automatisk opprettelse av oppgave feilet";
+    public static final String TEXT_OPPGAVE_FEILET = "Manuell opprettelse av oppgave kreves for serviceklage med journalpostId=";
+
     private final ServiceklageRepository serviceklageRepository;
     private final OpprettServiceklageRequestMapper opprettServiceklageRequestMapper;
     private final OpprettJournalpostRequestToMapper opprettJournalpostRequestToMapper;
@@ -42,12 +49,7 @@ public class OpprettServiceklageService {
     private final PdfService pdfService;
     private final ServiceklageMailHelper mailHelper;
     private final OidcUtils oidcUtils;
-
-    public static final String SUBJECT_JOURNALPOST_FEILET = "Automatisk journalføring av serviceklage feilet";
-    public static final String TEXT_JOURNALPOST_FEILET= "Manuell journalføring og opprettelse av oppgave kreves. Klagen ligger vedlagt.";
-    public static final String SUBJECT_OPPGAVE_FEILET = "Automatisk opprettelse av oppgave feilet";
-    public static final String TEXT_OPPGAVE_FEILET= "Manuell opprettelse av oppgave kreves for serviceklage med journalpostId=";
-
+    private final ServiceklagerBigQuery serviceklagerBigQuery;
     @Value("${email_serviceklage_address}")
     private String toAddress;
     @Value("${email_from_address}")
@@ -63,6 +65,7 @@ public class OpprettServiceklageService {
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request, innlogget);
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
         serviceklageRepository.save(serviceklage);
+        serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventTypeEnum.OPPRETT_SERVICEKLAGE);
         log.info("Serviceklage med serviceklageId= {} opprettet", serviceklage.getServiceklageId());
 
         OpprettOppgaveResponseTo opprettOppgaveResponseTo = forsoekOpprettOppgave(serviceklage.getKlagenGjelderId(), request.getPaaVegneAv(), opprettJournalpostResponseTo);

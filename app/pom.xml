@@ -12,6 +12,11 @@
     <artifactId>app</artifactId>
     <packaging>jar</packaging>
 
+    <properties>
+        <flyway.version>9.6.0</flyway.version>
+    </properties>
+
+
     <dependencies>
 
         <dependency>
@@ -24,6 +29,17 @@
             <artifactId>javax.activation-api</artifactId>
             <version>${javax.activation.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java-extended-scalars</artifactId>
+            <version>${graphql-java.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.graphql-java-generator</groupId>
+            <artifactId>graphql-java-client-runtime</artifactId>
+            <version>${graphql-maven-plugin.version}</version>
+        </dependency>
+
 
         <!-- Springframework -->
         <dependency>
@@ -55,16 +71,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>${spring-boot.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.zaxxer</groupId>
-                    <artifactId>HikariCP</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.activation</groupId>
-                    <artifactId>jakarta.activation</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.retry</groupId>
@@ -74,7 +80,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
+            <version>${spring-security-oauth2.version}</version>
+        </dependency>
 
         <!--Security-->
         <dependency>
@@ -144,13 +154,9 @@
 
         <!-- Database -->
         <dependency>
-            <groupId>com.oracle.ojdbc</groupId>
-            <artifactId>ojdbc8</artifactId>
-            <version>${oracle.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -160,6 +166,21 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-bigquery</artifactId>
         </dependency>
 
         <dependency>
@@ -222,10 +243,6 @@
             <artifactId>pdfutility</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>no.nav.tilbakemeldingsmottak</groupId>
-            <artifactId>web</artifactId>
-        </dependency>
 
         <!--Selftest metrics-->
         <dependency>
@@ -254,12 +271,6 @@
             <groupId>no.nav.security</groupId>
             <artifactId>token-validation-spring-test</artifactId>
             <version>${token-support.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -354,6 +365,46 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <finalName>app</finalName>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.graphql-java-generator</groupId>
+                <artifactId>graphql-maven-plugin</artifactId>
+                <version>${graphql-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generateClientCode</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <packageName>no.nav.tilbakemeldingsmottak.graphql</packageName>
+                    <schemaFileFolder>${project.basedir}/src/main/resources/graphql/pdl</schemaFileFolder>
+                    <customScalars>
+                        <customScalar>
+                            <graphQLTypeName>Date</graphQLTypeName>
+                            <javaType>java.util.Date</javaType>
+                            <graphQLScalarTypeStaticField>com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date</graphQLScalarTypeStaticField>
+                        </customScalar>
+                        <customScalar>
+                            <graphQLTypeName>DateTime</graphQLTypeName>
+                            <javaType>java.time.OffsetDateTime</javaType>
+                            <graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.DateTime</graphQLScalarTypeStaticField>
+                        </customScalar>
+                        <customScalar>
+                            <graphQLTypeName>Long</graphQLTypeName>
+                            <javaType>java.lang.Long</javaType>
+                            <graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.GraphQLLong</graphQLScalarTypeStaticField>
+                        </customScalar>
+                    </customScalars>
+
+                    <!-- The parameters below change the 1.x default behavior to respect the future 2.x behavior -->
+                    <copyRuntimeSources>false</copyRuntimeSources>
+                    <generateDeprecatedRequestResponse>false</generateDeprecatedRequestResponse>
+                    <separateUtilityClasses>true</separateUtilityClasses>
+                    <skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
                 </configuration>
             </plugin>
         </plugins>

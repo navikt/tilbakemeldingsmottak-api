@@ -18,7 +18,6 @@ target
 
 ### NPM Logger ###
 npm-debug.log
-web/src/main/web_src/npm-debug.log
 
 ### NetBeans ###
 /nbproject/private/
@@ -29,8 +28,5 @@ web/src/main/web_src/npm-debug.log
 /.nb-gradle/
 
 **/application-local.properties
-
-node_modules/
-web/src/main/resources/public
 
 .DS_Store

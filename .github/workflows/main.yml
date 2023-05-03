@@ -7,7 +7,6 @@ on:
       - '**.md'
       - '.github/workflows/preprod-pipeline.yml'
       - '.github/workflows/manual-deployment.yml'
-      - '.nais/preprod-fss/*'
   pull_request:
     branches:
       - 'main'
@@ -15,13 +14,8 @@ on:
       - '**.md'
       - '.github/workflows/preprod-pipeline.yml'
       - '.github/workflows/manual-deployment.yml'
-      - '.nais/preprod-fss/*'
 
 jobs:
-  test-frontend:
-    name: Test frontend
-    uses: ./.github/workflows/cypress.yml
-
   bygg-app-main:
     name: Bygg app/image, push til github
     runs-on: ubuntu-latest
@@ -78,7 +72,7 @@ jobs:
 
   deploy-main:
     name: Deploy to main
-    needs: [test-frontend, bygg-app-main]
+    needs: [bygg-app-main]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
@@ -104,7 +98,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           PRINT_PAYLOAD: true
-          CLUSTER: prod-fss
+          CLUSTER: prod-gcp
           RESOURCE: .nais/nais.yml
           VARS: .nais/p-config.json
           DRY_RUN: false

@@ -15,7 +15,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>api</module>
-        <module>web</module>
         <module>app</module>
         <module>domain</module>
         <module>pdfutility</module>
@@ -36,7 +35,6 @@
         <!-- Spesifiserer eksplisitt for å unngå transitiv import av 8.x.x versjon som gjør at oppslag feiler -->
         <nimbus-jose-jwt.version>9.24.4</nimbus-jose-jwt.version>
 
-        <oracle.version>19.3.0.0</oracle.version>
         <spring-cloud-contract-wiremock.version>2.2.5.RELEASE</spring-cloud-contract-wiremock.version>
         <spring-core.version>5.3.24</spring-core.version>
         <caffeine.version>2.9.3</caffeine.version>
@@ -59,6 +57,9 @@
         <wiremock.version>2.27.2</wiremock.version>
         <json-smart.version>2.4.8</json-smart.version>
         <rest-assured.version>5.0.1</rest-assured.version>
+        <graphql-java.version>20.1</graphql-java.version>
+        <spring-security-oauth2.version>5.7.6</spring-security-oauth2.version>
+        <google-cloud-bigquery.version>26.12.0</google-cloud-bigquery.version>
 
         <!-- Maven plugins -->
         <wagon-webdav-jackrabbit.version>3.5.1</wagon-webdav-jackrabbit.version>
@@ -67,6 +68,7 @@
         <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
         <openapi-generator-maven-plugin.version>6.4.0</openapi-generator-maven-plugin.version>
+        <graphql-maven-plugin.version>1.18.10</graphql-maven-plugin.version>
 
         <!-- Project config -->
         <java.version>17</java.version>
@@ -91,9 +93,11 @@
             </dependency>
 
             <dependency>
-                <groupId>no.nav.tilbakemeldingsmottak</groupId>
-                <artifactId>web</artifactId>
-                <version>${project.version}</version>
+                <groupId>com.google.cloud</groupId>
+                <artifactId>libraries-bom</artifactId>
+                <version>${google-cloud-bigquery.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
         </dependencies>

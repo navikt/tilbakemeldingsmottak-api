@@ -1,22 +1,20 @@
 package no.nav.tilbakemeldingsmottak.validators;
 
-import static no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createHentAktoerIdForIdentResponse;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createInvalidHentAktoerIdForIdentResponse;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvBedrift;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvPerson;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
+import static no.nav.tilbakemeldingsmottak.TestUtils.*;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
-import no.nav.tilbakemeldingsmottak.consumer.aktoer.AktoerConsumer;
+import io.vavr.collection.List;
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
+import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
+import no.nav.tilbakemeldingsmottak.graphql.Identliste;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
@@ -38,7 +36,7 @@ class OpprettServiceklageValidatorTest {
     private OpprettServiceklageRequest opprettServiceklageRequest;
 
     @Mock EregConsumer eregConsumer;
-    @Mock AktoerConsumer aktoerConsumer;
+    @Mock PdlService pdlService;
     @Mock OidcUtils oidcUtils;
     @Mock PersonnummerValidator personnummerValidator;
     @InjectMocks OpprettServiceklageValidator opprettServiceklageValidator;
@@ -46,7 +44,7 @@ class OpprettServiceklageValidatorTest {
     @BeforeEach
     void setup() {
         lenient().when(eregConsumer.hentInfo(anyString())).thenReturn("");
-        lenient().when(aktoerConsumer.hentAktoerIdForIdent(anyString())).thenReturn(createHentAktoerIdForIdentResponse(PERSONNUMMER));
+        lenient().when(pdlService.hentAktorIdForIdent(anyString())).thenReturn(AKTOERID);
         lenient().when(oidcUtils.getSubjectForIssuer(anyString())).thenReturn(Optional.empty());
     }
 
@@ -70,7 +68,7 @@ class OpprettServiceklageValidatorTest {
     @Test
     void happyPathInnlogget() {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
-        opprettServiceklageValidator.validateRequest(opprettServiceklageRequest, opprettServiceklageRequest.getInnmelder().getPersonnummer());
+        opprettServiceklageValidator.validateRequest(opprettServiceklageRequest, Optional.of(opprettServiceklageRequest.getInnmelder().getPersonnummer()));
     }
 
     @Test
@@ -287,8 +285,9 @@ class OpprettServiceklageValidatorTest {
     }
 
     @Test
-    void shouldThrowExceptionIfPersonnummerNotValid() {
-        when(aktoerConsumer.hentAktoerIdForIdent(anyString())).thenReturn(createInvalidHentAktoerIdForIdentResponse(PERSONNUMMER));
+    void shouldThrowExceptionIfPersonnummerResponseIsEmpty() {
+        when(pdlService.hentIdenter(anyString(), anyList())).thenReturn(Identliste.builder().build());
+        when(pdlService.hentAktorIdForIdent(anyString())).thenCallRealMethod();
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         Exception thrown = assertThrows(InvalidIdentException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
@@ -308,7 +307,7 @@ class OpprettServiceklageValidatorTest {
     void shouldThrowExceptionIfPersonnummerDoesntMatchTokenIdent() {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         Exception thrown = assertThrows(InvalidRequestException.class,
-                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest,"12345678901"));
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest,Optional.of("12345678901")));
         assertTrue(thrown.getMessage().contains("innmelder.personnummer samsvarer ikke med brukertoken"));
     }
 }

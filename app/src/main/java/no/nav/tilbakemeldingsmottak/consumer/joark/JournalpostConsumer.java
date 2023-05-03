@@ -16,22 +16,18 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import javax.inject.Inject;
-import java.net.URI;
 
 @Slf4j
 @Component
 public class JournalpostConsumer {
 
 	@Inject
-	@Qualifier("serviceuserclient")
+	@Qualifier("arkivClient")
 	private WebClient webClient;
 
 	@Value("${Journalpost_v1_url}")

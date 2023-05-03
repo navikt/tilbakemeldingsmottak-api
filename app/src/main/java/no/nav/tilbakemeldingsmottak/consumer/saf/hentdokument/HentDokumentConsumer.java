@@ -6,7 +6,6 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.consumer.sts.STSRestConsumer;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentTechnicalException;
@@ -38,19 +37,16 @@ public class HentDokumentConsumer implements HentDokument {
 	private WebClient webClient;
 
 	private final String hentDokumentUrl;
-	private final STSRestConsumer stsRestConsumer;
-
 	@Inject
-	public HentDokumentConsumer(@Value("${hentdokument.url}") String hentDokumentUrl,
-								STSRestConsumer stsRestConsumer) {
+	public HentDokumentConsumer(@Value("${hentdokument.url}") String hentDokumentUrl) {
 		this.hentDokumentUrl = hentDokumentUrl;
-		this.stsRestConsumer = stsRestConsumer;
 	}
 
 	@Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
 	@Retryable(include = AbstractTilbakemeldingsmottakTechnicalException.class, backoff = @Backoff(delay = 3, multiplier = 500))
 	public HentDokumentResponseTo hentDokument(String journalpostId, String dokumentInfoId, String variantFormat, String token) {
 		HttpHeaders httpHeaders = createAuthHeaderFromToken(token);
+        log.info("Henter dokument fra saf journalpostId={}, dokumentInfoId={}, variantFormat={}", journalpostId, dokumentInfoId, variantFormat);
 		byte[] dokument = webClient
 				.method(HttpMethod.GET)
 				.uri(this.hentDokumentUrl + "/"+journalpostId+"/" +dokumentInfoId + "/" + variantFormat)

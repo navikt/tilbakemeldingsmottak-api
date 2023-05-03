@@ -10,7 +10,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @ConfigurationProperties(prefix = "aad")
 @Validated
-@Profile("nais | spring")
+@Profile("nais | local")
 public class AADProperties {
     @NotEmpty
     private String authority;
@@ -19,12 +19,7 @@ public class AADProperties {
     @NotEmpty
     private String clientSecret;
     @NotEmpty
-    private String serviceuser;
-    @NotEmpty
-    private String password;
-
-    private String proxyHost;
-    private Integer proxyPort;
+    private String email;
     private String tenant;
 
 }

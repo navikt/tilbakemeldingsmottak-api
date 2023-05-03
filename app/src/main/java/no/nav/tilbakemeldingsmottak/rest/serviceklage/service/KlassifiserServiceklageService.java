@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.LOGINSERVICE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.NONE;
 import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -11,6 +11,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklageEventTypeEnum;
+import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
@@ -55,6 +57,7 @@ public class KlassifiserServiceklageService {
     private final ServiceklageMailHelper mailHelper;
     private final OidcUtils oicdUtils;
     private final OpprettOppgaveRequestToMapper opprettOppgaveRequestToMapper;
+    private final ServiceklagerBigQuery serviceklagerBigQuery;
 
     @Value("${email_serviceklage_address}")
     private String toAddress;
@@ -77,6 +80,8 @@ public class KlassifiserServiceklageService {
         Serviceklage serviceklage = getOrCreateServiceklage(hentOppgaveResponseTo.getJournalpostId());
         updateServiceklage(serviceklage, request);
         serviceklageRepository.save(serviceklage);
+        serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventTypeEnum.KLASSIFISER_SERVICEKLAGE);
+
         log.info("Serviceklage med serviceklageId={} er klassifisert som {}", serviceklage.getServiceklageId(), serviceklage.getTema());
 
         log.info("Ferdigstille oppgave med oppgaveId={} og versjonsnummer={}", hentOppgaveResponseTo.getId(), hentOppgaveResponseTo.getVersjon());
@@ -87,14 +92,15 @@ public class KlassifiserServiceklageService {
             try {
                 sendKvittering(serviceklage, hentOppgaveResponseTo);
             } catch (Exception e) {
-                log.warn("Kunne ikke produsere kvittering på mail", e.getMessage());
+                log.warn("Kunne ikke produsere kvittering på mail", e);
             }
         }
     }
 
     private void sendKvittering(Serviceklage serviceklage, HentOppgaveResponseTo hentOppgaveResponseTo) throws JsonProcessingException {
 
-        String email = oicdUtils.getEmailForIssuer(LOGINSERVICE_ISSUER).orElseThrow(() -> new ServiceklageIkkeFunnetException("Fant ikke email-adresse i token"));
+        String email = oicdUtils.getEmailForIssuer(AZURE_ISSUER).orElseThrow(() -> new ServiceklageIkkeFunnetException("Fant ikke email-adresse i token"));
+        log.info("Kvittering på innsendt klassifiseringsskjema sendes til epost: {}", email);
 
         LinkedHashMap<String, String> questionAnswerMap = createQuestionAnswerMap(serviceklage, hentOppgaveResponseTo);
 

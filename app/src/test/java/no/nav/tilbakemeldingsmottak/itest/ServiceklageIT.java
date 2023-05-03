@@ -58,7 +58,7 @@ class ServiceklageIT extends ApplicationTest {
     @Test
     public void happyPathPrivatperson() {
         OpprettServiceklageRequest msg = createOpprettServiceklageRequestPrivatperson();
-        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(msg, createHeaders(LOGINSERVICE_ISSUER, msg.getInnmelder().getPersonnummer(), true));
+        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(msg, createHeaders(TOKENX_ISSUER, msg.getInnmelder().getPersonnummer(), true));
 
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -82,7 +82,7 @@ class ServiceklageIT extends ApplicationTest {
     public void happyPathPrivatpersonIkkePaLogget() {
         OpprettServiceklageRequest msg = createOpprettServiceklageRequestPrivatperson();
 
-        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(msg, createHeaders(AZURE_ISSUER, "srvtilbakemeldings", false));
+        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(msg, createHeaders(AZURE_ISSUER, msg.getInnmelder().getPersonnummer(), false));
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -104,7 +104,7 @@ class ServiceklageIT extends ApplicationTest {
    @Test
     void happyPathAnnenPerson() {
         OpprettServiceklageRequest request = createOpprettServiceklageRequestPaaVegneAvPerson();
-        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(LOGINSERVICE_ISSUER, request.getInnmelder().getPersonnummer(),true));
+        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(TOKENX_ISSUER, request.getInnmelder().getPersonnummer(),true));
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -150,7 +150,7 @@ class ServiceklageIT extends ApplicationTest {
     void happyPathOenskerAaKontaktes() {
         OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
         request.setOenskerAaKontaktes(true);
-        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(LOGINSERVICE_ISSUER, request.getInnmelder().getPersonnummer(), true));
+        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(AZURE_ISSUER, request.getInnmelder().getPersonnummer(), true));
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -195,7 +195,7 @@ class ServiceklageIT extends ApplicationTest {
     void happyPathFlereKlagetyper() {
         OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
         request.setKlagetyper(Arrays.asList(KlagetyperEnum.BREV, KlagetyperEnum.TELEFON));
-        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(LOGINSERVICE_ISSUER, request.getInnmelder().getPersonnummer(), true));
+        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(AZURE_ISSUER, request.getInnmelder().getPersonnummer(), true));
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -220,7 +220,7 @@ class ServiceklageIT extends ApplicationTest {
         WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/OPPRETT_JOURNALPOST/journalpost/")).willReturn(aResponse().withStatus(500)));
 
         OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
-        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(LOGINSERVICE_ISSUER, request.getInnmelder().getPersonnummer()));
+        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(AZURE_ISSUER, request.getInnmelder().getPersonnummer()));
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -234,7 +234,7 @@ class ServiceklageIT extends ApplicationTest {
         WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/OPPGAVE")).willReturn(aResponse().withStatus(500)));
 
         OpprettServiceklageRequest request = createOpprettServiceklageRequestPrivatperson();
-        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(LOGINSERVICE_ISSUER, SAKSBEHANDLER));
+        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(AZURE_ISSUER, request.getInnmelder().getPersonnummer()));
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -263,7 +263,7 @@ class ServiceklageIT extends ApplicationTest {
 
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
         request.setFREMMETDATO(fremmetDato);
-        HttpEntity<KlassifiserServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(LOGINSERVICE_ISSUER, SAKSBEHANDLER));
+        HttpEntity<KlassifiserServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"));
         ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + OPPGAVE_ID, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -307,7 +307,7 @@ class ServiceklageIT extends ApplicationTest {
 
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequestKommunalKlage();
         request.setFREMMETDATO(fremmetDato);
-        HttpEntity<KlassifiserServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders());
+        HttpEntity<KlassifiserServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"));
         ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + opprettServiceklageResponse.getBody().getOppgaveId(), HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -329,7 +329,7 @@ class ServiceklageIT extends ApplicationTest {
     @SneakyThrows
     void enServiceklageSkalOpprettesOmDenMangler() {
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
-        HttpEntity<KlassifiserServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(AZURE_ISSUER, request.getINNSENDER()));
+        HttpEntity<KlassifiserServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(AZURE_ISSUER, request.getINNSENDER(), "serviceklage-klassifisering"));
         ResponseEntity<KlassifiserServiceklageResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + OPPGAVE_ID, HttpMethod.PUT, requestEntity, KlassifiserServiceklageResponse.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -362,14 +362,14 @@ class ServiceklageIT extends ApplicationTest {
     @Test
     void happyPathHentSkjema() {
         OpprettServiceklageRequest msg = createOpprettServiceklageRequestPrivatperson();
-        restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, new HttpEntity<>(msg, createHeaders(LOGINSERVICE_ISSUER, msg.getInnmelder().getPersonnummer())), OpprettServiceklageResponse.class);
+        restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, new HttpEntity<>(msg, createHeaders(AZURE_ISSUER, msg.getInnmelder().getPersonnummer())), OpprettServiceklageResponse.class);
 
         assertEquals(1, serviceklageRepository.count());
         String fremmetDato = serviceklageRepository.findAll().iterator().next().getFremmetDato().toString();
 
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
         request.setFREMMETDATO(fremmetDato);
-        ResponseEntity<HentSkjemaResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_SKJEMA + "/" + JOURNALPOST_ID, HttpMethod.GET, new HttpEntity<>(createHeaders(LOGINSERVICE_ISSUER, SAKSBEHANDLER)), HentSkjemaResponse.class);
+        ResponseEntity<HentSkjemaResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_SKJEMA + "/" + JOURNALPOST_ID, HttpMethod.GET, new HttpEntity<>(createHeaders(AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering")), HentSkjemaResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -400,7 +400,7 @@ class ServiceklageIT extends ApplicationTest {
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
         request.setFREMMETDATO(fremmetDato);
         assertNotNull(opprettResponse.getBody());
-        ResponseEntity<HentDokumentResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + opprettResponse.getBody().getOppgaveId(), HttpMethod.GET, new HttpEntity<>(createHeaders(LOGINSERVICE_ISSUER, SAKSBEHANDLER)), HentDokumentResponse.class);
+        ResponseEntity<HentDokumentResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + opprettResponse.getBody().getOppgaveId(), HttpMethod.GET, new HttpEntity<>(createHeaders(AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering")), HentDokumentResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
@@ -419,7 +419,7 @@ class ServiceklageIT extends ApplicationTest {
 
         KlassifiserServiceklageRequest request = createKlassifiserServiceklageRequest();
         request.setFREMMETDATO(fremmetDato);
-        ResponseEntity<HentDokumentResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + 99, HttpMethod.GET, new HttpEntity<>(createHeaders(LOGINSERVICE_ISSUER, SAKSBEHANDLER)), HentDokumentResponse.class);
+        ResponseEntity<HentDokumentResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + 99, HttpMethod.GET, new HttpEntity<>(createHeaders(AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering")), HentDokumentResponse.class);
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }

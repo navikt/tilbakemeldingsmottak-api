@@ -1,0 +1,14 @@
+{
+  "priority": 2,
+  "request": {
+    "urlPattern": "/pdlgraphql.*",
+    "method": "POST"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "hent-identer.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

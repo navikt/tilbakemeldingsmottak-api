@@ -1,0 +1,14 @@
+{
+  "priority": 2,
+  "request": {
+    "urlPattern": "/api/v1/oppgaver.*",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "hent-oppgave.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

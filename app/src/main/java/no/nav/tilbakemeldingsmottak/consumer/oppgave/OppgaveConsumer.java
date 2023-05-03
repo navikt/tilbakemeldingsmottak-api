@@ -33,7 +33,7 @@ import javax.inject.Inject;
 public class OppgaveConsumer {
 
     @Inject
-    @Qualifier("serviceuserclient")
+    @Qualifier("oppgaveClient")
     private WebClient webClient;
 
     private final String oppgaveUrl;

@@ -1,5 +1,8 @@
 package no.nav.tilbakemeldingsmottak;
 
+import no.nav.tilbakemeldingsmottak.graphql.IdentGruppe;
+import no.nav.tilbakemeldingsmottak.graphql.IdentInformasjon;
+import no.nav.tilbakemeldingsmottak.graphql.Identliste;
 import no.nav.tilbakemeldingsmottak.model.SendRosRequest.HvemRosesEnum;
 import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
 import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE;
@@ -12,7 +15,6 @@ import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.SneakyThrows;
-import no.nav.tilbakemeldingsmottak.consumer.aktoer.domain.IdentInfoForAktoer;
 import no.nav.tilbakemeldingsmottak.consumer.norg2.Enhet;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.DataJournalpost;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo;
@@ -57,6 +59,7 @@ public class TestUtils {
 
     public static final String NAVN_INNMELDER = "Innmelder Innmeldersen";
     public static final String PERSONNUMMER = "01010096460";
+    public static final String AKTOERID = "1234567890123";
     public static final String TELEFONNUMMER = "81549300";
     public static final String EPOST = "innmelder@hotmail.com";
     public static final Boolean HAR_FULLMAKT = Boolean.TRUE;
@@ -324,20 +327,17 @@ public class TestUtils {
         return response;
     }
 
-    public static Map<String, IdentInfoForAktoer> createHentAktoerIdForIdentResponse(String fnr) {
-        Map<String, IdentInfoForAktoer> response = new HashMap<>();
-        response.put(fnr, IdentInfoForAktoer.builder()
-                .identer(Collections.singletonList(IdentInfoForAktoer.IdentInfo.builder().build()))
-                .build());
-        return response;
+    public static Identliste createHentAktoerIdForIdentResponse(String aktoerId) {
+        return Identliste.builder()
+                .withIdenter(List.of(IdentInformasjon.builder()
+                .withIdent(aktoerId)
+                .withGruppe(IdentGruppe.AKTORID)
+                .withHistorisk(false)
+                .build())).build();
     }
 
-    public static Map<String, IdentInfoForAktoer> createInvalidHentAktoerIdForIdentResponse(String fnr) {
-        Map<String, IdentInfoForAktoer> response = new HashMap<>();
-        response.put(fnr, IdentInfoForAktoer.builder()
-                .identer(null)
-                .build());
-        return response;
+    public static Identliste createEmptyHentAktoerIdForIdentResponse() {
+       return Identliste.builder().withIdenter(Collections.emptyList()).build();
     }
 
     @SneakyThrows

@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.email.aad;
 
 import com.azure.core.http.HttpClient;
-import com.azure.core.http.ProxyOptions;
 import com.azure.core.util.HttpClientOptions;
 import com.azure.identity.ClientSecretCredential;
 import com.azure.identity.ClientSecretCredentialBuilder;
@@ -15,18 +14,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
+import java.util.Arrays;
 
-@Profile("nais | spring")
+@Profile("nais | local")
 @Component
 public class AADMailClientImpl implements AADMailClient {
 
     private static final Logger log = LoggerFactory.getLogger(AADMailClientImpl.class);
 
     private final AADProperties aadProperties;
+
+    @Autowired
+    Environment env;
 
     @Autowired
     public AADMailClientImpl(AADProperties aadProperties) {
@@ -36,6 +38,11 @@ public class AADMailClientImpl implements AADMailClient {
     public void sendMailViaClient(Message message) {
         log.debug("Skal sende melding:" + message.subject + ", " + message.body.content);
 
+        if (Arrays.asList(env.getActiveProfiles()).contains("local")) {
+            log.info("Skal ikke sende epost i local env");
+            return;
+        }
+
         UserSendMailParameterSet sendMailParameterSet = UserSendMailParameterSet
                 .newBuilder()
                 .withMessage(message)
@@ -43,24 +50,16 @@ public class AADMailClientImpl implements AADMailClient {
                 .build();
 
         GraphServiceClient graphClient = getGraphClient();
-        graphClient.users(aadProperties.getServiceuser())
+        graphClient.users(aadProperties.getEmail())
                 .sendMail(sendMailParameterSet)
                 .buildRequest()
                 .post();
 
     }
 
-    private Proxy getProxy() {
-        return new Proxy(Proxy.Type.HTTP, new InetSocketAddress(aadProperties.getProxyHost(), aadProperties.getProxyPort()));
-    }
 
-
-    private TokenCredentialAuthProvider getTokenProviderViaProxy() {
-        ProxyOptions proxyOptions = new ProxyOptions(
-                ProxyOptions.Type.HTTP, new InetSocketAddress(aadProperties.getProxyHost(), aadProperties.getProxyPort()));
-
+    private TokenCredentialAuthProvider getTokenProvider() {
         HttpClientOptions clientOptions = new HttpClientOptions();
-        clientOptions.setProxyOptions(proxyOptions);
 
         HttpClient azHttpClient = HttpClient.createDefault(clientOptions);
 
@@ -77,14 +76,11 @@ public class AADMailClientImpl implements AADMailClient {
 
     private GraphServiceClient getGraphClient() {
 
-        final TokenCredentialAuthProvider authenticationProvider = getTokenProviderViaProxy();
-
-        final Proxy proxy = getProxy();
+        final TokenCredentialAuthProvider authenticationProvider = getTokenProvider();
 
         final OkHttpClient graphHttpClient =
                 HttpClients.createDefault(authenticationProvider)
                         .newBuilder()
-                        .proxy(proxy)
                         .build();
 
         return GraphServiceClient
