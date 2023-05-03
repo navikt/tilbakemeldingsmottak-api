@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.datavarehus;
 
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
-import no.nav.security.token.support.core.api.Unprotected;
 import no.nav.tilbakemeldingsmottak.api.DatavarehusRestControllerApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +21,6 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 @Slf4j
-@Unprotected
 @ProtectedWithClaims(issuer = "azuread", claimMap = {"scp=defaultaccess datavarehus"})
 @RestController
 @RequiredArgsConstructor
