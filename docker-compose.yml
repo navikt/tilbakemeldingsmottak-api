@@ -1,12 +1,12 @@
 services:
-    authserver:
-        image: ghcr.io/navikt/mock-oauth2-server:0.5.5
-        ports:
-            - "6969:6969"
-        environment:
-            TZ: Europe/Oslo
-            SERVER_PORT: 6969
-            JSON_CONFIG: '{
+  authserver:
+    image: ghcr.io/navikt/mock-oauth2-server:0.5.5
+    ports:
+      - "6969:6969"
+    environment:
+      TZ: Europe/Oslo
+      SERVER_PORT: 6969
+      JSON_CONFIG: '{
       "interactiveLogin": true,
       "httpServer": "NettyWrapper",
       "tokenCallbacks": [
@@ -67,59 +67,59 @@ services:
         }
       ]
     }'
-    db:
-        image: postgres:14.1-alpine
-        container_name: postgres-db
-        restart: always
-        environment:
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASSWORD=postgres
-        ports:
-            - '5430:5432'
-        volumes:
-            - db:/var/lib/postgresql/data
+  db:
+    image: postgres:14.1-alpine
+    container_name: postgres-db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5430:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
 
-    arkiv-mock:
-        container_name: arkiv-mock
-        image: wiremock/wiremock
-        ports:
-            - "8092:8080"
-        volumes:
-            - ./stubs/joark:/home/wiremock
+  arkiv-mock:
+    container_name: arkiv-mock
+    image: wiremock/wiremock
+    ports:
+      - "8092:8080"
+    volumes:
+      - ./stubs/joark:/home/wiremock
 
-    oppgave-mock:
-        container_name: oppgave-mock
-        image: wiremock/wiremock
-        ports:
-            - "8093:8080"
-        volumes:
-            - ./stubs/oppgave:/home/wiremock
+  oppgave-mock:
+    container_name: oppgave-mock
+    image: wiremock/wiremock
+    ports:
+      - "8093:8080"
+    volumes:
+      - ./stubs/oppgave:/home/wiremock
 
-    norg2-mock:
-        container_name: norg2-mock
-        image: wiremock/wiremock
-        ports:
-            - "8094:8080"
-        volumes:
-            - ./stubs/norg2:/home/wiremock
+  norg2-mock:
+    container_name: norg2-mock
+    image: wiremock/wiremock
+    ports:
+      - "8094:8080"
+    volumes:
+      - ./stubs/norg2:/home/wiremock
 
-    saf-mock:
-        container_name: saf-mock
-        image: wiremock/wiremock
-        ports:
-            - "8095:8080"
-        volumes:
-            - ./stubs/saf:/home/wiremock
+  saf-mock:
+    container_name: saf-mock
+    image: wiremock/wiremock
+    ports:
+      - "8095:8080"
+    volumes:
+      - ./stubs/saf:/home/wiremock
 
-    pdl-mock:
-        container_name: pdl-mock
-        image: wiremock/wiremock
-        ports:
-            - "8096:8080"
-        volumes:
-            - ./stubs/pdl:/home/wiremock
+  pdl-mock:
+    container_name: pdl-mock
+    image: wiremock/wiremock
+    ports:
+      - "8096:8080"
+    volumes:
+      - ./stubs/pdl:/home/wiremock
 
 
 volumes:
-    db:
-        driver: local
+  db:
+    driver: local

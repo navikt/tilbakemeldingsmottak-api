@@ -1,639 +1,639 @@
 openapi: 3.0.3
 info:
-    title: Tilbakemeldingsmottak-api
-    version: v0
-    description: Tilbakemeldingsmottak-api er en tjeneste som mottar serviceklager, feil, ris/ros og generelle tilbakemeldinger
-        fra brukere. Det er også en tjeneste for saksbehandlere å klassifisere serviceklager.
+  title: Tilbakemeldingsmottak-api
+  version: v0
+  description: Tilbakemeldingsmottak-api er en tjeneste som mottar serviceklager, feil, ris/ros og generelle tilbakemeldinger
+    fra brukere. Det er også en tjeneste for saksbehandlere å klassifisere serviceklager.
 servers:
-    -   url: http://localhost:9069
-        description: Lokal utvikling
+  - url: http://localhost:9069
+    description: Lokal utvikling
 paths:
-    /rest/taskserviceklage/klassifiser:
-        description: Saksbehandler klassifiserer serviceklage som er sendt inn.
-        put:
-            tags:
-                - task-processing-rest-controller
-            operationId: klassifiserServiceklage
-            parameters:
-                -   name: oppgaveId
-                    in: query
-                    required: true
-                    schema:
-                        type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/KlassifiserServiceklageRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        'application/json':
-                            schema:
-                                $ref: '#/components/schemas/KlassifiserServiceklageResponse'
-    /rest/serviceklage:
-        post:
-            description: Bruker sender inn serviceklage. Dette er klager på servicen man har fått fra NAV.
-            tags:
-                - serviceklage-rest-controller
-            operationId: opprettServiceklage
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/OpprettServiceklageRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        'application/json':
-                            schema:
-                                $ref: '#/components/schemas/OpprettServiceklageResponse'
-    /rest/ros:
-        description: Bruker sender inn ros til NAV om brukeren har hatt en god opplevelse med NAV.
-        post:
-            tags:
-                - ros-rest-controller
-            operationId: sendRos
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/SendRosRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        'application/json':
-                            schema:
-                                $ref: '#/components/schemas/SendRosResponse'
-    /rest/feil-og-mangler:
-        description: Bruker sender inn feil og mangler på nav.no. Tekniske feil, feil informasjon eller for lav grad universell utforming for eksempel.
-        post:
-            tags:
-                - feil-og-mangler-rest-controller
-            operationId: meldFeilOgMangler
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/MeldFeilOgManglerRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        'application/json':
-                            schema:
-                                $ref: '#/components/schemas/MeldFeilOgManglerResponse'
-    /rest/bestilling-av-samtale:
-        post:
-            tags:
-                - bestilling-av-samtale-rest-controller
-            operationId: bestillingAvSamtale
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/BestillSamtaleRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        'application/json':
-                            schema:
-                                $ref: '#/components/schemas/BestillSamtaleResponse'
+  /rest/taskserviceklage/klassifiser:
+    description: Saksbehandler klassifiserer serviceklage som er sendt inn.
+    put:
+      tags:
+        - task-processing-rest-controller
+      operationId: klassifiserServiceklage
+      parameters:
+        - name: oppgaveId
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KlassifiserServiceklageRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/KlassifiserServiceklageResponse'
+  /rest/serviceklage:
+    post:
+      description: Bruker sender inn serviceklage. Dette er klager på servicen man har fått fra NAV.
+      tags:
+        - serviceklage-rest-controller
+      operationId: opprettServiceklage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpprettServiceklageRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OpprettServiceklageResponse'
+  /rest/ros:
+    description: Bruker sender inn ros til NAV om brukeren har hatt en god opplevelse med NAV.
+    post:
+      tags:
+        - ros-rest-controller
+      operationId: sendRos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendRosRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/SendRosResponse'
+  /rest/feil-og-mangler:
+    description: Bruker sender inn feil og mangler på nav.no. Tekniske feil, feil informasjon eller for lav grad universell utforming for eksempel.
+    post:
+      tags:
+        - feil-og-mangler-rest-controller
+      operationId: meldFeilOgMangler
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeldFeilOgManglerRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/MeldFeilOgManglerResponse'
+  /rest/bestilling-av-samtale:
+    post:
+      tags:
+        - bestilling-av-samtale-rest-controller
+      operationId: bestillingAvSamtale
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BestillSamtaleRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BestillSamtaleResponse'
 
-    /rest/datavarehus/serviceklage:
-        get:
-            description: Hent serviceklage data for datavarehus basert på dato
-            tags:
-                - datavarehus-rest-controller
-            operationId: hentServiceKlageDataForDatavarehus
-            parameters:
-                -   name: datoFra
-                    in: query
-                    required: false
-                    schema:
-                        type: string
-                        format: date-time
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        'application/json':
-                            schema:
-                                type: array
-                                items:
-                                    $ref: '#/components/schemas/DatavarehusServiceklage'
+  /rest/datavarehus/serviceklage:
+    get:
+      description: Hent serviceklage data for datavarehus basert på dato
+      tags:
+        - datavarehus-rest-controller
+      operationId: hentServiceKlageDataForDatavarehus
+      parameters:
+        - name: datoFra
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DatavarehusServiceklage'
 
-    /rest/taskserviceklage/hentskjema/{oppgaveId}:
-        get:
-            description: Hent innsendt serviceklage skjema med spørsmål og svar.
-            tags:
-                - task-processing-rest-controller
-            operationId: hentSkjema
-            parameters:
-                -   name: oppgaveId
-                    in: path
-                    required: true
-                    schema:
-                        type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        'application/json':
-                            schema:
-                                $ref: '#/components/schemas/HentSkjemaResponse'
-    /rest/taskserviceklage/hentdokument/{oppgaveId}:
-        get:
-            description: Hent innsendt serviceklage dokument (PDF).
-            tags:
-                - task-processing-rest-controller
-            operationId: hentDokument
-            parameters:
-                -   name: oppgaveId
-                    in: path
-                    required: true
-                    schema:
-                        type: string
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        'application/json':
-                            schema:
-                                $ref: '#/components/schemas/HentDokumentResponse'
-    /isAlive:
-        get:
-            description: Sjekk om applikasjonen er oppe og kjører.
-            tags:
-                - nais-contract
-            operationId: isAlive
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        'application/json':
-                            schema:
-                                type: string
-    /internal/selftest:
-        get:
-            description: Sjekk om applikasjonen har oppdaterte pakker etc
-            tags:
-                - nais-contract
-            operationId: selftest
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        'application/json':
-                            schema:
-                                $ref: '#/components/schemas/SelftestResult'
-    /isReady:
-        get:
-            description: Sjekk om applikasjonen er klar til å ta imot trafikk.
-            tags:
-                - nais-contract
-            operationId: isReady
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        text/plain:
-                            schema:
-                                type: string
+  /rest/taskserviceklage/hentskjema/{oppgaveId}:
+    get:
+      description: Hent innsendt serviceklage skjema med spørsmål og svar.
+      tags:
+        - task-processing-rest-controller
+      operationId: hentSkjema
+      parameters:
+        - name: oppgaveId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/HentSkjemaResponse'
+  /rest/taskserviceklage/hentdokument/{oppgaveId}:
+    get:
+      description: Hent innsendt serviceklage dokument (PDF).
+      tags:
+        - task-processing-rest-controller
+      operationId: hentDokument
+      parameters:
+        - name: oppgaveId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/HentDokumentResponse'
+  /isAlive:
+    get:
+      description: Sjekk om applikasjonen er oppe og kjører.
+      tags:
+        - nais-contract
+      operationId: isAlive
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: string
+  /internal/selftest:
+    get:
+      description: Sjekk om applikasjonen har oppdaterte pakker etc
+      tags:
+        - nais-contract
+      operationId: selftest
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/SelftestResult'
+  /isReady:
+    get:
+      description: Sjekk om applikasjonen er klar til å ta imot trafikk.
+      tags:
+        - nais-contract
+      operationId: isReady
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
 
 components:
-    schemas:
-        KlassifiserServiceklageRequest:
-            type: object
-            properties:
-                BEHANDLES_SOM_SERVICEKLAGE:
-                    type: string
-                BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING:
-                    type: string
-                FULGT_BRUKERVEILEDNING_GOSYS:
-                    type: string
-                KOMMUNAL_BEHANDLING:
-                    type: string
-                FREMMET_DATO:
-                    type: string
-                INNSENDER:
-                    type: string
-                KANAL:
-                    type: string
-                KANAL_UTDYPNING:
-                    type: string
-                PAAKLAGET_ENHET_ER_BEHANDLENDE:
-                    type: string
-                ENHETSNUMMER_PAAKLAGET:
-                    type: string
-                ENHETSNUMMER_BEHANDLENDE:
-                    type: string
-                GJELDER:
-                    type: string
-                BESKRIVELSE:
-                    type: string
-                YTELSE:
-                    type: string
-                RELATERT:
-                    type: string
-                TEMA:
-                    type: string
-                VENTE:
-                    type: string
-                TILGJENGELIGHET:
-                    type: string
-                INFORMASJON:
-                    type: string
-                VEILEDNING:
-                    type: string
-                TEMA_UTDYPNING:
-                    type: string
-                UTFALL:
-                    type: string
-                AARSAK:
-                    type: string
-                TILTAK:
-                    type: string
-                SVARMETODE:
-                    type: string
-                SVAR_IKKE_NOEDVENDIG:
-                    type: string
-                SVARMETODE_UTDYPNING:
-                    type: string
-                KVITTERING:
-                    type: string
-        KlassifiserServiceklageResponse:
-            type: object
-            properties:
-                message:
-                    type: string
-        Innmelder:
-            type: object
-            properties:
-                navn:
-                    type: string
-                telefonnummer:
-                    type: string
-                personnummer:
-                    type: string
-                harFullmakt:
-                    type: boolean
-                rolle:
-                    type: string
-        OpprettServiceklageRequest:
-            type: object
-            properties:
-                paaVegneAv:
-                    type: string
-                    enum:
-                        - Bruker selv som privatperson
-                        - På vegne av en annen privatperson
-                        - På vegne av virksomhet
-                    x-enum-varnames:
-                        - PRIVATPERSON
-                        - ANNEN_PERSON
-                        - BEDRIFT
-                innmelder:
-                    $ref: '#/components/schemas/Innmelder'
-                paaVegneAvPerson:
-                    $ref: '#/components/schemas/PaaVegneAvPerson'
-                paaVegneAvBedrift:
-                    $ref: '#/components/schemas/PaaVegneAvBedrift'
-                enhetsnummerPaaklaget:
-                    type: string
-                klagetyper:
-                    type: array
-                    items:
-                        type: string
-                        enum:
-                            - Telefon
-                            - Lokalt NAV-kontor
-                            - NAVs digitale tjenester
-                            - Brev
-                            - Annet
-                        x-enum-varnames:
-                            - TELEFON
-                            - LOKALT_NAV_KONTOR
-                            - NAV_DIGITALE_TJENESTER
-                            - BREV
-                            - ANNET
-                klagetypeUtdypning:
-                    type: string
-                gjelderSosialhjelp:
-                    type: string
-                    enum:
-                        - Ja
-                        - Nei
-                        - Vet ikke
-                    x-enum-varnames:
-                        - JA
-                        - NEI
-                        - VET_IKKE
-                klagetekst:
-                    type: string
-                oenskerAaKontaktes:
-                    type: boolean
-        PaaVegneAvBedrift:
-            type: object
-            properties:
-                navn:
-                    type: string
-                organisasjonsnummer:
-                    type: string
-        PaaVegneAvPerson:
-            type: object
-            properties:
-                navn:
-                    type: string
-                personnummer:
-                    type: string
-        OpprettServiceklageResponse:
-            type: object
-            properties:
-                message:
-                    type: string
-                serviceklageId:
-                    type: string
-                journalpostId:
-                    type: string
-                oppgaveId:
-                    type: string
-        SendRosRequest:
-            type: object
-            properties:
-                hvemRoses:
-                    type: string
-                    enum:
-                        - NAV Kontaktsenter
-                        - NAVs digitale tjenester
-                        - NAV-kontor
-                    x-enum-varnames:
-                        - NAV_KONTAKTSENTER
-                        - NAV_DIGITALE_TJENESTER
-                        - NAV_KONTOR
-                navKontor:
-                    type: string
-                melding:
-                    type: string
-        SendRosResponse:
-            type: object
-            properties:
-                message:
-                    type: string
-        MeldFeilOgManglerRequest:
-            type: object
-            properties:
-                onskerKontakt:
-                    type: boolean
-                epost:
-                    type: string
-                feiltype:
-                    type: string
-                    enum:
-                        - Teknisk feil
-                        - Feil informasjon
-                        - Feil på siden ved bruk av hjelpemiddelteknologi
-                    x-enum-varnames:
-                        - TEKNISK_FEIL
-                        - FEIL_INFO
-                        - UNIVERSELL_UTFORMING
-                melding:
-                    type: string
-        MeldFeilOgManglerResponse:
-            type: object
-            properties:
-                message:
-                    type: string
-        BestillSamtaleRequest:
-            type: object
-            properties:
-                fornavn:
-                    type: string
-                etternavn:
-                    type: string
-                telefonnummer:
-                    type: string
-                tidsrom:
-                    type: string
-                    enum:
-                        - 8.00-10.00
-                        - 13.30-15.30
-                        - 8.00-10.00 og 13.30-15.30
-                    x-enum-varnames:
-                        - FORMIDDAG
-                        - ETTERMIDDAG
-                        - BEGGE
-        BestillSamtaleResponse:
-            type: object
-            properties:
-                message:
-                    type: string
-        DatavarehusServiceklage:
-            type: object
-            properties:
-                journalpost_id:
-                    type: string
-                opprettet_dato:
-                    type: string
-                klagen_gjelder_id:
-                    type: string
-                klagetyper:
-                    type: string
-                    description: Komma-separert liste av klagetyper
-                gjelder_sosialhjelp:
-                    type: string
-                klagetekst:
-                    type: string
-                behandles_som_serviceklage:
-                    type: string
-                behandles_som_serviceklage_utdypning:
-                    type: string
-                fremmet_dato:
-                    type: string
-                innsender:
-                    type: string
-                kanal:
-                    type: string
-                kanal_utdypning:
-                    type: string
-                enhetsnummer_paaklaget:
-                    type: string
-                enhetsnummer_behandlende:
-                    type: string
-                gjelder:
-                    type: string
-                beskrivelse:
-                    type: string
-                ytelse:
-                    type: string
-                tema:
-                    type: string
-                tema_utdypning:
-                    type: string
-                veiledning:
-                    type: string
-                utfall:
-                    type: string
-                aarsak:
-                    type: string
-                tiltak:
-                    type: string
-                svarmetode:
-                    type: string
-                svarmetode_utdypning:
-                    type: string
-                avsluttet_dato:
-                    type: string
-                skjema_versjon:
-                    type: string
-                klassifisering_json:
-                    type: string
-                relatert:
-                    type: string
-                klagetype_utdypning:
-                    type: string
-                innlogget:
-                    type: boolean
-        Answer:
-            type: object
-            properties:
-                answer:
-                    type: string
-                button:
-                    $ref: '#/components/schemas/Button'
-                emit:
-                    type: string
-                next:
-                    type: string
-                questions:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Question'
-        Banner:
-            type: object
-            properties:
-                message:
-                    type: string
-                type:
-                    type: string
-                    enum:
-                        - WARN
-                        - INFO
-                        - ERROR
-                        - SUCCESS
-        Button:
-            type: object
-            properties:
-                text:
-                    type: string
-                info:
-                    type: string
-        DefaultAnswers:
-            type: object
-            properties:
-                message:
-                    type: string
-                answers:
-                    type: object
-                    additionalProperties:
-                        type: string
-        HentSkjemaResponse:
-            type: object
-            properties:
-                version:
-                    type: string
-                defaultAnswers:
-                    $ref: '#/components/schemas/DefaultAnswers'
-                questions:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Question'
-        Question:
-            type: object
-            properties:
-                id:
-                    type: string
-                text:
-                    type: string
-                type:
-                    type: string
-                    enum:
-                        - RADIO
-                        - TEXT
-                        - INPUT
-                        - DATE
-                        - SELECT
-                        - DATALIST
-                        - CHECKBOX
-                emit:
-                    type: string
-                next:
-                    type: string
-                answers:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/Answer'
-                banner:
-                    $ref: '#/components/schemas/Banner'
-                optional:
-                    type: boolean
-        HentDokumentResponse:
-            type: object
-            properties:
-                dokument:
-                    type: string
-                    format: byte
-        DependencyCheckResult:
-            type: object
-            properties:
-                endpoint:
-                    type: string
-                result:
-                    $ref: '#/components/schemas/SelfCheckResult'
-                address:
-                    type: string
-                errorMessage:
-                    type: string
-                type:
-                    type: string
-                    enum:
-                        - SOAP
-                        - REST
-                        - LDAP
-                        - QUEUE
-                importance:
-                    type: string
-                    enum:
-                        - CRITICAL
-                        - WARNING
-                responseTime:
-                    type: string
-        SelftestResult:
-            type: object
-            properties:
-                appName:
-                    type: string
-                version:
-                    type: string
-                result:
-                    $ref: '#/components/schemas/SelfCheckResult'
-                dependencyCheckResults:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/DependencyCheckResult'
-        SelfCheckResult:
+  schemas:
+    KlassifiserServiceklageRequest:
+      type: object
+      properties:
+        BEHANDLES_SOM_SERVICEKLAGE:
+          type: string
+        BEHANDLES_SOM_SERVICEKLAGE_UTDYPNING:
+          type: string
+        FULGT_BRUKERVEILEDNING_GOSYS:
+          type: string
+        KOMMUNAL_BEHANDLING:
+          type: string
+        FREMMET_DATO:
+          type: string
+        INNSENDER:
+          type: string
+        KANAL:
+          type: string
+        KANAL_UTDYPNING:
+          type: string
+        PAAKLAGET_ENHET_ER_BEHANDLENDE:
+          type: string
+        ENHETSNUMMER_PAAKLAGET:
+          type: string
+        ENHETSNUMMER_BEHANDLENDE:
+          type: string
+        GJELDER:
+          type: string
+        BESKRIVELSE:
+          type: string
+        YTELSE:
+          type: string
+        RELATERT:
+          type: string
+        TEMA:
+          type: string
+        VENTE:
+          type: string
+        TILGJENGELIGHET:
+          type: string
+        INFORMASJON:
+          type: string
+        VEILEDNING:
+          type: string
+        TEMA_UTDYPNING:
+          type: string
+        UTFALL:
+          type: string
+        AARSAK:
+          type: string
+        TILTAK:
+          type: string
+        SVARMETODE:
+          type: string
+        SVAR_IKKE_NOEDVENDIG:
+          type: string
+        SVARMETODE_UTDYPNING:
+          type: string
+        KVITTERING:
+          type: string
+    KlassifiserServiceklageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+    Innmelder:
+      type: object
+      properties:
+        navn:
+          type: string
+        telefonnummer:
+          type: string
+        personnummer:
+          type: string
+        harFullmakt:
+          type: boolean
+        rolle:
+          type: string
+    OpprettServiceklageRequest:
+      type: object
+      properties:
+        paaVegneAv:
+          type: string
+          enum:
+            - Bruker selv som privatperson
+            - På vegne av en annen privatperson
+            - På vegne av virksomhet
+          x-enum-varnames:
+            - PRIVATPERSON
+            - ANNEN_PERSON
+            - BEDRIFT
+        innmelder:
+          $ref: '#/components/schemas/Innmelder'
+        paaVegneAvPerson:
+          $ref: '#/components/schemas/PaaVegneAvPerson'
+        paaVegneAvBedrift:
+          $ref: '#/components/schemas/PaaVegneAvBedrift'
+        enhetsnummerPaaklaget:
+          type: string
+        klagetyper:
+          type: array
+          items:
             type: string
             enum:
-                - UNPINGABLE
-                - OK
-                - WARNING
-                - ERROR
+              - Telefon
+              - Lokalt NAV-kontor
+              - NAVs digitale tjenester
+              - Brev
+              - Annet
+            x-enum-varnames:
+              - TELEFON
+              - LOKALT_NAV_KONTOR
+              - NAV_DIGITALE_TJENESTER
+              - BREV
+              - ANNET
+        klagetypeUtdypning:
+          type: string
+        gjelderSosialhjelp:
+          type: string
+          enum:
+            - Ja
+            - Nei
+            - Vet ikke
+          x-enum-varnames:
+              - JA
+              - NEI
+              - VET_IKKE
+        klagetekst:
+          type: string
+        oenskerAaKontaktes:
+          type: boolean
+    PaaVegneAvBedrift:
+      type: object
+      properties:
+        navn:
+          type: string
+        organisasjonsnummer:
+          type: string
+    PaaVegneAvPerson:
+      type: object
+      properties:
+        navn:
+          type: string
+        personnummer:
+          type: string
+    OpprettServiceklageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        serviceklageId:
+          type: string
+        journalpostId:
+          type: string
+        oppgaveId:
+          type: string
+    SendRosRequest:
+      type: object
+      properties:
+        hvemRoses:
+          type: string
+          enum:
+            - NAV Kontaktsenter
+            - NAVs digitale tjenester
+            - NAV-kontor
+          x-enum-varnames:
+            - NAV_KONTAKTSENTER
+            - NAV_DIGITALE_TJENESTER
+            - NAV_KONTOR
+        navKontor:
+          type: string
+        melding:
+          type: string
+    SendRosResponse:
+      type: object
+      properties:
+        message:
+          type: string
+    MeldFeilOgManglerRequest:
+      type: object
+      properties:
+        onskerKontakt:
+          type: boolean
+        epost:
+          type: string
+        feiltype:
+          type: string
+          enum:
+            - Teknisk feil
+            - Feil informasjon
+            - Feil på siden ved bruk av hjelpemiddelteknologi
+          x-enum-varnames:
+            - TEKNISK_FEIL
+            - FEIL_INFO
+            - UNIVERSELL_UTFORMING
+        melding:
+          type: string
+    MeldFeilOgManglerResponse:
+      type: object
+      properties:
+        message:
+          type: string
+    BestillSamtaleRequest:
+      type: object
+      properties:
+        fornavn:
+          type: string
+        etternavn:
+          type: string
+        telefonnummer:
+          type: string
+        tidsrom:
+          type: string
+          enum:
+            - 8.00-10.00
+            - 13.30-15.30
+            - 8.00-10.00 og 13.30-15.30
+          x-enum-varnames:
+              - FORMIDDAG
+              - ETTERMIDDAG
+              - BEGGE
+    BestillSamtaleResponse:
+      type: object
+      properties:
+        message:
+          type: string
+    DatavarehusServiceklage:
+      type: object
+      properties:
+        journalpost_id:
+          type: string
+        opprettet_dato:
+          type: string
+        klagen_gjelder_id:
+          type: string
+        klagetyper:
+          type: string
+          description: Komma-separert liste av klagetyper
+        gjelder_sosialhjelp:
+          type: string
+        klagetekst:
+          type: string
+        behandles_som_serviceklage:
+          type: string
+        behandles_som_serviceklage_utdypning:
+          type: string
+        fremmet_dato:
+          type: string
+        innsender:
+          type: string
+        kanal:
+          type: string
+        kanal_utdypning:
+          type: string
+        enhetsnummer_paaklaget:
+          type: string
+        enhetsnummer_behandlende:
+          type: string
+        gjelder:
+          type: string
+        beskrivelse:
+          type: string
+        ytelse:
+          type: string
+        tema:
+          type: string
+        tema_utdypning:
+          type: string
+        veiledning:
+          type: string
+        utfall:
+          type: string
+        aarsak:
+          type: string
+        tiltak:
+          type: string
+        svarmetode:
+          type: string
+        svarmetode_utdypning:
+          type: string
+        avsluttet_dato:
+          type: string
+        skjema_versjon:
+          type: string
+        klassifisering_json:
+          type: string
+        relatert:
+          type: string
+        klagetype_utdypning:
+          type: string
+        innlogget:
+          type: boolean
+    Answer:
+      type: object
+      properties:
+        answer:
+          type: string
+        button:
+          $ref: '#/components/schemas/Button'
+        emit:
+          type: string
+        next:
+          type: string
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+    Banner:
+      type: object
+      properties:
+        message:
+          type: string
+        type:
+          type: string
+          enum:
+            - WARN
+            - INFO
+            - ERROR
+            - SUCCESS
+    Button:
+      type: object
+      properties:
+        text:
+          type: string
+        info:
+          type: string
+    DefaultAnswers:
+      type: object
+      properties:
+        message:
+          type: string
+        answers:
+          type: object
+          additionalProperties:
+            type: string
+    HentSkjemaResponse:
+      type: object
+      properties:
+        version:
+          type: string
+        defaultAnswers:
+          $ref: '#/components/schemas/DefaultAnswers'
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+    Question:
+      type: object
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+        type:
+          type: string
+          enum:
+            - RADIO
+            - TEXT
+            - INPUT
+            - DATE
+            - SELECT
+            - DATALIST
+            - CHECKBOX
+        emit:
+          type: string
+        next:
+          type: string
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+        banner:
+          $ref: '#/components/schemas/Banner'
+        optional:
+          type: boolean
+    HentDokumentResponse:
+      type: object
+      properties:
+        dokument:
+          type: string
+          format: byte
+    DependencyCheckResult:
+      type: object
+      properties:
+        endpoint:
+          type: string
+        result:
+          $ref: '#/components/schemas/SelfCheckResult'
+        address:
+          type: string
+        errorMessage:
+          type: string
+        type:
+          type: string
+          enum:
+            - SOAP
+            - REST
+            - LDAP
+            - QUEUE
+        importance:
+          type: string
+          enum:
+            - CRITICAL
+            - WARNING
+        responseTime:
+          type: string
+    SelftestResult:
+      type: object
+      properties:
+        appName:
+          type: string
+        version:
+          type: string
+        result:
+          $ref: '#/components/schemas/SelfCheckResult'
+        dependencyCheckResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/DependencyCheckResult'
+    SelfCheckResult:
+      type: string
+      enum:
+        - UNPINGABLE
+        - OK
+        - WARNING
+        - ERROR
