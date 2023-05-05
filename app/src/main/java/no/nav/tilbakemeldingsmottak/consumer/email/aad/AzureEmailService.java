@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +34,7 @@ public class AzureEmailService implements EmailService {
 
     @Override
     public void sendSimpleMessage(String mottaker, String subject, String content) throws SendEmailException {
-        List<String> mottakere = java.util.Collections.singletonList(mottaker);
+        List<String> mottakere = Collections.singletonList(mottaker);
         sendSimpleMessage(mottakere, subject, content);
     }
 
@@ -45,7 +46,7 @@ public class AzureEmailService implements EmailService {
 
     @Override
     public void sendMessageWithAttachments(String mottaker, String subject, String content, byte[] attachment, String attachmentName) throws SendEmailException {
-        List<String> mottakere = java.util.Collections.singletonList(mottaker);
+        List<String> mottakere = Collections.singletonList(mottaker);
         sendMessageWithAttachments(mottakere, subject, content, attachment, attachmentName);
     }
 
