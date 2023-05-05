@@ -2,7 +2,8 @@ package no.nav.tilbakemeldingsmottak.rest.common.pdf;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.exceptions.PdfException;
-import no.nav.tilbakemeldingsmottak.generer.PdfGenerator;
+import no.nav.tilbakemeldingsmottak.generer.PdfGeneratorService;
+import no.nav.tilbakemeldingsmottak.generer.modeller.ServiceklagePdfModell;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import org.apache.commons.lang3.StringUtils;
@@ -27,10 +28,8 @@ public final class PdfService {
 
     public byte[] opprettServiceklagePdf(OpprettServiceklageRequest request, boolean innlogget, LocalDateTime fremmet) {
         try {
-            return new PdfGenerator().genererPdf(
-                    KANAL_SERVICEKLAGESKJEMA_ANSWER,
-                    !innlogget ? "OBS! Klagen er sendt inn uinnlogget" : null,
-                    lagKlageMap(request, fremmet));
+            var serviceklagePdfModell = new ServiceklagePdfModell(KANAL_SERVICEKLAGESKJEMA_ANSWER, !innlogget ? "OBS! Klagen er sendt inn uinnlogget" : null, lagKlageMap(request, fremmet));
+            return new PdfGeneratorService().genererServiceklagePdf(serviceklagePdfModell);
         } catch (Exception e) {
             throw new PdfException("Opprett serviceklage PDF", e);
         }
@@ -88,10 +87,8 @@ public final class PdfService {
     public byte[] opprettKlassifiseringPdf(Map<String, String> questionAnswerMap) {
 
         try {
-            return new PdfGenerator().genererPdf(
-                    "Serviceklage klassifisering",
-                    null,
-                    questionAnswerMap);
+            var serviceklagePdfModell = new ServiceklagePdfModell("Serviceklage klassifisering", null, questionAnswerMap);
+            return new PdfGeneratorService().genererServiceklagePdf(serviceklagePdfModell);
         } catch (Exception e) {
             throw new PdfException("Opprett serviceklage klassifiserings PDF", e);
         }
