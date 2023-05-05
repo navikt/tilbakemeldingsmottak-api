@@ -49,7 +49,7 @@ public class ServiceklagerBigQuery {
             map.put("klagetekst", serviceklage.getKlagetekst());
             map.put("behandles_som_serviceklage", serviceklage.getBehandlesSomServiceklage());
             map.put("behandles_som_serviceklage_utdypning", serviceklage.getBehandlesSomServiceklageUtdypning());
-            map.put("fremmet_dato", getDateTime(serviceklage.getFremmetDato().atStartOfDay()));
+            map.put("fremmet_dato", getDateTime(serviceklage.getFremmetDato() != null ? serviceklage.getFremmetDato().atStartOfDay() : null));
             map.put("innsender", serviceklage.getInnsender());
             map.put("kanal", serviceklage.getKanal());
             map.put("kanal_utdypning", serviceklage.getKanalUtdypning());

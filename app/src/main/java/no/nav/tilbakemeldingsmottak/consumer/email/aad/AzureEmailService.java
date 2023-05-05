@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -34,7 +33,7 @@ public class AzureEmailService implements EmailService {
 
     @Override
     public void sendSimpleMessage(String mottaker, String subject, String content) throws SendEmailException {
-        List<String> mottakere = Arrays.asList(mottaker);
+        List<String> mottakere = java.util.Collections.singletonList(mottaker);
         sendSimpleMessage(mottakere, subject, content);
     }
 
@@ -46,7 +45,7 @@ public class AzureEmailService implements EmailService {
 
     @Override
     public void sendMessageWithAttachments(String mottaker, String subject, String content, byte[] attachment, String attachmentName) throws SendEmailException {
-        List<String> mottakere = Arrays.asList(mottaker);
+        List<String> mottakere = java.util.Collections.singletonList(mottaker);
         sendMessageWithAttachments(mottakere, subject, content, attachment, attachmentName);
     }
 
@@ -79,7 +78,7 @@ public class AzureEmailService implements EmailService {
             mailClient.sendMailViaClient(message);
             log.info("Epost sendt");
         } catch (Exception e) {
-            log.error("Feil ved sending av epost fra: " + message.from.emailAddress.address + " til: " + message.toRecipients.get(0).emailAddress.address, e.getMessage());
+            log.error("Feil ved sending av epost fra: " + message.from.emailAddress.address + " til: " + message.toRecipients.get(0).emailAddress.address, e);
             throw new SendEmailException(e.getMessage());
         }
     }
