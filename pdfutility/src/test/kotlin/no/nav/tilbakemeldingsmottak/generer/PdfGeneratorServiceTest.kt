@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 
 class PdfGeneratorServiceTest {
 
-    // Lengre tester for å teste pdf'er med flere sider og linjeskift
+    // Lengre tekst for å teste pdf'er med flere sider og linjeskift
     val loremIpsum1 =
         "Lorem ipsum dolor sit amet,\n \n consectetur adipiscing elit. Phasellus elit justo, venenatis in leo eu, porta tempor ex. In dictum mollis purus a porttitor. Etiam convallis, tortor a porta dictum, lacus elit faucibus metus, eget tempus eros metus quis tellus. Curabitur sollicitudin lacus ac tristique tristique. Sed elementum sit amet nulla quis pulvinar. Etiam pellentesque molestie dapibus. In nec mauris ex. Proin pharetra justo quis commodo pharetra. Sed vulputate malesuada enim, sit amet elementum erat tincidunt quis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Integer varius tincidunt pellentesque. Donec nec ante vitae augue sollicitudin interdum nec sit amet elit. Mauris fermentum elit sed justo porttitor iaculis. Duis rhoncus, arcu non luctus molestie, diam arcu varius purus, sit amet maximus ex velit quis ipsum. Vestibulum ut risus semper dui vestibulum congue at at nisl.\n" +
                 "\n" +
@@ -20,7 +20,7 @@ class PdfGeneratorServiceTest {
                 "Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla non aliquet justo. Mauris pharetra suscipit felis, id varius nulla efficitur et. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur vel lectus venenatis, fermentum ipsum at, eleifend nibh. In rhoncus accumsan accumsan. In pharetra mauris lorem, pulvinar maximus erat feugiat in. Cras dui nunc, facilisis quis elit at, tincidunt placerat turpis. Aliquam ultricies magna quis felis scelerisque, sed fermentum diam fringilla. Fusce dui elit, laoreet quis tellus at, ultrices auctor velit. Praesent et tortor enim. Quisque sapien mi, tempus quis rutrum ac, ultricies non sem. Aenean nec ante nisi. Duis posuere dolor nisi, at eleifend neque luctus sed. Quisque volutpat consectetur magna ut ullamcorper. Ut ultrices leo quis sem ullamcorper congue."
 
 
-    // Tester litt forskjellige varianter av tekst og null verdier
+    // Tester litt forskjellige varianter av tekster og null verdier
     private fun lagMeldingsMap(): Map<String, String?> {
         val map = mutableMapOf<String, String?>()
         val key = "Key"
@@ -186,6 +186,7 @@ class PdfGeneratorServiceTest {
 //        writeBytesToFile(pdf, "test5.pdf")
     }
 
+    // Skriv til fil for å se på resultatet
     fun writeBytesToFile(data: ByteArray, filePath: String) {
         File(filePath).writeBytes(data)
     }

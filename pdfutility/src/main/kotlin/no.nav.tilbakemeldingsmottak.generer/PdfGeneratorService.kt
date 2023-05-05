@@ -35,9 +35,13 @@ class PdfGeneratorService {
 
                 builder.useFastMode()
                 builder.usePdfAConformance(PdfRendererBuilder.PdfAConformance.PDFA_1_B)
+
+                // Fargeprofil, må være byte array
                 builder.useColorProfile(
                     PdfGeneratorService::class.java.getResource("/pdf/fonts/icc/sRGB.icc")?.readBytes()
                 )
+
+                // Normal og Bold fonts, må være filer
                 builder.useFont(
                     PdfGeneratorService::class.java.getResource("/pdf/fonts/arial/arial.ttf")?.path?.let {
                         File(it)
@@ -48,6 +52,8 @@ class PdfGeneratorService {
                         File(it)
                     }, "arial"
                 )
+
+                // Mappe for html filer (som fonter og bilder), må være string uri
                 builder.withHtmlContent(
                     html,
                     PdfGeneratorService::class.java.getResource("/pdf/")?.toExternalForm() ?: ""
