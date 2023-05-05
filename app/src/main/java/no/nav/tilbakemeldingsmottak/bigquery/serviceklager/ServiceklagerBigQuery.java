@@ -73,7 +73,7 @@ public class ServiceklagerBigQuery {
 
             InsertAllRequest request = InsertAllRequest.newBuilder(TableId.of(dataset, TABLE_NAME)).addRow(map).build();
 
-            log.info("Inserting rows into table: {} ", request.getRows().toString());
+            log.info("Inserting rows into Big Query");
 
             if (Arrays.asList(env.getActiveProfiles()).contains("local")) {
                 log.info("Skal ikke legge til rader i big query i lokal env");
