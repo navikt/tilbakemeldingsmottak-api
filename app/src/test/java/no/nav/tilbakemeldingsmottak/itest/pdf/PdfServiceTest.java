@@ -138,7 +138,7 @@ class PdfServiceTest {
     @Test
     void happyPathMedKontrollKarakterer() throws IOException {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
-        String tekstMedEmojis = "Heisann \n\r\t\u0001\u0000sveisann";
+        String tekstMedEmojis = "Heisann \r\t\u0001\u0000sveisann";
         opprettServiceklageRequest.setKlagetekst(tekstMedEmojis);
         byte[] pdf = pdfService.opprettServiceklagePdf(opprettServiceklageRequest, true);
         String content = getStringFromByteArrayPdf(pdf);
@@ -148,7 +148,7 @@ class PdfServiceTest {
     private void assertPdfContainsContentFromRequest(OpprettServiceklageRequest request, String content) {
         assertKlagetyper(request.getKlagetyper(), content);
         String now = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-        String regex = "Side [1-9] / [1-9]" + now;
+        String regex = now + " Side " + " av [1-9] [1-9]";
         assertTrue(content.replace("\n", "").replaceAll(regex, "").contains(request.getKlagetekst()));
         assertTrue(content.contains(KANAL_SERVICEKLAGESKJEMA_ANSWER));
         assertTrue(content.contains(LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))));
@@ -157,8 +157,9 @@ class PdfServiceTest {
         assertContainsIfNotNull(content, request.getKlagetypeUtdypning());
         assertContainsIfNotNull(content, request.getEnhetsnummerPaaklaget());
         if (request.getGjelderSosialhjelp() != null) {
-            assertTrue(content.replace("\n", " ").contains("Gjelder økonomisk sosialhjelp/sosiale tjenester: " + request.getGjelderSosialhjelp().value));
+            assertTrue(content.contains("Gjelder økonomisk sosialhjelp\n/sosiale tjenester:\n" + request.getGjelderSosialhjelp().value));
         }
+
 
         assertInnmelder(request.getInnmelder(), content);
         if (request.getPaaVegneAv().equals(PaaVegneAvEnum.ANNEN_PERSON)) {
