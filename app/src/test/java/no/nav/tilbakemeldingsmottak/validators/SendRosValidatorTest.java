@@ -1,13 +1,13 @@
 package no.nav.tilbakemeldingsmottak.validators;
 
-import static no.nav.tilbakemeldingsmottak.TestUtils.createSendRosRequest;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.model.SendRosRequest;
 import no.nav.tilbakemeldingsmottak.rest.ros.validation.SendRosValidator;
 import org.junit.jupiter.api.Test;
+
+import static no.nav.tilbakemeldingsmottak.TestUtils.createSendRosRequest;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SendRosValidatorTest {
 

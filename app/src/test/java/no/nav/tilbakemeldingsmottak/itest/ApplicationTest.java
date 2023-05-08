@@ -4,7 +4,6 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.microsoft.graph.models.Message;
 import com.nimbusds.jose.JOSEObjectType;
-import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback;
 import no.nav.security.mock.oauth2.token.OAuth2TokenCallback;
@@ -27,25 +26,23 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEnti
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.transaction.TestTransaction;
-import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcConfigurer;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.inject.Inject;
-import javax.servlet.Filter;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-import java.util.*;
-
-
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static no.nav.tilbakemeldingsmottak.TestUtils.*;
-import static no.nav.tilbakemeldingsmottak.config.Constants.*;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createNorg2Response;
+import static no.nav.tilbakemeldingsmottak.TestUtils.createSafGraphqlResponse;
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 
 
 @ActiveProfiles("itest")
@@ -63,30 +60,24 @@ import static no.nav.tilbakemeldingsmottak.config.Constants.*;
 @AutoConfigureWireMock()
 public class ApplicationTest {
 
-    @Autowired
-    private WebApplicationContext webApplicationContext;
+    protected static final String CONSUMER_ID = "theclientid";
+    private static final String URL_SERVICEKLAGE = "/rest/serviceklage";
+    private static final String INNLOGGET_BRUKER = "14117119611";
+    private static final String AUD = "aud-localhost";
     @Inject
     protected ServiceklageRepository serviceklageRepository;
     @Inject
     protected TestRestTemplate restTemplate;
     @Autowired
     MockOAuth2Server mockOAuth2Server;
-
     @Autowired
     AADMailClient emailService;
-
-    @Value("${local.server.port}")
-    private int serverPort;
-
     @Captor
     ArgumentCaptor<Message> messageCaptor;
-
-    protected static final String CONSUMER_ID = "theclientid";
-    private static final String URL_SERVICEKLAGE = "/rest/serviceklage";
-    private static final String INNLOGGET_BRUKER = "14117119611";
-    private static final String AUD ="aud-localhost";
-
-
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+    @Value("${local.server.port}")
+    private int serverPort;
 
     @BeforeEach
     void setup() {
@@ -202,7 +193,7 @@ public class ApplicationTest {
     }
 
     public String getToken(String issuer, String user) {
-        return tokenWithClaims(issuer, user, AUD, Map.of("acr","Level4", "pid", user));
+        return tokenWithClaims(issuer, user, AUD, Map.of("acr", "Level4", "pid", user));
     }
 
     public String getToken(String issuer, String user, String scope) {
@@ -214,22 +205,23 @@ public class ApplicationTest {
     }
 
 
-    private String token(String issuerId, String subject, String audience)  {
+    private String token(String issuerId, String subject, String audience) {
         OAuth2TokenCallback oAuth2TokenCallback = new DefaultOAuth2TokenCallback(
                 issuerId,
                 subject,
                 JOSEObjectType.JWT.getType(),
                 List.of(audience),
-                Map.of("acr","Level4"),
+                Map.of("acr", "Level4"),
                 3600
         );
         return mockOAuth2Server.issueToken(
                 issuerId,
                 MockLoginController.class.getSimpleName(),
                 oAuth2TokenCallback
-            ).serialize();
+        ).serialize();
     }
-    private String tokenWithClaims(String issuerId, String subject, String audience, Map<String, String> claims)  {
+
+    private String tokenWithClaims(String issuerId, String subject, String audience, Map<String, String> claims) {
         OAuth2TokenCallback oAuth2TokenCallback = new DefaultOAuth2TokenCallback(
                 issuerId,
                 subject,

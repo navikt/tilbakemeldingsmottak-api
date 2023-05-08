@@ -15,7 +15,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @Configuration
 @EnableAspectJAutoProxy
-@EnableJwtTokenValidation(ignore={"org.springframework", "springfox.documentation.swagger.web.ApiResourceController"})
+@EnableJwtTokenValidation(ignore = {"org.springframework", "springfox.documentation.swagger.web.ApiResourceController"})
 @EnableOAuth2Client(cacheEnabled = true)
 @ConfigurationPropertiesScan
 public class CoreConfig {

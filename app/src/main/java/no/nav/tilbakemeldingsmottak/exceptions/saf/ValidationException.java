@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class ValidationException extends AbstractTilbakemeldingsmottakFunctionalException {
 
-	public ValidationException(String message) {
-		super(message);
-	}
+    public ValidationException(String message) {
+        super(message);
+    }
 
-	public ValidationException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public ValidationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

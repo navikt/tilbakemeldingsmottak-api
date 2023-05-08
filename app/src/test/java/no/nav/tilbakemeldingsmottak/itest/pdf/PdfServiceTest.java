@@ -1,23 +1,12 @@
 package no.nav.tilbakemeldingsmottak.itest.pdf;
 
-import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvBedrift;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPaaVegneAvPerson;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatpersonLokaltKontor;
-import static no.nav.tilbakemeldingsmottak.TestUtils.getStringFromByteArrayPdf;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.lenient;
-
-import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
 import no.nav.tilbakemeldingsmottak.model.Innmelder;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
 import no.nav.tilbakemeldingsmottak.model.PaaVegneAvBedrift;
 import no.nav.tilbakemeldingsmottak.model.PaaVegneAvPerson;
+import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,22 +16,28 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static no.nav.tilbakemeldingsmottak.TestUtils.*;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
+
 @ExtendWith(MockitoExtension.class)
 class PdfServiceTest {
 
+    @Mock
+    OidcUtils oidcUtils;
+    @InjectMocks
+    PdfService pdfService;
     private OpprettServiceklageRequest opprettServiceklageRequest;
-
-    @Mock OidcUtils oidcUtils;
-    @InjectMocks PdfService pdfService;
 
     @BeforeEach
     void setup() {
@@ -162,7 +157,7 @@ class PdfServiceTest {
         assertContainsIfNotNull(content, request.getKlagetypeUtdypning());
         assertContainsIfNotNull(content, request.getEnhetsnummerPaaklaget());
         if (request.getGjelderSosialhjelp() != null) {
-            assertTrue(content.replace("\n"," ").contains("Gjelder økonomisk sosialhjelp/sosiale tjenester: " + request.getGjelderSosialhjelp().value));
+            assertTrue(content.replace("\n", " ").contains("Gjelder økonomisk sosialhjelp/sosiale tjenester: " + request.getGjelderSosialhjelp().value));
         }
 
         assertInnmelder(request.getInnmelder(), content);

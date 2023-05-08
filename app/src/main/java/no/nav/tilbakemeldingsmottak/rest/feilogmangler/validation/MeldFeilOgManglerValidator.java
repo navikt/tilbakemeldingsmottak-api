@@ -1,7 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.feilogmangler.validation;
 
-import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest;
+import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 import org.springframework.stereotype.Component;
 
 @Component

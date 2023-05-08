@@ -1,23 +1,14 @@
 package no.nav.tilbakemeldingsmottak.validators;
 
-import static no.nav.tilbakemeldingsmottak.TestUtils.*;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
-
-import io.vavr.collection.List;
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.graphql.Identliste;
-import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
+import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,16 +21,28 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Collections;
 import java.util.Optional;
 
+import static no.nav.tilbakemeldingsmottak.TestUtils.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class OpprettServiceklageValidatorTest {
 
+    @Mock
+    EregConsumer eregConsumer;
+    @Mock
+    PdlService pdlService;
+    @Mock
+    OidcUtils oidcUtils;
+    @Mock
+    PersonnummerValidator personnummerValidator;
+    @InjectMocks
+    OpprettServiceklageValidator opprettServiceklageValidator;
     private OpprettServiceklageRequest opprettServiceklageRequest;
-
-    @Mock EregConsumer eregConsumer;
-    @Mock PdlService pdlService;
-    @Mock OidcUtils oidcUtils;
-    @Mock PersonnummerValidator personnummerValidator;
-    @InjectMocks OpprettServiceklageValidator opprettServiceklageValidator;
 
     @BeforeEach
     void setup() {
@@ -53,6 +56,7 @@ class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         opprettServiceklageValidator.validateRequest(opprettServiceklageRequest);
     }
+
     @Test
     void happyPathPaaVegneAvPerson() {
         opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvPerson();
@@ -307,7 +311,7 @@ class OpprettServiceklageValidatorTest {
     void shouldThrowExceptionIfPersonnummerDoesntMatchTokenIdent() {
         opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
         Exception thrown = assertThrows(InvalidRequestException.class,
-                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest,Optional.of("12345678901")));
+                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest, Optional.of("12345678901")));
         assertTrue(thrown.getMessage().contains("innmelder.personnummer samsvarer ikke med brukertoken"));
     }
 }

@@ -28,7 +28,7 @@ public class OpprettOppgaveRequestToMapper {
 
 
     @Inject
-    public OpprettOppgaveRequestToMapper(PdlService pdlService){
+    public OpprettOppgaveRequestToMapper(PdlService pdlService) {
         this.pdlService = pdlService;
     }
 
@@ -36,7 +36,7 @@ public class OpprettOppgaveRequestToMapper {
         return OpprettOppgaveRequestTo.builder()
                 .tildeltEnhetsnr(KLAGEINSTANS_ENHETSNR)
                 .prioritet(PRIORITET)
-                .aktoerId(paaVegneAvEnum.equals(PaaVegneAvEnum.BEDRIFT) ? null :  pdlService.hentAktorIdForIdent(klagenGjelderId))
+                .aktoerId(paaVegneAvEnum.equals(PaaVegneAvEnum.BEDRIFT) ? null : pdlService.hentAktorIdForIdent(klagenGjelderId))
                 .orgnr(paaVegneAvEnum.equals(PaaVegneAvEnum.BEDRIFT) ? klagenGjelderId : null)
                 .aktivDato(LocalDate.now().toString())
                 .journalpostId(opprettJournalpostResponseTo.getJournalpostId())

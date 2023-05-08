@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class InvalidMappingToEnumFunctionalException extends AbstractTilbakemeldingsmottakFunctionalException {
-	public InvalidMappingToEnumFunctionalException(String message) {
-		super(message);
-	}
+    public InvalidMappingToEnumFunctionalException(String message) {
+        super(message);
+    }
 }

@@ -1,7 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
-import static org.apache.cxf.common.util.CollectionUtils.isEmpty;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.saf.SafJournalpostQueryService;
@@ -10,10 +8,12 @@ import no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument.HentDokumentRespon
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat;
 import no.nav.tilbakemeldingsmottak.exceptions.JournalpostManglerDokumentException;
-import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
 import no.nav.tilbakemeldingsmottak.model.HentDokumentResponse;
+import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Service;
+
+import static org.apache.cxf.common.util.CollectionUtils.isEmpty;
 
 @Service
 @Slf4j

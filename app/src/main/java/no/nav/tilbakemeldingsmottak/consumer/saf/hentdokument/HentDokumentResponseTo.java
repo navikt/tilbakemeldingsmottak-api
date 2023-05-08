@@ -10,6 +10,6 @@ import lombok.Value;
 @Builder
 public class HentDokumentResponseTo {
 
-	private final byte[] dokument;
+    private final byte[] dokument;
 
 }

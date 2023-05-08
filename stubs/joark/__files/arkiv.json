@@ -1,5 +1,5 @@
 {
-  "journalpostId": "123456789",
-  "journalstatus": "MOTTATT",
-  "melding": "Melding fra journalpost"
+    "journalpostId": "123456789",
+    "journalstatus": "MOTTATT",
+    "melding": "Melding fra journalpost"
 }

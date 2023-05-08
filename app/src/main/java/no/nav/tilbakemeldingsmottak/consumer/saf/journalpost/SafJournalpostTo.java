@@ -10,22 +10,22 @@ import java.util.List;
 @Builder
 public class SafJournalpostTo {
 
-	@Builder.Default
-	private final List<DokumentInfo> dokumenter = new ArrayList<>();
+    @Builder.Default
+    private final List<DokumentInfo> dokumenter = new ArrayList<>();
 
-	@Value
-	@Builder
-	public static class DokumentInfo {
-		private final String dokumentInfoId;
+    @Value
+    @Builder
+    public static class DokumentInfo {
+        private final String dokumentInfoId;
 
-		@Builder.Default
-		private final List<Dokumentvariant> dokumentvarianter = new ArrayList<>();
-	}
+        @Builder.Default
+        private final List<Dokumentvariant> dokumentvarianter = new ArrayList<>();
+    }
 
-	@Value
-	@Builder
-	public static class Dokumentvariant {
-		private final String variantformat;
-		private final boolean saksbehandlerHarTilgang;
-	}
+    @Value
+    @Builder
+    public static class Dokumentvariant {
+        private final String variantformat;
+        private final boolean saksbehandlerHarTilgang;
+    }
 }

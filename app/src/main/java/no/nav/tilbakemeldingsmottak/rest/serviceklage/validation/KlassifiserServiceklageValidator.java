@@ -1,26 +1,22 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.NONE;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
-import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 import no.nav.tilbakemeldingsmottak.model.DefaultAnswers;
 import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.Question;
+import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.NONE;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 public class KlassifiserServiceklageValidator extends RequestValidator {
@@ -28,7 +24,8 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
     public void validateRequest(KlassifiserServiceklageRequest request, HentSkjemaResponse hentSkjemaResponse) {
         ObjectMapper m = new ObjectMapper();
 
-        Map<String, String> answersMap = m.convertValue(request, new TypeReference<Map<String, String>>(){})
+        Map<String, String> answersMap = m.convertValue(request, new TypeReference<Map<String, String>>() {
+                })
                 .entrySet().stream()
                 .filter(entry -> entry.getValue() != null)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -52,7 +49,7 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
                 case SELECT:
                 case DATALIST:
                     validateMultichoice(question, answered);
-                     break;
+                    break;
                 case TEXT:
                 case INPUT:
                     validateText(question, answered);
@@ -118,9 +115,9 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
                 (question.getType() != Question.TypeEnum.CHECKBOX &&
                         question.getAnswers() != null &&
                         NONE.equals(question.getAnswers().stream()
-                            .filter(a -> a.getAnswer().equals(answered))
-                            .findFirst()
-                            .orElseThrow(() -> new InvalidRequestException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId())))
-                            .getNext()));
+                                .filter(a -> a.getAnswer().equals(answered))
+                                .findFirst()
+                                .orElseThrow(() -> new InvalidRequestException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId())))
+                                .getNext()));
     }
 }

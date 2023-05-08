@@ -1,14 +1,14 @@
 {
-  "priority": 2,
-  "request": {
-    "urlPattern": "/rest/hentdokument.*",
-    "method": "GET"
-  },
-  "response": {
-    "status": 200,
-    "bodyFileName": "hent-dokument.json",
-    "headers": {
-      "Content-Type": "application/json"
+    "priority": 2,
+    "request": {
+        "urlPattern": "/rest/hentdokument.*",
+        "method": "GET"
+    },
+    "response": {
+        "status": 200,
+        "bodyFileName": "hent-dokument.json",
+        "headers": {
+            "Content-Type": "application/json"
+        }
     }
-  }
 }

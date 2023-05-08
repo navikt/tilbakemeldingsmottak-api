@@ -6,6 +6,7 @@ import no.nav.tilbakemeldingsmottak.model.DependencyCheckResult.TypeEnum;
 import no.nav.tilbakemeldingsmottak.nais.selftest.AbstractDependencyCheck;
 import no.nav.tilbakemeldingsmottak.nais.selftest.ApplicationNotReadyException;
 import org.springframework.stereotype.Component;
+
 @Component
 public class ExampleCheck extends AbstractDependencyCheck {
 

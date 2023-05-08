@@ -1,11 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
-import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.NONE;
-import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNumeric;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,16 +16,16 @@ import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.exceptions.RequestParsingException;
 import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
 import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
-import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
-import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
 import no.nav.tilbakemeldingsmottak.model.Answer;
 import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.Question;
-import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
+import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
+import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
+import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -44,11 +38,22 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.NONE;
+import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class KlassifiserServiceklageService {
 
+    private static final String KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser";
+    private static final String FORVALTNINGSKLAGE = "Nei, en forvaltningsklage";
+    private static final String SKRIV_TIL_OSS = "Nei, Skriv til oss";
+    private static final String JA = "Ja";
+    private static final String ANNET = "Annet";
     private final ServiceklageRepository serviceklageRepository;
     private final OppgaveConsumer oppgaveConsumer;
     private final EndreOppgaveRequestToMapper endreOppgaveRequestToMapper;
@@ -58,18 +63,10 @@ public class KlassifiserServiceklageService {
     private final OidcUtils oicdUtils;
     private final OpprettOppgaveRequestToMapper opprettOppgaveRequestToMapper;
     private final ServiceklagerBigQuery serviceklagerBigQuery;
-
     @Value("${email_serviceklage_address}")
     private String toAddress;
     @Value("${email_from_address}")
     private String fromAddress;
-
-    private static final String KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser";
-    private static final String FORVALTNINGSKLAGE = "Nei, en forvaltningsklage";
-    private static final String SKRIV_TIL_OSS = "Nei, Skriv til oss";
-
-    private static final String JA = "Ja";
-    private static final String ANNET = "Annet";
 
     public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo) {
         if (KOMMUNAL_KLAGE.equals(request.getBEHANDLESSOMSERVICEKLAGE())) {
@@ -120,7 +117,8 @@ public class KlassifiserServiceklageService {
         HentSkjemaResponse skjemaResponse = hentOppgaveResponseTo.getJournalpostId() != null ?
                 hentSkjemaService.hentSkjema(hentOppgaveResponseTo.getJournalpostId()) :
                 hentSkjemaService.readSkjema();
-        Map<String, String> answersMap = new ObjectMapper().readValue(serviceklage.getKlassifiseringJson(), new TypeReference<Map<String, String>>(){})
+        Map<String, String> answersMap = new ObjectMapper().readValue(serviceklage.getKlassifiseringJson(), new TypeReference<Map<String, String>>() {
+                })
                 .entrySet()
                 .stream()
                 .filter(entry -> entry.getValue() != null)
@@ -237,7 +235,7 @@ public class KlassifiserServiceklageService {
             } else {
                 return request.getSVARIKKENOEDVENDIG();
             }
-        } else{
+        } else {
             return null;
         }
     }
@@ -248,7 +246,7 @@ public class KlassifiserServiceklageService {
         }
         int l = enhet.trim().length();
         if (l >= 4) {
-            String enhetsnummer = enhet.trim().substring(l-4);
+            String enhetsnummer = enhet.trim().substring(l - 4);
             if (isNumeric(enhetsnummer)) {
                 return enhetsnummer;
             }

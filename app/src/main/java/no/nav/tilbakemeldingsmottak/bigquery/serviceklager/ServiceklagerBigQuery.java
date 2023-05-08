@@ -21,12 +21,11 @@ import java.util.HashMap;
 @Slf4j
 public class ServiceklagerBigQuery {
 
-    @Value("${big_query_dataset}")
-    private String dataset;
-
+    public static final String TABLE_NAME = "serviceklager";
     private final Environment env;
     private final BigQuery bigQueryClient;
-    public static final String TABLE_NAME = "serviceklager";
+    @Value("${big_query_dataset}")
+    private String dataset;
 
     private DateTime getDateTime(LocalDateTime localDateTime) {
         if (localDateTime == null) {
@@ -74,7 +73,7 @@ public class ServiceklagerBigQuery {
 
             InsertAllRequest request = InsertAllRequest.newBuilder(TableId.of(dataset, TABLE_NAME)).addRow(map).build();
 
-            log.info("Inserting rows into table: {} ", request.getRows().toString());
+            log.info("Inserting rows into Big Query");
 
             if (Arrays.asList(env.getActiveProfiles()).contains("local")) {
                 log.info("Skal ikke legge til rader i big query i lokal env");

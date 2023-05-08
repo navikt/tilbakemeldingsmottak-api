@@ -1,19 +1,15 @@
 package no.nav.tilbakemeldingsmottak.validators;
 
-import static no.nav.tilbakemeldingsmottak.TestUtils.createHentSkjemaResponse;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createHentSkjemaResponseWithDefaultAnswers;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequest;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequestForvaltningsklage;
-import static no.nav.tilbakemeldingsmottak.TestUtils.createKlassifiserServiceklageRequestIkkeServiceklage;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_MUNTLIG_ANSWER;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
 import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.KlassifiserServiceklageValidator;
 import org.junit.jupiter.api.Test;
+
+import static no.nav.tilbakemeldingsmottak.TestUtils.*;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_MUNTLIG_ANSWER;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class KlassifiserServiceklageValidatorTest {
 

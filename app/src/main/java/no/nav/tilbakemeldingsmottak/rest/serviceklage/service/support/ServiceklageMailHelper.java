@@ -24,7 +24,7 @@ public class ServiceklageMailHelper {
 
     public void sendEmail(String fromAddress, String toAddress, String subject, String text, byte[] fysiskDokument) {
         try {
-            List<String> mottakere =  new ArrayList<>(Arrays.asList(toAddress.split(";")));
+            List<String> mottakere = new ArrayList<>(Arrays.asList(toAddress.split(";")));
             emailService.sendMessageWithAttachments(mottakere, subject, text, fysiskDokument, "klage.pdf");
         } catch (SendEmailException e) {
             throw new ServiceklageMailException("Kan ikke sende mail");

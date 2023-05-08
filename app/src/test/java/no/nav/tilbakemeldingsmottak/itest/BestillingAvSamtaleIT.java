@@ -16,7 +16,7 @@ public class BestillingAvSamtaleIT extends ApplicationTest {
     private static final String URL_BESTILLING_AV_SAMTALE = "/rest/bestilling-av-samtale";
 
     @Test
-    void happyPath()  {
+    void happyPath() {
         BestillSamtaleRequest request = createBestillSamtaleRequest();
         HttpEntity<BestillSamtaleRequest> requestEntity = new HttpEntity<>(request, createHeaders());
         ResponseEntity<BestillSamtaleResponse> response = restTemplate.exchange(URL_BESTILLING_AV_SAMTALE, HttpMethod.POST, requestEntity, BestillSamtaleResponse.class);

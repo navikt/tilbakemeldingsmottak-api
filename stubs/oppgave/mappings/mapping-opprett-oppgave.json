@@ -1,14 +1,14 @@
 {
-  "priority": 2,
-  "request": {
-    "urlPattern": "/api/v1/oppgaver.*",
-    "method": "POST"
-  },
-  "response": {
-    "status": 200,
-    "bodyFileName": "opprett-oppgave.json",
-    "headers": {
-      "Content-Type": "application/json"
+    "priority": 2,
+    "request": {
+        "urlPattern": "/api/v1/oppgaver.*",
+        "method": "POST"
+    },
+    "response": {
+        "status": 200,
+        "bodyFileName": "opprett-oppgave.json",
+        "headers": {
+            "Content-Type": "application/json"
+        }
     }
-  }
 }

@@ -1,19 +1,18 @@
 package no.nav.tilbakemeldingsmottak.rest.datavarehus;
 
-import no.nav.security.token.support.core.api.ProtectedWithClaims;
-import no.nav.tilbakemeldingsmottak.api.DatavarehusRestControllerApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import no.nav.tilbakemeldingsmottak.api.DatavarehusRestControllerApi;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import no.nav.tilbakemeldingsmottak.model.DatavarehusServiceklage;
 import no.nav.tilbakemeldingsmottak.rest.datavarehus.service.DatavarehusService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 

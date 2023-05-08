@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 public class SkjemaConstructionException extends AbstractTilbakemeldingsmottakTechnicalException {
 
-	public SkjemaConstructionException(String message) {
-		super(message);
-	}
+    public SkjemaConstructionException(String message) {
+        super(message);
+    }
 }

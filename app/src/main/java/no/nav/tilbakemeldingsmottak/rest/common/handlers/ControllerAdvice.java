@@ -9,7 +9,6 @@ import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentFunctionalExce
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostIkkeFunnetFunctionalException;
 import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -50,7 +49,7 @@ public class ControllerAdvice {
     }
 
 
-    @ExceptionHandler(value={JwtTokenMissingException.class, JwtTokenUnauthorizedException.class})
+    @ExceptionHandler(value = {JwtTokenMissingException.class, JwtTokenUnauthorizedException.class})
     public ResponseEntity<ErrorResponse> loginRequiredExceptionHandler(HttpServletRequest request, Exception ex) {
         HttpStatus status = getHttpStatus(ex);
         log.warn("Autentisering feilet ved kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
@@ -59,7 +58,7 @@ public class ControllerAdvice {
                 .build());
     }
 
-    @ExceptionHandler(value = {MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class })
+    @ExceptionHandler(value = {MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ErrorResponse> failedParametersHandler(HttpServletRequest request, Exception ex) {
         log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()

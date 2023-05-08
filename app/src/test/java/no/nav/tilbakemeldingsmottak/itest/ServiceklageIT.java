@@ -3,15 +3,9 @@ package no.nav.tilbakemeldingsmottak.itest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import lombok.SneakyThrows;
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
+import no.nav.tilbakemeldingsmottak.model.*;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageResponse;
-import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageResponse;
-import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
-import no.nav.tilbakemeldingsmottak.model.HentDokumentResponse;
-
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
 import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -40,7 +34,8 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.UTFALL;
 import static no.nav.tilbakemeldingsmottak.TestUtils.VENTE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.YTELSE;
 import static no.nav.tilbakemeldingsmottak.TestUtils.*;
-import static no.nav.tilbakemeldingsmottak.config.Constants.*;
+import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
+import static no.nav.tilbakemeldingsmottak.config.Constants.TOKENX_ISSUER;
 import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -51,7 +46,7 @@ class ServiceklageIT extends ApplicationTest {
     private static final String KLASSIFISER = "klassifiser";
     private static final String HENT_SKJEMA = "hentskjema";
     private static final String HENT_DOKUMENT = "hentdokument";
-    private static final String JOURNALPOST_ID ="12345";
+    private static final String JOURNALPOST_ID = "12345";
     private static final String OPPGAVE_ID = "1234567";
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -101,10 +96,10 @@ class ServiceklageIT extends ApplicationTest {
         assertEquals(serviceklage.getSvarmetodeUtdypning(), BRUKER_IKKE_BEDT_OM_SVAR_ANSWER);
     }
 
-   @Test
+    @Test
     void happyPathAnnenPerson() {
         OpprettServiceklageRequest request = createOpprettServiceklageRequestPaaVegneAvPerson();
-        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(TOKENX_ISSUER, request.getInnmelder().getPersonnummer(),true));
+        HttpEntity<OpprettServiceklageRequest> requestEntity = new HttpEntity<>(request, createHeaders(TOKENX_ISSUER, request.getInnmelder().getPersonnummer(), true));
         ResponseEntity<OpprettServiceklageResponse> response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, OpprettServiceklageResponse.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());

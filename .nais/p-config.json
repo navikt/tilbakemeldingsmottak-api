@@ -1,42 +1,35 @@
 {
-  "NAMESPACE": "teamserviceklage",
-  "DATABASE_NAME": "tilbakemeldingsmottak",
-
-  "JOURNALPOST_V1_URL": "https://dokarkiv.prod-fss-pub.nais.io/rest/journalpostapi/v1",
-  "OPPGAVE_OPPGAVER_URL": "https://oppgave.prod-fss-pub.nais.io/api/v1/oppgaver",
-  "EREG_API_URL": "https://ereg-services.prod-fss-pub.nais.io",
-  "NORG2_API_V1_URL": "https://norg2.prod-fss-pub.nais.io/norg2/api/v1",
-  "SAF_URL": "https://saf.prod-fss-pub.nais.io/graphql",
-  "SAF_HENTDOKUMENT_URL": "https://saf.prod-fss-pub.nais.io/rest/hentdokument",
-  "PDL_URL": "https://pdl-api.prod-fss-pub.nais.io/graphql",
-
-  "INGRESS": [
-      "https://tilbakemeldingsmottak-gcp.intern.nav.no"
-  ],
-
-  "outboundExternalHosts": [
-    "ereg-services.prod-fss-pub.nais.io",
-    "norg2.prod-fss-pub.nais.io",
-    "saf.prod-fss-pub.nais.io",
-    "oppgave.prod-fss-pub.nais.io",
-    "pdl-api.prod-fss-pub.nais.io",
-    "dokarkiv.prod-fss-pub.nais.io"
-  ],
-
-
-  "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
-  "AZURE_DEFAULT_SCOPE": "openid",
-  "TENANT": "nav.no",
-  "BIG_QUERY_DATASET": "tilbakemeldingsmottak_metrics",
-
-  "AAD_EMAIL": "srvtilbakemeldings@nav.no",
-  "EMAIL_FROM_ADDRESS": "srvtilbakemeldings@nav.no",
-  "EMAIL_SERVICEKLAGE_ADDRESS": "nav.serviceklager@nav.no",
-  "EMAIL_NAV_SUPPORT_ADDRESS": "support@nav.no",
-  "EMAIL_SAMISK_KONTAKT_ADDRESS": "nav.kontaktsenter.finnmark.samisk.kontakt.bruker@nav.no",
-
-  "DOKARKIV_SCOPE": "api://prod-fss.teamdokumenthandtering.dokarkiv/.default",
-  "SAF_SCOPE": "api://prod-fss.teamdokumenthandtering.saf/.default",
-  "OPPGAVE_SCOPE": "api://prod-fss.oppgavehandtering.oppgave/.default",
-  "PDL_SCOPE": "api://prod-fss.pdl.pdl-api/.default"
+    "NAMESPACE": "teamserviceklage",
+    "DATABASE_NAME": "tilbakemeldingsmottak",
+    "JOURNALPOST_V1_URL": "https://dokarkiv.prod-fss-pub.nais.io/rest/journalpostapi/v1",
+    "OPPGAVE_OPPGAVER_URL": "https://oppgave.prod-fss-pub.nais.io/api/v1/oppgaver",
+    "EREG_API_URL": "https://ereg-services.prod-fss-pub.nais.io",
+    "NORG2_API_V1_URL": "https://norg2.prod-fss-pub.nais.io/norg2/api/v1",
+    "SAF_URL": "https://saf.prod-fss-pub.nais.io/graphql",
+    "SAF_HENTDOKUMENT_URL": "https://saf.prod-fss-pub.nais.io/rest/hentdokument",
+    "PDL_URL": "https://pdl-api.prod-fss-pub.nais.io/graphql",
+    "INGRESS": [
+        "https://tilbakemeldingsmottak-gcp.intern.nav.no"
+    ],
+    "outboundExternalHosts": [
+        "ereg-services.prod-fss-pub.nais.io",
+        "norg2.prod-fss-pub.nais.io",
+        "saf.prod-fss-pub.nais.io",
+        "oppgave.prod-fss-pub.nais.io",
+        "pdl-api.prod-fss-pub.nais.io",
+        "dokarkiv.prod-fss-pub.nais.io"
+    ],
+    "AAD_AUTHORITY": "https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b",
+    "AZURE_DEFAULT_SCOPE": "openid",
+    "TENANT": "nav.no",
+    "BIG_QUERY_DATASET": "tilbakemeldingsmottak_metrics",
+    "AAD_EMAIL": "srvtilbakemeldings@nav.no",
+    "EMAIL_FROM_ADDRESS": "srvtilbakemeldings@nav.no",
+    "EMAIL_SERVICEKLAGE_ADDRESS": "nav.serviceklager@nav.no",
+    "EMAIL_NAV_SUPPORT_ADDRESS": "support@nav.no",
+    "EMAIL_SAMISK_KONTAKT_ADDRESS": "nav.kontaktsenter.finnmark.samisk.kontakt.bruker@nav.no",
+    "DOKARKIV_SCOPE": "api://prod-fss.teamdokumenthandtering.dokarkiv/.default",
+    "SAF_SCOPE": "api://prod-fss.teamdokumenthandtering.saf/.default",
+    "OPPGAVE_SCOPE": "api://prod-fss.oppgavehandtering.oppgave/.default",
+    "PDL_SCOPE": "api://prod-fss.pdl.pdl-api/.default"
 }

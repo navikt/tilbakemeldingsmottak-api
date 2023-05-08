@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
 public final class ServiceklageIkkeFunnetException extends AbstractTilbakemeldingsmottakFunctionalException {
 
-	public ServiceklageIkkeFunnetException(String message) {
-		super(message);
-	}
+    public ServiceklageIkkeFunnetException(String message) {
+        super(message);
+    }
 
-	public ServiceklageIkkeFunnetException(String message, Exception e) {
-		super(message, e);
-	}
+    public ServiceklageIkkeFunnetException(String message, Exception e) {
+        super(message, e);
+    }
 }

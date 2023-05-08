@@ -1,11 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support;
 
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
@@ -15,6 +9,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.*;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 public class OpprettServiceklageRequestMapper {

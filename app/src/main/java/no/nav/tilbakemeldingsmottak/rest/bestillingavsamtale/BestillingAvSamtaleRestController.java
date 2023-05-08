@@ -1,23 +1,25 @@
 package no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale;
 
-import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
-import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
-
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
+import no.nav.tilbakemeldingsmottak.api.BestillingAvSamtaleRestControllerApi;
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
-import no.nav.tilbakemeldingsmottak.model.BestillSamtaleResponse;
 import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest;
+import no.nav.tilbakemeldingsmottak.model.BestillSamtaleResponse;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.service.BestillingAvSamtaleService;
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.validation.BestillSamtaleValidator;
-import no.nav.tilbakemeldingsmottak.api.BestillingAvSamtaleRestControllerApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 @Slf4j
 @ProtectedWithClaims(issuer = "azuread")
@@ -39,10 +41,10 @@ public class BestillingAvSamtaleRestController implements BestillingAvSamtaleRes
     @Override
     @Metrics(value = DOK_REQUEST, extraTags = {PROCESS_CODE, "bestill-samtale"}, percentiles = {0.5, 0.95}, histogram = true)
     public ResponseEntity<BestillSamtaleResponse> bestillingAvSamtale(@RequestBody BestillSamtaleRequest request) throws SendEmailException {
-            bestillSamtaleValidator.validateRequest(request);
-            bestillingAvSamtaleService.bestillSamtale(request);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(BestillSamtaleResponse.builder().message("Samtale bestilt").build());
+        bestillSamtaleValidator.validateRequest(request);
+        bestillingAvSamtaleService.bestillSamtale(request);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(BestillSamtaleResponse.builder().message("Samtale bestilt").build());
     }
 }

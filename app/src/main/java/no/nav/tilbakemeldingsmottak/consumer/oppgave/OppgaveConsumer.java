@@ -1,26 +1,17 @@
 package no.nav.tilbakemeldingsmottak.consumer.oppgave;
 
-import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
-import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
-import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
-import no.nav.tilbakemeldingsmottak.exceptions.oppgave.EndreOppgaveFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.oppgave.EndreOppgaveTechnicalException;
-import no.nav.tilbakemeldingsmottak.exceptions.oppgave.HentOppgaveFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.oppgave.HentOppgaveTechnicalException;
-import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.oppgave.*;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -28,15 +19,19 @@ import reactor.core.publisher.Mono;
 
 import javax.inject.Inject;
 
+import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
+import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+
 @Slf4j
 @Component
 public class OppgaveConsumer {
 
+    private final String oppgaveUrl;
     @Inject
     @Qualifier("oppgaveClient")
     private WebClient webClient;
-
-    private final String oppgaveUrl;
 
     public OppgaveConsumer(@Value("${oppgave_oppgaver_url}") String oppgaveUrl) {
         this.oppgaveUrl = oppgaveUrl;
@@ -78,7 +73,7 @@ public class OppgaveConsumer {
 
         return webClient
                 .method(HttpMethod.PATCH)
-                .uri(oppgaveUrl +"/" + endreOppgaveRequestTo.getId())
+                .uri(oppgaveUrl + "/" + endreOppgaveRequestTo.getId())
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .body(BodyInserters.fromValue(endreOppgaveRequestTo))
@@ -104,11 +99,11 @@ public class OppgaveConsumer {
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public HentOppgaveResponseTo hentOppgave(String oppgaveId) {
-            log.debug("Henter oppgave med id={}", oppgaveId);
+        log.debug("Henter oppgave med id={}", oppgaveId);
 
         return webClient
                 .method(HttpMethod.GET)
-                .uri(oppgaveUrl+"/"+oppgaveId)
+                .uri(oppgaveUrl + "/" + oppgaveId)
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .body(BodyInserters.fromValue(oppgaveId))

@@ -4,7 +4,7 @@ import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTech
 
 public class MarshalGraphqlRequestToJsonTechnicalException extends AbstractTilbakemeldingsmottakTechnicalException {
 
-	public MarshalGraphqlRequestToJsonTechnicalException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public MarshalGraphqlRequestToJsonTechnicalException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

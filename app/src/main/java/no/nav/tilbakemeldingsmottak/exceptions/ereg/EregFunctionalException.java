@@ -7,11 +7,11 @@ import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunc
  */
 public class EregFunctionalException extends AbstractTilbakemeldingsmottakFunctionalException {
 
-	public EregFunctionalException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public EregFunctionalException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public EregFunctionalException(String message) {
-		super(message);
-	}
+    public EregFunctionalException(String message) {
+        super(message);
+    }
 }

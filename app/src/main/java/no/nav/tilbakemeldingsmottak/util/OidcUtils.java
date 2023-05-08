@@ -23,7 +23,7 @@ public class OidcUtils {
             try {
                 return Optional.of(userToken.getSubject());
             } catch (Exception e) {
-                throw new RuntimeException("Feil i parsing av token",e);
+                throw new RuntimeException("Feil i parsing av token", e);
             }
         }
     }
@@ -36,7 +36,7 @@ public class OidcUtils {
             try {
                 return Optional.of(userToken.getJwtTokenClaims().getStringClaim("preferred_username"));
             } catch (Exception e) {
-                throw new RuntimeException("Feil i parsing av token",e);
+                throw new RuntimeException("Feil i parsing av token", e);
             }
         }
     }
@@ -51,7 +51,7 @@ public class OidcUtils {
                 if (pid == null) return Optional.empty();
                 return Optional.of(pid);
             } catch (Exception e) {
-                throw new RuntimeException("Feil i parsing av token",e);
+                throw new RuntimeException("Feil i parsing av token", e);
             }
         }
     }
@@ -62,7 +62,7 @@ public class OidcUtils {
     }
 
     public Optional<String> getSubjectForFirstValidToken() {
-        Optional<JwtToken> userToken =  tokenValidationContextHolder.getTokenValidationContext().getFirstValidToken();
+        Optional<JwtToken> userToken = tokenValidationContextHolder.getTokenValidationContext().getFirstValidToken();
         if (!userToken.isPresent()) {
             return Optional.empty();
         } else {
@@ -83,13 +83,13 @@ public class OidcUtils {
 
     private void logClaims(String issuer) {
         Optional<JwtToken> userToken = tokenValidationContextHolder.getTokenValidationContext().getJwtTokenAsOptional(issuer);
-        log.info("Context issuer=" + issuer + " User="+ (userToken.isPresent()? userToken.get().getSubject(): "Ikke funnet"));
+        log.info("Context issuer=" + issuer + " User=" + (userToken.isPresent() ? userToken.get().getSubject() : "Ikke funnet"));
     }
 
     public String getSubject(String token) {
         if (token != null) {
             JwtToken jwtToken = new JwtToken(token);
-            String pid = (String)jwtToken.getJwtTokenClaims().get("pid");
+            String pid = (String) jwtToken.getJwtTokenClaims().get("pid");
             return pid != null ? pid : jwtToken.getSubject();
         }
         return null;

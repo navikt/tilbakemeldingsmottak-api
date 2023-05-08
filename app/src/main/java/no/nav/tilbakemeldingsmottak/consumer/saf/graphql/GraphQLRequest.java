@@ -13,16 +13,16 @@ import java.util.Map;
 @Builder
 @Getter
 public class GraphQLRequest {
-	private final String query;
-	private final String operationName;
-	private final Map<String, Object> variables;
+    private final String query;
+    private final String operationName;
+    private final Map<String, Object> variables;
 
-	@JsonCreator
-	public GraphQLRequest(@JsonProperty("query") String query,
-						  @JsonProperty("operationName") String operationName,
-						  @JsonProperty("variables") Map<String, Object> variables) {
-		this.query = query;
-		this.operationName = operationName;
-		this.variables = variables;
-	}
+    @JsonCreator
+    public GraphQLRequest(@JsonProperty("query") String query,
+                          @JsonProperty("operationName") String operationName,
+                          @JsonProperty("variables") Map<String, Object> variables) {
+        this.query = query;
+        this.operationName = operationName;
+        this.variables = variables;
+    }
 }

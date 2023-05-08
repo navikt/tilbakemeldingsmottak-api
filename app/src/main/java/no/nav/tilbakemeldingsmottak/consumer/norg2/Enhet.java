@@ -7,8 +7,8 @@ import lombok.Value;
 @Builder
 public class Enhet {
 
-	private String navn;
-	private String enhetNr;
-	private String status;
+    private String navn;
+    private String enhetNr;
+    private String status;
 
 }

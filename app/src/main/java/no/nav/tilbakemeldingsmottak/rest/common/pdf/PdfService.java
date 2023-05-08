@@ -1,8 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.common.pdf;
 
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.exceptions.PdfException;
 import no.nav.tilbakemeldingsmottak.generer.PdfGenerator;
@@ -16,6 +13,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 @RequiredArgsConstructor
@@ -93,7 +93,7 @@ public final class PdfService {
                     null,
                     questionAnswerMap);
         } catch (Exception e) {
-            throw new PdfException("Opprett serviceklage klassifiserings PDF", e );
+            throw new PdfException("Opprett serviceklage klassifiserings PDF", e);
         }
 
     }

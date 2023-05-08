@@ -6,6 +6,6 @@ import lombok.Value;
 @Value
 @Builder
 public class Tilleggsopplysning {
-	private String nokkel;
-	private String verdi;
+    private String nokkel;
+    private String verdi;
 }

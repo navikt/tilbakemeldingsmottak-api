@@ -9,7 +9,7 @@ import com.microsoft.graph.httpcore.HttpClients;
 import com.microsoft.graph.models.Message;
 import com.microsoft.graph.models.UserSendMailParameterSet;
 import com.microsoft.graph.requests.GraphServiceClient;
-import okhttp3.*;
+import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,8 +84,8 @@ public class AADMailClientImpl implements AADMailClient {
                         .build();
 
         return GraphServiceClient
-                        .builder()
-                        .httpClient(graphHttpClient)
-                        .buildClient();
+                .builder()
+                .httpClient(graphHttpClient)
+                .buildClient();
     }
 }

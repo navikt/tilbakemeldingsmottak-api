@@ -1,12 +1,10 @@
 package no.nav.tilbakemeldingsmottak.rest.ros.service;
 
-import no.nav.tilbakemeldingsmottak.model.SendRosRequest.HvemRosesEnum;
-
-
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
-import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent;
 import no.nav.tilbakemeldingsmottak.model.SendRosRequest;
+import no.nav.tilbakemeldingsmottak.model.SendRosRequest.HvemRosesEnum;
+import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +35,7 @@ public class RosService {
         HtmlContent content = new HtmlContent();
 
         content.addParagraph("Hvem roses", request.getHvemRoses().toString());
-        if(HvemRosesEnum.NAV_KONTOR.equals(request.getHvemRoses())) {
+        if (HvemRosesEnum.NAV_KONTOR.equals(request.getHvemRoses())) {
             content.addParagraph("NAV-kontor", request.getNavKontor());
         }
         content.addParagraph("Melding", request.getMelding());
