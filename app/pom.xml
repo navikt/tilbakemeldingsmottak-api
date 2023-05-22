@@ -85,6 +85,16 @@
             <artifactId>spring-security-oauth2-client</artifactId>
             <version>${spring-security-oauth2.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+            <version>${spring-retry.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+            <version>${spring-aspects.version}</version>
+        </dependency>
 
         <!--Security-->
         <dependency>

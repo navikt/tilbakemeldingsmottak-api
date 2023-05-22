@@ -44,6 +44,12 @@ graphql:
 gcp_team_project_id: ${GCP_TEAM_PROJECT_ID}
 big_query_dataset: ${BIG_QUERY_DATASET}
 
+retry-config:
+    send-mail:
+        max-attempts: 5
+        delay: 10000
+        multiplier: 2
+
 aad:
   authority: ${AAD_AUTHORITY}
   clientId:  ${AZURE_APP_CLIENT_ID}

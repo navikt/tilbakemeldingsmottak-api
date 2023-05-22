@@ -1,42 +1,39 @@
 package no.nav.tilbakemeldingsmottak.consumer.email.aad;
 
-import com.azure.core.http.HttpClient;
-import com.azure.core.util.HttpClientOptions;
-import com.azure.identity.ClientSecretCredential;
-import com.azure.identity.ClientSecretCredentialBuilder;
-import com.microsoft.graph.authentication.TokenCredentialAuthProvider;
-import com.microsoft.graph.httpcore.HttpClients;
 import com.microsoft.graph.models.Message;
 import com.microsoft.graph.models.UserSendMailParameterSet;
 import com.microsoft.graph.requests.GraphServiceClient;
-import okhttp3.OkHttpClient;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
-@Profile("nais | local")
 @Component
+@RequiredArgsConstructor
 public class AADMailClientImpl implements AADMailClient {
 
     private static final Logger log = LoggerFactory.getLogger(AADMailClientImpl.class);
 
     private final AADProperties aadProperties;
+    private final GraphServiceClient graphClient;
 
     @Autowired
     Environment env;
 
-    @Autowired
-    public AADMailClientImpl(AADProperties aadProperties) {
-        this.aadProperties = aadProperties;
-    }
+    @Value("${retry-config.send-mail.max-attempts}")
+    private int mailMaxAttempts;
 
+    @Retryable(maxAttemptsExpression = "${retry-config.send-mail.max-attempts}", backoff = @Backoff(delayExpression = "${retry-config.send-mail.delay}", multiplierExpression = "${retry-config.send-mail.multiplier}"))
     public void sendMailViaClient(Message message) {
-        log.debug("Skal sende melding:" + message.subject + ", " + message.body.content);
+        log.debug("Skal sende melding:" + message.subject + ", " + (message.body != null ? message.body.content : null));
 
         if (Arrays.asList(env.getActiveProfiles()).contains("local")) {
             log.info("Skal ikke sende epost i local env");
@@ -49,7 +46,6 @@ public class AADMailClientImpl implements AADMailClient {
                 .withSaveToSentItems(false)
                 .build();
 
-        GraphServiceClient graphClient = getGraphClient();
         graphClient.users(aadProperties.getEmail())
                 .sendMail(sendMailParameterSet)
                 .buildRequest()
@@ -57,35 +53,10 @@ public class AADMailClientImpl implements AADMailClient {
 
     }
 
-
-    private TokenCredentialAuthProvider getTokenProvider() {
-        HttpClientOptions clientOptions = new HttpClientOptions();
-
-        HttpClient azHttpClient = HttpClient.createDefault(clientOptions);
-
-        ClientSecretCredential clientSecretCredential = new ClientSecretCredentialBuilder()
-                .clientId(aadProperties.getClientId())
-                .clientSecret(aadProperties.getClientSecret())
-                .tenantId(aadProperties.getTenant())
-                .httpClient(azHttpClient)
-                .build();
-
-        return new TokenCredentialAuthProvider(clientSecretCredential);
+    @Recover
+    public void mailRecover(Exception e, Message message) {
+        log.error("Klarte ikke å sende epost etter {} forsøk. Send manuelt: {} {}", mailMaxAttempts, message.subject, message.body != null ? message.body.content : null, e);
     }
 
 
-    private GraphServiceClient getGraphClient() {
-
-        final TokenCredentialAuthProvider authenticationProvider = getTokenProvider();
-
-        final OkHttpClient graphHttpClient =
-                HttpClients.createDefault(authenticationProvider)
-                        .newBuilder()
-                        .build();
-
-        return GraphServiceClient
-                .builder()
-                .httpClient(graphHttpClient)
-                .buildClient();
-    }
 }

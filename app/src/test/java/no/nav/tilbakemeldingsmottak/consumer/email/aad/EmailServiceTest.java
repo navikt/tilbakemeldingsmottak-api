@@ -2,10 +2,11 @@ package no.nav.tilbakemeldingsmottak.consumer.email.aad;
 
 import com.microsoft.graph.models.BodyType;
 import com.microsoft.graph.models.Message;
+import com.microsoft.graph.requests.GraphServiceClient;
+import no.nav.tilbakemeldingsmottak.itest.ApplicationTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(MockitoExtension.class)
-public class EmailServiceTest {
+public class EmailServiceTest extends ApplicationTest {
 
     @Mock
     AADMailClient mailClient;
@@ -25,6 +25,9 @@ public class EmailServiceTest {
 
     @Captor
     ArgumentCaptor<Message> emailCaptor;
+
+    @MockBean
+    private GraphServiceClient graphClient;
 
     @Test
     public void testSendMessage() throws Exception {

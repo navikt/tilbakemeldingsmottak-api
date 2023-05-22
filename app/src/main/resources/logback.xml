@@ -28,7 +28,7 @@
 
     </springProfile>
 
-    <springProfile name="local">
+    <springProfile name="local,itest">
         <appender name="STDOUT_JSON" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{15}) - %msg %n</pattern>
