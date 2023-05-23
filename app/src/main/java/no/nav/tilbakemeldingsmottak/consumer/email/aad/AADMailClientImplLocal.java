@@ -1,8 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.email.aad;
 
 import com.microsoft.graph.models.Message;
-import com.microsoft.graph.models.UserSendMailParameterSet;
-import com.microsoft.graph.requests.GraphServiceClient;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,40 +13,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Profile("nais")
-public class AADMailClientImpl implements AADMailClient {
-
-    private static final Logger log = LoggerFactory.getLogger(AADMailClientImpl.class);
-
-    private final AADProperties aadProperties;
-    private final GraphServiceClient graphClient;
-
+@Profile("local | itest")
+public class AADMailClientImplLocal implements AADMailClient {
+    private static final Logger log = LoggerFactory.getLogger(AADMailClientImplLocal.class);
     @Value("${retry-config.send-mail.max-attempts}")
     private int mailMaxAttempts;
 
     @Retryable(maxAttemptsExpression = "${retry-config.send-mail.max-attempts}", backoff = @Backoff(delayExpression = "${retry-config.send-mail.delay}", multiplierExpression = "${retry-config.send-mail.multiplier}"))
     public void sendMailViaClient(Message message) {
         log.debug("Skal sende melding:" + message.subject + ", " + (message.body != null ? message.body.content : null));
-
-        UserSendMailParameterSet sendMailParameterSet = UserSendMailParameterSet
-                .newBuilder()
-                .withMessage(message)
-                .withSaveToSentItems(false)
-                .build();
-
-        graphClient.users(aadProperties.getEmail())
-                .sendMail(sendMailParameterSet)
-                .buildRequest()
-                .post();
-
-        log.info("Epost sendt til {}", aadProperties.getEmail());
-
+        log.info("Sender ikke epost i local/test env");
     }
 
     @Recover
     public void mailRecover(Exception e, Message message) {
         log.error("Klarte ikke å sende epost etter {} forsøk. Send manuelt: {} {}", mailMaxAttempts, message.subject, message.body != null ? message.body.content : null, e);
     }
-
 
 }

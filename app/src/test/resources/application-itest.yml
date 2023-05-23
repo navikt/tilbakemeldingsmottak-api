@@ -25,6 +25,7 @@ aad:
   clientId: 1111199999
   clientSecret: secret
   email: dummy@dummy.com
+  tenant: tenant
 
 no.nav.security:
   jwt:

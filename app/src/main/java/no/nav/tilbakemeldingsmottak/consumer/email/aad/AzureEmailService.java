@@ -77,7 +77,6 @@ public class AzureEmailService implements EmailService {
         log.info("Send epost fra: " + message.from.emailAddress.address + " til: " + message.toRecipients.get(0).emailAddress.address + " body størrelse: " + message.body.content.length());
         try {
             mailClient.sendMailViaClient(message);
-            log.info("Epost sendt");
         } catch (Exception e) {
             // Kaster ikke exception videre her fordi det prøves igjen via Spring retry
             log.warn("Feil ved sending av epost fra: " + message.from.emailAddress.address + " til: " + message.toRecipients.get(0).emailAddress.address + ". Prøver igjen", e);

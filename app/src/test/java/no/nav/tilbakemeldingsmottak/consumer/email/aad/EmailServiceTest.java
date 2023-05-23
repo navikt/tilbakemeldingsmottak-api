@@ -2,11 +2,9 @@ package no.nav.tilbakemeldingsmottak.consumer.email.aad;
 
 import com.microsoft.graph.models.BodyType;
 import com.microsoft.graph.models.Message;
-import com.microsoft.graph.requests.GraphServiceClient;
 import no.nav.tilbakemeldingsmottak.itest.ApplicationTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,9 +23,6 @@ public class EmailServiceTest extends ApplicationTest {
 
     @Captor
     ArgumentCaptor<Message> emailCaptor;
-
-    @MockBean
-    private GraphServiceClient graphClient;
 
     @Test
     public void testSendMessage() throws Exception {
