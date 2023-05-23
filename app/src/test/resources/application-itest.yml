@@ -14,11 +14,18 @@ management:
     export:
       prometheus:
         enabled: true
+
+retry-config:
+    send-mail:
+        max-attempts: 3
+        delay: 10
+        multiplier: 2
 aad:
   authority: https://localhost:${wiremock.server.port}/authority
   clientId: 1111199999
   clientSecret: secret
   email: dummy@dummy.com
+  tenant: tenant
 
 no.nav.security:
   jwt:

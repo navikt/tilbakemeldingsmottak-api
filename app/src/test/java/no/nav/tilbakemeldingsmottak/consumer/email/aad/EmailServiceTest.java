@@ -2,10 +2,9 @@ package no.nav.tilbakemeldingsmottak.consumer.email.aad;
 
 import com.microsoft.graph.models.BodyType;
 import com.microsoft.graph.models.Message;
+import no.nav.tilbakemeldingsmottak.itest.ApplicationTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(MockitoExtension.class)
-public class EmailServiceTest {
+public class EmailServiceTest extends ApplicationTest {
 
     @Mock
     AADMailClient mailClient;
