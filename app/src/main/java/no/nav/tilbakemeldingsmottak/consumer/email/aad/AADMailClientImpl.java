@@ -41,7 +41,7 @@ public class AADMailClientImpl implements AADMailClient {
                 .buildRequest()
                 .post();
 
-        log.info("Epost sendt til {}", aadProperties.getEmail());
+        log.info("Epost sendt");
 
     }
 
