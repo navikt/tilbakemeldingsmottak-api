@@ -26,8 +26,9 @@ public class AADMailClientImplLocal implements AADMailClient {
     }
 
     @Recover
-    public void mailRecover(Exception e, Message message) {
-        log.error("Klarte ikke å sende epost etter {} forsøk. Send manuelt: {} {}", mailMaxAttempts, message.subject, message.body != null ? message.body.content : null, e);
+    public void mailRecover(Exception e) throws Exception {
+        log.error("Klarte ikke å sende epost etter {} forsøk", mailMaxAttempts, e);
+        throw e;
     }
 
 }

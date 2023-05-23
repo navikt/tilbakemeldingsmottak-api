@@ -54,9 +54,9 @@ big_query_dataset: dataset
 
 retry-config:
     send-mail:
-        max-attempts: 3
-        delay: 10
-        multiplier: 2
+        max-attempts: 5
+        delay: 1000
+        multiplier: 1.5
 
 aad:
   authority: authority
