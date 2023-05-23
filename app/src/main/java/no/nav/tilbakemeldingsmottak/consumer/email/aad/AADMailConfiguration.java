@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 @RequiredArgsConstructor
-@Profile("nais | local")
+@Profile("nais")
 public class AADMailConfiguration {
 
     private final AADProperties aadProperties;
