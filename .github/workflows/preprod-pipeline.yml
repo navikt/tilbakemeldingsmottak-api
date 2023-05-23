@@ -100,3 +100,19 @@ jobs:
           VARS: .nais/preprod-config.json
           DRY_RUN: false
           IMAGE: ghcr.io/${{ github.repository }}/tilbakemeldingsmottak-api:${{env.TAG}}
+
+  deploy-alerts-preprod:
+    needs: deploy-preprod-pipeline
+    name: Deploy alerts to dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Deploy to dev
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/alerts.yml
+          VARS: .nais/preprod-alert.json
+
