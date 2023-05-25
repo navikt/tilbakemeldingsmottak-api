@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.8</version>
+        <version>3.1.0</version>
     </parent>
 
     <groupId>no.nav.tilbakemeldingsmottak</groupId>
@@ -22,56 +22,73 @@
 
     <properties>
         <!-- Keep up to date with parent version -->
-        <spring-boot.version>2.7.8</spring-boot.version>
-        <cxf.version>3.5.5</cxf.version>
+        <spring-boot.version>3.1.0</spring-boot.version>
+        <cxf.version>4.0.1</cxf.version>
 
-        <microsoft-graph.version>5.41.0</microsoft-graph.version>
-        <microsoft-graph-core.version>2.0.14</microsoft-graph-core.version>
-        <azure.identity.version>1.7.3</azure.identity.version>
+        <microsoft-graph.version>5.58.0</microsoft-graph.version>
+        <microsoft-graph-core.version>2.0.18</microsoft-graph-core.version>
+        <azure.identity.version>1.9.0</azure.identity.version>
 
         <!-- NAV internal dependencies -->
-        <token-support.version>2.1.7</token-support.version>
-        <mock-oauth2-server.version>0.5.7</mock-oauth2-server.version>
-        <!-- Spesifiserer eksplisitt for å unngå transitiv import av 8.x.x versjon som gjør at oppslag feiler -->
-        <nimbus-jose-jwt.version>9.24.4</nimbus-jose-jwt.version>
-
-        <spring-cloud-contract-wiremock.version>2.2.5.RELEASE</spring-cloud-contract-wiremock.version>
-        <spring-core.version>5.3.24</spring-core.version>
-        <caffeine.version>2.9.3</caffeine.version>
-        <netty-all.version>4.1.86.Final</netty-all.version>
-        <javax.activation.version>1.2.0</javax.activation.version>
+        <token-support.version>3.1.0</token-support.version>
+        <mock-oauth2-server.version>0.5.8</mock-oauth2-server.version>
+        <spring-core.version>6.0.9</spring-core.version>
+        <caffeine.version>3.1.6</caffeine.version>
+        <netty-all.version>4.1.93.Final</netty-all.version>
 
         <!-- Dependencies that should be on the latest version -->
-        <httpclient.version>4.5.13</httpclient.version>
-        <okhttp3.version>4.10.0</okhttp3.version>
-        <rxjava.version>3.1.4</rxjava.version>
-        <jackson-bom.version>2.14.1</jackson-bom.version>
-        <javax.inject.version>1</javax.inject.version>
-        <javax.xml-bind.version>2.3.1</javax.xml-bind.version>
-        <jakarta.activation.version>2.0.1</jakarta.activation.version>
-        <logstash-logback-encoder.version>7.2</logstash-logback-encoder.version>
-        <lombok.version>1.18.24</lombok.version>
-        <mockito-junit-jupiter.version>4.5.1</mockito-junit-jupiter.version>
-        <resilience4j.version>1.7.1</resilience4j.version>
-        <micrometer.version>1.9.2</micrometer.version>
-        <wiremock.version>2.27.2</wiremock.version>
-        <json-smart.version>2.4.8</json-smart.version>
-        <rest-assured.version>5.0.1</rest-assured.version>
-        <graphql-java.version>20.1</graphql-java.version>
-        <spring-security-oauth2.version>5.7.6</spring-security-oauth2.version>
-        <google-cloud-bigquery.version>26.12.0</google-cloud-bigquery.version>
-        <spring-retry.version>2.0.1</spring-retry.version>
-        <spring-aspects.version>6.0.9</spring-aspects.version>
+        <kotlin.version>1.8.21</kotlin.version>
+        <httpclient5.version>5.2.1</httpclient5.version>
+        <okhttp3.version>4.11.0</okhttp3.version>
+        <rxjava.version>3.1.6</rxjava.version>
 
+        <jackson-bom.version>2.15.1</jackson-bom.version>
+        <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
+
+        <jakarta.inject.version>2.0.1</jakarta.inject.version>
+        <jakarta.xml-bind.version>4.0.0</jakarta.xml-bind.version>
+        <jakarta.activation.version>2.1.2</jakarta.activation.version>
+        <jakarta-servlet-api.version>6.0.0</jakarta-servlet-api.version>
+        <jakarta-validation-api.version>3.0.2</jakarta-validation-api.version>
+        <jakarta-annotation.version>2.1.1</jakarta-annotation.version>
+
+        <logstash-logback-encoder.version>7.3</logstash-logback-encoder.version>
+        <lombok.version>1.18.28</lombok.version>
+        <mockito-junit-jupiter.version>5.3.1</mockito-junit-jupiter.version>
+        <resilience4j.version>2.0.2</resilience4j.version>
+        <micrometer.version>1.11.0</micrometer.version>
+        <wiremock.version>2.27.2</wiremock.version>
+        <spring-cloud-contract-wiremock.version>4.0.2</spring-cloud-contract-wiremock.version>
+        <json-smart.version>2.4.11</json-smart.version>
+        <rest-assured.version>5.3.0</rest-assured.version>
+        <graphql-java.version>20.2</graphql-java.version>
+        <spring-security-oauth2.version>6.1.0</spring-security-oauth2.version>
+        <google-cloud-bigquery.version>26.15.0</google-cloud-bigquery.version>
+        <spring-retry.version>2.0.1</spring-retry.version>
+        <flyway.version>9.19.1</flyway.version>
+        <tika-core.version>2.8.0</tika-core.version>
+        <pdfbox.version>2.0.28</pdfbox.version>
+        <openhtml.version>1.0.10</openhtml.version>
+        <handlebars.version>4.3.1</handlebars.version>
+        <springdoc-openapi.version>1.7.0</springdoc-openapi.version>
+        <swagger-annotations.version>2.2.10</swagger-annotations.version>
+        <gson.version>2.10.1</gson.version>
+        <gson-fire.version>1.8.5</gson-fire.version>
+        <findbugs.version>3.0.2</findbugs.version>
+        <javax.activation.version>1.2.0</javax.activation.version>
+        <javax.xml-bind.version>2.3.1</javax.xml-bind.version>
+        <versions-maven-plugin>2.15.0</versions-maven-plugin>
+        <poi.version>5.2.3</poi.version>
 
         <!-- Maven plugins -->
-        <wagon-webdav-jackrabbit.version>3.5.1</wagon-webdav-jackrabbit.version>
-        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
+        <wagon-webdav-jackrabbit.version>3.5.3</wagon-webdav-jackrabbit.version>
+        <maven-surefire-plugin.version>3.1.0</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.1.0</maven-failsafe-plugin.version>
         <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
         <openapi-generator-maven-plugin.version>6.4.0</openapi-generator-maven-plugin.version>
-        <graphql-maven-plugin.version>1.18.10</graphql-maven-plugin.version>
+        <graphql-maven-plugin.version>2.0</graphql-maven-plugin.version>
+        <maven-filtering>3.3.1</maven-filtering>
 
         <!-- Project config -->
         <java.version>17</java.version>
@@ -81,20 +98,17 @@
 
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
             </dependency>
-
             <dependency>
                 <groupId>io.github.resilience4j</groupId>
                 <artifactId>resilience4j-spring-boot</artifactId>
                 <version>${resilience4j.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>com.google.cloud</groupId>
                 <artifactId>libraries-bom</artifactId>
@@ -102,7 +116,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -144,6 +157,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${maven-failsafe-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${versions-maven-plugin.version}</version>
+                <configuration>
+                    <rulesUri>file://${user.dir}/maven-version-rules.xml</rulesUri>
+                </configuration>
             </plugin>
         </plugins>
     </build>

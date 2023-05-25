@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support;
 
+import jakarta.inject.Inject;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
@@ -7,7 +8,6 @@ import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.time.LocalDate;
 
 @Component
@@ -24,7 +24,7 @@ public class OpprettOppgaveRequestToMapper {
     private static final String BESKRIVELSE_SLETTING = "Skal slettes da det ikke er en serviceklage";
     private static final Long DAGER_FRIST = 18L;
 
-    private PdlService pdlService;
+    private final PdlService pdlService;
 
 
     @Inject

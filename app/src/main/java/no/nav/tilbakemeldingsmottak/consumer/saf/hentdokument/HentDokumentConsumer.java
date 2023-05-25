@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument;
 
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentFunctionalException;
@@ -10,14 +11,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import javax.inject.Inject;
 import java.util.function.Consumer;
 
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
@@ -25,9 +25,6 @@ import static no.nav.tilbakemeldingsmottak.consumer.saf.util.HttpHeadersUtil.cre
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
-/**
- * @author Sigurd Midttun, Visma Consulting.
- */
 @Slf4j
 @Component
 public class HentDokumentConsumer implements HentDokument {
@@ -54,7 +51,7 @@ public class HentDokumentConsumer implements HentDokument {
                 .header("Nav-Callid", MDC.get(MDC_CALL_ID))
                 .header("Nav-Consumer-Id", "srvtilbakemeldings")
                 .retrieve()
-                .onStatus(HttpStatus::isError, statusResponse -> {
+                .onStatus(HttpStatusCode::isError, statusResponse -> {
                     log.error(String.format("Kall mot saf feilet med statusKode=%s", statusResponse.statusCode()));
                     if (statusResponse.statusCode().is5xxServerError()) {
                         throw new SafHentDokumentTechnicalException(String.format("Kall mot saf:hentdokument feilet teknisk med statusKode=%s.", statusResponse

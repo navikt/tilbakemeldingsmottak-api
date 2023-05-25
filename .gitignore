@@ -30,3 +30,4 @@ npm-debug.log
 **/application-local.properties
 
 .DS_Store
+.vscode

@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader;
 import com.microsoft.graph.models.Message;
 import com.nimbusds.jose.JOSEObjectType;
+import jakarta.inject.Inject;
 import no.nav.security.mock.oauth2.MockOAuth2Server;
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback;
 import no.nav.security.mock.oauth2.token.OAuth2TokenCallback;
@@ -35,7 +36,6 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -57,7 +57,7 @@ import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 @AutoConfigureDataLdap
 @Transactional
 @EnableMockOAuth2Server(port = 1888)
-@AutoConfigureWireMock()
+@AutoConfigureWireMock(port = 5490)
 public class ApplicationTest {
 
     protected static final String CONSUMER_ID = "theclientid";

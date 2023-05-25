@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 @EnableConfigurationProperties(ClientConfigurationProperties.class)
 public class RestClientTemplateSupport {
 
-    private static int MAX_FILE_SIZE = 300 * 1024 * 1024;
+    private static final int MAX_FILE_SIZE = 300 * 1024 * 1024;
     @Value("${pdl.url}")
     String pdlUrl;
     @Autowired

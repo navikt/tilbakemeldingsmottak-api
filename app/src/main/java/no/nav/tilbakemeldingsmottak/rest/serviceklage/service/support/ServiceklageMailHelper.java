@@ -1,12 +1,12 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support;
 
+import jakarta.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException;
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageMailException;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

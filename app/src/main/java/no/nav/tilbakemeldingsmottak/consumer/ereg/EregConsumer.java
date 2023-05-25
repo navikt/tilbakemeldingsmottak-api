@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.ereg;
 
+import jakarta.inject.Inject;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
@@ -15,16 +16,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.inject.Inject;
-
 import static java.lang.String.format;
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
-/**
- * @author Sigurd Midttun, Visma Consulting.
- */
 @Component
 public class EregConsumer implements Ereg {
 

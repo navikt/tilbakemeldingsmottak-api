@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.ros.service;
 
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.model.SendRosRequest;
@@ -8,13 +9,11 @@ import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
-
 @Service
 @Slf4j
 public class RosService {
 
-    private AzureEmailService emailService;
+    private final AzureEmailService emailService;
 
     @Value("${email_nav_support_address}")
     private String emailToAddress;
