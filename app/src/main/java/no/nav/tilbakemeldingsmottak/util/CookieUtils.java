@@ -1,8 +1,8 @@
 package no.nav.tilbakemeldingsmottak.util;
 
+import jakarta.servlet.http.Cookie;
 import org.springframework.lang.NonNull;
 
-import javax.servlet.http.Cookie;
 import java.util.Arrays;
 import java.util.Optional;
 

@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.norg2;
 
+import jakarta.inject.Inject;
 import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import no.nav.tilbakemeldingsmottak.exceptions.norg2.HentEnheterFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.norg2.HentEnheterTechnicalException;
@@ -20,7 +21,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.inject.Inject;
 import java.util.List;
 
 import static java.lang.String.format;

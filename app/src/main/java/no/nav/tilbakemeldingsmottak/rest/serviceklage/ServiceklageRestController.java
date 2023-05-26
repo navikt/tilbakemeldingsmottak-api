@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
@@ -16,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 import static no.nav.tilbakemeldingsmottak.config.Constants.TOKENX_ISSUER;

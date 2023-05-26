@@ -66,7 +66,7 @@ public class OpprettServiceklageService {
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
         serviceklageRepository.save(serviceklage);
         serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventTypeEnum.OPPRETT_SERVICEKLAGE);
-        log.info("Serviceklage med serviceklageId= {} opprettet", serviceklage.getServiceklageId());
+        log.info("Serviceklage med serviceklageId={} opprettet", serviceklage.getServiceklageId());
 
         OpprettOppgaveResponseTo opprettOppgaveResponseTo = forsoekOpprettOppgave(serviceklage.getKlagenGjelderId(), request.getPaaVegneAv(), opprettJournalpostResponseTo);
         log.info("Oppgave med oppgaveId={} opprettet", opprettOppgaveResponseTo.getId());

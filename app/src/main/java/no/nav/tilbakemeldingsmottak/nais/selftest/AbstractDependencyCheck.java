@@ -21,9 +21,6 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-/**
- * @author Ugur Alpay Cenar, Visma Consulting.
- */
 @Slf4j
 @Setter
 @Getter
@@ -93,7 +90,7 @@ public abstract class AbstractDependencyCheck {
             doCheck();
             Instant end = Instant.now();
             Long responseTime = Duration.between(start, end).toMillis();
-            return builder.result(SelfCheckResult.OK).responseTime(String.valueOf(responseTime) + "ms").build();
+            return builder.result(SelfCheckResult.OK).responseTime(responseTime + "ms").build();
         };
     }
 
