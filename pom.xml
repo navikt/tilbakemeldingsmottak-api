@@ -65,6 +65,8 @@
         <graphql-java.version>20.2</graphql-java.version>
         <spring-security-oauth2.version>6.1.0</spring-security-oauth2.version>
         <google-cloud-bigquery.version>26.15.0</google-cloud-bigquery.version>
+        <bigquery.version>2.26.1</bigquery.version>
+
         <spring-retry.version>2.0.1</spring-retry.version>
         <flyway.version>9.19.1</flyway.version>
         <tika-core.version>2.8.0</tika-core.version>
@@ -80,6 +82,7 @@
         <javax.xml-bind.version>2.3.1</javax.xml-bind.version>
         <versions-maven-plugin>2.15.0</versions-maven-plugin>
         <poi.version>5.2.3</poi.version>
+        <logback.version>1.4.7</logback.version>
 
         <!-- Maven plugins -->
         <wagon-webdav-jackrabbit.version>3.5.3</wagon-webdav-jackrabbit.version>
