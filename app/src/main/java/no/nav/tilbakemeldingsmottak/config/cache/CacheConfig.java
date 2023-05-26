@@ -4,12 +4,11 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCache;
-import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @EnableCaching
@@ -18,9 +17,9 @@ public class CacheConfig {
     public static final String NORG2_CACHE = "norgCache";
 
     @Bean
-    CacheManager cacheManager() {
+    CacheManager norg2CacheManager() {
         SimpleCacheManager manager = new SimpleCacheManager();
-        manager.setCaches(Arrays.asList(
+        manager.setCaches(List.of(
                 new CaffeineCache(NORG2_CACHE, Caffeine.newBuilder()
                         .expireAfterWrite(50, TimeUnit.MINUTES)
                         .maximumSize(10000)
@@ -29,12 +28,6 @@ public class CacheConfig {
         return manager;
     }
 
-    @Bean
-    public CacheManager cacheManager(Caffeine caffeine) {
-        CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
-        caffeineCacheManager.setCaffeine(caffeine);
-        return caffeineCacheManager;
-    }
 
     @Bean
     public Caffeine caffeineConfig() {

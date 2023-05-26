@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.oppgave;
 
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
@@ -11,13 +12,11 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import javax.inject.Inject;
 
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
@@ -50,7 +49,7 @@ public class OppgaveConsumer {
                 .body(BodyInserters.fromValue(opprettOppgaveRequestTo))
                 .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
                 .retrieve()
-                .onStatus(HttpStatus::isError, statusResponse -> {
+                .onStatus(HttpStatusCode::isError, statusResponse -> {
                     log.error(String.format("OpprettOppgave feilet med statusKode=%s", statusResponse.statusCode()));
                     if (statusResponse.statusCode().is5xxServerError()) {
                         throw new OpprettOppgaveTechnicalException(String.format("OpprettOppgave feilet teknisk med statusKode=%s.", statusResponse
@@ -79,7 +78,7 @@ public class OppgaveConsumer {
                 .body(BodyInserters.fromValue(endreOppgaveRequestTo))
                 .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
                 .retrieve()
-                .onStatus(HttpStatus::isError, statusResponse -> {
+                .onStatus(HttpStatusCode::isError, statusResponse -> {
                     log.error(String.format("EndreOppgave feilet med statusKode=%s", statusResponse.statusCode()));
                     if (statusResponse.statusCode().is5xxServerError()) {
                         throw new EndreOppgaveTechnicalException(String.format("EndreOppgave feilet teknisk med statusKode=%1$s for id = %2$s.", statusResponse
@@ -109,7 +108,7 @@ public class OppgaveConsumer {
                 .body(BodyInserters.fromValue(oppgaveId))
                 .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
                 .retrieve()
-                .onStatus(HttpStatus::isError, statusResponse -> {
+                .onStatus(HttpStatusCode::isError, statusResponse -> {
                     log.error(String.format("HentOppgave feilet med statusKode=%s", statusResponse.statusCode()));
                     if (statusResponse.statusCode().is5xxServerError()) {
                         throw new HentOppgaveTechnicalException(String.format("HentOppgave feilet teknisk med statusKode=%s.", statusResponse

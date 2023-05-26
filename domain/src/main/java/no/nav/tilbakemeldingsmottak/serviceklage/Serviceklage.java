@@ -1,21 +1,18 @@
 package no.nav.tilbakemeldingsmottak.serviceklage;
 
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.*;
 
-/**
- * @author Bjørnar Hunshamar, Visma Consulting.
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

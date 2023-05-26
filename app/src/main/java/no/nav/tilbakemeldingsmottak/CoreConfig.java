@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak;
 
+import graphql.scalars.ExtendedScalars;
 import io.micrometer.core.instrument.MeterRegistry;
 import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client;
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation;
@@ -8,10 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-
-/**
- * @author Ugur Alpay Cenar, Visma Consulting.
- */
+import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 
 @Configuration
 @EnableAspectJAutoProxy
@@ -24,5 +22,11 @@ public class CoreConfig {
     public DokTimedAspect timedAspect(MeterRegistry meterRegistry) {
         return new DokTimedAspect(meterRegistry);
     }
+
+    @Bean
+    public RuntimeWiringConfigurer runtimeWiringConfigurer() {
+        return wiringBuilder -> wiringBuilder.scalar(ExtendedScalars.DateTime).scalar(ExtendedScalars.Date).scalar(ExtendedScalars.GraphQLLong);
+    }
+
 
 }

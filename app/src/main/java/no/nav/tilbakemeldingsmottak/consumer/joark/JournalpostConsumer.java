@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.joark;
 
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
@@ -10,13 +11,11 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import javax.inject.Inject;
 
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
@@ -48,7 +47,7 @@ public class JournalpostConsumer {
                 .header("Nav-Callid", MDC.get(MDC_CALL_ID))
                 .header("Nav-Consumer-Id", "srvtilbakemeldings")
                 .retrieve()
-                .onStatus(HttpStatus::isError, statusResponse -> {
+                .onStatus(HttpStatusCode::isError, statusResponse -> {
                     log.error(String.format("OpprettJournalpost feilet med statusKode=%s", statusResponse.statusCode()));
                     if (statusResponse.statusCode().is5xxServerError()) {
                         throw new OpprettJournalpostTechnicalException(String.format("OpprettJournalpost feilet teknisk med statusKode=%s.", statusResponse

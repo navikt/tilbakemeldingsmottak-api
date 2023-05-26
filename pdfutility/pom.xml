@@ -11,18 +11,6 @@
 
     <artifactId>pdfutility</artifactId>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.7.22</kotlin.version>
-        <tika-core.version>2.5.0</tika-core.version>
-        <pdfbox.version>2.0.27</pdfbox.version>
-        <handlebars.version>4.3.1</handlebars.version>
-        <openhtml.version>1.0.10</openhtml.version>
-
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -46,6 +34,8 @@
             <artifactId>handlebars</artifactId>
             <version>${handlebars.version}</version>
         </dependency>
+
+        <!-- OpenHtmlToPdf-->
         <dependency>
             <groupId>com.openhtmltopdf</groupId>
             <artifactId>openhtmltopdf-core</artifactId>
@@ -61,41 +51,8 @@
             <artifactId>openhtmltopdf-slf4j</artifactId>
             <version>${openhtml.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox</artifactId>
-            <version>${pdfbox.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>xmpbox</artifactId>
-            <version>${pdfbox.version}</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.pdfbox</groupId>
-            <artifactId>pdfbox-tools</artifactId>
-            <version>${pdfbox.version}</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+
+        <!-- Pdfbox-->
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>preflight</artifactId>
@@ -108,11 +65,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>com.sun.activation</groupId>
-            <artifactId>jakarta.activation</artifactId>
-            <version>${jakarta.activation.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>javax.activation-api</artifactId>
@@ -165,7 +118,7 @@
                     <dependency>
                         <groupId>org.apache.maven.shared</groupId>
                         <artifactId>maven-filtering</artifactId>
-                        <version>3.3.0</version>
+                        <version>${maven-filtering}</version>
                     </dependency>
                 </dependencies>
                 <configuration>

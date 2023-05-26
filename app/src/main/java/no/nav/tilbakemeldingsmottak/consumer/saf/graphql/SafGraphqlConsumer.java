@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.graphql;
 
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJsonJournalpost;
@@ -12,14 +13,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import javax.inject.Inject;
 import java.util.function.Consumer;
 
 import static no.nav.tilbakemeldingsmottak.consumer.saf.util.HttpHeadersUtil.createAuthHeaderFromToken;
@@ -54,7 +54,7 @@ public class SafGraphqlConsumer {
                 .body(BodyInserters.fromValue(graphQLRequest))
                 .headers(getHttpHeadersAsConsumer(httpHeaders))
                 .retrieve()
-                .onStatus(HttpStatus::isError, statusResponse -> {
+                .onStatus(HttpStatusCode::isError, statusResponse -> {
                     log.error(String.format("Query mot SAF tjenesten feilet med statusKode=%s", statusResponse.statusCode()));
                     if (statusResponse.statusCode().is5xxServerError()) {
                         throw new SafJournalpostQueryTechnicalException(String.format("Henting av journalpost feilet med status: %s, feilmelding: %s", statusResponse
