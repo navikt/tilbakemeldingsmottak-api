@@ -89,7 +89,7 @@ jobs:
 
   deploy-alerts-preprod:
     if: github.event.inputs.environment == 'preprod'
-    needs: deploy-preprod
+    needs: [deploy-preprod]
     name: Deploy alerts to dev
     runs-on: ubuntu-latest
     steps:
@@ -105,7 +105,7 @@ jobs:
 
   deploy-alerts-prod:
     if: github.event.inputs.environment == 'prod'
-    needs: deploy-prod
+    needs: [deploy-prod]
     name: Deploy alerts to prod
     runs-on: ubuntu-latest
     steps:

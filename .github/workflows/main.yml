@@ -105,8 +105,8 @@ jobs:
           IMAGE: ghcr.io/${{ github.repository }}/tilbakemeldingsmottak-api:${{env.TAG}}
 
   deploy-alerts-prod:
-    needs: deploy-prod
     name: Deploy alerts to prod
+    needs: [deploy-main]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
