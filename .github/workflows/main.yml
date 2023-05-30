@@ -103,3 +103,18 @@ jobs:
           VARS: .nais/p-config.json
           DRY_RUN: false
           IMAGE: ghcr.io/${{ github.repository }}/tilbakemeldingsmottak-api:${{env.TAG}}
+
+  deploy-alerts-prod:
+    name: Deploy alerts to prod
+    needs: [deploy-main]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Deploy to prod
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: .nais/alerts.yml
+          VARS: .nais/prod-alert.json

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -52,7 +53,11 @@ public class HentDokumentConsumer implements HentDokument {
                 .header("Nav-Consumer-Id", "srvtilbakemeldings")
                 .retrieve()
                 .onStatus(HttpStatusCode::isError, statusResponse -> {
-                    log.error(String.format("Kall mot saf feilet med statusKode=%s", statusResponse.statusCode()));
+                    if (HttpStatus.FORBIDDEN.value() == statusResponse.statusCode().value()) {
+                        log.warn(String.format("Kall mot saf feilet med statusKode=%s", statusResponse.statusCode()));
+                    } else {
+                        log.error(String.format("Kall mot saf feilet med statusKode=%s", statusResponse.statusCode()));
+                    }
                     if (statusResponse.statusCode().is5xxServerError()) {
                         throw new SafHentDokumentTechnicalException(String.format("Kall mot saf:hentdokument feilet teknisk med statusKode=%s.", statusResponse
                                 .statusCode()), new RuntimeException("Kall mot arkivet feilet"));

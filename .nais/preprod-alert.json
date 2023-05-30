@@ -1,0 +1,13 @@
+{
+  "env-name": "dev-gcp",
+  "number_of_errors": 2,
+  "number_of_pods": 1,
+  "error_log_url": "https://logs.adeo.no/app/discover#/view/b7d9c480-f977-11ed-b7f9-11953dd7a874",
+  "common-labels": {
+    "service": "tilbakemeldingsmottak-api",
+    "to_namespace": "fyllut-sendinn",
+    "special_type_to_use_in_alertmanager_config": "fyllut-sendinn-alerts-dev",
+    "alert_type": "custom",
+    "namespace": "teamserviceklage"
+  }
+}

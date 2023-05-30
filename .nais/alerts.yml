@@ -1,0 +1,41 @@
+apiVersion: "monitoring.coreos.com/v1"
+kind: PrometheusRule
+metadata:
+  name: {{common-labels.service}}-alerts
+  namespace: {{common-labels.namespace}}
+  labels:
+    team: {{common-labels.namespace}}
+spec:
+  groups:
+    - name: {{common-labels.service}}-alerts
+      rules:
+        - alert: High number of errors
+          expr: sum (increase(logd_messages_total{log_app="{{common-labels.service}}",log_level=~"Error"}[10m])) > {{ number_of_errors }}
+          for: 5m
+          annotations:
+            title: "High number of errors logged"
+            consequence: "There can be different causes for errors, check logs for cause and evaluation of consequences."
+            action: {{ error_log_url }}
+            summary: "Service has reported more than {{number_of_error}} errors within 10 minutes."
+            sla: "Action should be taken as soon as possible"
+          labels:
+            service: {{common-labels.service}}
+            namespace: {{common-labels.to_namespace}}
+            special_type_to_use_in_alertmanager_config: {{common-labels.special_type_to_use_in_alertmanager_config}}
+            alert_type: custom
+            severity: critical
+        - alert: Low number of tilbakemeldingsmottak-api pods
+          expr: count(kube_pod_container_status_running{container="{{common-labels.service}}", namespace="{{common-labels.namespace}}"}) < {{ number_of_pods }}
+          for: 5m
+          annotations:
+            title: "Low number of instances running"
+            consequence: "There can be different causes for this, check logs for cause and evaluation of consequences."
+            action: {{ error_log_url }}
+            summary: "Service has reported less than minimum of running PODs within 5 minutes."
+            sla: "Action should be taken as soon as possible"
+          labels:
+            service: {{common-labels.service}}
+            namespace: {{common-labels.to_namespace}}
+            special_type_to_use_in_alertmanager_config: {{common-labels.special_type_to_use_in_alertmanager_config}}
+            alert_type: custom
+            severity: warning
