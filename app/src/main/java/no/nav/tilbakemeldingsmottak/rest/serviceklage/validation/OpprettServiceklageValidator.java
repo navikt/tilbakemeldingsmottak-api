@@ -115,7 +115,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
         try {
             pdlService.hentAktorIdForIdent(fnr);
         } catch (PdlFunctionalException | PdlGraphqlException e) {
-            throw new InvalidIdentException("Feil i validering av personnummer");
+            throw new InvalidIdentException("Feil i validering av personnummer", e);
         }
 
     }
@@ -124,7 +124,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
         try {
             eregConsumer.hentInfo(orgnr);
         } catch (EregFunctionalException | EregTechnicalException e) {
-            throw new InvalidIdentException("Feil i validering av organisasjonsnummer");
+            throw new InvalidIdentException("Feil i validering av organisasjonsnummer", e);
         }
     }
 
