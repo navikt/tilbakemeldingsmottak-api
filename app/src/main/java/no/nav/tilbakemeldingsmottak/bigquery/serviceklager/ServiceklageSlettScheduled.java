@@ -29,7 +29,7 @@ public class ServiceklageSlettScheduled {
         return String.format(
                 "DELETE FROM `%s.%s.%s` " +
                         "WHERE TIMESTAMP_DIFF(CURRENT_TIMESTAMP(), %s, DAY) >= %s " +
-                        "AND event_type=%s",
+                        "AND event_type='%s'",
                 projectId, dataset, ServiceklagerBigQuery.TABLE_NAME,
                 datoFelt, slettBigQueryServiceKlagerEldreEnn,
                 eventType
@@ -40,7 +40,7 @@ public class ServiceklageSlettScheduled {
     public void slettServiceKlager() {
         try {
             log.info("Sletter serviceklager eldre enn {} dager", slettBigQueryServiceKlagerEldreEnn);
-            
+
             // Slett alle opprettede serviceklager som er eldre enn 1 uke
             var slettOpprettedeServiceklager = slettEldreEnnQuery("opprettet_dato", ServiceklageEventTypeEnum.OPPRETT_SERVICEKLAGE.value);
             log.info("Query for sletting av opprettede serviceklager: {}", slettOpprettedeServiceklager);
