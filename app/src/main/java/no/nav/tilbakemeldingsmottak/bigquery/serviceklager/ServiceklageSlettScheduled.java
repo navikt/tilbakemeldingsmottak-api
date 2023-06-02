@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Profile("nais")
+@Profile("nais | itest")
 public class ServiceklageSlettScheduled {
     private final BigQuery bigQueryClient;
 
