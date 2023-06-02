@@ -40,14 +40,18 @@ public class ServiceklageSlettScheduled {
     public void slettServiceKlager() {
         try {
             log.info("Sletter serviceklager eldre enn {} dager", slettBigQueryServiceKlagerEldreEnn);
-
+            
             // Slett alle opprettede serviceklager som er eldre enn 1 uke
             var slettOpprettedeServiceklager = slettEldreEnnQuery("opprettet_dato", ServiceklageEventTypeEnum.OPPRETT_SERVICEKLAGE.value);
+            log.info("Query for sletting av opprettede serviceklager: {}", slettOpprettedeServiceklager);
+
             var slettOpprettedeServiceklagerQueryConfig = QueryJobConfiguration.newBuilder(slettOpprettedeServiceklager).build();
             bigQueryClient.query(slettOpprettedeServiceklagerQueryConfig);
 
             // Slett alle klassifiserte serviceklager som er eldre enn 1 uke
             var slettKlassifiserteServiceklager = slettEldreEnnQuery("avsluttet_dato", ServiceklageEventTypeEnum.KLASSIFISER_SERVICEKLAGE.value);
+            log.info("Query for sletting av klassifiserte serviceklager: {}", slettOpprettedeServiceklager);
+
             var slettKlassifiserteServiceklagerQueryConfig = QueryJobConfiguration.newBuilder(slettKlassifiserteServiceklager).build();
             bigQueryClient.query(slettKlassifiserteServiceklagerQueryConfig);
 
