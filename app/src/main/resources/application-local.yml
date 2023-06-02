@@ -66,7 +66,7 @@ aad:
   tenant: tenant
 
 cron:
-    slettBigQueryServiceKlagerScheduled: "* */2 * * * *"
+    slettBigQueryServiceKlagerScheduled: "0 0 0 * * *" # midnatt hver dag
     slettBigQueryServiceKlagerEldreEnn: 7 # dager
 
 no.nav.security:
