@@ -65,6 +65,10 @@ aad:
   email: srvtilbakemeldings@trygdeetaten.no
   tenant: tenant
 
+cron:
+    slettBigQueryServiceKlagerScheduled: "* */2 * * * *"
+    slettBigQueryServiceKlagerEldreEnn: 7 # dager
+
 no.nav.security:
   jwt:
     client:

@@ -57,6 +57,10 @@ aad:
   email: ${AAD_EMAIL}
   tenant: ${TENANT}
 
+cron:
+    slettBigQueryServiceKlagerScheduled: "* */2 * * * *"
+    slettBigQueryServiceKlagerEldreEnn: 7 # dager
+
 no.nav.security.jwt:
   client:
     registration:
