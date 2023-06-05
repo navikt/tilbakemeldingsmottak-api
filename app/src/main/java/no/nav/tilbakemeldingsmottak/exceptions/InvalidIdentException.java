@@ -9,4 +9,9 @@ public class InvalidIdentException extends AbstractTilbakemeldingsmottakFunction
     public InvalidIdentException(String message) {
         super(message);
     }
+
+    public InvalidIdentException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
