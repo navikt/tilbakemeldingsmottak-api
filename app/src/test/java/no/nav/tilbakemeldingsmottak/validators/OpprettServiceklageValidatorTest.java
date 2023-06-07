@@ -2,9 +2,9 @@ package no.nav.tilbakemeldingsmottak.validators;
 
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
-import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
 import no.nav.tilbakemeldingsmottak.graphql.Identliste;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
@@ -300,7 +300,7 @@ class OpprettServiceklageValidatorTest {
 
     @Test
     void shouldThrowExceptionIfOrganisasjonsnummerNotValid() {
-        when(eregConsumer.hentInfo(anyString())).thenThrow(EregFunctionalException.class);
+        when(eregConsumer.hentInfo(anyString())).thenThrow(ClientErrorException.class);
         opprettServiceklageRequest = createOpprettServiceklageRequestPaaVegneAvBedrift();
         Exception thrown = assertThrows(InvalidIdentException.class,
                 () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));

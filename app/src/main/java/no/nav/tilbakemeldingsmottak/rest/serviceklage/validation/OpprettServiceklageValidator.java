@@ -5,8 +5,6 @@ import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
-import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
 import no.nav.tilbakemeldingsmottak.exceptions.pdl.PdlFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.pdl.PdlGraphqlException;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
@@ -121,11 +119,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
     }
 
     private void validateOrgnr(String orgnr) {
-        try {
-            eregConsumer.hentInfo(orgnr);
-        } catch (EregFunctionalException | EregTechnicalException e) {
-            throw new InvalidIdentException("Feil i validering av organisasjonsnummer", e);
-        }
+        eregConsumer.hentInfo(orgnr);
     }
 
     private void validateRequestFnrMatchesTokenFnr(String fnr, Optional<String> paloggetBruker) {

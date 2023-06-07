@@ -1,8 +1,10 @@
 package no.nav.tilbakemeldingsmottak.consumer.ereg;
 
 import jakarta.inject.Inject;
-import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
+import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,11 +43,12 @@ public class EregConsumer implements Ereg {
             return restTemplate.exchange(eregApiUrl + "/v1/organisasjon/" + orgnrTrimmed,
                     HttpMethod.GET, new HttpEntity<>(headers), String.class).getBody();
         } catch (HttpClientErrorException e) {
-            throw new EregFunctionalException(format("Funksjonell feil ved kall mot ereg:hentNoekkelinfo for organisasjonsnummer=%s. feilmelding=%s",
-                    orgnr, e.getMessage()), e);
+            if (e.getStatusCode().value() == 403) {
+                throw new ClientErrorUnauthorizedException("Autentisering mot ereg feilet", e, ErrorCode.EREG_UNAUTHORIZED);
+            }
+            throw new ClientErrorException(format("Klientfeil ved kall mot ereg for organisasjonsnummer=%s (statusCode:%s)", orgnr, e.getStatusCode()), e, ErrorCode.EREG_ERROR);
         } catch (HttpServerErrorException e) {
-            throw new EregTechnicalException(format("Teknisk feil ved kall mot ereg:hentNoekkelinfo for organisasjonsnummer=%s. Feilmelding=%s",
-                    orgnr, e.getMessage()), e);
+            throw new ServerErrorException(format("Serverfeil ved kall mot ereg for organisasjonsnummer=%s (statusCode:%s)", orgnr, e.getStatusCode()), e, ErrorCode.EREG_ERROR);
         }
     }
 
