@@ -30,9 +30,6 @@ public class OpprettJournalpostRequestToMapper {
                 .bruker(mapBruker(request))
                 .journalpostType(JournalpostType.INNGAAENDE)
                 .journalfoerendeEnhet(JOURNALFOERENDE_ENHET)
-                .tema(TEMA_SER)
-                .tittel(TITTEL_SERVICEKLAGE)
-                .kanal(innlogget ? KANAL_NAV_NO : KANAL_NAV_NO_UINNLOGGET)
                 .build();
 
         opprettJournalpostRequestTo.getDokumenter().add(buildDokument(fysiskDokument));
