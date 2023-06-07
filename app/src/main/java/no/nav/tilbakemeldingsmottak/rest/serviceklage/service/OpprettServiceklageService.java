@@ -10,9 +10,10 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResp
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
-import no.nav.tilbakemeldingsmottak.exceptions.joark.OpprettJournalpostFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.joark.OpprettJournalpostTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveFunctionalException;
 import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveTechnicalException;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
@@ -83,9 +84,9 @@ public class OpprettServiceklageService {
         try {
             OpprettJournalpostRequestTo opprettJournalpostRequestTo = opprettJournalpostRequestToMapper.map(request, fysiskDokument, innlogget);
             return journalpostConsumer.opprettJournalpost(opprettJournalpostRequestTo);
-        } catch (OpprettJournalpostFunctionalException | OpprettJournalpostTechnicalException e) {
+        } catch (ClientErrorException | ClientErrorUnauthorizedException | ServerErrorException e) {
             mailHelper.sendEmail(fromAddress, toAddress, SUBJECT_JOURNALPOST_FEILET, TEXT_JOURNALPOST_FEILET, fysiskDokument);
-            throw new EksterntKallException("Feil ved opprettelse av journalpost, klage videresendt til " + toAddress);
+            throw new EksterntKallException("Feil ved opprettelse av journalpost, klage videresendt til " + toAddress, e, e.getErrorCode());
         }
     }
 
@@ -95,7 +96,7 @@ public class OpprettServiceklageService {
             return oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
         } catch (OpprettOppgaveFunctionalException | OpprettOppgaveTechnicalException e) {
             mailHelper.sendEmail(fromAddress, toAddress, SUBJECT_OPPGAVE_FEILET, TEXT_OPPGAVE_FEILET + opprettJournalpostResponseTo.getJournalpostId());
-            throw new EksterntKallException("Feil ved opprettelse av oppgave, journalpostId videresendt til " + toAddress);
+            throw new EksterntKallException("Feil ved opprettelse av oppgave, journalpostId videresendt til " + toAddress, e);
         }
     }
 }

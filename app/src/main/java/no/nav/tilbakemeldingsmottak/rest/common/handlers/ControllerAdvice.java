@@ -130,7 +130,7 @@ public class ControllerAdvice {
                         .build());
     }
 
-    @ExceptionHandler(value = {ServerErrorException.class})
+    @ExceptionHandler(value = {ClientErrorUnauthorizedException.class})
     public ResponseEntity<ErrorResponse> unauthorizedErrorResponse(HttpServletRequest request, ClientErrorUnauthorizedException ex) {
         log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
         return ResponseEntity

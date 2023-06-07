@@ -43,7 +43,7 @@ public class EregConsumer implements Ereg {
             return restTemplate.exchange(eregApiUrl + "/v1/organisasjon/" + orgnrTrimmed,
                     HttpMethod.GET, new HttpEntity<>(headers), String.class).getBody();
         } catch (HttpClientErrorException e) {
-            if (e.getStatusCode().value() == 403) {
+            if (e.getStatusCode().value() == 403 || e.getStatusCode().value() == 401) {
                 throw new ClientErrorUnauthorizedException("Autentisering mot ereg feilet", e, ErrorCode.EREG_UNAUTHORIZED);
             }
             throw new ClientErrorException(format("Klientfeil ved kall mot ereg for organisasjonsnummer=%s (statusCode:%s)", orgnr, e.getStatusCode()), e, ErrorCode.EREG_ERROR);
