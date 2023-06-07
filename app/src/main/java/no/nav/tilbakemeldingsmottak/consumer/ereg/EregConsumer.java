@@ -35,6 +35,7 @@ public class EregConsumer implements Ereg {
         this.eregApiUrl = eregApiUrl;
     }
 
+    // FIXME: Bytt til WebClient
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "eregHentInfo"}, percentiles = {0.5, 0.95}, histogram = true)
     public String hentInfo(String orgnr) {
         try {

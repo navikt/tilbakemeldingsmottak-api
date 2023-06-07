@@ -10,8 +10,12 @@ public enum ErrorCode {
 
     // DOKARKIV
     DOKARKIV_UNAUTHORIZED("DOKARKIV_UNAUTHORIZED"), // mangler tilgang til å opprette journalpost
-    DOKARKIV_ERROR("DOKARKIV_ERROR"); // oppretting av journalpost feiler
+    DOKARKIV_ERROR("DOKARKIV_ERROR"), // oppretting av journalpost feiler
 
+
+    // NORG2
+    NORG2_UNAUTHORIZED("NORG2_UNAUTHORIZED"), // mangler tilgang til å hente data fra norg2
+    NORG2_ERROR("NORG2_ERROR"); // henting av enheter feiler
 
     public final String value;
 
