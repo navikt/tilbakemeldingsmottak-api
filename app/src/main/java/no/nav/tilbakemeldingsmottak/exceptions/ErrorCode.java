@@ -15,7 +15,11 @@ public enum ErrorCode {
 
     // NORG2
     NORG2_UNAUTHORIZED("NORG2_UNAUTHORIZED"), // mangler tilgang til å hente data fra norg2
-    NORG2_ERROR("NORG2_ERROR"); // henting av enheter feiler
+    NORG2_ERROR("NORG2_ERROR"), // henting av enheter feiler
+
+    // OPPGAVE
+    OPPGAVE_UNAUTHORIZED("OPPGAVE_UNAUTHORIZED"), // mangler tilgang til å opprette/endre/hente oppgave
+    OPPGAVE_ERROR("OPPGAVE_ERROR"); // oppretting/endring/henting av oppgave feiler
 
     public final String value;
 

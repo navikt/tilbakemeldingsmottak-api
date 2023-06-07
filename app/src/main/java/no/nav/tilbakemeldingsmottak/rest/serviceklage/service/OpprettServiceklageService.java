@@ -14,8 +14,6 @@ import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
 import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
-import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.oppgave.OpprettOppgaveTechnicalException;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageResponse;
@@ -26,7 +24,6 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOpp
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettServiceklageRequestMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
 import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
-import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +46,6 @@ public class OpprettServiceklageService {
     private final OppgaveConsumer oppgaveConsumer;
     private final PdfService pdfService;
     private final ServiceklageMailHelper mailHelper;
-    private final OidcUtils oidcUtils;
     private final ServiceklagerBigQuery serviceklagerBigQuery;
     @Value("${email_serviceklage_address}")
     private String toAddress;
@@ -94,9 +90,9 @@ public class OpprettServiceklageService {
         try {
             OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.mapServiceklageOppgave(id, paaVegneAvEnum, opprettJournalpostResponseTo);
             return oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
-        } catch (OpprettOppgaveFunctionalException | OpprettOppgaveTechnicalException e) {
+        } catch (ClientErrorException | ClientErrorUnauthorizedException | ServerErrorException e) {
             mailHelper.sendEmail(fromAddress, toAddress, SUBJECT_OPPGAVE_FEILET, TEXT_OPPGAVE_FEILET + opprettJournalpostResponseTo.getJournalpostId());
-            throw new EksterntKallException("Feil ved opprettelse av oppgave, journalpostId videresendt til " + toAddress, e);
+            throw new EksterntKallException("Feil ved opprettelse av oppgave, journalpostId videresendt til " + toAddress, e, e.getErrorCode());
         }
     }
 }
