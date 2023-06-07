@@ -7,4 +7,5 @@ import lombok.Data;
 @Builder
 public class ErrorResponse {
     String message;
+    String errorCode;
 }

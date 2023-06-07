@@ -107,4 +107,38 @@ public class ControllerAdvice {
                 .message(ex.getMessage())
                 .build());
     }
+
+    @ExceptionHandler(value = {ClientErrorException.class})
+    public ResponseEntity<ErrorResponse> clientErrorResponse(HttpServletRequest request, ClientErrorException ex) {
+        log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.builder()
+                        .message(ex.getMessage())
+                        .errorCode(ex.getErrorCode().value)
+                        .build());
+    }
+
+    @ExceptionHandler(value = {ServerErrorException.class})
+    public ResponseEntity<ErrorResponse> serverErrorResponse(HttpServletRequest request, ServerErrorException ex) {
+        log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ErrorResponse.builder()
+                        .message(ex.getMessage())
+                        .errorCode(ex.getErrorCode().value)
+                        .build());
+    }
+
+    @ExceptionHandler(value = {ServerErrorException.class})
+    public ResponseEntity<ErrorResponse> unauthorizedErrorResponse(HttpServletRequest request, ClientErrorUnauthorizedException ex) {
+        log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResponse.builder()
+                        .message(ex.getMessage())
+                        .errorCode(ex.getErrorCode().value)
+                        .build());
+    }
+
 }
