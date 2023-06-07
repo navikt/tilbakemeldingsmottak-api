@@ -3,15 +3,11 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService;
-import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
 import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
-import no.nav.tilbakemeldingsmottak.exceptions.pdl.PdlFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.pdl.PdlGraphqlException;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator;
-import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -24,7 +20,6 @@ public class OpprettServiceklageValidator extends RequestValidator {
 
     private static final int ENHETSNUMMER_LENGTH = 4;
     private final EregConsumer eregConsumer;
-    private final OidcUtils oidcUtils;
     private final PersonnummerValidator personnummerValidator;
     private final PdlService pdlService;
 
@@ -36,15 +31,9 @@ public class OpprettServiceklageValidator extends RequestValidator {
         validateCommonRequiredFields(request);
 
         switch (request.getPaaVegneAv()) {
-            case PRIVATPERSON:
-                validatePaaVegneAvPrivatperson(request, paloggetBruker);
-                break;
-            case ANNEN_PERSON:
-                validatePaaVegneAvAnnenPerson(request);
-                break;
-            case BEDRIFT:
-                validatePaaVegneAvBedrift(request);
-                break;
+            case PRIVATPERSON -> validatePaaVegneAvPrivatperson(request, paloggetBruker);
+            case ANNEN_PERSON -> validatePaaVegneAvAnnenPerson(request);
+            case BEDRIFT -> validatePaaVegneAvBedrift(request);
         }
     }
 
@@ -109,13 +98,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
 
     private void validateFnr(String fnr) {
         personnummerValidator.validate(fnr);
-
-        try {
-            pdlService.hentAktorIdForIdent(fnr);
-        } catch (PdlFunctionalException | PdlGraphqlException e) {
-            throw new InvalidIdentException("Feil i validering av personnummer", e);
-        }
-
+        pdlService.hentAktorIdForIdent(fnr);
     }
 
     private void validateOrgnr(String orgnr) {

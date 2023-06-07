@@ -19,7 +19,11 @@ public enum ErrorCode {
 
     // OPPGAVE
     OPPGAVE_UNAUTHORIZED("OPPGAVE_UNAUTHORIZED"), // mangler tilgang til å opprette/endre/hente oppgave
-    OPPGAVE_ERROR("OPPGAVE_ERROR"); // oppretting/endring/henting av oppgave feiler
+    OPPGAVE_ERROR("OPPGAVE_ERROR"), // oppretting/endring/henting av oppgave feiler
+
+    // PDL
+    PDL_ERROR("PDL_ERROR"), // henting av persondata feiler
+    PDL_INGEN_AKTORID("PDL_INGEN_AKTORID"); // finner ingen aktørId for ident
 
     public final String value;
 
