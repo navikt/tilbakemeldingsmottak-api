@@ -30,6 +30,7 @@ public class ControllerAdvice {
                 .orElse(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    // Exception som likevel skal returnerer 200 tilbake til bruker
     @ExceptionHandler(EksterntKallException.class)
     public ResponseEntity<ErrorResponse> eksterntKallExceptionHandler(HttpServletRequest request, EksterntKallException ex) {
         HttpStatus status = HttpStatus.OK;
@@ -37,6 +38,7 @@ public class ControllerAdvice {
 
         return ResponseEntity.status(status).body(ErrorResponse.builder()
                 .message(ex.getMessage())
+                .errorCode(ex.getErrorCode().value)
                 .build());
     }
 
