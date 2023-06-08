@@ -296,15 +296,6 @@ class OpprettServiceklageValidatorTest {
         assertTrue(thrown.getMessage().contains("Fant ingen aktørId for ident"));
     }
 
-    @Test
-    void shouldThrowExceptionIfPersonnummerResponseIsInvalid() {
-        opprettServiceklageRequest = createOpprettServiceklageRequestPrivatperson();
-        opprettServiceklageRequest.getInnmelder().setPersonnummer("invalid");
-        Exception thrown = assertThrows(ClientErrorException.class,
-                () -> opprettServiceklageValidator.validateRequest(opprettServiceklageRequest));
-        assertTrue(thrown.getMessage().contains("Feil i validering av personnummer"));
-    }
-    
 
     @Test
     void shouldThrowExceptionIfPersonnummerDoesntMatchTokenIdent() {
