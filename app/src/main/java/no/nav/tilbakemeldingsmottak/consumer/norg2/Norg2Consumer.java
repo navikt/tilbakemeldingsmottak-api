@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
@@ -52,7 +49,7 @@ public class Norg2Consumer {
                     HttpMethod.GET, new HttpEntity<>(createHeaders()), new ParameterizedTypeReference<List<Enhet>>() {
                     }).getBody();
         } catch (HttpClientErrorException e) {
-            if (e.getStatusCode().value() == 403 || e.getStatusCode().value() == 401) {
+            if (e.getStatusCode().value() == HttpStatus.FORBIDDEN.value() || e.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
                 throw new ClientErrorUnauthorizedException("Autentisering mot norg2 feilet", e, ErrorCode.NORG2_UNAUTHORIZED);
             }
             throw new ClientErrorException(String.format("Klientfeil ved kall mot norg2 for å hente enheter (statusCode:%s)", e.getStatusCode()), e, ErrorCode.NORG2_ERROR);

@@ -31,9 +31,10 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(EksterntKallException.class)
-    public ResponseEntity<ErrorResponse> eksterntKallExceptionHandler(HttpServletRequest request, Exception ex) {
+    public ResponseEntity<ErrorResponse> eksterntKallExceptionHandler(HttpServletRequest request, EksterntKallException ex) {
         HttpStatus status = HttpStatus.OK;
-        log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
+        log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
+
         return ResponseEntity.status(status).body(ErrorResponse.builder()
                 .message(ex.getMessage())
                 .build());

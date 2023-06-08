@@ -30,6 +30,7 @@ public class OpprettJournalpostRequestToMapper {
                 .bruker(mapBruker(request))
                 .journalpostType(JournalpostType.INNGAAENDE)
                 .journalfoerendeEnhet(JOURNALFOERENDE_ENHET)
+
                 .build();
 
         opprettJournalpostRequestTo.getDokumenter().add(buildDokument(fysiskDokument));

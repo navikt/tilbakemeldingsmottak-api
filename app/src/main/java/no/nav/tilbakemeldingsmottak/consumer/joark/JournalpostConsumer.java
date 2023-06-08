@@ -13,6 +13,7 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -66,7 +67,7 @@ public class JournalpostConsumer {
         log.error("OpprettJournalpost feilet med statusKode={}", statusResponse.statusCode());
 
         if (statusResponse.statusCode().is4xxClientError()) {
-            if (statusResponse.statusCode().value() == 403 || statusResponse.statusCode().value() == 401) {
+            if (statusResponse.statusCode().value() == HttpStatus.FORBIDDEN.value() || statusResponse.statusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
                 return statusResponse.bodyToMono(String.class).flatMap(body ->
                         Mono.error(new ClientErrorUnauthorizedException(String.format("Autentisering mot JOARK (dokarkiv) feilet (statusCode: %s)", statusResponse.statusCode()), new RuntimeException(body), ErrorCode.DOKARKIV_UNAUTHORIZED))
                 );

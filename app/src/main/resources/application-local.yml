@@ -74,7 +74,7 @@ no.nav.security:
     client:
       registration:
         arkiv:
-          token-endpoint-url: https://fakedings.dev-gcp.nais.io/fake/token
+          token-endpoint-url: http://localhost:6969/fake/token
           grant-type: client_credentials
           scope: ${DOKARKIV_SCOPE}
           authentication:
@@ -83,7 +83,7 @@ no.nav.security:
             client-auth-method: client_secret_basic
 
         saf-maskintilmaskin:
-          token-endpoint-url: https://fakedings.dev-gcp.nais.io/fake/token
+          token-endpoint-url: http://localhost:6969/fake/token
           grant-type: client_credentials
           scope: ${SAF_SCOPE}
           authentication:
@@ -92,7 +92,7 @@ no.nav.security:
             client-auth-method: client_secret_basic
 
         oppgave:
-          token-endpoint-url: https://fakedings.dev-gcp.nais.io/fake/token
+          token-endpoint-url: http://localhost:6969/fake/token
           grant-type: client_credentials
           scope: ${OPPGAVE_SCOPE}
           authentication:
@@ -101,7 +101,7 @@ no.nav.security:
             client-auth-method: client_secret_basic
 
         pdl:
-          token-endpoint-url: https://fakedings.dev-gcp.nais.io/fake/token
+          token-endpoint-url: http://localhost:6969/fake/token
           grant-type: client_credentials
           scope: ${PDL_SCOPE}
           authentication:

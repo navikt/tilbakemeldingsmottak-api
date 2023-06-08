@@ -1,0 +1,14 @@
+{
+    "priority": 2,
+    "request": {
+        "urlPattern": "/rest/journalpostapi/v1/organisasjon/.*",
+        "method": "GET"
+    },
+    "response": {
+        "status": 200,
+        "bodyFileName": "hent-organisasjon.json",
+        "headers": {
+            "Content-Type": "application/json"
+        }
+    }
+}
