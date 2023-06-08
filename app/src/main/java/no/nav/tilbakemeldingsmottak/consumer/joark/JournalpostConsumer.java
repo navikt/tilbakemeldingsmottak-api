@@ -64,9 +64,11 @@ public class JournalpostConsumer {
     }
 
     private Mono<Throwable> errorResponse(ClientResponse statusResponse) {
-        log.error("OpprettJournalpost feilet med statusKode={}", statusResponse.statusCode());
 
         if (statusResponse.statusCode().is4xxClientError()) {
+            // ClientErrorUnauthorizedException og ClientErrorException er vanligvis ikke logget som error, men nødvendig her
+            log.error("OpprettJournalpost feilet med statusKode={}", statusResponse.statusCode());
+
             if (statusResponse.statusCode().value() == HttpStatus.FORBIDDEN.value() || statusResponse.statusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
                 return statusResponse.bodyToMono(String.class).flatMap(body ->
                         Mono.error(new ClientErrorUnauthorizedException(String.format("Autentisering mot JOARK (dokarkiv) feilet (statusCode: %s)", statusResponse.statusCode()), new RuntimeException(body), ErrorCode.DOKARKIV_UNAUTHORIZED))

@@ -1,7 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.common.pdf;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.tilbakemeldingsmottak.exceptions.PdfException;
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.generer.PdfGeneratorService;
 import no.nav.tilbakemeldingsmottak.generer.modeller.ServiceklagePdfModell;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
@@ -31,7 +31,7 @@ public final class PdfService {
             var serviceklagePdfModell = new ServiceklagePdfModell(KANAL_SERVICEKLAGESKJEMA_ANSWER, !innlogget ? "OBS! Klagen er sendt inn uinnlogget" : null, lagKlageMap(request, fremmet));
             return new PdfGeneratorService().genererServiceklagePdf(serviceklagePdfModell);
         } catch (Exception e) {
-            throw new PdfException("Opprett serviceklage PDF", e);
+            throw new ServerErrorException("Opprett serviceklage PDF", e);
         }
     }
 
@@ -45,21 +45,20 @@ public final class PdfService {
         }
 
         switch (request.getPaaVegneAv()) {
-            case PRIVATPERSON:
-                klageMap.put("Personnummer til innmelder", request.getInnmelder().getPersonnummer());
-                break;
-            case ANNEN_PERSON:
+            case PRIVATPERSON -> klageMap.put("Personnummer til innmelder", request.getInnmelder().getPersonnummer());
+            case ANNEN_PERSON -> {
                 klageMap.put("Innmelders rolle", request.getInnmelder().getRolle());
                 klageMap.put("Innmelder har fullmakt", request.getInnmelder().getHarFullmakt() ? "Ja" : "Nei");
                 klageMap.put("Navn til forulempet person", request.getPaaVegneAvPerson().getNavn());
                 klageMap.put("Personnummer til forulempet person", request.getPaaVegneAvPerson().getPersonnummer());
-                break;
-            case BEDRIFT:
+            }
+            case BEDRIFT -> {
                 if (!isBlank(request.getInnmelder().getRolle())) {
                     klageMap.put("Innmelders rolle", request.getInnmelder().getRolle());
                 }
                 klageMap.put("Navn til forulempet bedrift", request.getPaaVegneAvBedrift().getNavn());
                 klageMap.put("Orgnr til forulempet bedrift", request.getPaaVegneAvBedrift().getOrganisasjonsnummer());
+            }
         }
 
         if (!isBlank(request.getEnhetsnummerPaaklaget())) {
@@ -90,7 +89,7 @@ public final class PdfService {
             var serviceklagePdfModell = new ServiceklagePdfModell("Serviceklage klassifisering", null, questionAnswerMap);
             return new PdfGeneratorService().genererServiceklagePdf(serviceklagePdfModell);
         } catch (Exception e) {
-            throw new PdfException("Opprett serviceklage klassifiserings PDF", e);
+            throw new ServerErrorException("Opprett serviceklage klassifiserings PDF", e);
         }
 
     }

@@ -1,13 +1,10 @@
 package no.nav.tilbakemeldingsmottak.rest.common.handlers;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.exceptions.JwtTokenMissingException;
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException;
 import no.nav.tilbakemeldingsmottak.exceptions.*;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostIkkeFunnetFunctionalException;
 import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
@@ -30,7 +27,37 @@ public class ControllerAdvice {
                 .orElse(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // Exception som likevel skal returnerer 200 tilbake til bruker
+
+    @ExceptionHandler(value = {JwtTokenMissingException.class, JwtTokenUnauthorizedException.class})
+    public ResponseEntity<ErrorResponse> loginRequiredExceptionHandler(HttpServletRequest request, Exception ex) {
+        HttpStatus status = getHttpStatus(ex);
+        log.warn("Autentisering feilet ved kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
+        return ResponseEntity.status(status).body(ErrorResponse.builder()
+                .message(status.getReasonPhrase())
+                .errorCode(ErrorCode.AUTH_ERROR.value)
+                .build());
+    }
+
+    @ExceptionHandler(value = {MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<ErrorResponse> failedParametersHandler(HttpServletRequest request, Exception ex) {
+        log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
+                .message(ex.getMessage())
+                .errorCode(ErrorCode.GENERAL_ERROR.value)
+                .build());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> technicalExceptionHandler(HttpServletRequest request, Exception ex) {
+        HttpStatus status = getHttpStatus(ex);
+        log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
+        return ResponseEntity.status(status).body(ErrorResponse.builder()
+                .message(status.getReasonPhrase())
+                .errorCode(ErrorCode.GENERAL_ERROR.value)
+                .build());
+    }
+
+    // 200
     @ExceptionHandler(EksterntKallException.class)
     public ResponseEntity<ErrorResponse> eksterntKallExceptionHandler(HttpServletRequest request, EksterntKallException ex) {
         HttpStatus status = HttpStatus.OK;
@@ -42,75 +69,19 @@ public class ControllerAdvice {
                 .build());
     }
 
-    @ExceptionHandler(PdfException.class)
-    public ResponseEntity<ErrorResponse> pdfGenerationExceptionHandler(HttpServletRequest request, Exception ex) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        log.error("Feil ved generering av PDF " + ex.getMessage(), ex);
-        return ResponseEntity.status(status).body(ErrorResponse.builder()
-                .message(ex.getMessage())
-                .build());
+    // 204
+    @ExceptionHandler(value = {NoContentException.class})
+    public ResponseEntity<ErrorResponse> noContentResponse(HttpServletRequest request, NoContentException ex) {
+        log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(ErrorResponse.builder()
+                        .message(ex.getMessage())
+                        .errorCode(ex.getErrorCode().value)
+                        .build());
     }
 
-
-    @ExceptionHandler(value = {JwtTokenMissingException.class, JwtTokenUnauthorizedException.class})
-    public ResponseEntity<ErrorResponse> loginRequiredExceptionHandler(HttpServletRequest request, Exception ex) {
-        HttpStatus status = getHttpStatus(ex);
-        log.warn("Autentisering feilet ved kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
-        return ResponseEntity.status(status).body(ErrorResponse.builder()
-                .message(status.getReasonPhrase())
-                .build());
-    }
-
-    @ExceptionHandler(value = {MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<ErrorResponse> failedParametersHandler(HttpServletRequest request, Exception ex) {
-        log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
-                .message(ex.getMessage())
-                .build());
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> technicalExceptionHandler(HttpServletRequest request, Exception ex) {
-        HttpStatus status = getHttpStatus(ex);
-        log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
-        return ResponseEntity.status(status).body(ErrorResponse.builder()
-                .message(status.getReasonPhrase())
-                .build());
-    }
-
-    @ExceptionHandler(value = {JsonParseException.class, InvalidRequestException.class})
-    public ResponseEntity<ErrorResponse> validationExceptionHandler(HttpServletRequest request, Exception ex) {
-        log.warn("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
-                .message(HttpStatus.BAD_REQUEST.getReasonPhrase())
-                .build());
-    }
-
-    @ExceptionHandler(value = {SafHentDokumentFunctionalException.class, SafJournalpostIkkeFunnetFunctionalException.class})
-    public ResponseEntity<ErrorResponse> safTilgangExceptionHandler(HttpServletRequest request, Exception ex) {
-        HttpStatus status = getHttpStatus(ex);
-        log.warn("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
-        return ResponseEntity.status(status).body(ErrorResponse.builder()
-                .message(status.getReasonPhrase())
-                .build());
-    }
-
-    @ExceptionHandler(InvalidIdentException.class)
-    public ResponseEntity<ErrorResponse> invalidIdentExceptionHandler(HttpServletRequest request, InvalidIdentException ex) {
-        log.warn("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
-                .message(ex.getMessage())
-                .build());
-    }
-
-    @ExceptionHandler(value = {OppgaveAlleredeFerdigstiltException.class})
-    public ResponseEntity<ErrorResponse> klassifiseringExceptionHandler(HttpServletRequest request, Exception ex) {
-        log.warn("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
-                .message(ex.getMessage())
-                .build());
-    }
-
+    // 400
     @ExceptionHandler(value = {ClientErrorException.class})
     public ResponseEntity<ErrorResponse> clientErrorResponse(HttpServletRequest request, ClientErrorException ex) {
         log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
@@ -122,22 +93,24 @@ public class ControllerAdvice {
                         .build());
     }
 
-    @ExceptionHandler(value = {ServerErrorException.class})
-    public ResponseEntity<ErrorResponse> serverErrorResponse(HttpServletRequest request, ServerErrorException ex) {
+    // 401
+    @ExceptionHandler(value = {ClientErrorUnauthorizedException.class})
+    public ResponseEntity<ErrorResponse> unauthorizedErrorResponse(HttpServletRequest request, ClientErrorUnauthorizedException ex) {
         log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
         return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(ErrorResponse.builder()
                         .message(ex.getMessage())
                         .errorCode(ex.getErrorCode().value)
                         .build());
     }
 
-    @ExceptionHandler(value = {ClientErrorUnauthorizedException.class})
-    public ResponseEntity<ErrorResponse> unauthorizedErrorResponse(HttpServletRequest request, ClientErrorUnauthorizedException ex) {
-        log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
+    // 500
+    @ExceptionHandler(value = {ServerErrorException.class})
+    public ResponseEntity<ErrorResponse> serverErrorResponse(HttpServletRequest request, ServerErrorException ex) {
+        log.error("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
         return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorResponse.builder()
                         .message(ex.getMessage())
                         .errorCode(ex.getErrorCode().value)

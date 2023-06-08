@@ -95,14 +95,14 @@ public class OppgaveConsumer {
     }
 
     private Mono<Throwable> errorResponse(ClientResponse statusResponse, String tjeneste) {
-        log.error("{} feilet med statusKode={}", tjeneste, statusResponse.statusCode());
-
         if (statusResponse.statusCode().is4xxClientError()) {
             if (statusResponse.statusCode().value() == 403 || statusResponse.statusCode().value() == 401) {
                 return statusResponse.bodyToMono(String.class).flatMap(body ->
                         Mono.error(new ClientErrorUnauthorizedException(String.format("Autentisering mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.OPPGAVE_UNAUTHORIZED))
                 );
             }
+
+            log.error("Kall mot {} feilet med statuskode {}", tjeneste, statusResponse.statusCode());
 
             return statusResponse.bodyToMono(String.class).flatMap(body ->
                     Mono.error(new ClientErrorException(String.format("Kall mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.OPPGAVE_ERROR))

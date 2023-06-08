@@ -40,7 +40,7 @@ graphql:
 pdl:
   url: http://localhost:8096/pdlgraphql
 
-ereg.api.url: https://ereg-services.dev-fss-pub.nais.io
+ereg.api.url: http://localhost:8097/ereg
 
 Journalpost_v1_url: http://localhost:8092/rest/journalpostapi/v1
 

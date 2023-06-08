@@ -2,20 +2,21 @@ package no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument;
 
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
+import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -41,7 +42,7 @@ public class HentDokumentConsumer implements HentDokument {
     }
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
-    @Retryable(include = AbstractTilbakemeldingsmottakTechnicalException.class, backoff = @Backoff(delay = 3, multiplier = 500))
+    @Retryable(include = ServerErrorException.class, backoff = @Backoff(delay = 3, multiplier = 500))
     public HentDokumentResponseTo hentDokument(String journalpostId, String dokumentInfoId, String variantFormat, String token) {
         HttpHeaders httpHeaders = createAuthHeaderFromToken(token);
         log.info("Henter dokument fra saf journalpostId={}, dokumentInfoId={}, variantFormat={}", journalpostId, dokumentInfoId, variantFormat);
@@ -52,23 +53,7 @@ public class HentDokumentConsumer implements HentDokument {
                 .header("Nav-Callid", MDC.get(MDC_CALL_ID))
                 .header("Nav-Consumer-Id", "srvtilbakemeldings")
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, statusResponse -> {
-                    if (HttpStatus.FORBIDDEN.value() == statusResponse.statusCode().value()) {
-                        log.warn(String.format("Kall mot saf feilet med statusKode=%s", statusResponse.statusCode()));
-                    } else {
-                        log.error(String.format("Kall mot saf feilet med statusKode=%s", statusResponse.statusCode()));
-                    }
-                    if (statusResponse.statusCode().is5xxServerError()) {
-                        throw new SafHentDokumentTechnicalException(String.format("Kall mot saf:hentdokument feilet teknisk med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot arkivet feilet"));
-                    } else if (statusResponse.statusCode().is4xxClientError()) {
-                        throw new SafHentDokumentFunctionalException(String.format("Kall mot saf:hentdokument feilet teknisk med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot arkivet feilet"));
-                    }
-                    return Mono.error(new IllegalStateException(
-                            String.format("Kall mot saf feilet med statusKode=%s", statusResponse.statusCode())));
-
-                })
+                .onStatus(HttpStatusCode::isError, statusResponse -> errorResponse(statusResponse, "saf (hent dokument)"))
                 .bodyToMono(byte[].class)
                 .block();
         return mapResponse(dokument, journalpostId, dokumentInfoId, variantFormat);
@@ -81,7 +66,7 @@ public class HentDokumentConsumer implements HentDokument {
                     .dokument(dokument)
                     .build();
         } catch (Exception e) {
-            throw new SafHentDokumentFunctionalException(String.format("Kunne ikke dekode dokument, da dokumentet ikke er base64-encodet journalpostId=%s, dokumentInfoId=%s, variantFormat=%s. Feilmelding=%s", journalpostId, dokumentInfoId, variantFormat, e
+            throw new ServerErrorException(String.format("Kunne ikke dekode dokument, da dokumentet ikke er base64-encodet journalpostId=%s, dokumentInfoId=%s, variantFormat=%s. Feilmelding=%s", journalpostId, dokumentInfoId, variantFormat, e
                     .getMessage()), e);
         }
     }
@@ -90,6 +75,27 @@ public class HentDokumentConsumer implements HentDokument {
         return consumer -> {
             consumer.addAll(httpHeaders);
         };
+    }
+
+    private Mono<Throwable> errorResponse(ClientResponse statusResponse, String tjeneste) {
+
+        if (statusResponse.statusCode().is4xxClientError()) {
+            if (statusResponse.statusCode().value() == 403 || statusResponse.statusCode().value() == 401) {
+                return statusResponse.bodyToMono(String.class).flatMap(body ->
+                        Mono.error(new ClientErrorUnauthorizedException(String.format("Autentisering mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.SAF_UNAUTHORIZED))
+                );
+            }
+
+            log.error("Kall mot {} feilet med statuskode {}", tjeneste, statusResponse.statusCode());
+
+            return statusResponse.bodyToMono(String.class).flatMap(body ->
+                    Mono.error(new ClientErrorException(String.format("Kall mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.SAF_ERROR))
+            );
+        }
+
+        return statusResponse.bodyToMono(String.class).flatMap(body ->
+                Mono.error(new ServerErrorException(String.format("Kall mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.SAF_ERROR))
+        );
     }
 
 }

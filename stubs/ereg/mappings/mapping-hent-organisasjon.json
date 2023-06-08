@@ -1,7 +1,7 @@
 {
     "priority": 2,
     "request": {
-        "urlPattern": "/rest/journalpostapi/v1/organisasjon/.*",
+        "urlPattern": "/ereg/v1/organisasjon/.*",
         "method": "GET"
     },
     "response": {

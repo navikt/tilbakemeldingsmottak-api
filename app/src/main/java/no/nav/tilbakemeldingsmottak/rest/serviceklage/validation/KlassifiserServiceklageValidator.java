@@ -2,7 +2,7 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
 import no.nav.tilbakemeldingsmottak.model.DefaultAnswers;
 import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
@@ -85,13 +85,13 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
 
     private void validateMultichoice(Question question, String answer) {
         if (question.getAnswers().stream().noneMatch(a -> a.getAnswer().equals(answer))) {
-            throw new InvalidRequestException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId()));
+            throw new ClientErrorException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId()));
         }
     }
 
     private void validateText(Question question, String answer) {
         if (isBlank(answer)) {
-            throw new InvalidRequestException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId()));
+            throw new ClientErrorException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId()));
         }
     }
 
@@ -100,13 +100,13 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
         try {
             LocalDate.parse(answer);
         } catch (DateTimeParseException e) {
-            throw new InvalidRequestException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId()));
+            throw new ClientErrorException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId()));
         }
     }
 
     private void validateDefaultAnswer(String id, String defaultAnswer, String submittedAnswer) {
         if (!defaultAnswer.equals(submittedAnswer)) {
-            throw new InvalidRequestException(String.format("Innsendt svar på spørsmål med id=%s matcher ikke svar i database", id));
+            throw new ClientErrorException(String.format("Innsendt svar på spørsmål med id=%s matcher ikke svar i database", id));
         }
     }
 
@@ -117,7 +117,7 @@ public class KlassifiserServiceklageValidator extends RequestValidator {
                         NONE.equals(question.getAnswers().stream()
                                 .filter(a -> a.getAnswer().equals(answered))
                                 .findFirst()
-                                .orElseThrow(() -> new InvalidRequestException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId())))
+                                .orElseThrow(() -> new ClientErrorException(String.format("Innsendt svar på spørsmål med id=%s er ikke gyldig", question.getId())))
                                 .getNext()));
     }
 }

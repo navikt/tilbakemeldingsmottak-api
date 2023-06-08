@@ -2,8 +2,9 @@ package no.nav.tilbakemeldingsmottak.util;
 
 import lombok.NoArgsConstructor;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
-import no.nav.tilbakemeldingsmottak.exceptions.OppgaveAlleredeFerdigstiltException;
-import no.nav.tilbakemeldingsmottak.exceptions.OppgaveManglerJournalpostException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
+import no.nav.tilbakemeldingsmottak.exceptions.NoContentException;
 
 @NoArgsConstructor
 public class OppgaveUtils {
@@ -12,15 +13,15 @@ public class OppgaveUtils {
 
     public static void assertIkkeFerdigstilt(HentOppgaveResponseTo hentOppgaveResponseTo) {
         if (FERDIGSTILT.equals(hentOppgaveResponseTo.getStatus())) {
-            throw new OppgaveAlleredeFerdigstiltException(String.format("Oppgave med oppgaveId=%s er allerede ferdigstilt",
-                    hentOppgaveResponseTo.getId()));
+            throw new ClientErrorException(String.format("Oppgave med oppgaveId=%s er allerede ferdigstilt",
+                    hentOppgaveResponseTo.getId()), ErrorCode.OPPGAVE_COMPLETED);
         }
     }
 
     public static void assertHarJournalpost(HentOppgaveResponseTo hentOppgaveResponseTo) {
         if (hentOppgaveResponseTo.getJournalpostId() == null || "".equals(hentOppgaveResponseTo.getJournalpostId())) {
-            throw new OppgaveManglerJournalpostException(String.format("Oppgave med oppgaveId=%s har ikke tilknyttet dokument i arkivet",
-                    hentOppgaveResponseTo.getId()));
+            throw new NoContentException(String.format("Oppgave med oppgaveId=%s har ikke tilknyttet dokument i arkivet",
+                    hentOppgaveResponseTo.getId()), ErrorCode.OPPGAVE_MISSING_JOURNALPOST);
         }
     }
 

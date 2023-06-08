@@ -3,7 +3,7 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation;
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService;
-import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator;
@@ -84,7 +84,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
         isNotNull(request.getOenskerAaKontaktes(), "oenskerAaKontaktes", " dersom paaVegneAv=BEDRIFT");
         hasText(request.getEnhetsnummerPaaklaget(), "enhetsnummerPaaklaget", " dersom paaVegneAv=BEDRIFT");
         if (!isNumeric(request.getEnhetsnummerPaaklaget()) && request.getEnhetsnummerPaaklaget().length() != ENHETSNUMMER_LENGTH) {
-            throw new InvalidRequestException("enhetsnummerPaaklaget må ha fire siffer");
+            throw new ClientErrorException("enhetsnummerPaaklaget må ha fire siffer");
         }
         hasText(request.getEnhetsnummerPaaklaget(), "enhetsnummerPaaklaget", " dersom paaVegneAv=BEDRIFT");
 
@@ -108,7 +108,7 @@ public class OpprettServiceklageValidator extends RequestValidator {
     private void validateRequestFnrMatchesTokenFnr(String fnr, Optional<String> paloggetBruker) {
         if (paloggetBruker.isPresent()
                 && !fnr.equals(paloggetBruker.get())) {
-            throw new InvalidRequestException("innmelder.personnummer samsvarer ikke med brukertoken");
+            throw new ClientErrorException("innmelder.personnummer samsvarer ikke med brukertoken");
         }
     }
 }
