@@ -39,7 +39,7 @@ public class OppgaveConsumer {
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "opprettOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public OpprettOppgaveResponseTo opprettOppgave(OpprettOppgaveRequestTo opprettOppgaveRequestTo) {
-        log.debug("Oppretter oppgave");
+        log.info("Oppretter oppgave for journalpostId: {}", opprettOppgaveRequestTo.getJournalpostId());
 
         var oppgaveResponse = webClient
                 .method(HttpMethod.POST)
@@ -54,7 +54,7 @@ public class OppgaveConsumer {
                 .block();
 
         if (oppgaveResponse == null) {
-            throw new ServerErrorException("Oppgave responsen er null", ErrorCode.OPPGAVE_ERROR);
+            throw new ServerErrorException("Klarte ikke opprette oppgave", ErrorCode.OPPGAVE_ERROR);
         }
 
         return oppgaveResponse;
@@ -62,7 +62,7 @@ public class OppgaveConsumer {
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "endreOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public String endreOppgave(EndreOppgaveRequestTo endreOppgaveRequestTo) {
-        log.debug("Endrer oppgave");
+        log.info("Endrer oppgave for id: {} journalpostId: {}", endreOppgaveRequestTo.getId(), endreOppgaveRequestTo.getJournalpostId());
 
         var oppgaveResponse = webClient
                 .method(HttpMethod.PATCH)
@@ -77,7 +77,7 @@ public class OppgaveConsumer {
                 .block();
 
         if (oppgaveResponse == null) {
-            throw new ServerErrorException("Oppgave responsen er null", ErrorCode.OPPGAVE_ERROR);
+            throw new ServerErrorException("Klarte ikke endre oppgave", ErrorCode.OPPGAVE_ERROR);
         }
 
         return oppgaveResponse;
@@ -86,7 +86,7 @@ public class OppgaveConsumer {
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public HentOppgaveResponseTo hentOppgave(String oppgaveId) {
-        log.debug("Henter oppgave med id={}", oppgaveId);
+        log.info("Henter oppgave med id={}", oppgaveId);
 
         var oppgaveResponse = webClient
                 .method(HttpMethod.GET)
@@ -101,7 +101,7 @@ public class OppgaveConsumer {
                 .block();
 
         if (oppgaveResponse == null) {
-            throw new ServerErrorException("Oppgave responsen er null", ErrorCode.OPPGAVE_ERROR);
+            throw new ServerErrorException("Klarte ikke hente oppgave", ErrorCode.OPPGAVE_ERROR);
         }
 
         return oppgaveResponse;
@@ -109,18 +109,22 @@ public class OppgaveConsumer {
     }
 
 
-    private void handleError(Throwable error, String tjeneste) {
+    private void handleError(Throwable error, String serviceName) {
         if (error instanceof WebClientResponseException responseException) {
-            if (responseException.getStatusCode().is4xxClientError()) {
-                if (responseException.getStatusCode().value() == HttpStatus.FORBIDDEN.value() || responseException.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
-                    throw new ClientErrorUnauthorizedException(String.format("Autentisering mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.OPPGAVE_UNAUTHORIZED);
+            var statusCode = responseException.getStatusCode();
+            var responseBody = responseException.getResponseBodyAsString();
+            var errorMessage = String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody);
+
+            if (statusCode.is4xxClientError()) {
+                if (statusCode == HttpStatus.FORBIDDEN || statusCode == HttpStatus.UNAUTHORIZED) {
+                    throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.OPPGAVE_UNAUTHORIZED);
+                } else if (statusCode == HttpStatus.NOT_FOUND) {
+                    throw new ClientErrorNotFoundException(errorMessage, responseException, ErrorCode.OPPGAVE_NOT_FOUND);
+                } else {
+                    throw new ClientErrorException(errorMessage, responseException, ErrorCode.OPPGAVE_ERROR);
                 }
-                if (responseException.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
-                    throw new ClientErrorNotFoundException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.OPPGAVE_NOT_FOUND);
-                }
-                throw new ClientErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.OPPGAVE_ERROR);
             } else {
-                throw new ServerErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.OPPGAVE_ERROR);
+                throw new ServerErrorException(errorMessage, responseException, ErrorCode.OPPGAVE_ERROR);
             }
         }
     }

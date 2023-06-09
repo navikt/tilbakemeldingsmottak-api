@@ -1,10 +1,7 @@
 package no.nav.tilbakemeldingsmottak.consumer.ereg;
 
 import jakarta.inject.Inject;
-import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
-import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
-import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
-import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.*;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -45,7 +42,7 @@ public class EregConsumer implements Ereg {
                 throw new ClientErrorUnauthorizedException("Autentisering mot ereg feilet", e, ErrorCode.EREG_UNAUTHORIZED);
             }
             if (e.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
-                throw new ClientErrorUnauthorizedException(format("Klientfeil ved kall mot ereg for organisasjonsnummer=%s (statuskode:%s). Body: %s", orgnr, e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.EREG_NOT_FOUND);
+                throw new ClientErrorNotFoundException(format("Klientfeil ved kall mot ereg for organisasjonsnummer=%s (statuskode:%s). Body: %s", orgnr, e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.EREG_NOT_FOUND);
             }
             throw new ClientErrorException(format("Klientfeil ved kall mot ereg for organisasjonsnummer=%s (statuskode:%s). Body: %s", orgnr, e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.EREG_ERROR);
         } catch (HttpServerErrorException e) {

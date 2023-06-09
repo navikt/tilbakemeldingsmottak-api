@@ -32,41 +32,48 @@ public class ControllerAdvice {
     public ResponseEntity<ErrorResponse> loginRequiredExceptionHandler(HttpServletRequest request, Exception ex) {
         HttpStatus status = getHttpStatus(ex);
         log.warn("Autentisering feilet ved kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
-        return ResponseEntity.status(status).body(ErrorResponse.builder()
-                .message(status.getReasonPhrase())
-                .errorCode(ErrorCode.AUTH_ERROR.value)
-                .build());
+        return ResponseEntity
+                .status(status)
+                .body(ErrorResponse.builder()
+                        .message(status.getReasonPhrase())
+                        .errorCode(ErrorCode.AUTH_ERROR.value)
+                        .build());
     }
 
     @ExceptionHandler(value = {MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ErrorResponse> failedParametersHandler(HttpServletRequest request, Exception ex) {
         log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponse.builder()
-                .message(ex.getMessage())
-                .errorCode(ErrorCode.GENERAL_ERROR.value)
-                .build());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.builder()
+                        .message(ex.getMessage())
+                        .errorCode(ErrorCode.GENERAL_ERROR.value)
+                        .build());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> technicalExceptionHandler(HttpServletRequest request, Exception ex) {
         HttpStatus status = getHttpStatus(ex);
         log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
-        return ResponseEntity.status(status).body(ErrorResponse.builder()
-                .message(status.getReasonPhrase())
-                .errorCode(ErrorCode.GENERAL_ERROR.value)
-                .build());
+        return ResponseEntity
+                .status(status)
+                .body(ErrorResponse.builder()
+                        .message(status.getReasonPhrase())
+                        .errorCode(ErrorCode.GENERAL_ERROR.value)
+                        .build());
     }
 
     // 200
     @ExceptionHandler(EksterntKallException.class)
     public ResponseEntity<ErrorResponse> eksterntKallExceptionHandler(HttpServletRequest request, EksterntKallException ex) {
-        HttpStatus status = HttpStatus.OK;
         log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
 
-        return ResponseEntity.status(status).body(ErrorResponse.builder()
-                .message(ex.getMessage())
-                .errorCode(ex.getErrorCode().value)
-                .build());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ErrorResponse.builder()
+                        .message(ex.getMessage())
+                        .errorCode(ex.getErrorCode().value)
+                        .build());
     }
 
     // 204

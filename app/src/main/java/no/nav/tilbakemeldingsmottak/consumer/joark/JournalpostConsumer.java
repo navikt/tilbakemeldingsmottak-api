@@ -37,9 +37,8 @@ public class JournalpostConsumer {
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "opprettJournalpost"}, percentiles = {0.5, 0.95}, histogram = true)
     public OpprettJournalpostResponseTo opprettJournalpost(OpprettJournalpostRequestTo opprettJournalpostRequestTo) {
-        if (log.isDebugEnabled()) {
-            log.debug("Oppretter journalpost");
-        }
+        log.info("Oppretter journalpost");
+
         OpprettJournalpostResponseTo journalpostReponse = webClient
                 .method(HttpMethod.POST)
                 .uri(journalpostUrl + "/journalpost/" + FORSOEK_FERDIGSTILL)
@@ -53,26 +52,33 @@ public class JournalpostConsumer {
                 .doOnError(t -> handleError(t, "JOARK (dokarkiv)"))
                 .block();
 
-        if (log.isDebugEnabled()) {
-            log.debug("Journalpost med journalpostId={} opprettet", journalpostReponse.getJournalpostId());
+        if (journalpostReponse == null) {
+            throw new ServerErrorException("Klarte ikke å opprette journalpost", ErrorCode.DOKARKIV_ERROR);
         }
+
+        log.info("Opprettet journalpost med journalpostId: {}", journalpostReponse.getJournalpostId());
 
         return journalpostReponse;
 
     }
 
-    private void handleError(Throwable error, String tjeneste) {
+
+    private void handleError(Throwable error, String serviceName) {
         if (error instanceof WebClientResponseException responseException) {
-            if (responseException.getStatusCode().is4xxClientError()) {
-                if (responseException.getStatusCode().value() == HttpStatus.FORBIDDEN.value() || responseException.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
-                    throw new ClientErrorUnauthorizedException(String.format("Autentisering mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.DOKARKIV_UNAUTHORIZED);
+            var statusCode = responseException.getStatusCode();
+            var responseBody = responseException.getResponseBodyAsString();
+            var errorMessage = String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody);
+
+            if (statusCode.is4xxClientError()) {
+                if (statusCode == HttpStatus.FORBIDDEN || statusCode == HttpStatus.UNAUTHORIZED) {
+                    throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.DOKARKIV_UNAUTHORIZED);
                 }
-                throw new ClientErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.DOKARKIV_ERROR);
+
+                throw new ClientErrorException(errorMessage, responseException, ErrorCode.DOKARKIV_ERROR);
             } else {
-                throw new ServerErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.DOKARKIV_ERROR);
+                throw new ServerErrorException(errorMessage, responseException, ErrorCode.DOKARKIV_ERROR);
             }
         }
     }
-
 
 }

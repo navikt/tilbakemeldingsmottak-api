@@ -67,8 +67,8 @@ public class HentDokumentConsumer implements HentDokument {
                     .dokument(dokument)
                     .build();
         } catch (Exception e) {
-            throw new ServerErrorException(String.format("Kunne ikke dekode dokument, da dokumentet ikke er base64-encodet journalpostId=%s, dokumentInfoId=%s, variantFormat=%s. Feilmelding=%s", journalpostId, dokumentInfoId, variantFormat, e
-                    .getMessage()), e);
+            var errorMessage = String.format("Kunne ikke dekode dokument, da dokumentet ikke er base64-encodet journalpostId=%s, dokumentInfoId=%s, variantFormat=%s. Feilmelding=%s", journalpostId, dokumentInfoId, variantFormat, e.getMessage());
+            throw new ServerErrorException(errorMessage, e);
         }
     }
 
@@ -78,19 +78,22 @@ public class HentDokumentConsumer implements HentDokument {
         };
     }
 
-
-    private void handleError(Throwable error, String tjeneste) {
+    private void handleError(Throwable error, String serviceName) {
         if (error instanceof WebClientResponseException responseException) {
-            if (responseException.getStatusCode().is4xxClientError()) {
-                if (responseException.getStatusCode().value() == HttpStatus.FORBIDDEN.value() || responseException.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
-                    throw new ClientErrorUnauthorizedException(String.format("Autentisering mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.SAF_UNAUTHORIZED);
+            var statusCode = responseException.getStatusCode();
+            var responseBody = responseException.getResponseBodyAsString();
+            var errorMessage = String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody);
+
+            if (statusCode.is4xxClientError()) {
+                if (statusCode == HttpStatus.FORBIDDEN || statusCode == HttpStatus.UNAUTHORIZED) {
+                    throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.SAF_UNAUTHORIZED);
+                } else if (statusCode == HttpStatus.NOT_FOUND) {
+                    throw new ClientErrorNotFoundException(errorMessage, responseException, ErrorCode.SAF_NOT_FOUND);
+                } else {
+                    throw new ClientErrorException(errorMessage, responseException, ErrorCode.SAF_ERROR);
                 }
-                if (responseException.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
-                    throw new ClientErrorNotFoundException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.SAF_NOT_FOUND);
-                }
-                throw new ClientErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.SAF_ERROR);
             } else {
-                throw new ServerErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.SAF_ERROR);
+                throw new ServerErrorException(errorMessage, responseException, ErrorCode.SAF_ERROR);
             }
         }
     }

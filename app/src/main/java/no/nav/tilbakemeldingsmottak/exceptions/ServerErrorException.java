@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.exceptions;
 
+// Errors som skal gi 500 respons
 public class ServerErrorException extends AbstractGeneralException {
     public ServerErrorException(String message, Throwable cause) {
         super(message, cause);
