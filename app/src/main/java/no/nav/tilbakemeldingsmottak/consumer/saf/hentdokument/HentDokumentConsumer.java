@@ -12,13 +12,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.function.Consumer;
 
@@ -53,9 +52,14 @@ public class HentDokumentConsumer implements HentDokument {
                 .header("Nav-Callid", MDC.get(MDC_CALL_ID))
                 .header("Nav-Consumer-Id", "srvtilbakemeldings")
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, statusResponse -> errorResponse(statusResponse, "saf (hent dokument)"))
                 .bodyToMono(byte[].class)
+                .doOnError(t -> handleError(t, "saf (hent dokument)"))
                 .block();
+
+        if (dokument == null) {
+            throw new ServerErrorException("SAF dokument responsen er null", ErrorCode.SAF_ERROR);
+        }
+
         return mapResponse(dokument, journalpostId, dokumentInfoId, variantFormat);
 
     }
@@ -77,25 +81,18 @@ public class HentDokumentConsumer implements HentDokument {
         };
     }
 
-    private Mono<Throwable> errorResponse(ClientResponse statusResponse, String tjeneste) {
 
-        if (statusResponse.statusCode().is4xxClientError()) {
-            if (statusResponse.statusCode().value() == 403 || statusResponse.statusCode().value() == 401) {
-                return statusResponse.bodyToMono(String.class).flatMap(body ->
-                        Mono.error(new ClientErrorUnauthorizedException(String.format("Autentisering mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.SAF_UNAUTHORIZED))
-                );
+    private void handleError(Throwable error, String tjeneste) {
+        if (error instanceof WebClientResponseException responseException) {
+            if (responseException.getStatusCode().is4xxClientError()) {
+                if (responseException.getStatusCode().value() == HttpStatus.FORBIDDEN.value() || responseException.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
+                    throw new ClientErrorUnauthorizedException(String.format("Autentisering mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.SAF_UNAUTHORIZED);
+                }
+                throw new ClientErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.SAF_ERROR);
+            } else {
+                throw new ServerErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.SAF_ERROR);
             }
-
-            log.error("Kall mot {} feilet med statuskode {}", tjeneste, statusResponse.statusCode());
-
-            return statusResponse.bodyToMono(String.class).flatMap(body ->
-                    Mono.error(new ClientErrorException(String.format("Kall mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.SAF_ERROR))
-            );
         }
-
-        return statusResponse.bodyToMono(String.class).flatMap(body ->
-                Mono.error(new ServerErrorException(String.format("Kall mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.SAF_ERROR))
-        );
     }
 
 }

@@ -12,12 +12,22 @@ import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.graphql.IdentGruppe;
 import no.nav.tilbakemeldingsmottak.graphql.IdentInformasjon;
 import no.nav.tilbakemeldingsmottak.graphql.Identliste;
-import no.nav.tilbakemeldingsmottak.model.*;
+import no.nav.tilbakemeldingsmottak.model.Answer;
+import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest.TidsromEnum;
+import no.nav.tilbakemeldingsmottak.model.DefaultAnswers;
+import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.model.Innmelder;
+import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest.FeiltypeEnum;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.GjelderSosialhjelpEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
+import no.nav.tilbakemeldingsmottak.model.PaaVegneAvBedrift;
+import no.nav.tilbakemeldingsmottak.model.PaaVegneAvPerson;
+import no.nav.tilbakemeldingsmottak.model.SendRosRequest;
 import no.nav.tilbakemeldingsmottak.model.SendRosRequest.HvemRosesEnum;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -28,11 +38,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.*;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.ENHETSNUMMER_PAAKLAGET;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
 import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 
 public class TestUtils {
@@ -179,7 +198,7 @@ public class TestUtils {
                 .build();
     }
 
-    public static BestillSamtaleRequest createBestillSamtaleRequest() {
+    public static no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest createBestillSamtaleRequest() {
         return BestillSamtaleRequest.builder()
                 .fornavn(FORNAVN)
                 .etternavn(ETTERNAVN)

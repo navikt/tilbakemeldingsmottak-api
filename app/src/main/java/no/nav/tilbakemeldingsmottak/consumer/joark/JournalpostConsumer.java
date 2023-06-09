@@ -14,12 +14,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
@@ -51,8 +49,8 @@ public class JournalpostConsumer {
                 .header("Nav-Callid", MDC.get(MDC_CALL_ID))
                 .header("Nav-Consumer-Id", "srvtilbakemeldings")
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, this::errorResponse)
                 .bodyToMono(OpprettJournalpostResponseTo.class)
+                .doOnError(t -> handleError(t, "JOARK (dokarkiv)"))
                 .block();
 
         if (log.isDebugEnabled()) {
@@ -63,26 +61,18 @@ public class JournalpostConsumer {
 
     }
 
-    private Mono<Throwable> errorResponse(ClientResponse statusResponse) {
-
-        if (statusResponse.statusCode().is4xxClientError()) {
-            // ClientErrorUnauthorizedException og ClientErrorException er vanligvis ikke logget som error, men nødvendig her
-            log.error("OpprettJournalpost feilet med statusKode={}", statusResponse.statusCode());
-
-            if (statusResponse.statusCode().value() == HttpStatus.FORBIDDEN.value() || statusResponse.statusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
-                return statusResponse.bodyToMono(String.class).flatMap(body ->
-                        Mono.error(new ClientErrorUnauthorizedException(String.format("Autentisering mot JOARK (dokarkiv) feilet (statusCode: %s)", statusResponse.statusCode()), new RuntimeException(body), ErrorCode.DOKARKIV_UNAUTHORIZED))
-                );
+    private void handleError(Throwable error, String tjeneste) {
+        if (error instanceof WebClientResponseException responseException) {
+            if (responseException.getStatusCode().is4xxClientError()) {
+                if (responseException.getStatusCode().value() == HttpStatus.FORBIDDEN.value() || responseException.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
+                    throw new ClientErrorUnauthorizedException(String.format("Autentisering mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.DOKARKIV_UNAUTHORIZED);
+                }
+                throw new ClientErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.DOKARKIV_ERROR);
+            } else {
+                throw new ServerErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.DOKARKIV_ERROR);
             }
-
-            return statusResponse.bodyToMono(String.class).flatMap(body ->
-                    Mono.error(new ClientErrorException(String.format("Kall mot JOARK (dokarkiv) feilet (statusCode: %s)", statusResponse.statusCode()), new RuntimeException(body), ErrorCode.DOKARKIV_ERROR))
-            );
         }
-
-        return statusResponse.bodyToMono(String.class).flatMap(body ->
-                Mono.error(new ServerErrorException(String.format("Kall mot JOARK (dokarkiv) feilet (statusCode: %s)", statusResponse.statusCode()), new RuntimeException(body), ErrorCode.DOKARKIV_ERROR))
-        );
     }
+
 
 }

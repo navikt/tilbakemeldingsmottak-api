@@ -9,6 +9,11 @@ public class ServerErrorException extends AbstractGeneralException {
         super(message);
     }
 
+    public ServerErrorException(String message, ErrorCode errorCode) {
+        super(message, errorCode);
+    }
+
+
     public ServerErrorException(String message, Throwable cause, ErrorCode errorCode) {
         super(message, cause, errorCode);
     }

@@ -11,6 +11,7 @@
                     <exclude>org\.apache\.coyote\..*</exclude>
                     <exclude>org\.apache\.catalina\..*</exclude>
                     <exclude>org\.springframework\.web\..*</exclude>
+                    <exclude>org\.springframework\.security\.web\.ObservationFilterChainDecorator</exclude>
                 </throwableConverter>
             </encoder>
 

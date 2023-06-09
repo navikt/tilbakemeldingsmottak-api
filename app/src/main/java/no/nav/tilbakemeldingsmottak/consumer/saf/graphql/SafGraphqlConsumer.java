@@ -4,20 +4,23 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJsonJournalpost;
-import no.nav.tilbakemeldingsmottak.exceptions.*;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorNotFoundException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
+import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.function.Consumer;
 
@@ -53,8 +56,8 @@ public class SafGraphqlConsumer {
                 .body(BodyInserters.fromValue(graphQLRequest))
                 .headers(getHttpHeadersAsConsumer(httpHeaders))
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, statusResponse -> errorResponse(statusResponse, "saf graphql (hent journalpost info)"))
                 .bodyToMono(SafJsonJournalpost.class)
+                .doOnError(t -> handleError(t, "saf graphql (hent journalpost info)"))
                 .block();
 
         if (respons == null || respons.getData() == null || respons.getJournalpost() == null) {
@@ -70,25 +73,17 @@ public class SafGraphqlConsumer {
         };
     }
 
-    private Mono<Throwable> errorResponse(ClientResponse statusResponse, String tjeneste) {
-
-        if (statusResponse.statusCode().is4xxClientError()) {
-            if (statusResponse.statusCode().value() == 403 || statusResponse.statusCode().value() == 401) {
-                return statusResponse.bodyToMono(String.class).flatMap(body ->
-                        Mono.error(new ClientErrorUnauthorizedException(String.format("Autentisering mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.SAF_UNAUTHORIZED))
-                );
+    private void handleError(Throwable error, String tjeneste) {
+        if (error instanceof WebClientResponseException responseException) {
+            if (responseException.getStatusCode().is4xxClientError()) {
+                if (responseException.getStatusCode().value() == HttpStatus.FORBIDDEN.value() || responseException.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
+                    throw new ClientErrorUnauthorizedException(String.format("Autentisering mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.SAF_UNAUTHORIZED);
+                }
+                throw new ClientErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.SAF_ERROR);
+            } else {
+                throw new ServerErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.SAF_ERROR);
             }
-
-            log.error("Kall mot {} feilet med statuskode {}", tjeneste, statusResponse.statusCode());
-
-            return statusResponse.bodyToMono(String.class).flatMap(body ->
-                    Mono.error(new ClientErrorException(String.format("Kall mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.SAF_ERROR))
-            );
         }
-
-        return statusResponse.bodyToMono(String.class).flatMap(body ->
-                Mono.error(new ServerErrorException(String.format("Kall mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.SAF_ERROR))
-        );
     }
 
 }

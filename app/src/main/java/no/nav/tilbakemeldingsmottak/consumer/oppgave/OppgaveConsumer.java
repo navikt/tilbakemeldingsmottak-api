@@ -15,12 +15,11 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
@@ -45,7 +44,7 @@ public class OppgaveConsumer {
     public OpprettOppgaveResponseTo opprettOppgave(OpprettOppgaveRequestTo opprettOppgaveRequestTo) {
         log.debug("Oppretter oppgave");
 
-        return webClient
+        var oppgaveResponse = webClient
                 .method(HttpMethod.POST)
                 .uri(oppgaveUrl)
                 .contentType(APPLICATION_JSON)
@@ -53,16 +52,22 @@ public class OppgaveConsumer {
                 .body(BodyInserters.fromValue(opprettOppgaveRequestTo))
                 .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, statusResponse -> errorResponse(statusResponse, "oppgave (opprett oppgave)"))
                 .bodyToMono(OpprettOppgaveResponseTo.class)
+                .doOnError(t -> handleError(t, "oppgave (opprett oppgave)"))
                 .block();
+
+        if (oppgaveResponse == null) {
+            throw new ServerErrorException("Oppgave responsen er null", ErrorCode.OPPGAVE_ERROR);
+        }
+
+        return oppgaveResponse;
     }
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "endreOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public String endreOppgave(EndreOppgaveRequestTo endreOppgaveRequestTo) {
         log.debug("Endrer oppgave");
 
-        return webClient
+        var oppgaveResponse = webClient
                 .method(HttpMethod.PATCH)
                 .uri(oppgaveUrl + "/" + endreOppgaveRequestTo.getId())
                 .contentType(APPLICATION_JSON)
@@ -70,9 +75,15 @@ public class OppgaveConsumer {
                 .body(BodyInserters.fromValue(endreOppgaveRequestTo))
                 .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, statusResponse -> errorResponse(statusResponse, "oppgave (endre oppgave)"))
                 .bodyToMono(String.class)
+                .doOnError(t -> handleError(t, "oppgave (endre oppgave)"))
                 .block();
+
+        if (oppgaveResponse == null) {
+            throw new ServerErrorException("Oppgave responsen er null", ErrorCode.OPPGAVE_ERROR);
+        }
+
+        return oppgaveResponse;
 
     }
 
@@ -80,7 +91,7 @@ public class OppgaveConsumer {
     public HentOppgaveResponseTo hentOppgave(String oppgaveId) {
         log.debug("Henter oppgave med id={}", oppgaveId);
 
-        return webClient
+        var oppgaveResponse = webClient
                 .method(HttpMethod.GET)
                 .uri(oppgaveUrl + "/" + oppgaveId)
                 .contentType(APPLICATION_JSON)
@@ -88,29 +99,29 @@ public class OppgaveConsumer {
                 .body(BodyInserters.fromValue(oppgaveId))
                 .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, statusResponse -> errorResponse(statusResponse, "oppgave (hent oppgave)"))
                 .bodyToMono(HentOppgaveResponseTo.class)
+                .doOnError(t -> handleError(t, "oppgave (hent oppgave)"))
                 .block();
+
+        if (oppgaveResponse == null) {
+            throw new ServerErrorException("Oppgave responsen er null", ErrorCode.OPPGAVE_ERROR);
+        }
+
+        return oppgaveResponse;
 
     }
 
-    private Mono<Throwable> errorResponse(ClientResponse statusResponse, String tjeneste) {
-        if (statusResponse.statusCode().is4xxClientError()) {
-            if (statusResponse.statusCode().value() == 403 || statusResponse.statusCode().value() == 401) {
-                return statusResponse.bodyToMono(String.class).flatMap(body ->
-                        Mono.error(new ClientErrorUnauthorizedException(String.format("Autentisering mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.OPPGAVE_UNAUTHORIZED))
-                );
+
+    private void handleError(Throwable error, String tjeneste) {
+        if (error instanceof WebClientResponseException responseException) {
+            if (responseException.getStatusCode().is4xxClientError()) {
+                if (responseException.getStatusCode().value() == HttpStatus.FORBIDDEN.value() || responseException.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
+                    throw new ClientErrorUnauthorizedException(String.format("Autentisering mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.OPPGAVE_UNAUTHORIZED);
+                }
+                throw new ClientErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.OPPGAVE_ERROR);
+            } else {
+                throw new ServerErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.OPPGAVE_ERROR);
             }
-
-            log.error("Kall mot {} feilet med statuskode {}", tjeneste, statusResponse.statusCode());
-
-            return statusResponse.bodyToMono(String.class).flatMap(body ->
-                    Mono.error(new ClientErrorException(String.format("Kall mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.OPPGAVE_ERROR))
-            );
         }
-
-        return statusResponse.bodyToMono(String.class).flatMap(body ->
-                Mono.error(new ServerErrorException(String.format("Kall mot %s feilet (statusCode: %s)", tjeneste, statusResponse.statusCode()), new RuntimeException(body), ErrorCode.OPPGAVE_ERROR))
-        );
     }
 }
