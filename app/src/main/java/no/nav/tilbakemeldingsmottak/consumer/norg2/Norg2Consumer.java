@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.consumer.norg2;
 
 import jakarta.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
@@ -12,7 +13,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
@@ -28,6 +33,7 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 
 @Component
+@Slf4j
 public class Norg2Consumer {
 
     private final String norg2Url;
@@ -49,7 +55,8 @@ public class Norg2Consumer {
                     HttpMethod.GET, new HttpEntity<>(createHeaders()), new ParameterizedTypeReference<List<Enhet>>() {
                     }).getBody();
         } catch (HttpClientErrorException e) {
-            if (e.getStatusCode().value() == HttpStatus.FORBIDDEN.value() || e.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
+            if (e.getStatusCode() == HttpStatus.FORBIDDEN || e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                log.error("Autentisering mot norg2 feilet", e);
                 throw new ClientErrorUnauthorizedException("Autentisering mot norg2 feilet", e, ErrorCode.NORG2_UNAUTHORIZED);
             }
             throw new ClientErrorException(String.format("Klientfeil ved kall mot norg2 for å hente enheter (statuskode:%s). Body: %s", e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.NORG2_ERROR);

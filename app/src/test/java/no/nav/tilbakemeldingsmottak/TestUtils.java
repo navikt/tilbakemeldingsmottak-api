@@ -198,7 +198,7 @@ public class TestUtils {
                 .build();
     }
 
-    public static no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest createBestillSamtaleRequest() {
+    public static BestillSamtaleRequest createBestillSamtaleRequest() {
         return BestillSamtaleRequest.builder()
                 .fornavn(FORNAVN)
                 .etternavn(ETTERNAVN)

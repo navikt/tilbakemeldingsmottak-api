@@ -1,12 +1,21 @@
 package no.nav.tilbakemeldingsmottak.consumer.ereg;
 
 import jakarta.inject.Inject;
-import no.nav.tilbakemeldingsmottak.exceptions.*;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorNotFoundException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
+import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -18,6 +27,7 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 @Component
+@Slf4j
 public class EregConsumer implements Ereg {
 
     private final String eregApiUrl;
@@ -38,7 +48,8 @@ public class EregConsumer implements Ereg {
             return restTemplate.exchange(eregApiUrl + "/v1/organisasjon/" + orgnrTrimmed,
                     HttpMethod.GET, new HttpEntity<>(headers), String.class).getBody();
         } catch (HttpClientErrorException e) {
-            if (e.getStatusCode().value() == HttpStatus.FORBIDDEN.value() || e.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
+            if (e.getStatusCode() == HttpStatus.FORBIDDEN || e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                log.error("Autentisering mot ereg feilet", e);
                 throw new ClientErrorUnauthorizedException("Autentisering mot ereg feilet", e, ErrorCode.EREG_UNAUTHORIZED);
             }
             if (e.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
