@@ -6,10 +6,7 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestT
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
-import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
-import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
-import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
-import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.*;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -117,6 +114,9 @@ public class OppgaveConsumer {
             if (responseException.getStatusCode().is4xxClientError()) {
                 if (responseException.getStatusCode().value() == HttpStatus.FORBIDDEN.value() || responseException.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
                     throw new ClientErrorUnauthorizedException(String.format("Autentisering mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.OPPGAVE_UNAUTHORIZED);
+                }
+                if (responseException.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
+                    throw new ClientErrorNotFoundException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.OPPGAVE_NOT_FOUND);
                 }
                 throw new ClientErrorException(String.format("Kall mot %s feilet (statuskode: %s). Body: %s", tjeneste, responseException.getStatusCode(), responseException.getResponseBodyAsString()), responseException, ErrorCode.OPPGAVE_ERROR);
             } else {

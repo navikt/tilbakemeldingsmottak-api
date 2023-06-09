@@ -105,6 +105,18 @@ public class ControllerAdvice {
                         .build());
     }
 
+    // 404
+    @ExceptionHandler(value = {ClientErrorNotFoundException.class})
+    public ResponseEntity<ErrorResponse> notFoundErrorResponse(HttpServletRequest request, ClientErrorNotFoundException ex) {
+        log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ErrorResponse.builder()
+                        .message(ex.getMessage())
+                        .errorCode(ex.getErrorCode().value)
+                        .build());
+    }
+
     // 500
     @ExceptionHandler(value = {ServerErrorException.class})
     public ResponseEntity<ErrorResponse> serverErrorResponse(HttpServletRequest request, ServerErrorException ex) {

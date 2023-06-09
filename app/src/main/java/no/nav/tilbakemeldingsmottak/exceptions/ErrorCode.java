@@ -9,6 +9,7 @@ public enum ErrorCode {
     // EREG
     EREG_UNAUTHORIZED("EREG_UNAUTHORIZED"), // mangler tilgang til å hente data fra ereg
     EREG_ERROR("EREG_ERROR"), // henting av organisasjonsdata feiler (feil/ugyldig orgnummer?)
+    EREG_NOT_FOUND("EREG_NOT_FOUND"), // finner ikke organisasjon
 
     // DOKARKIV
     DOKARKIV_UNAUTHORIZED("DOKARKIV_UNAUTHORIZED"), // mangler tilgang til å opprette journalpost
@@ -24,6 +25,7 @@ public enum ErrorCode {
     OPPGAVE_ERROR("OPPGAVE_ERROR"), // oppretting/endring/henting av oppgave feiler
     OPPGAVE_COMPLETED("OPPGAVE_COMPLETED"), // oppgave er allerede ferdigstilt
     OPPGAVE_MISSING_JOURNALPOST("OPPGAVE_MISSING_JOURNALPOST"), // oppgave mangler journalpost
+    OPPGAVE_NOT_FOUND("OPPGAVE_NOT_FOUND"), // finner ikke oppgave
 
     // PDL
     PDL_ERROR("PDL_ERROR"), // henting av persondata feiler (feil personnummer?)

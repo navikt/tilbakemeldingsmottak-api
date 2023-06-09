@@ -6,4 +6,8 @@ public class ClientErrorNotFoundException extends AbstractGeneralException {
         super(message, errorCode);
     }
 
+    public ClientErrorNotFoundException(String message, Throwable cause, ErrorCode errorCode) {
+        super(message, cause, errorCode);
+    }
+
 }

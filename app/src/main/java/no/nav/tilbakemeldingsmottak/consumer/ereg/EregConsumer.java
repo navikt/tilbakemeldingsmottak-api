@@ -44,9 +44,12 @@ public class EregConsumer implements Ereg {
             if (e.getStatusCode().value() == HttpStatus.FORBIDDEN.value() || e.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
                 throw new ClientErrorUnauthorizedException("Autentisering mot ereg feilet", e, ErrorCode.EREG_UNAUTHORIZED);
             }
-            throw new ClientErrorException(format("Klientfeil ved kall mot ereg for organisasjonsnummer=%s (statusCode:%s)", orgnr, e.getStatusCode()), e, ErrorCode.EREG_ERROR);
+            if (e.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
+                throw new ClientErrorUnauthorizedException(format("Klientfeil ved kall mot ereg for organisasjonsnummer=%s (statuskode:%s). Body: %s", orgnr, e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.EREG_NOT_FOUND);
+            }
+            throw new ClientErrorException(format("Klientfeil ved kall mot ereg for organisasjonsnummer=%s (statuskode:%s). Body: %s", orgnr, e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.EREG_ERROR);
         } catch (HttpServerErrorException e) {
-            throw new ServerErrorException(format("Serverfeil ved kall mot ereg for organisasjonsnummer=%s (statusCode:%s)", orgnr, e.getStatusCode()), e, ErrorCode.EREG_ERROR);
+            throw new ServerErrorException(format("Serverfeil ved kall mot ereg for organisasjonsnummer=%s (statuskode:%s). Body: %s", orgnr, e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.EREG_ERROR);
         }
     }
 

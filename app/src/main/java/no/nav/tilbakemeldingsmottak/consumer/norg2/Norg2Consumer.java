@@ -52,9 +52,9 @@ public class Norg2Consumer {
             if (e.getStatusCode().value() == HttpStatus.FORBIDDEN.value() || e.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
                 throw new ClientErrorUnauthorizedException("Autentisering mot norg2 feilet", e, ErrorCode.NORG2_UNAUTHORIZED);
             }
-            throw new ClientErrorException(String.format("Klientfeil ved kall mot norg2 for å hente enheter (statusCode:%s)", e.getStatusCode()), e, ErrorCode.NORG2_ERROR);
+            throw new ClientErrorException(String.format("Klientfeil ved kall mot norg2 for å hente enheter (statuskode:%s). Body: %s", e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.NORG2_ERROR);
         } catch (HttpServerErrorException e) {
-            throw new ServerErrorException(String.format("Serverfeil ved kall mot norg2 for å hente enheter (statusCode:%s)", e.getStatusCode()), e, ErrorCode.NORG2_ERROR);
+            throw new ServerErrorException(String.format("Serverfeil ved kall mot norg2 for å hente enheter (statuskode:%s). Body: %s", e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.NORG2_ERROR);
         }
     }
 
