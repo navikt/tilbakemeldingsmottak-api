@@ -24,7 +24,7 @@ jobs:
       run: echo running on branch ${GITHUB_REF##*/}
 
     - name: Set timezone
-      uses: szenius/set-timezone@v1.0
+      uses: szenius/set-timezone@v1.2
       with:
         timezoneLinux: "Europe/Oslo"
 
@@ -39,11 +39,6 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17.x'
-
-    - name: Set up Node 14
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14.21.3'
 
     - name: Build with maven
       env:

@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
       - name: Define build environment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -30,7 +30,7 @@ jobs:
           echo "IMAGE_NAME=$(echo ${GITHUB_REPOSITORY##/*})" >> $GITHUB_ENV
           echo "IMAGE_VERSION=$(echo ${GITHUB_WORKFLOW})-$(echo ${GITHUB_SHA})" >> $GITHUB_ENV
       - name: Read/save .m2 cache
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -40,10 +40,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '17.x'
-      - name: Set up Node 14
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.21.3'
       - name: Build with maven
         env:
           GITHUB_USERNAME: x-access-token
@@ -86,7 +82,7 @@ jobs:
           TAG=$(cat .docker_tag)
           echo "TAG=${TAG}" >> $GITHUB_ENV
       - name: Checkout code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v3
       - name: Login to Github Package Registry
         env:
           DOCKER_USERNAME: x-access-token

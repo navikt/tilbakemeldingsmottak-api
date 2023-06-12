@@ -23,7 +23,6 @@ public class SafJournalpostQueryServiceImpl implements SafJournalpostQueryServic
                     "      } \n" +
                     "    kanalnavn \n" +
                     "    datoOpprettet \n" +
-
                     "    dokumenter {\n" +
                     "      dokumentInfoId\n" +
                     "      dokumentvarianter {\n" +
@@ -51,7 +50,9 @@ public class SafJournalpostQueryServiceImpl implements SafJournalpostQueryServic
                                 .variables(Collections.singletonMap("queryJournalpostId", journalpostid))
                                 .build(), authorizationHeader))
         );
-        log.info("Hentet journalpost: " + journalpost.toString());
+
+        log.info("Hentet journalpost med journalpostId: " + journalpostid);
+
         return journalpost;
     }
 }
