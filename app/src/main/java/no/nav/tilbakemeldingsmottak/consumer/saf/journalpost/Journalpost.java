@@ -13,8 +13,6 @@ public class Journalpost {
     @Builder.Default
     private final List<DokumentInfo> dokumenter = new ArrayList<>();
     private final Bruker bruker;
-    private final String tema;
-    private final String kanalnavn;
     private final LocalDateTime datoOpprettet;
 
     @Value
