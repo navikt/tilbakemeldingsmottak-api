@@ -4,6 +4,7 @@ import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,10 @@ public class JournalpostToMapper {
     public Journalpost map(SafJournalpostTo safJournalpostTo) {
         return Journalpost.builder()
                 .dokumenter(mapDokumenter(safJournalpostTo.getDokumenter()))
+                .bruker(mapBruker(safJournalpostTo.getBruker()))
+                .tema(safJournalpostTo.getTema())
+                .kanalnavn(safJournalpostTo.getKanalnavn())
+                .datoOpprettet(mapDatoOpprettet(safJournalpostTo.getDatoOpprettet()))
                 .build();
     }
 
@@ -45,6 +50,16 @@ public class JournalpostToMapper {
                 .variantformat(stringToEnum(Variantformat.class, dokumentvariant.getVariantformat()))
                 .saksbehandlerHarTilgang(dokumentvariant.isSaksbehandlerHarTilgang())
                 .build();
+    }
+
+    private Journalpost.Bruker mapBruker(SafJournalpostTo.Bruker bruker) {
+        return Journalpost.Bruker.builder()
+                .id(bruker.getId())
+                .build();
+    }
+
+    private LocalDateTime mapDatoOpprettet(String datoOpprettet) {
+        return LocalDateTime.parse(datoOpprettet);
     }
 
     private boolean isVariantformatArkivOrSladdet(SafJournalpostTo.Dokumentvariant dokumentvariant) {

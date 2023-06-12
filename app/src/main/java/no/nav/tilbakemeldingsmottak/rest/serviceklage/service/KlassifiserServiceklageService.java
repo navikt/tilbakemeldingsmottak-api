@@ -168,7 +168,9 @@ public class KlassifiserServiceklageService {
     }
 
     private Serviceklage getOrCreateServiceklage(String journalpostId) {
-        Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
+//        Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
+        Serviceklage serviceklage = null;
+        // FIXME: Hent data fra SAF
         if (serviceklage == null) {
             serviceklage = new Serviceklage();
             serviceklage.setJournalpostId(journalpostId);

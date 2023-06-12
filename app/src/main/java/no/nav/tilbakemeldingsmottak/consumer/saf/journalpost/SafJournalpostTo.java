@@ -12,6 +12,10 @@ public class SafJournalpostTo {
 
     @Builder.Default
     private final List<DokumentInfo> dokumenter = new ArrayList<>();
+    private final Bruker bruker;
+    private final String tema;
+    private final String kanalnavn;
+    private final String datoOpprettet;
 
     @Value
     @Builder
@@ -27,5 +31,11 @@ public class SafJournalpostTo {
     public static class Dokumentvariant {
         private final String variantformat;
         private final boolean saksbehandlerHarTilgang;
+    }
+
+    @Value
+    @Builder
+    public static class Bruker {
+        private final String id;
     }
 }
