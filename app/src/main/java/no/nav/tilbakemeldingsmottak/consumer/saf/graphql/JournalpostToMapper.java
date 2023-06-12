@@ -16,8 +16,6 @@ public class JournalpostToMapper {
         return Journalpost.builder()
                 .dokumenter(mapDokumenter(safJournalpostTo.getDokumenter()))
                 .bruker(mapBruker(safJournalpostTo.getBruker()))
-                .tema(safJournalpostTo.getTema())
-                .kanalnavn(safJournalpostTo.getKanalnavn())
                 .datoOpprettet(mapDatoOpprettet(safJournalpostTo.getDatoOpprettet()))
                 .build();
     }

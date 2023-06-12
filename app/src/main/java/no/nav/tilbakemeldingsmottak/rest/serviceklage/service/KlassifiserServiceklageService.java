@@ -172,16 +172,12 @@ public class KlassifiserServiceklageService {
     }
 
     private Serviceklage getOrCreateServiceklage(String journalpostId) {
-//        Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
-        Serviceklage serviceklage = null;
-        // FIXME: Hent data fra SAF
+        Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
         if (serviceklage == null) {
             var journalPost = getJournalPost(journalpostId);
             serviceklage = new Serviceklage();
             serviceklage.setJournalpostId(journalpostId);
             serviceklage.setOpprettetDato(journalPost.getDatoOpprettet());
-            serviceklage.setTema(journalPost.getTema());
-            serviceklage.setKanal(journalPost.getKanalnavn());
             serviceklage.setKlagenGjelderId(journalPost.getBruker().getId());
         }
         return serviceklage;
