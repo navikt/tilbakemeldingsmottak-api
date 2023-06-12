@@ -8,16 +8,26 @@ import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.DataJournalpost;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJsonJournalpost;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat;
-import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.graphql.IdentGruppe;
 import no.nav.tilbakemeldingsmottak.graphql.IdentInformasjon;
 import no.nav.tilbakemeldingsmottak.graphql.Identliste;
-import no.nav.tilbakemeldingsmottak.model.*;
+import no.nav.tilbakemeldingsmottak.model.Answer;
+import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest.TidsromEnum;
+import no.nav.tilbakemeldingsmottak.model.DefaultAnswers;
+import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
+import no.nav.tilbakemeldingsmottak.model.Innmelder;
+import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
+import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest.FeiltypeEnum;
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.GjelderSosialhjelpEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
+import no.nav.tilbakemeldingsmottak.model.PaaVegneAvBedrift;
+import no.nav.tilbakemeldingsmottak.model.PaaVegneAvPerson;
+import no.nav.tilbakemeldingsmottak.model.SendRosRequest;
 import no.nav.tilbakemeldingsmottak.model.SendRosRequest.HvemRosesEnum;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -26,13 +36,22 @@ import org.springframework.util.StreamUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.*;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.ENHETSNUMMER_PAAKLAGET;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
+import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER;
 import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
 
 public class TestUtils {
@@ -100,7 +119,7 @@ public class TestUtils {
     public static final String SAKSBEHANDLER = "saksbehandler";
     public static final String DOKUMENT_INFO_ID = "dokumentInfoId";
     private static final Boolean ONSKER_KONTAKT = Boolean.TRUE;
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public static OpprettServiceklageRequest createOpprettServiceklageRequestPrivatperson() {
         return OpprettServiceklageRequest.builder()
@@ -267,7 +286,7 @@ public class TestUtils {
     public static HentSkjemaResponse createHentSkjemaResponse() {
         InputStream schema = TestUtils.class.getClassLoader().getResourceAsStream("schema/schema.yaml");
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        String classpathSkjema = StreamUtils.copyToString(schema, Charset.forName("utf-8"));
+        String classpathSkjema = StreamUtils.copyToString(schema, StandardCharsets.UTF_8);
         HentSkjemaResponse response = mapper.readValue(classpathSkjema, HentSkjemaResponse.class);
 
         List<Answer> answers = Stream.of(NAV_KONTOR_1, NAV_KONTOR_2, NAV_KONTOR_3, NAV_KONTOR_4, NAV_KONTOR_5)
@@ -277,11 +296,11 @@ public class TestUtils {
                 .collect(Collectors.toList());
 
         getQuestionById(response.getQuestions(), ENHETSNUMMER_PAAKLAGET)
-                .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + ENHETSNUMMER_PAAKLAGET))
+                .orElseThrow(() -> new ServerErrorException("Finner ikke spørsmål med id=" + ENHETSNUMMER_PAAKLAGET))
                 .setAnswers(answers);
 
         getQuestionById(response.getQuestions(), ENHETSNUMMER_BEHANDLENDE)
-                .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + ENHETSNUMMER_BEHANDLENDE))
+                .orElseThrow(() -> new ServerErrorException("Finner ikke spørsmål med id=" + ENHETSNUMMER_BEHANDLENDE))
                 .setAnswers(answers);
 
         return response;
@@ -354,7 +373,7 @@ public class TestUtils {
         SafJournalpostTo safJournalpostTo = SafJournalpostTo.builder()
                 .dokumenter(Collections.singletonList(SafJournalpostTo.DokumentInfo.builder()
                         .dokumentInfoId(DOKUMENT_INFO_ID)
-                        .dokumentvarianter(Arrays.asList())
+                        .dokumentvarianter(List.of())
                         .build()))
                 .build();
 

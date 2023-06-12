@@ -6,17 +6,17 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestT
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
-import no.nav.tilbakemeldingsmottak.exceptions.oppgave.*;
+import no.nav.tilbakemeldingsmottak.exceptions.*;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
@@ -39,9 +39,9 @@ public class OppgaveConsumer {
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "opprettOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public OpprettOppgaveResponseTo opprettOppgave(OpprettOppgaveRequestTo opprettOppgaveRequestTo) {
-        log.debug("Oppretter oppgave");
+        log.info("Oppretter oppgave for journalpostId: {}", opprettOppgaveRequestTo.getJournalpostId());
 
-        return webClient
+        var oppgaveResponse = webClient
                 .method(HttpMethod.POST)
                 .uri(oppgaveUrl)
                 .contentType(APPLICATION_JSON)
@@ -49,28 +49,22 @@ public class OppgaveConsumer {
                 .body(BodyInserters.fromValue(opprettOppgaveRequestTo))
                 .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, statusResponse -> {
-                    log.error(String.format("OpprettOppgave feilet med statusKode=%s", statusResponse.statusCode()));
-                    if (statusResponse.statusCode().is5xxServerError()) {
-                        throw new OpprettOppgaveTechnicalException(String.format("OpprettOppgave feilet teknisk med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot oppgave feilet"));
-                    } else if (statusResponse.statusCode().is4xxClientError()) {
-                        throw new OpprettOppgaveFunctionalException(String.format("OpprettOppgave feilet funksjonelt med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot oppgave feilet"));
-                    }
-                    return Mono.error(new IllegalStateException(
-                            String.format("OpprettOppgave feilet med statusKode=%s", statusResponse.statusCode())));
-
-                })
                 .bodyToMono(OpprettOppgaveResponseTo.class)
+                .doOnError(t -> handleError(t, "oppgave (opprett oppgave)"))
                 .block();
+
+        if (oppgaveResponse == null) {
+            throw new ServerErrorException("Klarte ikke opprette oppgave", ErrorCode.OPPGAVE_ERROR);
+        }
+
+        return oppgaveResponse;
     }
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "endreOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public String endreOppgave(EndreOppgaveRequestTo endreOppgaveRequestTo) {
-        log.debug("Endrer oppgave");
+        log.info("Endrer oppgave for id: {} journalpostId: {}", endreOppgaveRequestTo.getId(), endreOppgaveRequestTo.getJournalpostId());
 
-        return webClient
+        var oppgaveResponse = webClient
                 .method(HttpMethod.PATCH)
                 .uri(oppgaveUrl + "/" + endreOppgaveRequestTo.getId())
                 .contentType(APPLICATION_JSON)
@@ -78,29 +72,23 @@ public class OppgaveConsumer {
                 .body(BodyInserters.fromValue(endreOppgaveRequestTo))
                 .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, statusResponse -> {
-                    log.error(String.format("EndreOppgave feilet med statusKode=%s", statusResponse.statusCode()));
-                    if (statusResponse.statusCode().is5xxServerError()) {
-                        throw new EndreOppgaveTechnicalException(String.format("EndreOppgave feilet teknisk med statusKode=%1$s for id = %2$s.", statusResponse
-                                .statusCode(), endreOppgaveRequestTo.getId()), new RuntimeException("Kall mot oppgave feilet"));
-                    } else if (statusResponse.statusCode().is4xxClientError()) {
-                        throw new EndreOppgaveFunctionalException(String.format("EndreOppgave feilet funksjonelt med statusKode=%1$s for id = %2$s.", statusResponse
-                                .statusCode(), endreOppgaveRequestTo.getId()), new RuntimeException("Kall mot oppgave feilet"));
-                    }
-                    return Mono.error(new IllegalStateException(
-                            String.format("EndreOppgave feilet med statusKode=%1$s for id = %2$s ", statusResponse.statusCode(), endreOppgaveRequestTo.getId())));
-
-                })
                 .bodyToMono(String.class)
+                .doOnError(t -> handleError(t, "oppgave (endre oppgave)"))
                 .block();
+
+        if (oppgaveResponse == null) {
+            throw new ServerErrorException("Klarte ikke endre oppgave", ErrorCode.OPPGAVE_ERROR);
+        }
+
+        return oppgaveResponse;
 
     }
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public HentOppgaveResponseTo hentOppgave(String oppgaveId) {
-        log.debug("Henter oppgave med id={}", oppgaveId);
+        log.info("Henter oppgave med id={}", oppgaveId);
 
-        return webClient
+        var oppgaveResponse = webClient
                 .method(HttpMethod.GET)
                 .uri(oppgaveUrl + "/" + oppgaveId)
                 .contentType(APPLICATION_JSON)
@@ -108,21 +96,36 @@ public class OppgaveConsumer {
                 .body(BodyInserters.fromValue(oppgaveId))
                 .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, statusResponse -> {
-                    log.error(String.format("HentOppgave feilet med statusKode=%s", statusResponse.statusCode()));
-                    if (statusResponse.statusCode().is5xxServerError()) {
-                        throw new HentOppgaveTechnicalException(String.format("HentOppgave feilet teknisk med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot oppgave feilet"));
-                    } else if (statusResponse.statusCode().is4xxClientError()) {
-                        throw new HentOppgaveFunctionalException(String.format("HentOppgave feilet funksjonelt med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot oppgave feilet"));
-                    }
-                    return Mono.error(new IllegalStateException(
-                            String.format("HentOppgave feilet med statusKode=%s", statusResponse.statusCode())));
-
-                })
                 .bodyToMono(HentOppgaveResponseTo.class)
+                .doOnError(t -> handleError(t, "oppgave (hent oppgave)"))
                 .block();
 
+        if (oppgaveResponse == null) {
+            throw new ServerErrorException("Klarte ikke hente oppgave", ErrorCode.OPPGAVE_ERROR);
+        }
+
+        return oppgaveResponse;
+
+    }
+
+
+    private void handleError(Throwable error, String serviceName) {
+        if (error instanceof WebClientResponseException responseException) {
+            var statusCode = responseException.getStatusCode();
+            var responseBody = responseException.getResponseBodyAsString();
+            var errorMessage = String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody);
+
+            if (statusCode.is4xxClientError()) {
+                if (statusCode == HttpStatus.FORBIDDEN || statusCode == HttpStatus.UNAUTHORIZED) {
+                    throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.OPPGAVE_UNAUTHORIZED);
+                } else if (statusCode == HttpStatus.NOT_FOUND) {
+                    throw new ClientErrorNotFoundException(errorMessage, responseException, ErrorCode.OPPGAVE_NOT_FOUND);
+                } else {
+                    throw new ClientErrorException(errorMessage, responseException, ErrorCode.OPPGAVE_ERROR);
+                }
+            } else {
+                throw new ServerErrorException(errorMessage, responseException, ErrorCode.OPPGAVE_ERROR);
+            }
+        }
     }
 }

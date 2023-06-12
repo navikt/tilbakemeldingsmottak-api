@@ -4,21 +4,19 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJsonJournalpost;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentTechnicalException;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostIkkeFunnetFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostQueryTechnicalException;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.SafJournalpostQueryUnauthorizedException;
+import no.nav.tilbakemeldingsmottak.exceptions.*;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.function.Consumer;
 
@@ -42,7 +40,7 @@ public class SafGraphqlConsumer {
     }
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "safJournalpostquery"}, percentiles = {0.5, 0.95}, histogram = true)
-    @Retryable(include = SafJournalpostQueryTechnicalException.class, maxAttempts = 3, backoff = @Backoff(delay = 500))
+    @Retryable(include = ServerErrorException.class, maxAttempts = 3, backoff = @Backoff(delay = 500))
     public SafJournalpostTo performQuery(GraphQLRequest graphQLRequest, String authorizationHeader) {
 
         HttpHeaders httpHeaders = createAuthHeaderFromToken(authorizationHeader);
@@ -54,25 +52,14 @@ public class SafGraphqlConsumer {
                 .body(BodyInserters.fromValue(graphQLRequest))
                 .headers(getHttpHeadersAsConsumer(httpHeaders))
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, statusResponse -> {
-                    log.error(String.format("Query mot SAF tjenesten feilet med statusKode=%s", statusResponse.statusCode()));
-                    if (statusResponse.statusCode().is5xxServerError()) {
-                        throw new SafJournalpostQueryTechnicalException(String.format("Henting av journalpost feilet med status: %s, feilmelding: %s", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot arkivet feilet"));
-                    } else if (statusResponse.statusCode().is4xxClientError()) {
-                        throw new SafJournalpostQueryUnauthorizedException(String.format("Henting av journalpost feilet med status: %s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot arkivet feilet"));
-                    }
-                    throw new SafHentDokumentTechnicalException(String.format("Henting av journalpost feilet med status: %s.", statusResponse
-                            .statusCode()), new RuntimeException("Kall mot arkivet feilet"));
-
-                })
                 .bodyToMono(SafJsonJournalpost.class)
+                .doOnError(t -> handleError(t, "saf graphql (hent journalpost info)"))
                 .block();
 
         if (respons == null || respons.getData() == null || respons.getJournalpost() == null) {
-            throw new SafJournalpostIkkeFunnetFunctionalException("Ingen journalpost ble funnet");
+            throw new ClientErrorNotFoundException("Ingen journalpost ble funnet", ErrorCode.SAF_NOT_FOUND);
         }
+        
         return respons.getJournalpost();
 
     }
@@ -81,6 +68,24 @@ public class SafGraphqlConsumer {
         return consumer -> {
             consumer.addAll(httpHeaders);
         };
+    }
+
+    private void handleError(Throwable error, String serviceName) {
+        if (error instanceof WebClientResponseException responseException) {
+            var statusCode = responseException.getStatusCode();
+            var responseBody = responseException.getResponseBodyAsString();
+            var errorMessage = String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody);
+
+            if (statusCode.is4xxClientError()) {
+                if (statusCode == HttpStatus.FORBIDDEN || statusCode == HttpStatus.UNAUTHORIZED) {
+                    throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.SAF_UNAUTHORIZED);
+                } else {
+                    throw new ClientErrorException(errorMessage, responseException, ErrorCode.SAF_ERROR);
+                }
+            } else {
+                throw new ServerErrorException(errorMessage, responseException, ErrorCode.SAF_ERROR);
+            }
+        }
     }
 
 }

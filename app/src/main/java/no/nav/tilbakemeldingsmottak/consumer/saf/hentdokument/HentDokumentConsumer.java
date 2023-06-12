@@ -2,9 +2,7 @@ package no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument;
 
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakTechnicalException;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.saf.SafHentDokumentTechnicalException;
+import no.nav.tilbakemeldingsmottak.exceptions.*;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,12 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.function.Consumer;
 
@@ -41,7 +38,7 @@ public class HentDokumentConsumer implements HentDokument {
     }
 
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "hentDokument"}, percentiles = {0.5, 0.95}, histogram = true)
-    @Retryable(include = AbstractTilbakemeldingsmottakTechnicalException.class, backoff = @Backoff(delay = 3, multiplier = 500))
+    @Retryable(include = ServerErrorException.class, backoff = @Backoff(delay = 3, multiplier = 500))
     public HentDokumentResponseTo hentDokument(String journalpostId, String dokumentInfoId, String variantFormat, String token) {
         HttpHeaders httpHeaders = createAuthHeaderFromToken(token);
         log.info("Henter dokument fra saf journalpostId={}, dokumentInfoId={}, variantFormat={}", journalpostId, dokumentInfoId, variantFormat);
@@ -52,25 +49,14 @@ public class HentDokumentConsumer implements HentDokument {
                 .header("Nav-Callid", MDC.get(MDC_CALL_ID))
                 .header("Nav-Consumer-Id", "srvtilbakemeldings")
                 .retrieve()
-                .onStatus(HttpStatusCode::isError, statusResponse -> {
-                    if (HttpStatus.FORBIDDEN.value() == statusResponse.statusCode().value()) {
-                        log.warn(String.format("Kall mot saf feilet med statusKode=%s", statusResponse.statusCode()));
-                    } else {
-                        log.error(String.format("Kall mot saf feilet med statusKode=%s", statusResponse.statusCode()));
-                    }
-                    if (statusResponse.statusCode().is5xxServerError()) {
-                        throw new SafHentDokumentTechnicalException(String.format("Kall mot saf:hentdokument feilet teknisk med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot arkivet feilet"));
-                    } else if (statusResponse.statusCode().is4xxClientError()) {
-                        throw new SafHentDokumentFunctionalException(String.format("Kall mot saf:hentdokument feilet teknisk med statusKode=%s.", statusResponse
-                                .statusCode()), new RuntimeException("Kall mot arkivet feilet"));
-                    }
-                    return Mono.error(new IllegalStateException(
-                            String.format("Kall mot saf feilet med statusKode=%s", statusResponse.statusCode())));
-
-                })
                 .bodyToMono(byte[].class)
+                .doOnError(t -> handleError(t, "saf (hent dokument)"))
                 .block();
+
+        if (dokument == null) {
+            throw new ServerErrorException("SAF dokument responsen er null", ErrorCode.SAF_ERROR);
+        }
+
         return mapResponse(dokument, journalpostId, dokumentInfoId, variantFormat);
 
     }
@@ -81,8 +67,8 @@ public class HentDokumentConsumer implements HentDokument {
                     .dokument(dokument)
                     .build();
         } catch (Exception e) {
-            throw new SafHentDokumentFunctionalException(String.format("Kunne ikke dekode dokument, da dokumentet ikke er base64-encodet journalpostId=%s, dokumentInfoId=%s, variantFormat=%s. Feilmelding=%s", journalpostId, dokumentInfoId, variantFormat, e
-                    .getMessage()), e);
+            var errorMessage = String.format("Kunne ikke dekode dokument, da dokumentet ikke er base64-encodet journalpostId=%s, dokumentInfoId=%s, variantFormat=%s. Feilmelding=%s", journalpostId, dokumentInfoId, variantFormat, e.getMessage());
+            throw new ServerErrorException(errorMessage, e);
         }
     }
 
@@ -90,6 +76,26 @@ public class HentDokumentConsumer implements HentDokument {
         return consumer -> {
             consumer.addAll(httpHeaders);
         };
+    }
+
+    private void handleError(Throwable error, String serviceName) {
+        if (error instanceof WebClientResponseException responseException) {
+            var statusCode = responseException.getStatusCode();
+            var responseBody = responseException.getResponseBodyAsString();
+            var errorMessage = String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody);
+
+            if (statusCode.is4xxClientError()) {
+                if (statusCode == HttpStatus.FORBIDDEN || statusCode == HttpStatus.UNAUTHORIZED) {
+                    throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.SAF_UNAUTHORIZED);
+                } else if (statusCode == HttpStatus.NOT_FOUND) {
+                    throw new ClientErrorNotFoundException(errorMessage, responseException, ErrorCode.SAF_NOT_FOUND);
+                } else {
+                    throw new ClientErrorException(errorMessage, responseException, ErrorCode.SAF_ERROR);
+                }
+            } else {
+                throw new ServerErrorException(errorMessage, responseException, ErrorCode.SAF_ERROR);
+            }
+        }
     }
 
 }

@@ -82,7 +82,6 @@
         <javax.xml-bind.version>2.3.1</javax.xml-bind.version>
         <versions-maven-plugin>2.15.0</versions-maven-plugin>
         <poi.version>5.2.3</poi.version>
-        <logback.version>1.4.7</logback.version>
 
         <!-- Maven plugins -->
         <wagon-webdav-jackrabbit.version>3.5.3</wagon-webdav-jackrabbit.version>

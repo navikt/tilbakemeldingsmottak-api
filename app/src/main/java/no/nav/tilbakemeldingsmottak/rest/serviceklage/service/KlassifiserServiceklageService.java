@@ -12,10 +12,10 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestT
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
-import no.nav.tilbakemeldingsmottak.exceptions.InvalidRequestException;
-import no.nav.tilbakemeldingsmottak.exceptions.RequestParsingException;
-import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageIkkeFunnetException;
-import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorNotFoundException;
+import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.model.Answer;
 import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest;
@@ -96,7 +96,7 @@ public class KlassifiserServiceklageService {
 
     private void sendKvittering(Serviceklage serviceklage, HentOppgaveResponseTo hentOppgaveResponseTo) throws JsonProcessingException {
 
-        String email = oicdUtils.getEmailForIssuer(AZURE_ISSUER).orElseThrow(() -> new ServiceklageIkkeFunnetException("Fant ikke email-adresse i token"));
+        String email = oicdUtils.getEmailForIssuer(AZURE_ISSUER).orElseThrow(() -> new ClientErrorNotFoundException("Fant ikke email-adresse i token", ErrorCode.TOKEN_EMAIL_MISSING));
         log.info("Kvittering på innsendt klassifiseringsskjema sendes til epost: {}", email);
 
         LinkedHashMap<String, String> questionAnswerMap = createQuestionAnswerMap(serviceklage, hentOppgaveResponseTo);
@@ -132,9 +132,9 @@ public class KlassifiserServiceklageService {
     private void addEntriesToQuestionAnswerMap(Map<String, String> answersMap, List<Question> questions, Map<String, String> questionAnswerMap) {
         for (Question q : questions) {
             String questionId = q.getId();
-            if (answersMap.keySet().contains(q.getId()) && !questionAnswerMap.keySet().contains(q.getText())) {
+            if (answersMap.containsKey(q.getId()) && !questionAnswerMap.containsKey(q.getText())) {
                 String question = getQuestionById(questions, questionId)
-                        .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + questionId))
+                        .orElseThrow(() -> new ServerErrorException("Finner ikke spørsmål med id=" + questionId))
                         .getText();
                 questionAnswerMap.put(question, answersMap.get(questionId));
             }
@@ -158,7 +158,7 @@ public class KlassifiserServiceklageService {
         if (skjemaResponse.getDefaultAnswers() == null || skjemaResponse.getDefaultAnswers().getAnswers() == null) {
             return false;
         }
-        return skjemaResponse.getDefaultAnswers().getAnswers().keySet().contains(entry.getKey().toString());
+        return skjemaResponse.getDefaultAnswers().getAnswers().containsKey(entry.getKey().toString());
     }
 
     private void opprettSlettingOppgave(HentOppgaveResponseTo hentOppgaveResponseTo) {
@@ -203,7 +203,7 @@ public class KlassifiserServiceklageService {
         try {
             serviceklage.setKlassifiseringJson(new ObjectMapper().writeValueAsString(request));
         } catch (JsonProcessingException e) {
-            throw new RequestParsingException("Kan ikke konvertere klassifiseringsrequest til JSON-string");
+            throw new ServerErrorException("Kan ikke konvertere klassifiseringsrequest til JSON-string", e);
         }
     }
 
@@ -251,6 +251,6 @@ public class KlassifiserServiceklageService {
                 return enhetsnummer;
             }
         }
-        throw new InvalidRequestException("Klarer ikke å hente ut enhetsnummer for enhet=" + enhet);
+        throw new ClientErrorException("Klarer ikke å hente ut enhetsnummer for enhet=" + enhet);
     }
 }

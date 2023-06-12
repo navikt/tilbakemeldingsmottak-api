@@ -75,7 +75,7 @@ public class ServiceklagerBigQuery {
 
             log.info("Inserting rows into Big Query");
 
-            if (Arrays.asList(env.getActiveProfiles()).contains("local")) {
+            if (Arrays.asList(env.getActiveProfiles()).contains("local") || Arrays.asList(env.getActiveProfiles()).contains("itest")) {
                 log.info("Skal ikke legge til rader i big query i lokal env");
                 return;
             }

@@ -2,7 +2,19 @@
 <configuration>
     <springProfile name="nais">
         <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                    <rootCauseFirst>true</rootCauseFirst>
+                    <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                    <exclude>java\.util\.concurrent\..*</exclude>
+                    <exclude>org\.apache\.tomcat\..*</exclude>
+                    <exclude>org\.apache\.coyote\..*</exclude>
+                    <exclude>org\.apache\.catalina\..*</exclude>
+                    <exclude>org\.springframework\.web\..*</exclude>
+                    <exclude>org\.springframework\.security\.web\.ObservationFilterChainDecorator</exclude>
+                </throwableConverter>
+            </encoder>
+
         </appender>
 
         <root level="INFO">

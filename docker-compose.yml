@@ -59,7 +59,7 @@ services:
                 "sub": "tilbakemeldingsmottak-api",
                 "aud": "tokenx-client-id",
                 "NAVident": "A123456",
-                "pid": "12345678910",
+                "pid": "28898698736",
                 "name": "Test Testesen"
               }
             }
@@ -118,6 +118,14 @@ services:
       - "8096:8080"
     volumes:
       - ./stubs/pdl:/home/wiremock
+
+  ereg-mock:
+    container_name: ereg-mock
+    image: wiremock/wiremock
+    ports:
+      - "8097:8080"
+    volumes:
+      - ./stubs/ereg:/home/wiremock
 
 
 volumes:

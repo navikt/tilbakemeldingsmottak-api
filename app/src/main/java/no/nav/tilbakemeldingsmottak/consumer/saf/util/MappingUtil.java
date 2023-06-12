@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.util;
 
-import no.nav.tilbakemeldingsmottak.exceptions.saf.InvalidMappingToEnumFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
 
 import static java.lang.String.format;
 
@@ -13,7 +13,7 @@ public final class MappingUtil {
         try {
             return enumName == null ? null : Enum.valueOf(enumClass, enumName);
         } catch (IllegalArgumentException e) {
-            throw new InvalidMappingToEnumFunctionalException(format("%s er ikke en gyldig kodeverdi for %s", enumName, enumClass));
+            throw new ClientErrorException(format("%s er ikke en gyldig kodeverdi for %s", enumName, enumClass), e);
         }
     }
 }

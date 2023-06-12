@@ -4,7 +4,7 @@ import io.micrometer.core.annotation.Incubating;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.lang.NonNullApi;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.exceptions.AbstractTilbakemeldingsmottakFunctionalException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -77,6 +77,6 @@ public class DokTimedAspect {
     }
 
     private boolean isFunctionalException(Throwable e) {
-        return e instanceof AbstractTilbakemeldingsmottakFunctionalException;
+        return e instanceof ClientErrorException;
     }
 }

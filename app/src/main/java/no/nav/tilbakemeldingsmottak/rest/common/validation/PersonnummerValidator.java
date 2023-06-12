@@ -1,7 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.common.validation;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.tilbakemeldingsmottak.exceptions.InvalidIdentException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
 import org.springframework.stereotype.Component;
 
 import static java.lang.Character.getNumericValue;
@@ -26,7 +26,7 @@ public class PersonnummerValidator {
         if (ident.matches("\\d{11}")) {
             validateControlDigits(ident);
         } else {
-            throw new InvalidIdentException(FEILMELDING);
+            throw new ClientErrorException(FEILMELDING);
         }
     }
 
@@ -47,11 +47,11 @@ public class PersonnummerValidator {
         int calcC2 = calculateControlDigit(ident, CONTROL_DIGIT_C2);
 
         if (calcC1 == INVALID_CONTROL_DIGIT || calcC2 == INVALID_CONTROL_DIGIT) {
-            throw new InvalidIdentException(FEILMELDING);
+            throw new ClientErrorException(FEILMELDING);
         }
 
         if (c1 != calcC1 || c2 != calcC2) {
-            throw new InvalidIdentException(FEILMELDING);
+            throw new ClientErrorException(FEILMELDING);
         }
     }
 

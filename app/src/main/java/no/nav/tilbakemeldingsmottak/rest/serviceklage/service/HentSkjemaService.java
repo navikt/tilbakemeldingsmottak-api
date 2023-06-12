@@ -5,8 +5,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.norg2.Enhet;
 import no.nav.tilbakemeldingsmottak.consumer.norg2.Norg2Consumer;
-import no.nav.tilbakemeldingsmottak.exceptions.SkjemaConstructionException;
-import no.nav.tilbakemeldingsmottak.exceptions.SkjemaSerializationException;
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.model.Answer;
 import no.nav.tilbakemeldingsmottak.model.DefaultAnswers;
 import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse;
@@ -19,6 +18,7 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +35,11 @@ public class HentSkjemaService {
     private static final String NEDLAGT = "nedlagt";
     private static final String ANNET = "Annet";
     private static final String SCHEMA_PATH = "classpath:schema/schema.yaml";
-    private static final Charset CHARSET = Charset.forName("utf-8");
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
     private final ServiceklageRepository serviceklageRepository;
     private final Norg2Consumer norg2Consumer;
     private final String classpathSkjema;
-    private ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+    private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
     public HentSkjemaService(@Value(SCHEMA_PATH) Resource schema,
                              ServiceklageRepository serviceklageRepository,
@@ -56,11 +56,11 @@ public class HentSkjemaService {
         List<Answer> enheter = hentEnheter();
 
         getQuestionById(response.getQuestions(), ENHETSNUMMER_PAAKLAGET)
-                .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + ENHETSNUMMER_PAAKLAGET))
+                .orElseThrow(() -> new ServerErrorException("Finner ikke spørsmål med id=" + ENHETSNUMMER_PAAKLAGET))
                 .setAnswers(enheter);
 
         getQuestionById(response.getQuestions(), ENHETSNUMMER_BEHANDLENDE)
-                .orElseThrow(() -> new SkjemaConstructionException("Finner ikke spørsmål med id=" + ENHETSNUMMER_BEHANDLENDE))
+                .orElseThrow(() -> new ServerErrorException("Finner ikke spørsmål med id=" + ENHETSNUMMER_BEHANDLENDE))
                 .setAnswers(enheter);
 
         Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
@@ -78,7 +78,7 @@ public class HentSkjemaService {
         try {
             return mapper.readValue(classpathSkjema, HentSkjemaResponse.class);
         } catch (Exception e) {
-            throw new SkjemaSerializationException("Feil under serialisering av skjema");
+            throw new ServerErrorException("Feil under serialisering av skjema", e);
         }
     }
 

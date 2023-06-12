@@ -7,9 +7,9 @@ import no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument.HentDokumentConsum
 import no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument.HentDokumentResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat;
-import no.nav.tilbakemeldingsmottak.exceptions.JournalpostManglerDokumentException;
+import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
+import no.nav.tilbakemeldingsmottak.exceptions.NoContentException;
 import no.nav.tilbakemeldingsmottak.model.HentDokumentResponse;
-import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,6 @@ public class HentDokumentService {
     private final SafJournalpostQueryService safJournalpostQueryService;
     private final HentDokumentConsumer hentDokumentConsumer;
     private final OidcUtils oidcUtils;
-    private final PdfService pdfService;
 
     public HentDokumentResponse hentDokument(String journalpostId) {
         String authorizationHeader = "Bearer " + oidcUtils.getFirstValidToken();
@@ -31,7 +30,7 @@ public class HentDokumentService {
         Variantformat variantformat;
         Journalpost.DokumentInfo dokumentInfo;
         if (isEmpty(journalpost.getDokumenter())) {
-            throw new JournalpostManglerDokumentException(String.format("Fant ingen dokument på journalpost %s", journalpostId));
+            throw new NoContentException(String.format("Fant ingen dokument på journalpost %s", journalpostId), ErrorCode.JOURNALPOST_MISSING_DOKUMENT);
         } else {
             dokumentInfo = journalpost.getDokumenter().get(0);
             if (dokumentInfo.getDokumentvarianter().stream().anyMatch(d -> d.getVariantformat().equals(Variantformat.SLADDET))) {
@@ -39,7 +38,7 @@ public class HentDokumentService {
             } else if (dokumentInfo.getDokumentvarianter().stream().anyMatch(d -> d.getVariantformat().equals(Variantformat.ARKIV))) {
                 variantformat = Variantformat.ARKIV;
             } else {
-                throw new JournalpostManglerDokumentException(String.format("Fant ingen tilgjengelig dokument på journalpost %s", journalpostId));
+                throw new NoContentException(String.format("Fant ingen tilgjengelig dokument på journalpost %s", journalpostId), ErrorCode.JOURNALPOST_MISSING_DOKUMENT);
             }
         }
 

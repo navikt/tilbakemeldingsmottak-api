@@ -1,8 +1,12 @@
 package no.nav.tilbakemeldingsmottak.consumer.ereg;
 
 import jakarta.inject.Inject;
-import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregFunctionalException;
-import no.nav.tilbakemeldingsmottak.exceptions.ereg.EregTechnicalException;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorNotFoundException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
+import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -22,6 +27,7 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
 @Component
+@Slf4j
 public class EregConsumer implements Ereg {
 
     private final String eregApiUrl;
@@ -33,6 +39,7 @@ public class EregConsumer implements Ereg {
         this.eregApiUrl = eregApiUrl;
     }
 
+    // FIXME: Bytt til WebClient
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "eregHentInfo"}, percentiles = {0.5, 0.95}, histogram = true)
     public String hentInfo(String orgnr) {
         try {
@@ -41,11 +48,16 @@ public class EregConsumer implements Ereg {
             return restTemplate.exchange(eregApiUrl + "/v1/organisasjon/" + orgnrTrimmed,
                     HttpMethod.GET, new HttpEntity<>(headers), String.class).getBody();
         } catch (HttpClientErrorException e) {
-            throw new EregFunctionalException(format("Funksjonell feil ved kall mot ereg:hentNoekkelinfo for organisasjonsnummer=%s. feilmelding=%s",
-                    orgnr, e.getMessage()), e);
+            if (e.getStatusCode() == HttpStatus.FORBIDDEN || e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                log.error("Autentisering mot ereg feilet", e);
+                throw new ClientErrorUnauthorizedException("Autentisering mot ereg feilet", e, ErrorCode.EREG_UNAUTHORIZED);
+            }
+            if (e.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
+                throw new ClientErrorNotFoundException(format("Klientfeil ved kall mot ereg for organisasjonsnummer=%s (statuskode:%s). Body: %s", orgnr, e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.EREG_NOT_FOUND);
+            }
+            throw new ClientErrorException(format("Klientfeil ved kall mot ereg for organisasjonsnummer=%s (statuskode:%s). Body: %s", orgnr, e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.EREG_ERROR);
         } catch (HttpServerErrorException e) {
-            throw new EregTechnicalException(format("Teknisk feil ved kall mot ereg:hentNoekkelinfo for organisasjonsnummer=%s. Feilmelding=%s",
-                    orgnr, e.getMessage()), e);
+            throw new ServerErrorException(format("Serverfeil ved kall mot ereg for organisasjonsnummer=%s (statuskode:%s). Body: %s", orgnr, e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.EREG_ERROR);
         }
     }
 

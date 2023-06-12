@@ -4,7 +4,7 @@ import jakarta.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException;
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
-import no.nav.tilbakemeldingsmottak.exceptions.ServiceklageMailException;
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class ServiceklageMailHelper {
             List<String> mottakere = new ArrayList<>(Arrays.asList(toAddress.split(";")));
             emailService.sendMessageWithAttachments(mottakere, subject, text, fysiskDokument, "klage.pdf");
         } catch (SendEmailException e) {
-            throw new ServiceklageMailException("Kan ikke sende mail");
+            throw new ServerErrorException("Kan ikke sende mail", e);
         }
     }
 
