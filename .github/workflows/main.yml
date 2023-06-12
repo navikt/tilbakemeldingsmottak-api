@@ -5,14 +5,12 @@ on:
       - 'main'
     paths-ignore:
       - '**.md'
-      - '.github/workflows/preprod-pipeline.yml'
       - '.github/workflows/manual-deployment.yml'
   pull_request:
     branches:
       - 'main'
     paths-ignore:
       - '**.md'
-      - '.github/workflows/preprod-pipeline.yml'
       - '.github/workflows/manual-deployment.yml'
 
 jobs:
