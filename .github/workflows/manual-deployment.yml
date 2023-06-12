@@ -59,7 +59,7 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: .nais/nais.yml
           VARS: .nais/preprod-config.json
-          VAR: image=${{needs.docker-build-push.outputs.image}}
+          VAR: image=${{needs.build-and-push.outputs.image}}
           DRY_RUN: false
 
   deploy-prod:
@@ -73,7 +73,7 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
           RESOURCE: .nais/nais.yml
-          VAR: image=${{needs.docker-build-push.outputs.image}}
+          VAR: image=${{needs.build-and-push.outputs.image}}
           VARS: .nais/p-config.json
           DRY_RUN: false
 
