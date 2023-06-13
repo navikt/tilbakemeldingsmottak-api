@@ -4,11 +4,7 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
-import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
-import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorForbiddenException;
-import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
-import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
-import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.*;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,7 +24,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Slf4j
 @Component
 public class JournalpostConsumer {
-
+    
     private static final String FORSOEK_FERDIGSTILL = "?forsoekFerdigstill=true";
     @Inject
     @Qualifier("arkivClient")

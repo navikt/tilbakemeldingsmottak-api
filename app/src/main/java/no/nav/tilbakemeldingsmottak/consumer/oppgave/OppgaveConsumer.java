@@ -6,12 +6,7 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestT
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
-import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
-import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorForbiddenException;
-import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorNotFoundException;
-import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
-import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
-import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.*;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
