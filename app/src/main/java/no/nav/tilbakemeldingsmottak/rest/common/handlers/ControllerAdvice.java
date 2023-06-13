@@ -112,6 +112,18 @@ public class ControllerAdvice {
                         .build());
     }
 
+    // 403
+    @ExceptionHandler(value = {ClientErrorForbiddenException.class})
+    public ResponseEntity<ErrorResponse> forbidddenErrorResponse(HttpServletRequest request, ClientErrorForbiddenException ex) {
+        log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ErrorResponse.builder()
+                        .message(ex.getMessage())
+                        .errorCode(ex.getErrorCode().value)
+                        .build());
+    }
+
     // 404
     @ExceptionHandler(value = {ClientErrorNotFoundException.class})
     public ResponseEntity<ErrorResponse> notFoundErrorResponse(HttpServletRequest request, ClientErrorNotFoundException ex) {

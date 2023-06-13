@@ -4,10 +4,7 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
-import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
-import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
-import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
-import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.*;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,7 +24,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Slf4j
 @Component
 public class JournalpostConsumer {
-
+    
     private static final String FORSOEK_FERDIGSTILL = "?forsoekFerdigstill=true";
     @Inject
     @Qualifier("arkivClient")
@@ -69,15 +66,20 @@ public class JournalpostConsumer {
             var responseBody = responseException.getResponseBodyAsString();
             var errorMessage = String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody);
 
-            if (statusCode.is4xxClientError()) {
-                if (statusCode == HttpStatus.FORBIDDEN || statusCode == HttpStatus.UNAUTHORIZED) {
-                    throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.DOKARKIV_UNAUTHORIZED);
-                }
-
-                throw new ClientErrorException(errorMessage, responseException, ErrorCode.DOKARKIV_ERROR);
-            } else {
-                throw new ServerErrorException(errorMessage, responseException, ErrorCode.DOKARKIV_ERROR);
+            if (statusCode == HttpStatus.UNAUTHORIZED) {
+                throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.DOKARKIV_UNAUTHORIZED);
             }
+
+            if (statusCode == HttpStatus.FORBIDDEN) {
+                throw new ClientErrorForbiddenException(errorMessage, responseException, ErrorCode.DOKARKIV_FORBIDDEN);
+            }
+
+            if (statusCode.is4xxClientError()) {
+                throw new ClientErrorException(errorMessage, responseException, ErrorCode.DOKARKIV_ERROR);
+            }
+
+            throw new ServerErrorException(errorMessage, responseException, ErrorCode.DOKARKIV_ERROR);
+
         }
     }
 

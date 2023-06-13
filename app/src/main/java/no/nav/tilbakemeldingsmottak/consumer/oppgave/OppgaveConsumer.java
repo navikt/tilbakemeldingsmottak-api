@@ -115,17 +115,24 @@ public class OppgaveConsumer {
             var responseBody = responseException.getResponseBodyAsString();
             var errorMessage = String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody);
 
-            if (statusCode.is4xxClientError()) {
-                if (statusCode == HttpStatus.FORBIDDEN || statusCode == HttpStatus.UNAUTHORIZED) {
-                    throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.OPPGAVE_UNAUTHORIZED);
-                } else if (statusCode == HttpStatus.NOT_FOUND) {
-                    throw new ClientErrorNotFoundException(errorMessage, responseException, ErrorCode.OPPGAVE_NOT_FOUND);
-                } else {
-                    throw new ClientErrorException(errorMessage, responseException, ErrorCode.OPPGAVE_ERROR);
-                }
-            } else {
-                throw new ServerErrorException(errorMessage, responseException, ErrorCode.OPPGAVE_ERROR);
+            if (statusCode == HttpStatus.UNAUTHORIZED) {
+                throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.OPPGAVE_UNAUTHORIZED);
             }
+
+            if (statusCode == HttpStatus.FORBIDDEN) {
+                throw new ClientErrorForbiddenException(errorMessage, responseException, ErrorCode.OPPGAVE_FORBIDDEN);
+            }
+
+            if (statusCode == HttpStatus.NOT_FOUND) {
+                throw new ClientErrorNotFoundException(errorMessage, responseException, ErrorCode.OPPGAVE_NOT_FOUND);
+            }
+
+            if (statusCode.is4xxClientError()) {
+                throw new ClientErrorException(errorMessage, responseException, ErrorCode.OPPGAVE_ERROR);
+            }
+
+            throw new ServerErrorException(errorMessage, responseException, ErrorCode.OPPGAVE_ERROR);
+
         }
     }
 }

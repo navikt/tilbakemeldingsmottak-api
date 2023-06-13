@@ -84,17 +84,23 @@ public class HentDokumentConsumer implements HentDokument {
             var responseBody = responseException.getResponseBodyAsString();
             var errorMessage = String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody);
 
-            if (statusCode.is4xxClientError()) {
-                if (statusCode == HttpStatus.FORBIDDEN || statusCode == HttpStatus.UNAUTHORIZED) {
-                    throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.SAF_UNAUTHORIZED);
-                } else if (statusCode == HttpStatus.NOT_FOUND) {
-                    throw new ClientErrorNotFoundException(errorMessage, responseException, ErrorCode.SAF_NOT_FOUND);
-                } else {
-                    throw new ClientErrorException(errorMessage, responseException, ErrorCode.SAF_ERROR);
-                }
-            } else {
-                throw new ServerErrorException(errorMessage, responseException, ErrorCode.SAF_ERROR);
+            if (statusCode == HttpStatus.UNAUTHORIZED) {
+                throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.SAF_UNAUTHORIZED);
             }
+
+            if (statusCode == HttpStatus.FORBIDDEN) {
+                throw new ClientErrorForbiddenException(errorMessage, responseException, ErrorCode.SAF_FORBIDDEN);
+            }
+
+            if (statusCode == HttpStatus.NOT_FOUND) {
+                throw new ClientErrorNotFoundException(errorMessage, responseException, ErrorCode.SAF_NOT_FOUND);
+            }
+
+            if (statusCode.is4xxClientError()) {
+                throw new ClientErrorException(errorMessage, responseException, ErrorCode.SAF_ERROR);
+            }
+
+            throw new ServerErrorException(errorMessage, responseException, ErrorCode.SAF_ERROR);
         }
     }
 
