@@ -12,6 +12,8 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestT
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
+import no.nav.tilbakemeldingsmottak.consumer.saf.SafJournalpostQueryService;
+import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorNotFoundException;
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
@@ -60,9 +62,11 @@ public class KlassifiserServiceklageService {
     private final HentSkjemaService hentSkjemaService;
     private final PdfService pdfService;
     private final ServiceklageMailHelper mailHelper;
-    private final OidcUtils oicdUtils;
+    private final OidcUtils oidcUtils;
     private final OpprettOppgaveRequestToMapper opprettOppgaveRequestToMapper;
     private final ServiceklagerBigQuery serviceklagerBigQuery;
+    private final SafJournalpostQueryService safJournalpostQueryService;
+
     @Value("${email_serviceklage_address}")
     private String toAddress;
     @Value("${email_from_address}")
@@ -96,7 +100,7 @@ public class KlassifiserServiceklageService {
 
     private void sendKvittering(Serviceklage serviceklage, HentOppgaveResponseTo hentOppgaveResponseTo) throws JsonProcessingException {
 
-        String email = oicdUtils.getEmailForIssuer(AZURE_ISSUER).orElseThrow(() -> new ClientErrorNotFoundException("Fant ikke email-adresse i token", ErrorCode.TOKEN_EMAIL_MISSING));
+        String email = oidcUtils.getEmailForIssuer(AZURE_ISSUER).orElseThrow(() -> new ClientErrorNotFoundException("Fant ikke email-adresse i token", ErrorCode.TOKEN_EMAIL_MISSING));
         log.info("Kvittering på innsendt klassifiseringsskjema sendes til epost: {}", email);
 
         LinkedHashMap<String, String> questionAnswerMap = createQuestionAnswerMap(serviceklage, hentOppgaveResponseTo);
@@ -170,11 +174,18 @@ public class KlassifiserServiceklageService {
     private Serviceklage getOrCreateServiceklage(String journalpostId) {
         Serviceklage serviceklage = serviceklageRepository.findByJournalpostId(journalpostId);
         if (serviceklage == null) {
+            var journalPost = getJournalPost(journalpostId);
             serviceklage = new Serviceklage();
             serviceklage.setJournalpostId(journalpostId);
-            serviceklage.setOpprettetDato(LocalDateTime.now());
+            serviceklage.setOpprettetDato(journalPost.getDatoOpprettet());
+            serviceklage.setKlagenGjelderId(journalPost.getBruker().getId());
         }
         return serviceklage;
+    }
+
+    private Journalpost getJournalPost(String journalpostId) {
+        String authorizationHeader = "Bearer " + oidcUtils.getFirstValidToken();
+        return safJournalpostQueryService.hentJournalpost(journalpostId, authorizationHeader);
     }
 
     private void updateServiceklage(Serviceklage serviceklage, KlassifiserServiceklageRequest request) {

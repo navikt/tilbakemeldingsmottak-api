@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.consumer.saf.journalpost;
 import lombok.Builder;
 import lombok.Value;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,8 @@ import java.util.List;
 public class Journalpost {
     @Builder.Default
     private final List<DokumentInfo> dokumenter = new ArrayList<>();
+    private final Bruker bruker;
+    private final LocalDateTime datoOpprettet;
 
     @Value
     @Builder
@@ -26,6 +29,12 @@ public class Journalpost {
     public static class Dokumentvariant {
         private final Variantformat variantformat;
         private final boolean saksbehandlerHarTilgang;
+    }
+
+    @Value
+    @Builder
+    public static class Bruker {
+        private final String id;
     }
 
 }

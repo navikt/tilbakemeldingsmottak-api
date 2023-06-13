@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.saf.graphql.GraphQLRequest;
 import no.nav.tilbakemeldingsmottak.consumer.saf.graphql.JournalpostToMapper;
 import no.nav.tilbakemeldingsmottak.consumer.saf.graphql.JournalpostToValidator;
@@ -10,11 +11,16 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 
 @Component
+@Slf4j
 public class SafJournalpostQueryServiceImpl implements SafJournalpostQueryService {
 
     private static final String JOURNALPOST_QUERY =
             "query journalpost($queryJournalpostId: String!) {\n" +
                     "  journalpost(journalpostId: $queryJournalpostId) {\n" +
+                    "    bruker {\n" +
+                    "       id \n" +
+                    "      } \n" +
+                    "    datoOpprettet \n" +
                     "    dokumenter {\n" +
                     "      dokumentInfoId\n" +
                     "      dokumentvarianter {\n" +
@@ -34,7 +40,7 @@ public class SafJournalpostQueryServiceImpl implements SafJournalpostQueryServic
 
     public Journalpost hentJournalpost(String journalpostid, String authorizationHeader) {
 
-        return journalpostMapper.map(
+        var journalpost = journalpostMapper.map(
                 journalpostToValidator.validateAndReturn(
                         safGraphqlConsumer.performQuery(GraphQLRequest.builder()
                                 .query(JOURNALPOST_QUERY)
@@ -42,5 +48,9 @@ public class SafJournalpostQueryServiceImpl implements SafJournalpostQueryServic
                                 .variables(Collections.singletonMap("queryJournalpostId", journalpostid))
                                 .build(), authorizationHeader))
         );
+
+        log.info("Hentet journalpost med journalpostId: " + journalpostid);
+
+        return journalpost;
     }
 }

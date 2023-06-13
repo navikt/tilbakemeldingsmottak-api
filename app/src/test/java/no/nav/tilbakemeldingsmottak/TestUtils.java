@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -345,6 +346,10 @@ public class TestUtils {
     @SneakyThrows
     public static String createSafGraphqlResponse() {
         SafJournalpostTo safJournalpostTo = SafJournalpostTo.builder()
+                .bruker(SafJournalpostTo.Bruker.builder()
+                        .id(PERSONNUMMER)
+                        .build())
+                .datoOpprettet(String.valueOf(LocalDateTime.now()))
                 .dokumenter(Collections.singletonList(SafJournalpostTo.DokumentInfo.builder()
                         .dokumentInfoId(DOKUMENT_INFO_ID)
                         .dokumentvarianter(Arrays.asList(
