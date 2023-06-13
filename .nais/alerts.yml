@@ -10,7 +10,7 @@ spec:
     - name: {{common-labels.service}}-alerts
       rules:
         - alert: High number of errors
-          expr: sum (increase(logd_messages_total{log_app="{{common-labels.service}}",log_level=~"Error"}[10m])) > {{ number_of_errors }}
+          expr: sum (increase(log_messages_errors{app="{{common-labels.service}}",level=~"Error"}[10m])) > {{ number_of_errors }}
           for: 5m
           annotations:
             title: "High number of errors logged"
