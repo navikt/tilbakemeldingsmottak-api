@@ -97,6 +97,12 @@ public class ApplicationTest {
                         .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withBody("hei")));
 
+        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/ereg/v1/organisasjon/[0-9]*"))
+                .inScenario("opprett_serviceklage").whenScenarioStateIs("ereg_404")
+                .willReturn(WireMock.aResponse().withStatus(HttpStatus.NOT_FOUND.value())
+                        .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody("not_found")));
+
         WireMock.stubFor(WireMock.post(WireMock.urlPathMatching("/OPPGAVE"))
                 .willReturn(WireMock.aResponse().withStatus(HttpStatus.OK.value())
                         .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -143,11 +149,17 @@ public class ApplicationTest {
                         .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
                         .withBody("{}")));
 
+        WireMock.stubFor(WireMock.get(WireMock.urlPathMatching("/hentdokument/.*/.*/.*"))
+                .inScenario("hent_dokument").whenScenarioStateIs("saf_403")
+                .willReturn(WireMock.aResponse().withStatus(HttpStatus.FORBIDDEN.value())
+                        .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody("{}")));
     }
 
     @AfterEach
     void tearDown() {
         WireMock.reset();
+        WireMock.resetAllScenarios();
     }
 
     HttpHeaders createHeaders() {

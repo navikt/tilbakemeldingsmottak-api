@@ -11,6 +11,7 @@ import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageResponse;
+import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse;
 import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -53,6 +54,8 @@ import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRe
 import static no.nav.tilbakemeldingsmottak.TestUtils.createOpprettServiceklageRequestPrivatperson;
 import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
 import static no.nav.tilbakemeldingsmottak.config.Constants.TOKENX_ISSUER;
+import static no.nav.tilbakemeldingsmottak.exceptions.ErrorCode.EREG_NOT_FOUND;
+import static no.nav.tilbakemeldingsmottak.exceptions.ErrorCode.SAF_FORBIDDEN;
 import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER;
 import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER;
 import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
@@ -441,6 +444,41 @@ class ServiceklageIT extends ApplicationTest {
         ResponseEntity<HentDokumentResponse> response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + 99, HttpMethod.GET, new HttpEntity<>(createHeaders(AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering")), HentDokumentResponse.class);
 
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    public void shouldReturn404WhenEregIsNotFound() {
+        // Given
+        var request = createOpprettServiceklageRequestPaaVegneAvBedrift();
+        var requestEntity = new HttpEntity<>(request, createHeaders());
+        WireMock.setScenarioState("opprett_serviceklage", "ereg_404");
+
+        // When
+        var response = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, ErrorResponse.class);
+
+        // Then
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertNotNull(response.getBody().getErrorCode());
+        assertEquals(EREG_NOT_FOUND.value, response.getBody().getErrorCode());
+
+    }
+
+    @Test
+    public void shouldReturn403WhenMissingAccessToJoarkDocument() {
+        // Given
+        var msg = createOpprettServiceklageRequestPrivatperson();
+        var opprettResponse = restTemplate.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, new HttpEntity<>(msg, createHeaders(AZURE_ISSUER, msg.getInnmelder().getPersonnummer())), OpprettServiceklageResponse.class);
+        WireMock.setScenarioState("hent_dokument", "saf_403");
+
+        // When
+        var response = restTemplate.exchange(URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + opprettResponse.getBody().getOppgaveId(), HttpMethod.GET, new HttpEntity<>(createHeaders(AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering")), ErrorResponse.class);
+
+        // Then
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertNotNull(response.getBody().getErrorCode());
+        assertEquals(SAF_FORBIDDEN.value, response.getBody().getErrorCode());
     }
 
 }
