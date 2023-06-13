@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorForbiddenException;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
 import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
@@ -54,14 +55,27 @@ public class Norg2Consumer {
             return restTemplate.exchange(norg2Url + "/enhet",
                     HttpMethod.GET, new HttpEntity<>(createHeaders()), new ParameterizedTypeReference<List<Enhet>>() {
                     }).getBody();
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode() == HttpStatus.FORBIDDEN || e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            var statusCode = e.getStatusCode();
+            var responseBody = e.getResponseBodyAsString();
+            var errorMessage = String.format("Kall mot norg2 feilet (statuskode: %s). Body: %s", statusCode, responseBody);
+
+            if (statusCode == HttpStatus.UNAUTHORIZED) {
                 log.error("Autentisering mot norg2 feilet", e);
-                throw new ClientErrorUnauthorizedException("Autentisering mot norg2 feilet", e, ErrorCode.NORG2_UNAUTHORIZED);
+                throw new ClientErrorUnauthorizedException(errorMessage, e, ErrorCode.NORG2_UNAUTHORIZED);
             }
-            throw new ClientErrorException(String.format("Klientfeil ved kall mot norg2 for å hente enheter (statuskode:%s). Body: %s", e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.NORG2_ERROR);
-        } catch (HttpServerErrorException e) {
-            throw new ServerErrorException(String.format("Serverfeil ved kall mot norg2 for å hente enheter (statuskode:%s). Body: %s", e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.NORG2_ERROR);
+
+            if (statusCode == HttpStatus.FORBIDDEN) {
+                log.error("Mangler tilgang til å hente enheter fra norg2", e);
+                throw new ClientErrorForbiddenException(errorMessage, e, ErrorCode.NORG2_FORBIDDEN);
+            }
+
+            if (statusCode.is4xxClientError()) {
+                throw new ClientErrorException(errorMessage, e, ErrorCode.NORG2_ERROR);
+            }
+
+            throw new ServerErrorException(errorMessage, e, ErrorCode.NORG2_ERROR);
+
         }
     }
 

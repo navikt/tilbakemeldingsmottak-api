@@ -4,7 +4,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.exceptions.JwtTokenMissingException;
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException;
-import no.nav.tilbakemeldingsmottak.exceptions.*;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorForbiddenException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorNotFoundException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
+import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
+import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
+import no.nav.tilbakemeldingsmottak.exceptions.NoContentException;
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
@@ -106,6 +113,18 @@ public class ControllerAdvice {
         log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResponse.builder()
+                        .message(ex.getMessage())
+                        .errorCode(ex.getErrorCode().value)
+                        .build());
+    }
+
+    // 403
+    @ExceptionHandler(value = {ClientErrorForbiddenException.class})
+    public ResponseEntity<ErrorResponse> forbidddenErrorResponse(HttpServletRequest request, ClientErrorForbiddenException ex) {
+        log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .body(ErrorResponse.builder()
                         .message(ex.getMessage())
                         .errorCode(ex.getErrorCode().value)

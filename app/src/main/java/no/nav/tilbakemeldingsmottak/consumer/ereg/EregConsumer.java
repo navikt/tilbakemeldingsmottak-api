@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.consumer.ereg;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorForbiddenException;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorNotFoundException;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
@@ -21,7 +22,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import static java.lang.String.format;
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
@@ -47,17 +47,30 @@ public class EregConsumer implements Ereg {
             HttpHeaders headers = createHeaders();
             return restTemplate.exchange(eregApiUrl + "/v1/organisasjon/" + orgnrTrimmed,
                     HttpMethod.GET, new HttpEntity<>(headers), String.class).getBody();
-        } catch (HttpClientErrorException e) {
-            if (e.getStatusCode() == HttpStatus.FORBIDDEN || e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            var statusCode = e.getStatusCode();
+            var responseBody = e.getResponseBodyAsString();
+            var errorMessage = String.format("Kall mot ereg feilet for orgnr: %s (statuskode: %s). Body: %s", orgnr, statusCode, responseBody);
+
+            if (statusCode == HttpStatus.UNAUTHORIZED) {
                 log.error("Autentisering mot ereg feilet", e);
-                throw new ClientErrorUnauthorizedException("Autentisering mot ereg feilet", e, ErrorCode.EREG_UNAUTHORIZED);
+                throw new ClientErrorUnauthorizedException(errorMessage, e, ErrorCode.EREG_UNAUTHORIZED);
             }
-            if (e.getStatusCode().value() == HttpStatus.NOT_FOUND.value()) {
-                throw new ClientErrorNotFoundException(format("Klientfeil ved kall mot ereg for organisasjonsnummer=%s (statuskode:%s). Body: %s", orgnr, e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.EREG_NOT_FOUND);
+
+            if (statusCode == HttpStatus.FORBIDDEN) {
+                log.error("Mangler tilgang til å hente ut data fra ereg", e);
+                throw new ClientErrorForbiddenException(errorMessage, e, ErrorCode.EREG_FORBIDDEN);
             }
-            throw new ClientErrorException(format("Klientfeil ved kall mot ereg for organisasjonsnummer=%s (statuskode:%s). Body: %s", orgnr, e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.EREG_ERROR);
-        } catch (HttpServerErrorException e) {
-            throw new ServerErrorException(format("Serverfeil ved kall mot ereg for organisasjonsnummer=%s (statuskode:%s). Body: %s", orgnr, e.getStatusCode(), e.getResponseBodyAsString()), e, ErrorCode.EREG_ERROR);
+
+            if (statusCode == HttpStatus.NOT_FOUND) {
+                throw new ClientErrorNotFoundException(errorMessage, e, ErrorCode.EREG_NOT_FOUND);
+            }
+
+            if (statusCode.is4xxClientError()) {
+                throw new ClientErrorException(errorMessage, e, ErrorCode.EREG_ERROR);
+            }
+
+            throw new ServerErrorException(errorMessage, e, ErrorCode.EREG_ERROR);
         }
     }
 

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorForbiddenException;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
 import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
@@ -69,15 +70,20 @@ public class JournalpostConsumer {
             var responseBody = responseException.getResponseBodyAsString();
             var errorMessage = String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody);
 
-            if (statusCode.is4xxClientError()) {
-                if (statusCode == HttpStatus.FORBIDDEN || statusCode == HttpStatus.UNAUTHORIZED) {
-                    throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.DOKARKIV_UNAUTHORIZED);
-                }
-
-                throw new ClientErrorException(errorMessage, responseException, ErrorCode.DOKARKIV_ERROR);
-            } else {
-                throw new ServerErrorException(errorMessage, responseException, ErrorCode.DOKARKIV_ERROR);
+            if (statusCode == HttpStatus.UNAUTHORIZED) {
+                throw new ClientErrorUnauthorizedException(errorMessage, responseException, ErrorCode.DOKARKIV_UNAUTHORIZED);
             }
+
+            if (statusCode == HttpStatus.FORBIDDEN) {
+                throw new ClientErrorForbiddenException(errorMessage, responseException, ErrorCode.DOKARKIV_FORBIDDEN);
+            }
+
+            if (statusCode.is4xxClientError()) {
+                throw new ClientErrorException(errorMessage, responseException, ErrorCode.DOKARKIV_ERROR);
+            }
+
+            throw new ServerErrorException(errorMessage, responseException, ErrorCode.DOKARKIV_ERROR);
+
         }
     }
 
