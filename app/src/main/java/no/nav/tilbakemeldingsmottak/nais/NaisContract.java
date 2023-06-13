@@ -56,14 +56,11 @@ public class NaisContract {
 
     @GetMapping("/isAlive")
     public String isAlive() {
-        log.warn("Tester warning logs");
         return APPLICATION_ALIVE;
     }
 
     @RequestMapping(value = "/isReady", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity isReady() {
-        log.error("Tester error logs");
-
         List<DependencyCheckResult> results = new ArrayList<>();
 
         checkCriticalDependencies(results);
