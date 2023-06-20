@@ -66,6 +66,8 @@
         <spring-security-oauth2.version>6.1.0</spring-security-oauth2.version>
         <google-cloud-bigquery.version>26.15.0</google-cloud-bigquery.version>
         <bigquery.version>2.26.1</bigquery.version>
+        <snakeyaml.version>2.0</snakeyaml.version>
+        <guava.version>32.0.1-jre</guava.version>
 
         <spring-retry.version>2.0.1</spring-retry.version>
         <flyway.version>9.19.1</flyway.version>
@@ -119,6 +121,18 @@
                 <version>${google-cloud-bigquery.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- Dependencies that might be used as transitive dependencies and have security issues-->
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
