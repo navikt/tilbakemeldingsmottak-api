@@ -42,7 +42,7 @@
         <okhttp3.version>4.11.0</okhttp3.version>
         <rxjava.version>3.1.6</rxjava.version>
 
-        <jackson-bom.version>2.15.1</jackson-bom.version>
+        <jackson-bom.version>2.15.2</jackson-bom.version>
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
 
         <jakarta.inject.version>2.0.1</jakarta.inject.version>
@@ -68,6 +68,8 @@
         <bigquery.version>2.26.1</bigquery.version>
         <snakeyaml.version>2.0</snakeyaml.version>
         <guava.version>32.0.1-jre</guava.version>
+        <bcprov-jdk18on.version>1.74</bcprov-jdk18on.version>
+        <bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
 
         <spring-retry.version>2.0.1</spring-retry.version>
         <flyway.version>9.19.1</flyway.version>
@@ -133,6 +135,16 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bcprov-jdk18on.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>${bcprov-jdk15on.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

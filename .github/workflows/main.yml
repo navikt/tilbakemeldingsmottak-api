@@ -17,7 +17,7 @@ jobs:
   bygg-app-main:
     name: Bygg app/image, push til github
     permissions:
-          contents: "read"
+          contents: "write"
           id-token: "write"
     runs-on: ubuntu-latest
     steps:
