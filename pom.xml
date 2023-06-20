@@ -91,6 +91,7 @@
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
         <openapi-generator-maven-plugin.version>6.4.0</openapi-generator-maven-plugin.version>
         <graphql-maven-plugin.version>2.0</graphql-maven-plugin.version>
+        <cyclonedx-maven-plugin.version>2.7.9</cyclonedx-maven-plugin.version>
         <maven-filtering>3.3.1</maven-filtering>
 
         <!-- Project config -->
@@ -168,6 +169,20 @@
                 <configuration>
                     <rulesUri>file://${user.dir}/maven-version-rules.xml</rulesUri>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <version>${cyclonedx-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>makeAggregateBom</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
