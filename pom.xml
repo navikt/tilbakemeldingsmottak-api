@@ -42,7 +42,7 @@
         <okhttp3.version>4.11.0</okhttp3.version>
         <rxjava.version>3.1.6</rxjava.version>
 
-        <jackson-bom.version>2.15.1</jackson-bom.version>
+        <jackson-bom.version>2.15.2</jackson-bom.version>
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
 
         <jakarta.inject.version>2.0.1</jakarta.inject.version>
@@ -66,6 +66,10 @@
         <spring-security-oauth2.version>6.1.0</spring-security-oauth2.version>
         <google-cloud-bigquery.version>26.15.0</google-cloud-bigquery.version>
         <bigquery.version>2.26.1</bigquery.version>
+        <snakeyaml.version>2.0</snakeyaml.version>
+        <guava.version>32.0.1-jre</guava.version>
+        <bcprov-jdk18on.version>1.74</bcprov-jdk18on.version>
+        <bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
 
         <spring-retry.version>2.0.1</spring-retry.version>
         <flyway.version>9.19.1</flyway.version>
@@ -91,6 +95,7 @@
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
         <openapi-generator-maven-plugin.version>6.4.0</openapi-generator-maven-plugin.version>
         <graphql-maven-plugin.version>2.0</graphql-maven-plugin.version>
+        <cyclonedx-maven-plugin.version>2.7.9</cyclonedx-maven-plugin.version>
         <maven-filtering>3.3.1</maven-filtering>
 
         <!-- Project config -->
@@ -118,6 +123,28 @@
                 <version>${google-cloud-bigquery.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!-- Dependencies that might be used as transitive dependencies and have security issues-->
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>${bcprov-jdk18on.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>${bcprov-jdk15on.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -168,6 +195,20 @@
                 <configuration>
                     <rulesUri>file://${user.dir}/maven-version-rules.xml</rulesUri>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.cyclonedx</groupId>
+                <artifactId>cyclonedx-maven-plugin</artifactId>
+                <version>${cyclonedx-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>makeAggregateBom</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

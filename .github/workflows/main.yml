@@ -17,7 +17,7 @@ jobs:
   bygg-app-main:
     name: Bygg app/image, push til github
     permissions:
-          contents: "read"
+          contents: "write"
           id-token: "write"
     runs-on: ubuntu-latest
     steps:
@@ -40,6 +40,9 @@ jobs:
       - name: Build with maven
         run: mvn install --file pom.xml
 
+      - name: Dependency submission (for dependabot)
+        uses: advanced-security/maven-dependency-submission-action@v3
+
       - name: Build and push Docker image
         uses: nais/docker-build-push@v0
         id: docker-build-push
@@ -48,6 +51,7 @@ jobs:
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           image_suffix: prod
+          byosbom: target/bom.json
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
