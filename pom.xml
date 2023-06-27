@@ -23,7 +23,7 @@
     <properties>
         <!-- Keep up to date with parent version -->
         <spring-boot.version>3.1.1</spring-boot.version>
-        <cxf.version>4.0.1</cxf.version>
+        <cxf.version>4.0.2</cxf.version>
 
         <microsoft-graph.version>5.58.0</microsoft-graph.version>
         <microsoft-graph-core.version>2.0.18</microsoft-graph-core.version>
