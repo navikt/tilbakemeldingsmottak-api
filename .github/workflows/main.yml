@@ -5,13 +5,7 @@ on:
       - 'main'
     paths-ignore:
       - '**.md'
-      - '.github/workflows/manual-deployment.yml'
-  pull_request:
-    branches:
-      - 'main'
-    paths-ignore:
-      - '**.md'
-      - '.github/workflows/manual-deployment.yml'
+      - '**/**.md'
 
 jobs:
   bygg-app-main:

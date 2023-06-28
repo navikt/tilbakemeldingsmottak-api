@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
     </parent>
 
     <groupId>no.nav.tilbakemeldingsmottak</groupId>
@@ -21,26 +21,29 @@
     </modules>
 
     <properties>
-        <!-- Keep up to date with parent version -->
+        <!-- Project config -->
         <spring-boot.version>3.1.1</spring-boot.version>
-        <cxf.version>4.0.2</cxf.version>
-
-        <microsoft-graph.version>5.58.0</microsoft-graph.version>
-        <microsoft-graph-core.version>2.0.18</microsoft-graph-core.version>
-        <azure.identity.version>1.9.0</azure.identity.version>
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.version>3.2.5</maven.version>
 
         <!-- NAV internal dependencies -->
         <token-support.version>3.1.0</token-support.version>
-        <mock-oauth2-server.version>0.5.8</mock-oauth2-server.version>
+        <mock-oauth2-server.version>0.5.9</mock-oauth2-server.version>
         <spring-core.version>6.0.10</spring-core.version>
         <caffeine.version>3.1.6</caffeine.version>
-        <netty-all.version>4.1.93.Final</netty-all.version>
+        <netty-all.version>4.1.94.Final</netty-all.version>
 
         <!-- Dependencies that should be on the latest version -->
         <kotlin.version>1.8.22</kotlin.version>
         <httpclient5.version>5.2.1</httpclient5.version>
         <okhttp3.version>4.11.0</okhttp3.version>
         <rxjava.version>3.1.6</rxjava.version>
+        <cxf.version>4.0.2</cxf.version>
+        <microsoft-graph.version>5.62.0</microsoft-graph.version>
+        <microsoft-graph-core.version>2.0.19</microsoft-graph-core.version>
+        <azure.identity.version>1.9.1</azure.identity.version>
 
         <jackson-bom.version>2.15.2</jackson-bom.version>
         <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
@@ -57,28 +60,28 @@
         <mockito-junit-jupiter.version>5.4.0</mockito-junit-jupiter.version>
         <resilience4j.version>2.0.2</resilience4j.version>
         <resilience4j-prometheus.version>1.7.1</resilience4j-prometheus.version>
-        <micrometer.version>1.11.0</micrometer.version>
+        <micrometer.version>1.11.1</micrometer.version>
         <wiremock.version>2.27.2</wiremock.version>
         <spring-cloud-contract-wiremock.version>4.0.3</spring-cloud-contract-wiremock.version>
         <json-smart.version>2.4.11</json-smart.version>
         <rest-assured.version>5.3.1</rest-assured.version>
         <graphql-java.version>20.2</graphql-java.version>
-        <spring-security-oauth2.version>6.1.0</spring-security-oauth2.version>
+        <spring-security-oauth2.version>6.1.1</spring-security-oauth2.version>
         <google-cloud-bigquery.version>26.15.0</google-cloud-bigquery.version>
-        <bigquery.version>2.26.1</bigquery.version>
+        <bigquery.version>2.29.0</bigquery.version>
         <snakeyaml.version>2.0</snakeyaml.version>
         <guava.version>32.0.1-jre</guava.version>
         <bcprov-jdk18on.version>1.74</bcprov-jdk18on.version>
         <bcprov-jdk15on.version>1.70</bcprov-jdk15on.version>
 
-        <spring-retry.version>2.0.1</spring-retry.version>
-        <flyway.version>9.19.1</flyway.version>
+        <spring-retry.version>2.0.2</spring-retry.version>
+        <flyway.version>9.19.4</flyway.version>
         <tika-core.version>2.8.0</tika-core.version>
         <pdfbox.version>2.0.28</pdfbox.version>
         <openhtml.version>1.0.10</openhtml.version>
         <handlebars.version>4.3.1</handlebars.version>
         <springdoc-openapi.version>1.7.0</springdoc-openapi.version>
-        <swagger-annotations.version>2.2.10</swagger-annotations.version>
+        <swagger-annotations.version>2.2.14</swagger-annotations.version>
         <gson.version>2.10.1</gson.version>
         <gson-fire.version>1.8.5</gson-fire.version>
         <findbugs.version>3.0.2</findbugs.version>
@@ -90,18 +93,16 @@
         <!-- Maven plugins -->
         <wagon-webdav-jackrabbit.version>3.5.3</wagon-webdav-jackrabbit.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.1.0</maven-failsafe-plugin.version>
+        <maven-failsafe-plugin.version>3.1.2</maven-failsafe-plugin.version>
         <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
-        <openapi-generator-maven-plugin.version>6.4.0</openapi-generator-maven-plugin.version>
+        <openapi-generator-maven-plugin.version>6.6.0</openapi-generator-maven-plugin.version>
         <graphql-maven-plugin.version>2.1</graphql-maven-plugin.version>
         <cyclonedx-maven-plugin.version>2.7.9</cyclonedx-maven-plugin.version>
         <maven-filtering>3.3.1</maven-filtering>
-
-        <!-- Project config -->
-        <java.version>17</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven-enforcer.version>3.3.0</maven-enforcer.version>
+        <versions-maven-plugin.version>2.16.0</versions-maven-plugin.version>
+        <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -195,6 +196,28 @@
                 <configuration>
                     <rulesUri>file://${user.dir}/maven-version-rules.xml</rulesUri>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven-enforcer.version}</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <banDuplicatePomDependencyVersions/>
+                                <requireMavenVersion>
+                                    <version>${maven.version}</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
