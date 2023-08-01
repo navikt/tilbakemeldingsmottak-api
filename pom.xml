@@ -33,7 +33,7 @@
         <mock-oauth2-server.version>0.5.9</mock-oauth2-server.version>
         <spring-core.version>6.0.10</spring-core.version>
         <caffeine.version>3.1.6</caffeine.version>
-        <netty-all.version>4.1.94.Final</netty-all.version>
+        <netty-all.version>4.1.96.Final</netty-all.version>
 
         <!-- Dependencies that should be on the latest version -->
         <kotlin.version>1.8.22</kotlin.version>
