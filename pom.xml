@@ -41,7 +41,7 @@
         <okhttp3.version>4.11.0</okhttp3.version>
         <rxjava.version>3.1.6</rxjava.version>
         <cxf.version>4.0.2</cxf.version>
-        <microsoft-graph.version>5.62.0</microsoft-graph.version>
+        <microsoft-graph.version>5.66.0</microsoft-graph.version>
         <microsoft-graph-core.version>2.0.19</microsoft-graph-core.version>
         <azure.identity.version>1.9.1</azure.identity.version>
 
