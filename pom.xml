@@ -60,7 +60,7 @@
         <mockito-junit-jupiter.version>5.4.0</mockito-junit-jupiter.version>
         <resilience4j.version>2.0.2</resilience4j.version>
         <resilience4j-prometheus.version>1.7.1</resilience4j-prometheus.version>
-        <micrometer.version>1.11.1</micrometer.version>
+        <micrometer.version>1.11.2</micrometer.version>
         <wiremock.version>2.27.2</wiremock.version>
         <spring-cloud-contract-wiremock.version>4.0.3</spring-cloud-contract-wiremock.version>
         <json-smart.version>2.4.11</json-smart.version>
