@@ -81,7 +81,7 @@
         <openhtml.version>1.0.10</openhtml.version>
         <handlebars.version>4.3.1</handlebars.version>
         <springdoc-openapi.version>1.7.0</springdoc-openapi.version>
-        <swagger-annotations.version>2.2.14</swagger-annotations.version>
+        <swagger-annotations.version>2.2.15</swagger-annotations.version>
         <gson.version>2.10.1</gson.version>
         <gson-fire.version>1.8.5</gson-fire.version>
         <findbugs.version>3.0.2</findbugs.version>
