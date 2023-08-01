@@ -32,7 +32,7 @@
         <token-support.version>3.1.0</token-support.version>
         <mock-oauth2-server.version>0.5.9</mock-oauth2-server.version>
         <spring-core.version>6.0.10</spring-core.version>
-        <caffeine.version>3.1.6</caffeine.version>
+        <caffeine.version>3.1.7</caffeine.version>
         <netty-all.version>4.1.94.Final</netty-all.version>
 
         <!-- Dependencies that should be on the latest version -->
