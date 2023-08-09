@@ -58,6 +58,7 @@ public class ServiceklagerBigQuery {
             map.put("gjelder", serviceklage.getGjelder());
             map.put("beskrivelse", serviceklage.getBeskrivelse());
             map.put("ytelse", serviceklage.getYtelse());
+            map.put("tema", serviceklage.getTema());
             map.put("tema_utdypning", serviceklage.getTemaUtdypning());
             map.put("veiledning", serviceklage.getVeiledning());
             map.put("utfall", serviceklage.getUtfall());
@@ -67,11 +68,11 @@ public class ServiceklagerBigQuery {
             map.put("svarmetode_utdypning", serviceklage.getSvarmetodeUtdypning());
             map.put("avsluttet_dato", getDateTime(serviceklage.getAvsluttetDato()));
             map.put("skjema_versjon", serviceklage.getSkjemaVersjon());
+            map.put("klassifisering_json", serviceklage.getKlassifiseringJson());
             map.put("relatert", serviceklage.getRelatert());
             map.put("klagetype_utdypning", serviceklage.getKlagetypeUtdypning());
             map.put("innlogget", serviceklage.getInnlogget());
-            map.put("tema", serviceklage.getTema());
-            
+
             InsertAllRequest request = InsertAllRequest.newBuilder(TableId.of(dataset, TABLE_NAME)).addRow(map).build();
 
             log.info("Inserting rows into Big Query");
