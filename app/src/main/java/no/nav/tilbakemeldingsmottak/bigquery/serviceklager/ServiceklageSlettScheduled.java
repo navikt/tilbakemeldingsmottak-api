@@ -4,10 +4,13 @@ import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +18,9 @@ import org.springframework.stereotype.Service;
 @Profile("nais | itest")
 public class ServiceklageSlettScheduled {
     private final BigQuery bigQueryClient;
+    private final ServiceklagerBigQuery serviceklagerBigQuery;
+    private final ServiceklageRepository serviceklageRepository;
+
 
     @Value("${big_query_dataset}")
     private String dataset;
@@ -24,6 +30,7 @@ public class ServiceklageSlettScheduled {
 
     @Value("${cron.slettBigQueryServiceKlagerEldreEnn}")
     private String slettBigQueryServiceKlagerEldreEnn;
+
 
     private String slettEldreEnnQuery(String datoFelt, String eventType) {
         return String.format(
@@ -58,7 +65,30 @@ public class ServiceklageSlettScheduled {
         } catch (Exception e) {
             log.error("Kunne ikke slette Big Query serviceklager eldre enn {} dager", slettBigQueryServiceKlagerEldreEnn, e);
         }
+    }
+
+    @Scheduled(cron = "0 30 12 9 AUG ")
+    public void oppdaterServiceklager() {
+        var datoFra = LocalDateTime.now().minusMonths(4);
+
+        try {
+
+            log.info("Oppdaterer serviceklager eldre enn {}", datoFra);
+
+            var serviceklager = serviceklageRepository.findAllByOpprettetDatoAfterOrAvsluttetDatoAfter(datoFra, datoFra);
+
+            for (var serviceklage : serviceklager) {
+                serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventTypeEnum.OPPDATER_SERVICEKLAGE);
+            }
+
+            log.info("Oppdatert serviceklager eldre enn {}", datoFra);
+
+        } catch (Exception ex) {
+            log.error("Kunne ikke oppdatere Big Query serviceklager eldre enn {}", datoFra, ex);
+        }
 
 
     }
+
+
 }
