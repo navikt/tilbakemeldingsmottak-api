@@ -67,7 +67,7 @@ public class ServiceklageSlettScheduled {
         }
     }
 
-    @Scheduled(cron = "0 15 13 9 AUG ?")
+    @Scheduled(cron = "0 0 14 9 AUG ?")
     public void oppdaterServiceklager() {
         // Skal ikke kjøres årlig. Har blitt brukt til "manuelle" oppdateringer
         if (LocalDateTime.now().getYear() == 2023) {
