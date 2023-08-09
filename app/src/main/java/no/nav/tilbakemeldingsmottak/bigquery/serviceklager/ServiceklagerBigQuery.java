@@ -70,7 +70,8 @@ public class ServiceklagerBigQuery {
             map.put("relatert", serviceklage.getRelatert());
             map.put("klagetype_utdypning", serviceklage.getKlagetypeUtdypning());
             map.put("innlogget", serviceklage.getInnlogget());
-
+            map.put("tema", serviceklage.getTema());
+            
             InsertAllRequest request = InsertAllRequest.newBuilder(TableId.of(dataset, TABLE_NAME)).addRow(map).build();
 
             log.info("Inserting rows into Big Query");
