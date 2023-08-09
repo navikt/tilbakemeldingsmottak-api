@@ -67,27 +67,27 @@ public class ServiceklageSlettScheduled {
         }
     }
 
-    @Scheduled(cron = "0 30 12 9 AUG ")
+    @Scheduled(cron = "0 15 13 9 AUG ?")
     public void oppdaterServiceklager() {
-        var datoFra = LocalDateTime.now().minusMonths(4);
+        // Skal ikke kjøres årlig. Har blitt brukt til "manuelle" oppdateringer
+        if (LocalDateTime.now().getYear() == 2023) {
+            var datoFra = LocalDateTime.now().minusMonths(4);
 
-        try {
+            try {
+                log.info("Oppdaterer serviceklager fra {}", datoFra);
 
-            log.info("Oppdaterer serviceklager eldre enn {}", datoFra);
+                var serviceklager = serviceklageRepository.findAllByOpprettetDatoAfterOrAvsluttetDatoAfter(datoFra, datoFra);
 
-            var serviceklager = serviceklageRepository.findAllByOpprettetDatoAfterOrAvsluttetDatoAfter(datoFra, datoFra);
+                for (var serviceklage : serviceklager) {
+                    serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventTypeEnum.OPPDATER_SERVICEKLAGE);
+                }
 
-            for (var serviceklage : serviceklager) {
-                serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventTypeEnum.OPPDATER_SERVICEKLAGE);
+                log.info("Oppdatert serviceklager fra {}", datoFra);
+
+            } catch (Exception ex) {
+                log.error("Kunne ikke oppdatere Big Query serviceklager fra {}", datoFra, ex);
             }
-
-            log.info("Oppdatert serviceklager eldre enn {}", datoFra);
-
-        } catch (Exception ex) {
-            log.error("Kunne ikke oppdatere Big Query serviceklager eldre enn {}", datoFra, ex);
         }
-
-
     }
 
 
