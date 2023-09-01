@@ -13,7 +13,7 @@ import org.springframework.retry.annotation.EnableRetry;
 @Configuration
 @SpringBootApplication(exclude = {UserDetailsServiceAutoConfiguration.class}, scanBasePackageClasses = {Application.class, GraphqlClientUtils.class, QueryExecutor.class})
 @ConfigurationPropertiesScan
-@EnableRetry
+@EnableRetry(proxyTargetClass = true)
 @EnableCaching
 public class Application {
 
