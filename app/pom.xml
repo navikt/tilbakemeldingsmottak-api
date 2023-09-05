@@ -213,6 +213,13 @@
             <groupId>com.microsoft.graph</groupId>
             <artifactId>microsoft-graph-core</artifactId>
             <version>${microsoft-graph-core.version}</version>
+            <exclusions>
+                <!-- Version not aligned with azure-identity -->
+                <exclusion>
+                    <groupId>com.azure</groupId>
+                    <artifactId>azure-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.microsoft.graph</groupId>

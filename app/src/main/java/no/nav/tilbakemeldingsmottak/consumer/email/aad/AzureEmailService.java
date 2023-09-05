@@ -1,6 +1,12 @@
 package no.nav.tilbakemeldingsmottak.consumer.email.aad;
 
-import com.microsoft.graph.models.*;
+import com.microsoft.graph.models.Attachment;
+import com.microsoft.graph.models.BodyType;
+import com.microsoft.graph.models.EmailAddress;
+import com.microsoft.graph.models.FileAttachment;
+import com.microsoft.graph.models.ItemBody;
+import com.microsoft.graph.models.Message;
+import com.microsoft.graph.models.Recipient;
 import com.microsoft.graph.requests.AttachmentCollectionPage;
 import com.microsoft.graph.requests.AttachmentCollectionResponse;
 import no.nav.tilbakemeldingsmottak.consumer.email.EmailService;
