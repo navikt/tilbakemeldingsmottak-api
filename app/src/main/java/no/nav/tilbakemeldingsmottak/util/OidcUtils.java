@@ -1,18 +1,20 @@
 package no.nav.tilbakemeldingsmottak.util;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.context.TokenValidationContextHolder;
 import no.nav.security.token.support.core.jwt.JwtToken;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Component
-@Slf4j
 @RequiredArgsConstructor
 public class OidcUtils {
+    private static final Logger log = getLogger(OidcUtils.class);
     private final TokenValidationContextHolder tokenValidationContextHolder;
 
     public Optional<String> getSubjectForIssuer(String issuer) {

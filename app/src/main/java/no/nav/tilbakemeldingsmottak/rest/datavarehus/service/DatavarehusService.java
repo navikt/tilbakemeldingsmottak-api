@@ -1,21 +1,24 @@
 package no.nav.tilbakemeldingsmottak.rest.datavarehus.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import no.nav.tilbakemeldingsmottak.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.model.DatavarehusServiceklage;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.datavarehus.service.support.DatavarehusServiceklageMapper;
-import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 
-@Slf4j
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Service
 @RequiredArgsConstructor
 
 public class DatavarehusService {
+
+    private static final Logger log = getLogger(DatavarehusService.class);
 
     private final ServiceklageRepository serviceklageRepository;
     private final DatavarehusServiceklageMapper datavarehusServiceklageMapper = new DatavarehusServiceklageMapper();

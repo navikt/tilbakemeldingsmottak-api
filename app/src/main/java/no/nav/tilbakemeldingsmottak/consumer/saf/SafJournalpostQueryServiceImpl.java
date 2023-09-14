@@ -1,18 +1,21 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.saf.graphql.GraphQLRequest;
 import no.nav.tilbakemeldingsmottak.consumer.saf.graphql.JournalpostToMapper;
 import no.nav.tilbakemeldingsmottak.consumer.saf.graphql.JournalpostToValidator;
 import no.nav.tilbakemeldingsmottak.consumer.saf.graphql.SafGraphqlConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Component
-@Slf4j
 public class SafJournalpostQueryServiceImpl implements SafJournalpostQueryService {
+
+    private static final Logger log = getLogger(SafJournalpostQueryServiceImpl.class);
 
     private static final String JOURNALPOST_QUERY =
             "query journalpost($queryJournalpostId: String!) {\n" +
@@ -42,11 +45,8 @@ public class SafJournalpostQueryServiceImpl implements SafJournalpostQueryServic
 
         var journalpost = journalpostMapper.map(
                 journalpostToValidator.validateAndReturn(
-                        safGraphqlConsumer.performQuery(GraphQLRequest.builder()
-                                .query(JOURNALPOST_QUERY)
-                                .operationName("journalpost")
-                                .variables(Collections.singletonMap("queryJournalpostId", journalpostid))
-                                .build(), authorizationHeader))
+                        safGraphqlConsumer.performQuery(
+                                new GraphQLRequest(JOURNALPOST_QUERY, "journalpost", Collections.singletonMap("queryJournalpostId", journalpostid)), authorizationHeader))
         );
 
         log.info("Hentet journalpost med journalpostId: " + journalpostid);

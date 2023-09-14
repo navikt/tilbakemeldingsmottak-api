@@ -3,7 +3,6 @@ package no.nav.tilbakemeldingsmottak.metrics;
 import io.micrometer.core.annotation.Incubating;
 import io.micrometer.core.instrument.*;
 import io.micrometer.core.lang.NonNullApi;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -20,7 +19,6 @@ import static java.util.Arrays.asList;
 @Aspect
 @NonNullApi
 @Incubating(since = "1.0.0")
-@Slf4j
 public class DokTimedAspect {
 
     private final MeterRegistry registry;

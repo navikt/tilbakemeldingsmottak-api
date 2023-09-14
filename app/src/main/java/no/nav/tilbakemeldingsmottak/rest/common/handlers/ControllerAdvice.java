@@ -1,11 +1,12 @@
 package no.nav.tilbakemeldingsmottak.rest.common.handlers;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.exceptions.JwtTokenMissingException;
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException;
 import no.nav.tilbakemeldingsmottak.exceptions.*;
 import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.Optional;
 
 @RestControllerAdvice
-@Slf4j
 public class ControllerAdvice {
+
+    private static final Logger log = LoggerFactory.getLogger(ControllerAdvice.class);
 
     private HttpStatus getHttpStatus(Exception ex) {
         return Optional.ofNullable(AnnotationUtils.findAnnotation(ex.getClass(), ResponseStatus.class))
@@ -27,17 +29,13 @@ public class ControllerAdvice {
                 .orElse(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
     @ExceptionHandler(value = {JwtTokenMissingException.class, JwtTokenUnauthorizedException.class})
     public ResponseEntity<ErrorResponse> loginRequiredExceptionHandler(HttpServletRequest request, Exception ex) {
         HttpStatus status = getHttpStatus(ex);
         log.warn("Autentisering feilet ved kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
         return ResponseEntity
                 .status(status)
-                .body(ErrorResponse.builder()
-                        .message(status.getReasonPhrase())
-                        .errorCode(ErrorCode.AUTH_ERROR.value)
-                        .build());
+                .body(new ErrorResponse(status.getReasonPhrase(), ErrorCode.AUTH_ERROR.value));
     }
 
     @ExceptionHandler(value = {MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class})
@@ -45,10 +43,7 @@ public class ControllerAdvice {
         log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.builder()
-                        .message(ex.getMessage())
-                        .errorCode(ErrorCode.GENERAL_ERROR.value)
-                        .build());
+                .body(new ErrorResponse(ex.getMessage(), ErrorCode.GENERAL_ERROR.value));
     }
 
     @ExceptionHandler(Exception.class)
@@ -57,10 +52,7 @@ public class ControllerAdvice {
         log.error("Feil i kall til " + request.getRequestURI() + ": " + ex.getMessage(), ex);
         return ResponseEntity
                 .status(status)
-                .body(ErrorResponse.builder()
-                        .message(status.getReasonPhrase())
-                        .errorCode(ErrorCode.GENERAL_ERROR.value)
-                        .build());
+                .body(new ErrorResponse(status.getReasonPhrase(), ErrorCode.GENERAL_ERROR.value));
     }
 
     // 200
@@ -70,10 +62,7 @@ public class ControllerAdvice {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ErrorResponse.builder()
-                        .message(ex.getMessage())
-                        .errorCode(ex.getErrorCode().value)
-                        .build());
+                .body(new ErrorResponse(ex.getMessage(), ex.getErrorCode().value));
     }
 
     // 204
@@ -82,10 +71,7 @@ public class ControllerAdvice {
         log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
-                .body(ErrorResponse.builder()
-                        .message(ex.getMessage())
-                        .errorCode(ex.getErrorCode().value)
-                        .build());
+                .body(new ErrorResponse(ex.getMessage(), ex.getErrorCode().value));
     }
 
     // 400
@@ -94,10 +80,7 @@ public class ControllerAdvice {
         log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.builder()
-                        .message(ex.getMessage())
-                        .errorCode(ex.getErrorCode().value)
-                        .build());
+                .body(new ErrorResponse(ex.getMessage(), ex.getErrorCode().value));
     }
 
     // 401
@@ -106,10 +89,7 @@ public class ControllerAdvice {
         log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(ErrorResponse.builder()
-                        .message(ex.getMessage())
-                        .errorCode(ex.getErrorCode().value)
-                        .build());
+                .body(new ErrorResponse(ex.getMessage(), ex.getErrorCode().value));
     }
 
     // 403
@@ -118,10 +98,7 @@ public class ControllerAdvice {
         log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
-                .body(ErrorResponse.builder()
-                        .message(ex.getMessage())
-                        .errorCode(ex.getErrorCode().value)
-                        .build());
+                .body(new ErrorResponse(ex.getMessage(), ex.getErrorCode().value));
     }
 
     // 404
@@ -130,10 +107,7 @@ public class ControllerAdvice {
         log.warn("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(ErrorResponse.builder()
-                        .message(ex.getMessage())
-                        .errorCode(ex.getErrorCode().value)
-                        .build());
+                .body(new ErrorResponse(ex.getMessage(), ex.getErrorCode().value));
     }
 
     // 500
@@ -142,10 +116,6 @@ public class ControllerAdvice {
         log.error("Feil i kall til {}: ({}) {}", request.getRequestURI(), ex.getErrorCode().value, ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse.builder()
-                        .message(ex.getMessage())
-                        .errorCode(ex.getErrorCode().value)
-                        .build());
+                .body(new ErrorResponse(ex.getMessage(), ex.getErrorCode().value));
     }
-
 }

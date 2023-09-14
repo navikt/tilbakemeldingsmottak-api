@@ -1,17 +1,19 @@
 package no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.service;
 
 import jakarta.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Service
-@Slf4j
 public class BestillingAvSamtaleService {
 
+    private static final Logger log = getLogger(BestillingAvSamtaleService.class);
     private final AzureEmailService emailService;
 
     @Value("${email_samisk_kontakt_address}")
@@ -33,7 +35,7 @@ public class BestillingAvSamtaleService {
         content.addParagraph("Fornavn", request.getFornavn());
         content.addParagraph("Etternavn", request.getEtternavn());
         content.addParagraph("Telefonnummer", request.getTelefonnummer());
-        content.addParagraph("Tidsrom", request.getTidsrom().value);
+        content.addParagraph("Tidsrom", request.getTidsrom().getValue());
 
         return content.getContentString();
     }

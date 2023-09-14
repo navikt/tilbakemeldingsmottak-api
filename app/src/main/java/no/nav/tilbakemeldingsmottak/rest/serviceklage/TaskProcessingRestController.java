@@ -2,7 +2,6 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.tilbakemeldingsmottak.api.TaskProcessingRestControllerApi;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
@@ -17,6 +16,7 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.HentSkjemaService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserServiceklageService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.KlassifiserServiceklageValidator;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,12 +28,14 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertHarJournalpost;
 import static no.nav.tilbakemeldingsmottak.util.OppgaveUtils.assertIkkeFerdigstilt;
+import static org.slf4j.LoggerFactory.getLogger;
 
-@Slf4j
 @ProtectedWithClaims(issuer = "azuread", claimMap = {"scp=defaultaccess serviceklage-klassifisering"})
 @RestController
 @RequiredArgsConstructor
 public class TaskProcessingRestController implements TaskProcessingRestControllerApi {
+
+    private static final Logger log = getLogger(TaskProcessingRestController.class);
 
     private final KlassifiserServiceklageService klassifiserServiceklageService;
     private final HentSkjemaService hentSkjemaService;
@@ -51,13 +53,11 @@ public class TaskProcessingRestController implements TaskProcessingRestControlle
                                                                                    @RequestBody KlassifiserServiceklageRequest request) {
         log.info("Mottatt kall om å klassifisere serviceklage med oppgaveId={}", oppgaveId);
 
-        if (NEI.equals(request.getFULGTBRUKERVEILEDNINGGOSYS()) || NEI.equals(request.getKOMMUNALBEHANDLING())) {
+        if (NEI.equals(request.getFULGT_BRUKERVEILEDNING_GOSYS()) || NEI.equals(request.getKOMMUNAL_BEHANDLING())) {
             log.info("Videre behandling kreves, saksbehandler er informert og videresendt til Gosys.");
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(KlassifiserServiceklageResponse.builder()
-                            .message("Videre behandling kreves.")
-                            .build());
+                    .body(new KlassifiserServiceklageResponse("Videre behandling kreves."));
         }
 
         HentOppgaveResponseTo hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId);
@@ -70,9 +70,7 @@ public class TaskProcessingRestController implements TaskProcessingRestControlle
         klassifiserServiceklageService.klassifiserServiceklage(request, hentOppgaveResponseTo);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(KlassifiserServiceklageResponse.builder()
-                        .message("Klassifisert serviceklage med journalpostId=" + hentOppgaveResponseTo.getJournalpostId())
-                        .build());
+                .body(new KlassifiserServiceklageResponse("Klassifisert serviceklage med journalpostId=" + hentOppgaveResponseTo.getJournalpostId()));
     }
 
     @Transactional

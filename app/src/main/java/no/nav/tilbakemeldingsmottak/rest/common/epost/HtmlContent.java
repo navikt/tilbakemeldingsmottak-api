@@ -1,11 +1,13 @@
 package no.nav.tilbakemeldingsmottak.rest.common.epost;
 
-import lombok.Getter;
 
 public class HtmlContent {
 
-    @Getter
     private String contentString = "";
+
+    public String getContentString() {
+        return contentString;
+    }
 
     public void addParagraph(String fieldname, String content) {
         String paragraph = createParagraph(fieldname, content);

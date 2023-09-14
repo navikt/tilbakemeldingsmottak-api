@@ -1,10 +1,10 @@
 package no.nav.tilbakemeldingsmottak.consumer.norg2;
 
 import jakarta.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import no.nav.tilbakemeldingsmottak.exceptions.*;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
+import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,11 +23,13 @@ import java.util.List;
 import static no.nav.tilbakemeldingsmottak.config.cache.CacheConfig.NORG2_CACHE;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
+import static org.slf4j.LoggerFactory.getLogger;
 
 
 @Component
-@Slf4j
 public class Norg2Consumer {
+
+    private static final Logger log = getLogger(Norg2Consumer.class);
 
     private final String norg2Url;
     @Inject

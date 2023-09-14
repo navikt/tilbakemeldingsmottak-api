@@ -2,14 +2,12 @@ package no.nav.tilbakemeldingsmottak.interceptors;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.config.MDCConstants;
 import org.slf4j.MDC;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.UUID;
 
-@Slf4j
 public class MDCPopulationInterceptor extends AbstractInterceptor {
 
     @Override

@@ -1,9 +1,9 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument;
 
 import jakarta.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.exceptions.*;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
+import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,10 +22,11 @@ import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
 import static no.nav.tilbakemeldingsmottak.consumer.saf.util.HttpHeadersUtil.createAuthHeaderFromToken;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
+import static org.slf4j.LoggerFactory.getLogger;
 
-@Slf4j
 @Component
 public class HentDokumentConsumer implements HentDokument {
+    private static final Logger log = getLogger(HentDokumentConsumer.class);
 
     private final String hentDokumentUrl;
     @Inject
@@ -63,9 +64,7 @@ public class HentDokumentConsumer implements HentDokument {
 
     private HentDokumentResponseTo mapResponse(byte[] dokument, String journalpostId, String dokumentInfoId, String variantFormat) {
         try {
-            return HentDokumentResponseTo.builder()
-                    .dokument(dokument)
-                    .build();
+            return new HentDokumentResponseTo(dokument);
         } catch (Exception e) {
             var errorMessage = String.format("Kunne ikke dekode dokument, da dokumentet ikke er base64-encodet journalpostId=%s, dokumentInfoId=%s, variantFormat=%s. Feilmelding=%s", journalpostId, dokumentInfoId, variantFormat, e.getMessage());
             throw new ServerErrorException(errorMessage, e);

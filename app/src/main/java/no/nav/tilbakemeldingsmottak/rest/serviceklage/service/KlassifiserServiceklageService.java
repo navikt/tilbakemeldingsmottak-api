@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklageEventTypeEnum;
+import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklageEventType;
 import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.EndreOppgaveRequestTo;
@@ -14,6 +13,7 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveReques
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
 import no.nav.tilbakemeldingsmottak.consumer.saf.SafJournalpostQueryService;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost;
+import no.nav.tilbakemeldingsmottak.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorNotFoundException;
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode;
@@ -27,8 +27,9 @@ import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
-import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
+import no.nav.tilbakemeldingsmottak.util.SkjemaUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -41,21 +42,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER;
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.NONE;
-import static no.nav.tilbakemeldingsmottak.util.SkjemaUtils.getQuestionById;
+import static no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.NONE;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNumeric;
+import static org.slf4j.LoggerFactory.getLogger;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class KlassifiserServiceklageService {
 
-    private static final String KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser";
-    private static final String FORVALTNINGSKLAGE = "Nei, en forvaltningsklage";
-    private static final String SKRIV_TIL_OSS = "Nei, Skriv til oss";
-    private static final String JA = "Ja";
-    private static final String ANNET = "Annet";
+    public static final String KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser";
+    public static final String FORVALTNINGSKLAGE = "Nei, en forvaltningsklage";
+    public static final String SKRIV_TIL_OSS = "Nei, Skriv til oss";
+    public static final String JA = "Ja";
+    public static final String ANNET = "Annet";
+    private static final Logger log = getLogger(KlassifiserServiceklageService.class);
     private final ServiceklageRepository serviceklageRepository;
     private final OppgaveConsumer oppgaveConsumer;
     private final EndreOppgaveRequestToMapper endreOppgaveRequestToMapper;
@@ -73,7 +74,7 @@ public class KlassifiserServiceklageService {
     private String fromAddress;
 
     public void klassifiserServiceklage(KlassifiserServiceklageRequest request, HentOppgaveResponseTo hentOppgaveResponseTo) {
-        if (KOMMUNAL_KLAGE.equals(request.getBEHANDLESSOMSERVICEKLAGE())) {
+        if (KOMMUNAL_KLAGE.equals(request.getBEHANDLES_SOM_SERVICEKLAGE())) {
             log.info("Klagen har blitt markert som en kommunal klage. Oppretter oppgave om sletting av dokument.");
             opprettSlettingOppgave(hentOppgaveResponseTo);
         }
@@ -81,7 +82,7 @@ public class KlassifiserServiceklageService {
         Serviceklage serviceklage = getOrCreateServiceklage(hentOppgaveResponseTo.getJournalpostId());
         updateServiceklage(serviceklage, request);
         serviceklageRepository.save(serviceklage);
-        serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventTypeEnum.KLASSIFISER_SERVICEKLAGE);
+        serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventType.KLASSIFISER_SERVICEKLAGE);
 
         log.info("Serviceklage med serviceklageId={} er klassifisert som {}", serviceklage.getServiceklageId(), serviceklage.getTema());
 
@@ -137,13 +138,14 @@ public class KlassifiserServiceklageService {
         for (Question q : questions) {
             String questionId = q.getId();
             if (answersMap.containsKey(q.getId()) && !questionAnswerMap.containsKey(q.getText())) {
-                String question = getQuestionById(questions, questionId)
-                        .orElseThrow(() -> new ServerErrorException("Finner ikke spørsmål med id=" + questionId))
-                        .getText();
-                questionAnswerMap.put(question, answersMap.get(questionId));
+                Question question = SkjemaUtils.getQuestionById(questions, questionId);
+                if (question == null) {
+                    throw new ServerErrorException("Finner ikke spørsmål med id=" + questionId);
+                }
+                questionAnswerMap.put(question.getText(), answersMap.get(questionId));
             }
 
-            if (q.getType().equals(Question.TypeEnum.RADIO)) {
+            if (q.getType().equals(Question.Type.RADIO)) {
                 Optional<Answer> answer = q.getAnswers().stream()
                         .filter(a -> a.getAnswer().equals(answersMap.get(questionId)))
                         .findFirst();
@@ -189,16 +191,16 @@ public class KlassifiserServiceklageService {
     }
 
     private void updateServiceklage(Serviceklage serviceklage, KlassifiserServiceklageRequest request) {
-        serviceklage.setBehandlesSomServiceklage(request.getBEHANDLESSOMSERVICEKLAGE());
-        serviceklage.setBehandlesSomServiceklageUtdypning(request.getBEHANDLESSOMSERVICEKLAGEUTDYPNING());
-        serviceklage.setFremmetDato(request.getFREMMETDATO() == null ? null : LocalDate.parse(request.getFREMMETDATO()));
+        serviceklage.setBehandlesSomServiceklage(request.getBEHANDLES_SOM_SERVICEKLAGE());
+        serviceklage.setBehandlesSomServiceklageUtdypning(request.getBEHANDLES_SOM_SERVICEKLAGE_UTDYPNING());
+        serviceklage.setFremmetDato(request.getFREMMET_DATO() == null ? null : LocalDate.parse(request.getFREMMET_DATO()));
         serviceklage.setInnsender(request.getINNSENDER());
         serviceklage.setKanal(request.getKANAL());
-        serviceklage.setKanalUtdypning(request.getKANALUTDYPNING());
-        serviceklage.setEnhetsnummerPaaklaget(extractEnhetsnummer(request.getENHETSNUMMERPAAKLAGET()));
-        serviceklage.setEnhetsnummerBehandlende(JA.equals(request.getPAAKLAGETENHETERBEHANDLENDE()) ?
-                extractEnhetsnummer(request.getENHETSNUMMERPAAKLAGET()) :
-                extractEnhetsnummer(request.getENHETSNUMMERBEHANDLENDE()));
+        serviceklage.setKanalUtdypning(request.getKANAL_UTDYPNING());
+        serviceklage.setEnhetsnummerPaaklaget(extractEnhetsnummer(request.getENHETSNUMMER_PAAKLAGET()));
+        serviceklage.setEnhetsnummerBehandlende(JA.equals(request.getPAAKLAGET_ENHET_ER_BEHANDLENDE()) ?
+                extractEnhetsnummer(request.getENHETSNUMMER_PAAKLAGET()) :
+                extractEnhetsnummer(request.getENHETSNUMMER_BEHANDLENDE()));
         serviceklage.setGjelder(request.getGJELDER());
         serviceklage.setBeskrivelse(request.getBESKRIVELSE());
         serviceklage.setYtelse(request.getYTELSE());
@@ -232,19 +234,19 @@ public class KlassifiserServiceklageService {
             return request.getINFORMASJON();
         } else if (!isBlank(request.getVEILEDNING())) {
             return request.getVEILEDNING();
-        } else if (!isBlank(request.getTEMAUTDYPNING())) {
-            return request.getTEMAUTDYPNING();
+        } else if (!isBlank(request.getTEMA_UTDYPNING())) {
+            return request.getTEMA_UTDYPNING();
         } else {
             return null;
         }
     }
 
     private String mapSvarmetodeUtdypning(KlassifiserServiceklageRequest request) {
-        if (!isBlank(request.getSVARIKKENOEDVENDIG())) {
-            if (request.getSVARIKKENOEDVENDIG().equals(ANNET)) {
-                return request.getSVARMETODEUTDYPNING();
+        if (!isBlank(request.getSVAR_IKKE_NOEDVENDIG())) {
+            if (request.getSVAR_IKKE_NOEDVENDIG().equals(ANNET)) {
+                return request.getSVARMETODE_UTDYPNING();
             } else {
-                return request.getSVARIKKENOEDVENDIG();
+                return request.getSVAR_IKKE_NOEDVENDIG();
             }
         } else {
             return null;

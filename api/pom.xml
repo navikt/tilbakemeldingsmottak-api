@@ -19,6 +19,12 @@
             <artifactId>spring-web</artifactId>
             <version>${spring-core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+
         <!--Jakarta-->
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -106,21 +112,35 @@
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/tilbakemeldingsmottak-api.yml</inputSpec>
-                            <generatorName>spring</generatorName>
+                            <generatorName>kotlin-spring</generatorName>
                             <apiPackage>no.nav.tilbakemeldingsmottak.api</apiPackage>
                             <modelPackage>no.nav.tilbakemeldingsmottak.model</modelPackage>
-                            <templateDirectory>${project.basedir}/src/main/resources/custom-templates
-                            </templateDirectory>
                             <configOptions>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <gradleBuildFile>false</gradleBuildFile>
                                 <exceptionHandler>false</exceptionHandler>
                                 <interfaceOnly>true</interfaceOnly>
                                 <swaggerAnnotations>true</swaggerAnnotations>
-                                <additionalModelTypeAnnotations>@lombok.Builder</additionalModelTypeAnnotations>
                                 <useTags>true</useTags>
+                                <enumPropertyNaming>original</enumPropertyNaming>
                             </configOptions>
                         </configuration>
+                    </execution>
+                </executions>
+
+
+            </plugin>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

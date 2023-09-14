@@ -1,16 +1,19 @@
 package no.nav.tilbakemeldingsmottak.rest.feilogmangler.service;
 
 import jakarta.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService;
 import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest;
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @Service
-@Slf4j
 public class FeilOgManglerService {
+
+    private static final Logger log = getLogger(FeilOgManglerService.class);
 
     private final AzureEmailService emailService;
 
@@ -35,7 +38,7 @@ public class FeilOgManglerService {
         if (request.getOnskerKontakt()) {
             content.addParagraph("Innsender ønsker å kontaktes på epost", request.getEpost());
         }
-        content.addParagraph("Hva slags feil", request.getFeiltype().value);
+        content.addParagraph("Hva slags feil", request.getFeiltype().name());
         content.addParagraph("Melding", request.getMelding());
 
         return content.getContentString();

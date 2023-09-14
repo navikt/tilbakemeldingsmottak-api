@@ -2,7 +2,6 @@ package no.nav.tilbakemeldingsmottak.rest.datavarehus;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.tilbakemeldingsmottak.api.DatavarehusRestControllerApi;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
@@ -19,11 +18,11 @@ import java.util.List;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
-@Slf4j
 @ProtectedWithClaims(issuer = "azuread", claimMap = {"scp=defaultaccess datavarehus"})
 @RestController
 @RequiredArgsConstructor
 public class DatavarehusRestController implements DatavarehusRestControllerApi {
+    
     private final DatavarehusService datavarehusService;
 
     @Transactional

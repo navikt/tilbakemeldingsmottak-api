@@ -5,7 +5,6 @@ import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.generer.PdfGeneratorService;
 import no.nav.tilbakemeldingsmottak.generer.modeller.ServiceklagePdfModell;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.KlagetyperEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static no.nav.tilbakemeldingsmottak.serviceklage.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
+import static no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER;
+import static no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.Klagetyper;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
@@ -44,18 +44,28 @@ public final class PdfService {
             klageMap.put("Navn til innmelder", request.getInnmelder().getNavn());
         }
 
+        if (!isBlank(request.getInnmelder().getPersonnummer())) {
+            klageMap.put("Personnummer til innmelder", request.getInnmelder().getPersonnummer());
+        }
+
         switch (request.getPaaVegneAv()) {
-            case PRIVATPERSON -> klageMap.put("Personnummer til innmelder", request.getInnmelder().getPersonnummer());
+            case PRIVATPERSON -> {
+            }
             case ANNEN_PERSON -> {
-                klageMap.put("Innmelders rolle", request.getInnmelder().getRolle());
-                klageMap.put("Innmelder har fullmakt", request.getInnmelder().getHarFullmakt() ? "Ja" : "Nei");
+                if (!isBlank(request.getInnmelder().getRolle())) {
+                    klageMap.put("Innmelders rolle", request.getInnmelder().getRolle());
+                    klageMap.put("Innmelder har fullmakt", request.getInnmelder().getHarFullmakt() ? "Ja" : "Nei");
+                }
+
                 klageMap.put("Navn til forulempet person", request.getPaaVegneAvPerson().getNavn());
                 klageMap.put("Personnummer til forulempet person", request.getPaaVegneAvPerson().getPersonnummer());
             }
             case BEDRIFT -> {
                 if (!isBlank(request.getInnmelder().getRolle())) {
                     klageMap.put("Innmelders rolle", request.getInnmelder().getRolle());
+                    klageMap.put("Innmelder har fullmakt", request.getInnmelder().getHarFullmakt() ? "Ja" : "Nei");
                 }
+                
                 klageMap.put("Navn til forulempet bedrift", request.getPaaVegneAvBedrift().getNavn());
                 klageMap.put("Orgnr til forulempet bedrift", request.getPaaVegneAvBedrift().getOrganisasjonsnummer());
             }
@@ -64,11 +74,11 @@ public final class PdfService {
         if (!isBlank(request.getEnhetsnummerPaaklaget())) {
             klageMap.put("Påklaget enhet", request.getEnhetsnummerPaaklaget());
         }
-        klageMap.put("Klagetype", StringUtils.join(request.getKlagetyper().stream().map(x -> x.value).collect(Collectors.toList()), ", "));
-        if (request.getKlagetyper().contains(KlagetyperEnum.LOKALT_NAV_KONTOR)) {
-            klageMap.put("Gjelder økonomisk sosialhjelp/sosiale tjenester", request.getGjelderSosialhjelp().value);
+        klageMap.put("Klagetype", StringUtils.join(request.getKlagetyper().stream().map(x -> x.getValue()).collect(Collectors.toList()), ", "));
+        if (request.getKlagetyper().contains(Klagetyper.LOKALT_NAV_KONTOR)) {
+            klageMap.put("Gjelder økonomisk sosialhjelp/sosiale tjenester", request.getGjelderSosialhjelp().getValue());
         }
-        if (request.getKlagetyper().contains(KlagetyperEnum.ANNET) && !isBlank(request.getKlagetypeUtdypning())) {
+        if (request.getKlagetyper().contains(Klagetyper.ANNET) && !isBlank(request.getKlagetypeUtdypning())) {
             klageMap.put("Klagetype spesifisert i fritekst", request.getKlagetypeUtdypning());
 
         }

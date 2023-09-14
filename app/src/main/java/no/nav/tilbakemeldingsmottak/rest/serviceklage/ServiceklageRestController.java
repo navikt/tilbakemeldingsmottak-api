@@ -2,7 +2,6 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.Protected;
 import no.nav.tilbakemeldingsmottak.api.ServiceklageRestControllerApi;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
@@ -12,6 +11,7 @@ import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator;
 import no.nav.tilbakemeldingsmottak.util.OidcUtils;
+import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,12 +22,14 @@ import java.util.Optional;
 import static no.nav.tilbakemeldingsmottak.config.Constants.TOKENX_ISSUER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
+import static org.slf4j.LoggerFactory.getLogger;
 
-@Slf4j
 @Protected
 @RestController
 @RequiredArgsConstructor
 public class ServiceklageRestController implements ServiceklageRestControllerApi {
+
+    private static final Logger log = getLogger(ServiceklageRestController.class);
 
     private final OpprettServiceklageService opprettServiceklageService;
     private final OpprettServiceklageValidator opprettServiceklageValidator;

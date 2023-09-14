@@ -2,7 +2,6 @@ package no.nav.tilbakemeldingsmottak.rest.ros;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.security.token.support.core.api.ProtectedWithClaims;
 import no.nav.tilbakemeldingsmottak.api.RosRestControllerApi;
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 
-@Slf4j
 @ProtectedWithClaims(issuer = "azuread")
 @RestController
 @RequiredArgsConstructor
@@ -34,8 +32,9 @@ public class RosRestController implements RosRestControllerApi {
     public ResponseEntity<SendRosResponse> sendRos(@RequestBody SendRosRequest request) throws SendEmailException {
         sendRosValidator.validateRequest(request);
         rosService.sendRos(request);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(SendRosResponse.builder().message("Ros sendt").build());
+                .body(new SendRosResponse("Ros sendt"));
     }
 }

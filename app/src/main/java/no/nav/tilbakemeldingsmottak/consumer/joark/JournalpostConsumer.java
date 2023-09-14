@@ -1,11 +1,11 @@
 package no.nav.tilbakemeldingsmottak.consumer.joark;
 
 import jakarta.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo;
 import no.nav.tilbakemeldingsmottak.exceptions.*;
 import no.nav.tilbakemeldingsmottak.metrics.Metrics;
+import org.slf4j.Logger;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,12 +19,14 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import static no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER;
 import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-@Slf4j
 @Component
 public class JournalpostConsumer {
-    
+
+    private static final Logger log = getLogger(JournalpostConsumer.class);
+
     private static final String FORSOEK_FERDIGSTILL = "?forsoekFerdigstill=true";
     @Inject
     @Qualifier("arkivClient")

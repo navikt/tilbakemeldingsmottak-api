@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.graphql;
 
 import jakarta.inject.Inject;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo;
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJsonJournalpost;
 import no.nav.tilbakemeldingsmottak.exceptions.*;
@@ -26,7 +25,6 @@ import static no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Component
-@Slf4j
 public class SafGraphqlConsumer {
 
     private final String graphQLurl;

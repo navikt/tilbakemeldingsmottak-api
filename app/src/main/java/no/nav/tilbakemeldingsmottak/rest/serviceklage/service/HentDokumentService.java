@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.tilbakemeldingsmottak.consumer.saf.SafJournalpostQueryService;
 import no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument.HentDokumentConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument.HentDokumentResponseTo;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import static org.apache.cxf.common.util.CollectionUtils.isEmpty;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class HentDokumentService {
 
@@ -43,9 +41,7 @@ public class HentDokumentService {
         }
 
         HentDokumentResponseTo safHentDokumentResponseTo = hentDokumentConsumer.hentDokument(journalpostId, dokumentInfo.getDokumentInfoId(), variantformat.name(), authorizationHeader);
-        return HentDokumentResponse.builder()
-                .dokument(safHentDokumentResponseTo.getDokument())
-                .build();
+        return new HentDokumentResponse(safHentDokumentResponseTo.getDokument());
     }
 
 }

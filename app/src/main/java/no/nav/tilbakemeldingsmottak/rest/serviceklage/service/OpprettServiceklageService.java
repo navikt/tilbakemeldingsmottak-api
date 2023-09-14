@@ -1,8 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklageEventTypeEnum;
+import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklageEventType;
 import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery;
 import no.nav.tilbakemeldingsmottak.consumer.joark.JournalpostConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo;
@@ -10,12 +9,12 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResp
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo;
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo;
+import no.nav.tilbakemeldingsmottak.domain.Serviceklage;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException;
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException;
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException;
 import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest;
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAvEnum;
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageResponse;
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository;
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService;
@@ -23,21 +22,21 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettJou
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettServiceklageRequestMapper;
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper;
-import no.nav.tilbakemeldingsmottak.serviceklage.Serviceklage;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class OpprettServiceklageService {
-
     public static final String SUBJECT_JOURNALPOST_FEILET = "Automatisk journalføring av serviceklage feilet";
     public static final String TEXT_JOURNALPOST_FEILET = "Manuell journalføring og opprettelse av oppgave kreves. Klagen ligger vedlagt.";
     public static final String SUBJECT_OPPGAVE_FEILET = "Automatisk opprettelse av oppgave feilet";
     public static final String TEXT_OPPGAVE_FEILET = "Manuell opprettelse av oppgave kreves for serviceklage med journalpostId=";
-
+    private static final Logger log = getLogger(OpprettServiceklageService.class);
     private final ServiceklageRepository serviceklageRepository;
     private final OpprettServiceklageRequestMapper opprettServiceklageRequestMapper;
     private final OpprettJournalpostRequestToMapper opprettJournalpostRequestToMapper;
@@ -62,18 +61,13 @@ public class OpprettServiceklageService {
         Serviceklage serviceklage = opprettServiceklageRequestMapper.map(request, innlogget);
         serviceklage.setJournalpostId(opprettJournalpostResponseTo.getJournalpostId());
         serviceklageRepository.save(serviceklage);
-        serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventTypeEnum.OPPRETT_SERVICEKLAGE);
+        serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventType.OPPRETT_SERVICEKLAGE);
         log.info("Serviceklage med serviceklageId={} opprettet", serviceklage.getServiceklageId());
 
         OpprettOppgaveResponseTo opprettOppgaveResponseTo = forsoekOpprettOppgave(serviceklage.getKlagenGjelderId(), request.getPaaVegneAv(), opprettJournalpostResponseTo);
         log.info("Oppgave med oppgaveId={} opprettet", opprettOppgaveResponseTo.getId());
 
-        return OpprettServiceklageResponse.builder()
-                .message("Serviceklage opprettet")
-                .serviceklageId(serviceklage.getServiceklageId().toString())
-                .journalpostId(serviceklage.getJournalpostId())
-                .oppgaveId(opprettOppgaveResponseTo.getId())
-                .build();
+        return new OpprettServiceklageResponse("Serviceklage opprettet", serviceklage.getServiceklageId().toString(), serviceklage.getJournalpostId(), opprettOppgaveResponseTo.getId());
     }
 
     private OpprettJournalpostResponseTo forsoekOpprettJournalpost(OpprettServiceklageRequest request, byte[] fysiskDokument, boolean innlogget) {
@@ -86,9 +80,9 @@ public class OpprettServiceklageService {
         }
     }
 
-    private OpprettOppgaveResponseTo forsoekOpprettOppgave(String id, PaaVegneAvEnum paaVegneAvEnum, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
+    private OpprettOppgaveResponseTo forsoekOpprettOppgave(String id, OpprettServiceklageRequest.PaaVegneAv paaVegneAv, OpprettJournalpostResponseTo opprettJournalpostResponseTo) {
         try {
-            OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.mapServiceklageOppgave(id, paaVegneAvEnum, opprettJournalpostResponseTo);
+            OpprettOppgaveRequestTo opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.mapServiceklageOppgave(id, paaVegneAv, opprettJournalpostResponseTo);
             return oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo);
         } catch (ClientErrorException | ClientErrorUnauthorizedException | ServerErrorException e) {
             mailHelper.sendEmail(fromAddress, toAddress, SUBJECT_OPPGAVE_FEILET, TEXT_OPPGAVE_FEILET + opprettJournalpostResponseTo.getJournalpostId());
