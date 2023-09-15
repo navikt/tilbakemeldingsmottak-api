@@ -76,6 +76,7 @@ class HentSkjemaService(
         return response
     }
 
+    // FIXME: This also needs to account for recursion for all questions (ENHETSNUMMER_BEHANDLENDE is under PAAKLAGET_ENHET_ER_BEHANDLENDE)
     fun updateQuestionInResponse(response: HentSkjemaResponse, updatedQuestion: Question): HentSkjemaResponse {
         val updatedQuestions = response.questions?.map {
             if (it.id == updatedQuestion.id) updatedQuestion else it
@@ -112,7 +113,8 @@ class HentSkjemaService(
 
     private fun hentEnheter(): List<Answer> {
         val enheter = norg2Consumer.hentEnheter()
-        return enheter.filter { !it.status.equals(NEDLAGT, ignoreCase = true) }
+        return enheter
+            .filter { !it.status.equals(NEDLAGT, ignoreCase = true) }
             .map { Answer(answer = "${it.navn} - ${it.enhetNr}") }
     }
 }

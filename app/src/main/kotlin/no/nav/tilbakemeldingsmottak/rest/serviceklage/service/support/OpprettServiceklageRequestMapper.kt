@@ -41,13 +41,20 @@ class OpprettServiceklageRequestMapper {
         return klagetype?.joinToString(", ") { it.value } ?: ""
     }
 
-    private fun mapSvarmetode(oenskerAaKontaktes: Boolean?): String {
-        return oenskerAaKontaktes?.let { if (!it) SVAR_IKKE_NOEDVENDIG_ANSWER else null } ?: SVAR_IKKE_NOEDVENDIG_ANSWER
+    private fun mapSvarmetode(oenskerAaKontaktes: Boolean?): String? {
+        return when (oenskerAaKontaktes) {
+            null -> SVAR_IKKE_NOEDVENDIG_ANSWER
+            true -> null
+            false -> SVAR_IKKE_NOEDVENDIG_ANSWER
+        }
     }
 
-    private fun mapSvarmetodeUtdypning(oenskerAaKontaktes: Boolean?): String {
-        return oenskerAaKontaktes?.let { if (!it) BRUKER_IKKE_BEDT_OM_SVAR_ANSWER else null }
-            ?: INNMELDER_MANGLER_FULLMAKT_ANSWER
+    private fun mapSvarmetodeUtdypning(oenskerAaKontaktes: Boolean?): String? {
+        return when (oenskerAaKontaktes) {
+            null -> INNMELDER_MANGLER_FULLMAKT_ANSWER
+            true -> null
+            false -> BRUKER_IKKE_BEDT_OM_SVAR_ANSWER
+        }
     }
 
     fun mapEnhetsnummerPaaklaget(request: OpprettServiceklageRequest): String? {

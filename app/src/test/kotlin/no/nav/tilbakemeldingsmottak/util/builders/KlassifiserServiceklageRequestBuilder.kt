@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.util.builders
 
+import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_KONTOR_1
@@ -14,7 +15,7 @@ class KlassifiserServiceklageRequestBuilder {
     private var KOMMUNAL_BEHANDLING: String? = null
     private var FREMMET_DATO: String? = LocalDate.now().toString()
     private var INNSENDER: String? = "Bruker selv som privatperson"
-    private var KANAL: String? = "Annet"
+    private var KANAL: String? = KANAL_SERVICEKLAGESKJEMA_ANSWER
     private var KANAL_UTDYPNING: String? = "Kanal utdypning"
     private var PAAKLAGET_ENHET_ER_BEHANDLENDE: String? = "Nei"
     private var ENHETSNUMMER_PAAKLAGET: String? = NAV_KONTOR_1

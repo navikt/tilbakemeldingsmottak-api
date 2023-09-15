@@ -26,6 +26,8 @@ public class PdlService {
             return queryExecutor.hentIdenter("{identer {ident gruppe historisk}}", ident, grupper, false);
         } catch (GraphQLRequestExecutionException | GraphQLRequestPreparationException e) {
             throw new ClientErrorException("Graphql query mot PDL feilet", e, ErrorCode.PDL_ERROR);
+        } catch (Exception ex) {
+            throw new ClientErrorException("Ukjent feil mot PDL", ex, ErrorCode.PDL_ERROR);
         }
     }
 
