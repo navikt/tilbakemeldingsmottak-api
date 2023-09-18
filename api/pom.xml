@@ -89,6 +89,8 @@
                             <generatorName>kotlin-spring</generatorName>
                             <apiPackage>no.nav.tilbakemeldingsmottak.api</apiPackage>
                             <modelPackage>no.nav.tilbakemeldingsmottak.model</modelPackage>
+                            <templateDirectory>${project.basedir}/src/main/resources/custom-templates
+                            </templateDirectory>
                             <configOptions>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <gradleBuildFile>false</gradleBuildFile>
@@ -96,7 +98,7 @@
                                 <interfaceOnly>true</interfaceOnly>
                                 <swaggerAnnotations>true</swaggerAnnotations>
                                 <useTags>true</useTags>
-                                <enumPropertyNaming>original</enumPropertyNaming>
+                                <enumPropertyNaming>UPPERCASE</enumPropertyNaming>
                             </configOptions>
                         </configuration>
                     </execution>
