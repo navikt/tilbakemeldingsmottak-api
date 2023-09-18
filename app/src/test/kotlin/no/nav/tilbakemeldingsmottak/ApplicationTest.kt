@@ -11,6 +11,7 @@ import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import no.nav.security.token.support.spring.test.MockLoginController
 import no.nav.tilbakemeldingsmottak.TestUtils.createNorg2Response
 import no.nav.tilbakemeldingsmottak.TestUtils.createSafGraphqlResponse
+import no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AADMailClient
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
 import org.junit.jupiter.api.AfterEach

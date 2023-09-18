@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.itest
 
 import no.nav.tilbakemeldingsmottak.ApplicationTest
+import no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER
 import no.nav.tilbakemeldingsmottak.model.DatavarehusServiceklage
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

@@ -2,9 +2,9 @@ package no.nav.tilbakemeldingsmottak.itest
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.tomakehurst.wiremock.client.WireMock
-import lombok.SneakyThrows
 import no.nav.tilbakemeldingsmottak.ApplicationTest
 import no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER
+import no.nav.tilbakemeldingsmottak.config.Constants
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.FREMMET_DATO
@@ -361,7 +361,6 @@ internal class ServiceklageIT : ApplicationTest() {
     }
 
     @Test
-    @SneakyThrows
     fun dersomDetErKommunaltSkalDokumenterSlettes() {
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val opprettServiceklageResponse = restTemplate!!.exchange(
@@ -372,10 +371,11 @@ internal class ServiceklageIT : ApplicationTest() {
             ), OpprettServiceklageResponse::class.java
         )
         assertNotNull(opprettServiceklageResponse.body)
-        val (_, _, _, _, _, _, _, _, _, _, _, fremmetDato1) = serviceklageRepository!!.findByJournalpostId(
-            opprettServiceklageResponse.body!!.journalpostId
+        val serviceklage = serviceklageRepository!!.findByJournalpostId(
+            opprettServiceklageResponse.body!!.journalpostId!!
         )
-        val fremmetDato = fremmetDato1.toString()
+
+        val fremmetDato = serviceklage?.fremmetDato.toString()
         val request = KlassifiserServiceklageRequestBuilder().asKommunalKlage().build(FREMMET_DATO = fremmetDato)
         val requestEntity =
             HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
