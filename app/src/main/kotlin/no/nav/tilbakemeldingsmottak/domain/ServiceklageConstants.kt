@@ -48,4 +48,10 @@ object ServiceklageConstants {
     const val KANAL_SERVICEKLAGESKJEMA_ANSWER = "Serviceklageskjema på nav.no"
     const val KANAL_MUNTLIG_ANSWER = "Muntlig fra bruker"
     const val NONE = "none"
+
+    const val KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser"
+    const val FORVALTNINGSKLAGE = "Nei, en forvaltningsklage"
+    const val SKRIV_TIL_OSS = "Nei, Skriv til oss"
+    const val JA = "Ja"
+    const val ANNET = "Annet"
 }

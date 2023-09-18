@@ -12,6 +12,9 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseT
 import no.nav.tilbakemeldingsmottak.consumer.saf.SafJournalpostQueryService
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost
 import no.nav.tilbakemeldingsmottak.domain.Serviceklage
+import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.ANNET
+import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.JA
+import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KOMMUNAL_KLAGE
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.NONE
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorNotFoundException
@@ -52,12 +55,6 @@ class KlassifiserServiceklageService(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    private val KOMMUNAL_KLAGE = "Nei, serviceklagen gjelder kommunale tjenester eller ytelser"
-    private val FORVALTNINGSKLAGE = "Nei, en forvaltningsklage"
-    private val SKRIV_TIL_OSS = "Nei, Skriv til oss"
-    private val JA = "Ja"
-    private val ANNET = "Annet"
-
     @Value("\${email_serviceklage_address}")
     private lateinit var toAddress: String
 
@@ -84,6 +81,7 @@ class KlassifiserServiceklageService(
             hentOppgaveResponseTo.id,
             hentOppgaveResponseTo.versjon
         )
+
         ferdigstillOppgave(hentOppgaveResponseTo)
         log.info("Ferdigstilt oppgave med oppgaveId={}", hentOppgaveResponseTo.id)
         if (JA == request.KVITTERING) {
@@ -130,7 +128,7 @@ class KlassifiserServiceklageService(
         val answersMap = ObjectMapper().registerKotlinModule().readValue(
             serviceklage.klassifiseringJson,
             object : TypeReference<Map<String, String>>() {})
-            .filterValues { true }
+            .filterValues { it != null }
             .filterNot { defaultValuesContainsEntry(skjemaResponse, it) }
 
         addEntriesToQuestionAnswerMap(answersMap, skjemaResponse.questions, questionAnswerMap)
@@ -148,6 +146,7 @@ class KlassifiserServiceklageService(
                     ?: throw ServerErrorException("Finner ikke spørsmål med id=$questionId")
                 questionAnswerMap[text1] = answersMap[questionId] ?: ""
             }
+
             if (type == Question.Type.RADIO) {
                 val answer = answers!!.stream()
                     .filter { (answer): Answer -> answer == answersMap[questionId] }
@@ -169,18 +168,19 @@ class KlassifiserServiceklageService(
 
     private fun opprettSlettingOppgave(hentOppgaveResponseTo: HentOppgaveResponseTo) {
         val opprettOppgaveRequestTo = opprettOppgaveRequestToMapper.mapSlettingOppgave(hentOppgaveResponseTo)
-        val (id) = oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo)
-        log.info("Opprettet oppgave med oppgaveId={}", id)
+        val oppgave = oppgaveConsumer.opprettOppgave(opprettOppgaveRequestTo)
+        log.info("Opprettet oppgave med oppgaveId={}", oppgave.id)
     }
 
     private fun getOrCreateServiceklage(journalpostId: String?): Serviceklage {
         var serviceklage = serviceklageRepository.findByJournalpostId(journalpostId!!)
         if (serviceklage == null) {
-            val (_, bruker, datoOpprettet) = getJournalPost(journalpostId)
-            serviceklage = Serviceklage()
-            serviceklage.journalpostId = journalpostId
-            serviceklage.opprettetDato = datoOpprettet
-            serviceklage.klagenGjelderId = bruker.id
+            val journalpost = getJournalPost(journalpostId)
+            serviceklage = Serviceklage(
+                journalpostId = journalpostId,
+                opprettetDato = journalpost.datoOpprettet,
+                klagenGjelderId = journalpost.bruker.id
+            )
         }
         return serviceklage
     }
@@ -215,7 +215,7 @@ class KlassifiserServiceklageService(
         serviceklage.svarmetodeUtdypning = mapSvarmetodeUtdypning(request)
         serviceklage.avsluttetDato = LocalDateTime.now()
         try {
-            serviceklage.klassifiseringJson = ObjectMapper().writeValueAsString(request)
+            serviceklage.klassifiseringJson = ObjectMapper().registerKotlinModule().writeValueAsString(request)
         } catch (e: JsonProcessingException) {
             throw ServerErrorException("Kan ikke konvertere klassifiseringsrequest til JSON-string", e)
         }

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 
 internal class MeldFeilOgManglerValidatorTest {
     private val meldFeilOgManglerValidator = MeldFeilOgManglerValidator()
-    private var meldFeilOgManglerRequest: MeldFeilOgManglerRequest? = null
+    private var meldFeilOgManglerRequest: MeldFeilOgManglerRequest = MeldFeilOgManglerRequestBuilder().build()
 
     @Test
     fun happyPath() {

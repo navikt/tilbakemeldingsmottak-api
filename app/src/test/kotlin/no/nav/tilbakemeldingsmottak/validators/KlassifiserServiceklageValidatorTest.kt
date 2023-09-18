@@ -14,24 +14,25 @@ import org.junit.jupiter.api.Test
 
 internal class KlassifiserServiceklageValidatorTest {
     private val klassifiserServiceklageValidator = KlassifiserServiceklageValidator()
-    private var klassifiserServiceklageRequest: KlassifiserServiceklageRequest? = null
+    private var klassifiserServiceklageRequest: KlassifiserServiceklageRequest =
+        KlassifiserServiceklageRequestBuilder().build()
 
     @Test
     fun happyPathServiceklage() {
         klassifiserServiceklageRequest = KlassifiserServiceklageRequestBuilder().build()
-        klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest!!, createHentSkjemaResponse())
+        klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest, createHentSkjemaResponse())
     }
 
     @Test
     fun happyPathAnnet() {
         klassifiserServiceklageRequest = KlassifiserServiceklageRequestBuilder().asNotServiceklage().build()
-        klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest!!, createHentSkjemaResponse())
+        klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest, createHentSkjemaResponse())
     }
 
     @Test
     fun happyPathForvaltningsklage() {
         klassifiserServiceklageRequest = KlassifiserServiceklageRequestBuilder().asForvaltningsklage().build()
-        klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest!!, createHentSkjemaResponse())
+        klassifiserServiceklageValidator.validateRequest(klassifiserServiceklageRequest, createHentSkjemaResponse())
     }
 
     @Test
@@ -42,7 +43,7 @@ internal class KlassifiserServiceklageValidatorTest {
         // When
         val thrown: Exception = Assertions.assertThrows(ClientErrorException::class.java) {
             klassifiserServiceklageValidator.validateRequest(
-                klassifiserServiceklageRequest!!,
+                klassifiserServiceklageRequest,
                 createHentSkjemaResponse()
             )
         }
@@ -59,7 +60,7 @@ internal class KlassifiserServiceklageValidatorTest {
         // When
         val thrown: Exception = Assertions.assertThrows(ClientErrorException::class.java) {
             klassifiserServiceklageValidator.validateRequest(
-                klassifiserServiceklageRequest!!,
+                klassifiserServiceklageRequest,
                 createHentSkjemaResponse()
             )
         }
@@ -76,7 +77,7 @@ internal class KlassifiserServiceklageValidatorTest {
         // When
         val thrown: Exception = Assertions.assertThrows(ClientErrorException::class.java) {
             klassifiserServiceklageValidator.validateRequest(
-                klassifiserServiceklageRequest!!,
+                klassifiserServiceklageRequest,
                 createHentSkjemaResponse()
             )
         }
@@ -94,7 +95,7 @@ internal class KlassifiserServiceklageValidatorTest {
         // When
         val thrown: Exception = Assertions.assertThrows(ClientErrorException::class.java) {
             klassifiserServiceklageValidator.validateRequest(
-                klassifiserServiceklageRequest!!,
+                klassifiserServiceklageRequest,
                 hentSkjemaResponse
             )
         }

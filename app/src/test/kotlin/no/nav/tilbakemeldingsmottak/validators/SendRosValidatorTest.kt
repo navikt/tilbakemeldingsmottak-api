@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 internal class SendRosValidatorTest {
     private val sendRosValidator = SendRosValidator()
-    private var sendRosRequest: SendRosRequest? = null
+    private var sendRosRequest: SendRosRequest = SendRosRequestBuilder().build()
 
     @Test
     fun happyPath() {

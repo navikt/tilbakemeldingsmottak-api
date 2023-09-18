@@ -11,13 +11,13 @@ import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.FREMMET_DATO
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.INNSENDER
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER
+import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KOMMUNAL_KLAGE
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
 import no.nav.tilbakemeldingsmottak.model.*
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.Klagetyper
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAv
 import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse
-import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.KlassifiserServiceklageService.KOMMUNAL_KLAGE
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETSNR_1
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETSNR_2
 import no.nav.tilbakemeldingsmottak.util.builders.InnmelderBuilder
@@ -35,7 +35,7 @@ import java.time.LocalDate
 
 internal class ServiceklageIT : ApplicationTest() {
     private val objectMapper = ObjectMapper()
-    private val SAKSBEHANDLER = "Saksbehandler yo"
+    private val SAKSBEHANDLER = "Saksbehandler"
     private val ORGANISASJONSNUMMER = "243602076"
     private val KLAGETEKST = "Dette er en klage"
     private val PAAVEGNEAV_PERSONNUMMER = "28898698736"
@@ -328,7 +328,7 @@ internal class ServiceklageIT : ApplicationTest() {
         val requestEntity =
             HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
         val response = restTemplate!!.exchange(
-            URL_BEHANDLE_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + OPPGAVE_ID,
+            "$URL_BEHANDLE_SERVICEKLAGE/$KLASSIFISER?oppgaveId=$OPPGAVE_ID",
             HttpMethod.PUT,
             requestEntity,
             KlassifiserServiceklageResponse::class.java
@@ -405,7 +405,7 @@ internal class ServiceklageIT : ApplicationTest() {
             createHeaders(Constants.AZURE_ISSUER, request.INNSENDER!!, "serviceklage-klassifisering")
         )
         val response = restTemplate!!.exchange(
-            URL_BEHANDLE_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + OPPGAVE_ID,
+            "$URL_BEHANDLE_SERVICEKLAGE/$KLASSIFISER?oppgaveId=$OPPGAVE_ID",
             HttpMethod.PUT,
             requestEntity,
             KlassifiserServiceklageResponse::class.java
@@ -450,7 +450,7 @@ internal class ServiceklageIT : ApplicationTest() {
         val fremmetDato = serviceklageRepository!!.findAll().iterator().next().fremmetDato.toString()
 
         val response = restTemplate!!.exchange(
-            URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_SKJEMA + "/" + JOURNALPOST_ID, HttpMethod.GET, HttpEntity<Any?>(
+            "$URL_BEHANDLE_SERVICEKLAGE/$HENT_SKJEMA/$JOURNALPOST_ID", HttpMethod.GET, HttpEntity<Any?>(
                 createHeaders(
                     Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"
                 )
@@ -522,7 +522,7 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(serviceklageRepository!!.count(), 1)
         val (_, _, _, _, _, _, _, _, _, _, _, fremmetDato1) = serviceklageRepository!!.findAll().iterator().next()
         val response = restTemplate!!.exchange(
-            URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + 99,
+            "$URL_BEHANDLE_SERVICEKLAGE/$HENT_DOKUMENT/99",
             HttpMethod.GET,
             HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering")),
             HentDokumentResponse::class.java

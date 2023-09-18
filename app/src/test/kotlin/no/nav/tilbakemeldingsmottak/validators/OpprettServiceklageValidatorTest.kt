@@ -41,7 +41,8 @@ internal class OpprettServiceklageValidatorTest {
 
     @InjectMocks
     var opprettServiceklageValidator: OpprettServiceklageValidator? = null
-    private var opprettServiceklageRequest: OpprettServiceklageRequest? = null
+
+    private var opprettServiceklageRequest: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().build()
 
     @BeforeEach
     fun setup() {
@@ -75,7 +76,7 @@ internal class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         opprettServiceklageValidator!!.validateRequest(
             opprettServiceklageRequest, Optional.of(
-                opprettServiceklageRequest!!.innmelder!!.personnummer!!
+                opprettServiceklageRequest.innmelder!!.personnummer!!
             )
         )
     }
