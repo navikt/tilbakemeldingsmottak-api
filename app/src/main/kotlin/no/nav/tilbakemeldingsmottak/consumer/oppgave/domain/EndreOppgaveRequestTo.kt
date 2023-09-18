@@ -1,13 +1,14 @@
 package no.nav.tilbakemeldingsmottak.consumer.oppgave.domain
 
 data class EndreOppgaveRequestTo(
-    val id: String,
-    val tildeltEnhetsnr: String,
-    val tema: String,
     val versjon: String,
-    val aktivDato: String,
-    val prioritet: String,
-    val oppgavetype: String,
-    val journalpostId: String,
-    val status: String
+
+    val id: String? = null,
+    val tildeltEnhetsnr: String? = null,
+    val tema: String? = null,
+    val aktivDato: String? = null,
+    val prioritet: String? = null,
+    val oppgavetype: String? = null,
+    val journalpostId: String? = null,
+    val status: String? = null
 )

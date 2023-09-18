@@ -1,26 +1,27 @@
 package no.nav.tilbakemeldingsmottak.consumer.oppgave.domain
 
 data class OpprettOppgaveRequestTo(
-    val tildeltEnhetsnr: String,
+    val tema: String,
+    val oppgavetype: String,
+    val prioritet: String,
+    val aktivDato: String,
+
+    val tildeltEnhetsnr: String? = null,
     val opprettetAvEnhetsnr: String? = null,
-    val aktoerId: String,
-    val journalpostId: String,
+    val aktoerId: String? = null,
+    val journalpostId: String? = null,
     val journalpostkilde: String? = null,
     val behandlesAvApplikasjon: String? = null,
     val saksreferanse: String? = null,
-    val orgnr: String,
+    val orgnr: String? = null,
     val bnr: String? = null,
     val samhandlernr: String? = null,
     val tilordnetRessurs: String? = null,
     val beskrivelse: String? = null,
     val temagruppe: String? = null,
-    val tema: String,
     val behandlingstema: String? = null,
-    val oppgavetype: String,
     val behandlingstype: String? = null,
     val mappeId: String? = null,
-    val aktivDato: String,
-    val fristFerdigstillelse: String,
-    val prioritet: String
+    val fristFerdigstillelse: String? = null,
 )
 
