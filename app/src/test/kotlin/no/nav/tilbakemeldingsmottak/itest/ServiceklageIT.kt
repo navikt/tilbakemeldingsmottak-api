@@ -5,7 +5,6 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import lombok.SneakyThrows
 import no.nav.tilbakemeldingsmottak.ApplicationTest
 import no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER
-import no.nav.tilbakemeldingsmottak.config.Constants
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.FREMMET_DATO
