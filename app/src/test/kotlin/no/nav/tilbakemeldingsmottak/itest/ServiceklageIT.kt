@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.itest
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.tomakehurst.wiremock.client.WireMock
 import no.nav.tilbakemeldingsmottak.ApplicationTest
 import no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER
@@ -34,7 +35,7 @@ import org.springframework.test.context.transaction.TestTransaction
 import java.time.LocalDate
 
 internal class ServiceklageIT : ApplicationTest() {
-    private val objectMapper = ObjectMapper()
+    private val objectMapper = ObjectMapper().registerKotlinModule()
     private val SAKSBEHANDLER = "Saksbehandler"
     private val ORGANISASJONSNUMMER = "243602076"
     private val KLAGETEKST = "Dette er en klage"

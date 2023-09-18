@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.tilbakemeldingsmottak.consumer.norg2.Enhet
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.DataJournalpost
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo
@@ -41,7 +42,7 @@ object TestUtils {
     const val PERSONNUMMER = "01010096460"
     const val AKTOERID = "1234567890123"
     const val DOKUMENT_INFO_ID = "dokumentInfoId"
-    private val objectMapper = ObjectMapper()
+    private val objectMapper = ObjectMapper().registerKotlinModule()
 
     object TestUtils {
 
