@@ -15,7 +15,7 @@ class FeilOgManglerService @Inject constructor(private val emailService: AzureEm
 
     @Value("\${email_nav_support_address}")
     private val emailToAddress: String? = null
-    
+
     fun meldFeilOgMangler(request: MeldFeilOgManglerRequest) {
         emailService.sendSimpleMessage(
             emailToAddress,
@@ -30,7 +30,7 @@ class FeilOgManglerService @Inject constructor(private val emailService: AzureEm
         if (request.onskerKontakt == true) {
             content.addParagraph("Innsender ønsker å kontaktes på epost", request.epost)
         }
-        content.addParagraph("Hva slags feil", request.feiltype!!.value)
+        content.addParagraph("Hva slags feil", request.feiltype?.value)
         content.addParagraph("Melding", request.melding)
         return content.contentString
     }

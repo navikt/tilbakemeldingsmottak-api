@@ -11,13 +11,11 @@ import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.service.BestillingA
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.validation.BestillSamtaleValidator
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @ProtectedWithClaims(issuer = "azuread")
 @RestController
-@CrossOrigin(maxAge = 3600)
 class BestillingAvSamtaleRestController(private val bestillingAvSamtaleService: BestillingAvSamtaleService) :
     BestillingAvSamtaleRestControllerApi {
     private val bestillSamtaleValidator: BestillSamtaleValidator = BestillSamtaleValidator()
