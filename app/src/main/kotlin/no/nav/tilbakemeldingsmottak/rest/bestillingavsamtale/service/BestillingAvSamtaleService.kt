@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.service
 
-import jakarta.inject.Inject
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService
 import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent
@@ -9,12 +8,12 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class BestillingAvSamtaleService @Inject constructor(private val emailService: AzureEmailService) {
+class BestillingAvSamtaleService(private val emailService: AzureEmailService) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Value("\${email_samisk_kontakt_address}")
-    private val emailToAddress: String? = null
-    
+    private lateinit var emailToAddress: String
+
     fun bestillSamtale(request: BestillSamtaleRequest) {
         emailService.sendSimpleMessage(
             emailToAddress,
@@ -29,7 +28,7 @@ class BestillingAvSamtaleService @Inject constructor(private val emailService: A
         content.addParagraph("Fornavn", request.fornavn)
         content.addParagraph("Etternavn", request.etternavn)
         content.addParagraph("Telefonnummer", request.telefonnummer)
-        content.addParagraph("Tidsrom", request.tidsrom!!.value)
+        content.addParagraph("Tidsrom", request.tidsrom?.value)
         return content.contentString
     }
 

@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.feilogmangler.service
 
-import jakarta.inject.Inject
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService
 import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent
@@ -9,12 +8,12 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class FeilOgManglerService @Inject constructor(private val emailService: AzureEmailService) {
+class FeilOgManglerService(private val emailService: AzureEmailService) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Value("\${email_nav_support_address}")
-    private val emailToAddress: String? = null
+    private lateinit var emailToAddress: String
 
     fun meldFeilOgMangler(request: MeldFeilOgManglerRequest) {
         emailService.sendSimpleMessage(

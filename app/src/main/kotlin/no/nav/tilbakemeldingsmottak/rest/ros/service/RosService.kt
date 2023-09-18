@@ -13,7 +13,7 @@ class RosService(private val emailService: AzureEmailService) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Value("\${email_nav_support_address}")
-    private val emailToAddress: String? = null
+    private lateinit var emailToAddress: String
 
     fun sendRos(request: SendRosRequest) {
         emailService.sendSimpleMessage(
