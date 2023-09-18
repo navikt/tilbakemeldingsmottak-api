@@ -118,8 +118,8 @@ class KlassifiserServiceklageService(
     private fun createQuestionAnswerMap(
         serviceklage: Serviceklage,
         hentOppgaveResponseTo: HentOppgaveResponseTo
-    ): LinkedHashMap<String?, String> {
-        val questionAnswerMap = LinkedHashMap<String?, String>()
+    ): Map<String, String> {
+        val questionAnswerMap = HashMap<String, String>()
         val skjemaResponse = if (hentOppgaveResponseTo.journalpostId != null) {
             hentSkjemaService.hentSkjema(hentOppgaveResponseTo.journalpostId)
         } else {
@@ -138,13 +138,15 @@ class KlassifiserServiceklageService(
     private fun addEntriesToQuestionAnswerMap(
         answersMap: Map<String, String>,
         questions: List<Question>?,
-        questionAnswerMap: MutableMap<String?, String>
+        questionAnswerMap: MutableMap<String, String>
     ) {
         for ((questionId, text, type, _, _, answers) in questions!!) {
             if (answersMap.containsKey(questionId) && !questionAnswerMap.containsKey(text)) {
                 val (_, text1) = getQuestionById(questions, questionId!!)
                     ?: throw ServerErrorException("Finner ikke spørsmål med id=$questionId")
-                questionAnswerMap[text1] = answersMap[questionId] ?: ""
+                if (text1 != null) {
+                    questionAnswerMap[text1] = answersMap[questionId] ?: ""
+                }
             }
 
             if (type == Question.Type.RADIO) {

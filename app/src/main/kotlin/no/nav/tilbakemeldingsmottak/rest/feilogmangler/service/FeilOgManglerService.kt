@@ -27,10 +27,10 @@ class FeilOgManglerService(private val emailService: AzureEmailService) {
     private fun createContent(request: MeldFeilOgManglerRequest): String {
         val content = HtmlContent()
         if (request.onskerKontakt == true) {
-            content.addParagraph("Innsender ønsker å kontaktes på epost", request.epost)
+            request.epost?.let { content.addParagraph("Innsender ønsker å kontaktes på epost", it) }
         }
-        content.addParagraph("Hva slags feil", request.feiltype?.value)
-        content.addParagraph("Melding", request.melding)
+        request.feiltype?.value?.let { content.addParagraph("Hva slags feil", it) }
+        request.melding?.let { content.addParagraph("Melding", it) }
         return content.contentString
     }
 }

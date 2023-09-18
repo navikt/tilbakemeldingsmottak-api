@@ -48,7 +48,7 @@ class OpprettServiceklageValidator(
         if (request.oenskerAaKontaktes!!) {
             hasText(request.innmelder!!.telefonnummer, "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true")
         }
-        validateFnr(request.innmelder!!.personnummer)
+        validateFnr(request.innmelder!!.personnummer!!)
         validateRequestFnrMatchesTokenFnr(request.innmelder!!.personnummer, paloggetBruker)
     }
 
@@ -69,7 +69,7 @@ class OpprettServiceklageValidator(
         isNotNull(request.paaVegneAvPerson, "paaVegneAvPerson", " dersom paaVegneAv=ANNEN_PERSON")
         hasText(request.paaVegneAvPerson!!.navn, "paaVegneAvPerson.navn")
         hasText(request.paaVegneAvPerson!!.personnummer, "paaVegneAvPerson.personnummer")
-        validateFnr(request.paaVegneAvPerson!!.personnummer)
+        validateFnr(request.paaVegneAvPerson!!.personnummer!!)
     }
 
     private fun validatePaaVegneAvBedrift(request: OpprettServiceklageRequest) {
@@ -86,15 +86,15 @@ class OpprettServiceklageValidator(
             hasText(request.innmelder!!.navn, "innmelder.navn", " dersom paaVegneAv=BEDRIFT og oenskerAaKontaktes=true")
             hasText(request.innmelder!!.telefonnummer, "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true")
         }
-        validateOrgnr(request.paaVegneAvBedrift!!.organisasjonsnummer)
+        validateOrgnr(request.paaVegneAvBedrift!!.organisasjonsnummer!!)
     }
 
-    private fun validateFnr(fnr: String?) {
+    private fun validateFnr(fnr: String) {
         personnummerValidator.validate(fnr)
         pdlService.hentAktorIdForIdent(fnr)
     }
 
-    private fun validateOrgnr(orgnr: String?) {
+    private fun validateOrgnr(orgnr: String) {
         eregConsumer.hentInfo(orgnr)
     }
 

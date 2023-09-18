@@ -35,7 +35,7 @@ internal class PdfServiceTest {
 
     @InjectMocks
     var pdfService: PdfService? = null
-    private var opprettServiceklageRequest: OpprettServiceklageRequest? = null
+    private var opprettServiceklageRequest: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().build()
 
     @BeforeEach
     fun setup() {
@@ -218,7 +218,7 @@ internal class PdfServiceTest {
         assertContainsIfNotNull(content, innmelder.personnummer)
         assertContainsIfNotNull(content, innmelder.rolle)
         if (innmelder.harFullmakt != null) {
-            assertTrue(content.contains(if (opprettServiceklageRequest!!.innmelder!!.harFullmakt!!) "Innmelder har fullmakt: Ja" else "Innmelder har fullmakt: Nei"))
+            assertTrue(content.contains(if (opprettServiceklageRequest.innmelder!!.harFullmakt!!) "Innmelder har fullmakt: Ja" else "Innmelder har fullmakt: Nei"))
         }
     }
 

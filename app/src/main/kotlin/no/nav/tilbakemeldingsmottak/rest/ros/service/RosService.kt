@@ -28,9 +28,9 @@ class RosService(private val emailService: AzureEmailService) {
         val content = HtmlContent()
         content.addParagraph("Hvem roses", request.hvemRoses.toString())
         if (SendRosRequest.HvemRoses.NAV_KONTOR == request.hvemRoses) {
-            content.addParagraph("NAV-kontor", request.navKontor)
+            request.navKontor?.let { content.addParagraph("NAV-kontor", it) }
         }
-        content.addParagraph("Melding", request.melding)
+        request.melding?.let { content.addParagraph("Melding", it) }
         return content.contentString
     }
 

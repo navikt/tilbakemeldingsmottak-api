@@ -25,10 +25,10 @@ class BestillingAvSamtaleService(private val emailService: AzureEmailService) {
 
     private fun createContent(request: BestillSamtaleRequest): String {
         val content = HtmlContent()
-        content.addParagraph("Fornavn", request.fornavn)
-        content.addParagraph("Etternavn", request.etternavn)
-        content.addParagraph("Telefonnummer", request.telefonnummer)
-        content.addParagraph("Tidsrom", request.tidsrom?.value)
+        request.fornavn?.let { content.addParagraph("Fornavn", it) }
+        request.etternavn?.let { content.addParagraph("Etternavn", it) }
+        request.telefonnummer?.let { content.addParagraph("Telefonnummer", it) }
+        request.tidsrom?.value?.let { content.addParagraph("Tidsrom", it) }
         return content.contentString
     }
 
