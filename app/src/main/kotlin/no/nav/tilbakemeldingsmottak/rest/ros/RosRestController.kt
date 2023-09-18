@@ -28,9 +28,9 @@ class RosRestController(
     @Throws(
         SendEmailException::class
     )
-    override fun sendRos(@RequestBody request: SendRosRequest): ResponseEntity<SendRosResponse> {
-        sendRosValidator.validateRequest(request)
-        rosService.sendRos(request)
+    override fun sendRos(@RequestBody sendRosRequest: SendRosRequest): ResponseEntity<SendRosResponse> {
+        sendRosValidator.validateRequest(sendRosRequest)
+        rosService.sendRos(sendRosRequest)
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(SendRosResponse("Ros sendt"))

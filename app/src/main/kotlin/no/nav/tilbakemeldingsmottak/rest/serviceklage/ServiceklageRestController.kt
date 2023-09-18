@@ -39,7 +39,7 @@ class ServiceklageRestController(
     override fun opprettServiceklage(@RequestBody opprettServiceklageRequest: OpprettServiceklageRequest): ResponseEntity<OpprettServiceklageResponse> {
         log.info("Mottatt serviceklage via skjema på nav.no")
         val paloggetBruker = oidcUtils.getPidForIssuer(TOKENX_ISSUER)
-        val innlogget = paloggetBruker.isPresent
+        val innlogget = paloggetBruker != null
         log.info("Bruker er innlogget $innlogget")
 
         opprettServiceklageValidator.validateRequest(opprettServiceklageRequest, paloggetBruker)

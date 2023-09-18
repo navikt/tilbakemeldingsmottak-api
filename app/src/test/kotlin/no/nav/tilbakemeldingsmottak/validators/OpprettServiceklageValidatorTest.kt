@@ -23,7 +23,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
-import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class OpprettServiceklageValidatorTest {
@@ -50,34 +49,33 @@ internal class OpprettServiceklageValidatorTest {
         Mockito.lenient().`when`(pdlService!!.hentAktorIdForIdent(ArgumentMatchers.anyString()))
             .thenReturn(TestUtils.AKTOERID)
         Mockito.lenient().`when`(oidcUtils!!.getSubjectForIssuer(ArgumentMatchers.anyString()))
-            .thenReturn(Optional.empty())
+            .thenReturn("")
     }
 
     @Test
     fun happyPathPrivatperson() {
         opprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
-        opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+        opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
     }
 
     @Test
     fun happyPathPaaVegneAvPerson() {
         opprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPersonPaaVegneAv().build()
-        opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+        opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
     }
 
     @Test
     fun happyPathPaaVegneAvBedrift() {
         opprettServiceklageRequest = OpprettServiceklageRequestBuilder().asBedrift().build()
-        opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+        opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
     }
 
     @Test
     fun happyPathInnlogget() {
         opprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         opprettServiceklageValidator!!.validateRequest(
-            opprettServiceklageRequest, Optional.of(
-                opprettServiceklageRequest.innmelder!!.personnummer!!
-            )
+            opprettServiceklageRequest,
+            opprettServiceklageRequest.innmelder!!.personnummer
         )
     }
 
@@ -87,7 +85,7 @@ internal class OpprettServiceklageValidatorTest {
             OpprettServiceklageRequestBuilder().asPrivatPerson().build(klagetyper = null)
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("klagetyper er påkrevd"))
@@ -101,7 +99,7 @@ internal class OpprettServiceklageValidatorTest {
         )
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("gjelderSosialhjelp er påkrevd dersom klagetyper=LOKALT_NAV_KONTOR"))
@@ -112,7 +110,7 @@ internal class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson().build(klagetekst = null)
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("klagetekst er påkrevd"))
@@ -124,7 +122,7 @@ internal class OpprettServiceklageValidatorTest {
             OpprettServiceklageRequestBuilder().asPrivatPerson().build(oenskerAaKontaktes = null)
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("oenskerAaKontaktes er påkrevd"))
@@ -136,7 +134,7 @@ internal class OpprettServiceklageValidatorTest {
             OpprettServiceklageRequestBuilder().asPrivatPersonPaaVegneAv().build(paaVegneAv = null)
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("paaVegneAv er påkrevd"))
@@ -147,7 +145,7 @@ internal class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson().build(innmelder = null)
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("innmelder er påkrevd"))
@@ -160,7 +158,7 @@ internal class OpprettServiceklageValidatorTest {
                 .build(innmelder = InnmelderBuilder().build(navn = null))
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("innmelder.navn er påkrevd"))
@@ -173,7 +171,7 @@ internal class OpprettServiceklageValidatorTest {
             innmelder = InnmelderBuilder().build(telefonnummer = null)
         )
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("innmelder.telefonnummer er påkrevd dersom oenskerAaKontaktes=true"))
@@ -186,7 +184,7 @@ internal class OpprettServiceklageValidatorTest {
                 .build(innmelder = InnmelderBuilder().build(personnummer = null))
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("innmelder.personnummer er påkrevd dersom paaVegneAv=PRIVATPERSON"))
@@ -199,7 +197,7 @@ internal class OpprettServiceklageValidatorTest {
                 .build(innmelder = InnmelderBuilder().build(rolle = "Advokat", harFullmakt = null))
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("innmelder.harFullmakt er påkrevd dersom paaVegneAv=ANNEN_PERSON"))
@@ -212,7 +210,7 @@ internal class OpprettServiceklageValidatorTest {
                 .build(innmelder = InnmelderBuilder().build(rolle = null))
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("innmelder.rolle er påkrevd dersom paaVegneAv=ANNEN_PERSON"))
@@ -224,7 +222,7 @@ internal class OpprettServiceklageValidatorTest {
             OpprettServiceklageRequestBuilder().asPrivatPersonPaaVegneAv().build(paaVegneAvPerson = null)
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("paaVegneAvPerson er påkrevd dersom paaVegneAv=ANNEN_PERSON"))
@@ -237,7 +235,7 @@ internal class OpprettServiceklageValidatorTest {
                 .build(paaVegneAvPerson = PaaVegneAvPersonBuilder().build(navn = null))
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("paaVegneAvPerson.navn er påkrevd"))
@@ -250,7 +248,7 @@ internal class OpprettServiceklageValidatorTest {
                 .build(paaVegneAvPerson = PaaVegneAvPersonBuilder().build(personnummer = null))
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("paaVegneAvPerson.personnummer er påkrevd"))
@@ -264,7 +262,7 @@ internal class OpprettServiceklageValidatorTest {
         )
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("oenskerAaKontaktes kan ikke være satt dersom klagen er meldt inn på vegne av annen person uten fullmakt"))
@@ -278,7 +276,7 @@ internal class OpprettServiceklageValidatorTest {
         )
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("innmelder.telefonnummer er påkrevd dersom oenskerAaKontaktes=true"))
@@ -293,7 +291,7 @@ internal class OpprettServiceklageValidatorTest {
             )
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("innmelder.telefonnummer er påkrevd dersom oenskerAaKontaktes=true"))
@@ -307,7 +305,7 @@ internal class OpprettServiceklageValidatorTest {
         )
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("innmelder.navn er påkrevd dersom paaVegneAv=BEDRIFT og oenskerAaKontaktes=true"))
@@ -318,7 +316,7 @@ internal class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest = OpprettServiceklageRequestBuilder().asBedrift().build(paaVegneAvBedrift = null)
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("paaVegneAvBedrift er påkrevd dersom paaVegneAv=BEDRIFT"))
@@ -332,7 +330,7 @@ internal class OpprettServiceklageValidatorTest {
         )
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("paaVegneAvBedrift.navn er påkrevd"))
@@ -344,7 +342,7 @@ internal class OpprettServiceklageValidatorTest {
             .build(paaVegneAvBedrift = PaaVegneAvBedriftBuilder().build(organisasjonsnummer = null))
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("paaVegneAvBedrift.organisasjonsnummer er påkrevd"))
@@ -355,7 +353,7 @@ internal class OpprettServiceklageValidatorTest {
         opprettServiceklageRequest = OpprettServiceklageRequestBuilder().asBedrift().build(enhetsnummerPaaklaget = null)
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("enhetsnummerPaaklaget er påkrevd dersom paaVegneAv=BEDRIFT"))
@@ -367,7 +365,7 @@ internal class OpprettServiceklageValidatorTest {
             OpprettServiceklageRequestBuilder().asBedrift().build(enhetsnummerPaaklaget = "123abc")
 
         val thrown = assertThrows(ClientErrorException::class.java) {
-            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
         assertTrue(thrown.message!!.contains("enhetsnummerPaaklaget må ha fire siffer"))
@@ -400,7 +398,7 @@ internal class OpprettServiceklageValidatorTest {
         val thrown = assertThrows(ClientErrorException::class.java) {
             opprettServiceklageValidator!!.validateRequest(
                 opprettServiceklageRequest,
-                Optional.of("12345678901")
+                "12345678901"
             )
         }
 

@@ -47,10 +47,10 @@ class TaskProcessingRestController(
     )
     override fun klassifiserServiceklage(
         @RequestParam oppgaveId: String,
-        @RequestBody request: KlassifiserServiceklageRequest
+        @RequestBody klassifiserServiceklageRequest: KlassifiserServiceklageRequest
     ): ResponseEntity<KlassifiserServiceklageResponse> {
         log.info("Mottatt kall om å klassifisere serviceklage med oppgaveId={}", oppgaveId)
-        if (NEI == request.FULGT_BRUKERVEILEDNING_GOSYS || NEI == request.KOMMUNAL_BEHANDLING) {
+        if (NEI == klassifiserServiceklageRequest.FULGT_BRUKERVEILEDNING_GOSYS || NEI == klassifiserServiceklageRequest.KOMMUNAL_BEHANDLING) {
             log.info("Videre behandling kreves, saksbehandler er informert og videresendt til Gosys.")
             return ResponseEntity
                 .status(HttpStatus.OK)
@@ -64,10 +64,10 @@ class TaskProcessingRestController(
         OppgaveUtils.assertHarJournalpost(hentOppgaveResponseTo)
 
         klassifiserServiceklageValidator.validateRequest(
-            request,
+            klassifiserServiceklageRequest,
             hentSkjemaService.hentSkjema(hentOppgaveResponseTo.journalpostId!!)
         )
-        klassifiserServiceklageService.klassifiserServiceklage(request, hentOppgaveResponseTo)
+        klassifiserServiceklageService.klassifiserServiceklage(klassifiserServiceklageRequest, hentOppgaveResponseTo)
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(KlassifiserServiceklageResponse("Klassifisert serviceklage med journalpostId=" + hentOppgaveResponseTo.journalpostId))

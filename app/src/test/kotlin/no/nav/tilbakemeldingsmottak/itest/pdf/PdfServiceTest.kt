@@ -26,7 +26,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
 
 @ExtendWith(MockitoExtension::class)
 internal class PdfServiceTest {
@@ -40,7 +39,7 @@ internal class PdfServiceTest {
     @BeforeEach
     fun setup() {
         Mockito.lenient().`when`(oidcUtils!!.getSubjectForIssuer(ArgumentMatchers.anyString()))
-            .thenReturn(Optional.empty())
+            .thenReturn("")
     }
 
     @Test

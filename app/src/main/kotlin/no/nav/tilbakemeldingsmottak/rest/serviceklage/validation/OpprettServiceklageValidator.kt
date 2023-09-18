@@ -10,7 +10,6 @@ import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
-import java.util.*
 
 @Component
 class OpprettServiceklageValidator(
@@ -21,7 +20,7 @@ class OpprettServiceklageValidator(
 
     private val ENHETSNUMMER_LENGTH = 4
 
-    fun validateRequest(request: OpprettServiceklageRequest, paloggetBruker: Optional<String> = Optional.empty()) {
+    fun validateRequest(request: OpprettServiceklageRequest, paloggetBruker: String?) {
         validateCommonRequiredFields(request)
         when (request.paaVegneAv) {
             PaaVegneAv.PRIVATPERSON -> validatePaaVegneAvPrivatperson(request, paloggetBruker)
@@ -41,7 +40,7 @@ class OpprettServiceklageValidator(
         hasText(request.klagetekst, "klagetekst")
     }
 
-    private fun validatePaaVegneAvPrivatperson(request: OpprettServiceklageRequest, paloggetBruker: Optional<String>) {
+    private fun validatePaaVegneAvPrivatperson(request: OpprettServiceklageRequest, paloggetBruker: String?) {
         hasText(request.innmelder!!.navn, "innmelder.navn", " dersom paaVegneAv=PRIVATPERSON")
         hasText(request.innmelder!!.personnummer, "innmelder.personnummer", " dersom paaVegneAv=PRIVATPERSON")
         isNotNull(request.oenskerAaKontaktes, "oenskerAaKontaktes", " dersom paaVegneAv=PRIVATPERSON")
@@ -98,10 +97,8 @@ class OpprettServiceklageValidator(
         eregConsumer.hentInfo(orgnr)
     }
 
-    private fun validateRequestFnrMatchesTokenFnr(fnr: String?, paloggetBruker: Optional<String>) {
-        if (paloggetBruker.isPresent
-            && fnr != paloggetBruker.get()
-        ) {
+    private fun validateRequestFnrMatchesTokenFnr(fnr: String?, paloggetBruker: String?) {
+        if (paloggetBruker != null && fnr != paloggetBruker) {
             throw ClientErrorException("innmelder.personnummer samsvarer ikke med brukertoken")
         }
     }

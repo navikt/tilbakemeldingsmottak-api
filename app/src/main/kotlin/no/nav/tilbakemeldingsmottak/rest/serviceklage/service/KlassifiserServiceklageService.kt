@@ -94,12 +94,11 @@ class KlassifiserServiceklageService(
     }
 
     private fun sendKvittering(serviceklage: Serviceklage, hentOppgaveResponseTo: HentOppgaveResponseTo) {
-        val email = oidcUtils.getEmailForIssuer(AZURE_ISSUER).orElseThrow {
-            ClientErrorNotFoundException(
-                "Fant ikke email-adresse i token",
-                ErrorCode.TOKEN_EMAIL_MISSING
-            )
-        }
+        val email = oidcUtils.getEmailForIssuer(AZURE_ISSUER) ?: throw ClientErrorNotFoundException(
+            "Fant ikke email-adresse i token",
+            ErrorCode.TOKEN_EMAIL_MISSING
+        )
+
         log.info("Kvittering på innsendt klassifiseringsskjema sendes til epost: {}", email)
 
         val questionAnswerMap = createQuestionAnswerMap(serviceklage, hentOppgaveResponseTo)
@@ -188,7 +187,7 @@ class KlassifiserServiceklageService(
     }
 
     private fun getJournalPost(journalpostId: String?): Journalpost {
-        val authorizationHeader = "Bearer " + oidcUtils.firstValidToken
+        val authorizationHeader = "Bearer " + oidcUtils.getFirstValidToken()
         return safJournalpostQueryService.hentJournalpost(journalpostId, authorizationHeader)
     }
 
