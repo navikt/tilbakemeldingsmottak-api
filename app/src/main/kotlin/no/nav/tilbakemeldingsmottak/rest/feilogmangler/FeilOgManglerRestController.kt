@@ -3,7 +3,6 @@ package no.nav.tilbakemeldingsmottak.rest.feilogmangler
 import jakarta.transaction.Transactional
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.tilbakemeldingsmottak.api.FeilOgManglerRestControllerApi
-import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
 import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest
@@ -28,7 +27,6 @@ class FeilOgManglerRestController(
         percentiles = [0.5, 0.95],
         histogram = true
     )
-    @Throws(SendEmailException::class)
     override fun meldFeilOgMangler(@RequestBody meldFeilOgManglerRequest: MeldFeilOgManglerRequest): ResponseEntity<MeldFeilOgManglerResponse> {
         meldFeilOgManglerValidator.validateRequest(meldFeilOgManglerRequest)
         feilOgManglerService.meldFeilOgMangler(meldFeilOgManglerRequest)
