@@ -49,7 +49,10 @@ class JournalpostConsumer(
             .retrieve()
             .bodyToMono(OpprettJournalpostResponseTo::class.java)
             .doOnError { t -> handleError(t, "JOARK (dokarkiv)") }
-            .block() ?: throw ServerErrorException("Klarte ikke å opprette journalpost", ErrorCode.DOKARKIV_ERROR)
+            .block() ?: throw ServerErrorException(
+            message = "Klarte ikke å opprette journalpost",
+            errorCode = ErrorCode.DOKARKIV_ERROR
+        )
 
         log.info("Opprettet journalpost med journalpostId: {}", journalpostReponse.journalpostId)
 

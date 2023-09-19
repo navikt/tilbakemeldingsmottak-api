@@ -43,7 +43,10 @@ class EregConsumer(
             .retrieve()
             .bodyToMono(String::class.java)
             .doOnError { t -> handleError(t, "Ereg") }
-            .block() ?: throw ServerErrorException("Klarte ikke å hente info om organisasjon", ErrorCode.EREG_ERROR)
+            .block() ?: throw ServerErrorException(
+            message = "Klarte ikke å hente info om organisasjon",
+            errorCode = ErrorCode.EREG_ERROR
+        )
 
         log.info("Hentet organisasjon $orgnrTrimmed : $eregResponse")
 

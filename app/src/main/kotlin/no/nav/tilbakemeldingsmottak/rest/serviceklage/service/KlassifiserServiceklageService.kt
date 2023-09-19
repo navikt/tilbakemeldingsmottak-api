@@ -95,8 +95,8 @@ class KlassifiserServiceklageService(
 
     private fun sendKvittering(serviceklage: Serviceklage, hentOppgaveResponseTo: HentOppgaveResponseTo) {
         val email = oidcUtils.getEmailForIssuer(AZURE_ISSUER) ?: throw ClientErrorNotFoundException(
-            "Fant ikke email-adresse i token",
-            ErrorCode.TOKEN_EMAIL_MISSING
+            message = "Fant ikke email-adresse i token",
+            errorCode = ErrorCode.TOKEN_EMAIL_MISSING
         )
 
         log.info("Kvittering på innsendt klassifiseringsskjema sendes til epost: {}", email)
@@ -177,7 +177,7 @@ class KlassifiserServiceklageService(
         if (journalpostId == null) {
             throw ClientErrorException("JournalpostId kan ikke være null")
         }
-        
+
         var serviceklage = serviceklageRepository.findByJournalpostId(journalpostId)
         if (serviceklage == null) {
             val journalpost = getJournalPost(journalpostId)

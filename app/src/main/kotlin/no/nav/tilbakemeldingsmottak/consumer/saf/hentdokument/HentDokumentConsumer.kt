@@ -60,7 +60,7 @@ class HentDokumentConsumer @Inject constructor(
             .bodyToMono(ByteArray::class.java)
             .doOnError { t: Throwable -> handleError(t, "saf (hent dokument)") }
             .block()
-            ?: throw ServerErrorException("SAF dokument responsen er null", ErrorCode.SAF_ERROR)
+            ?: throw ServerErrorException(message = "SAF dokument responsen er null", errorCode = ErrorCode.SAF_ERROR)
         return mapResponse(dokument, journalpostId, dokumentInfoId, variantFormat)
     }
 

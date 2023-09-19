@@ -47,7 +47,10 @@ class SafGraphqlConsumer @Inject constructor(
             .block()
 
         if (response?.data == null || response.journalpost == null) {
-            throw ClientErrorNotFoundException("Ingen journalpost ble funnet", ErrorCode.SAF_NOT_FOUND)
+            throw ClientErrorNotFoundException(
+                message = "Ingen journalpost ble funnet",
+                errorCode = ErrorCode.SAF_NOT_FOUND
+            )
         }
 
         return response.journalpost!!

@@ -11,7 +11,8 @@ object OppgaveUtils {
     fun assertIkkeFerdigstilt(hentOppgaveResponseTo: HentOppgaveResponseTo) {
         if (FERDIGSTILT == hentOppgaveResponseTo.status) {
             throw ClientErrorException(
-                "Oppgave med oppgaveId=${hentOppgaveResponseTo.id} er allerede ferdigstilt", ErrorCode.OPPGAVE_COMPLETED
+                message = "Oppgave med oppgaveId=${hentOppgaveResponseTo.id} er allerede ferdigstilt",
+                errorCode = ErrorCode.OPPGAVE_COMPLETED
             )
         }
     }
@@ -19,8 +20,8 @@ object OppgaveUtils {
     fun assertHarJournalpost(hentOppgaveResponseTo: HentOppgaveResponseTo) {
         if (hentOppgaveResponseTo.journalpostId == null || "" == hentOppgaveResponseTo.journalpostId) {
             throw NoContentException(
-                "Oppgave med oppgaveId=${hentOppgaveResponseTo.id} har ikke tilknyttet dokument i arkivet",
-                ErrorCode.OPPGAVE_MISSING_JOURNALPOST
+                message = "Oppgave med oppgaveId=${hentOppgaveResponseTo.id} har ikke tilknyttet dokument i arkivet",
+                errorCode = ErrorCode.OPPGAVE_MISSING_JOURNALPOST
             )
         }
     }

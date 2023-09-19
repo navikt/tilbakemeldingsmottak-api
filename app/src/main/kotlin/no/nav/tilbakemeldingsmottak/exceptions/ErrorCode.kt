@@ -1,7 +1,9 @@
-package no.nav.tilbakemeldingsmottak.exceptions;
+package no.nav.tilbakemeldingsmottak.exceptions
 
 // En samling av alle error codes som frontend klienter kan bruke for å vise brukervennlige feilmeldinger
-public enum ErrorCode {
+enum class ErrorCode(
+    @JvmField val value: String
+) {
     // GENERELLE
     GENERAL_ERROR("GENERAL_ERROR"), // generell feilmelding "noe gikk galt"
     AUTH_ERROR("AUTH_ERROR"), // feilmelding for autentisering
@@ -41,10 +43,4 @@ public enum ErrorCode {
     SAF_FORBIDDEN("SAF_FORBIDDEN"), // mangler tilgang til å hente data fra saf
     SAF_NOT_FOUND("SAF_NOT_FOUND"), // finner ikke journalpost
     JOURNALPOST_MISSING_DOKUMENT("JOURNALPOST_MISSING_DOKUMENT"); // journalpost mangler dokument
-
-    public final String value;
-
-    ErrorCode(String value) {
-        this.value = value;
-    }
 }

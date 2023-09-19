@@ -35,7 +35,7 @@ public class PdlService {
         List<IdentInformasjon> identer = hentIdenter(ident, List.of(IdentGruppe.AKTORID)).getIdenter();
 
         if (identer == null || identer.isEmpty()) {
-            throw new ClientErrorException("Fant ingen aktørId for ident", ErrorCode.PDL_MISSING_AKTORID);
+            throw new ClientErrorException("Fant ingen aktørId for ident", null, ErrorCode.PDL_MISSING_AKTORID);
         }
 
         return identer.get(0).getIdent();

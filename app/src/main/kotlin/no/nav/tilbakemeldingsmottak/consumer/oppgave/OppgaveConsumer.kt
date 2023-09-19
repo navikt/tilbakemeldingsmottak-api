@@ -49,7 +49,10 @@ class OppgaveConsumer(
             .retrieve()
             .bodyToMono(OpprettOppgaveResponseTo::class.java)
             .doOnError { t -> handleError(t, "oppgave (opprett oppgave)") }
-            .block() ?: throw ServerErrorException("Klarte ikke opprette oppgave", ErrorCode.OPPGAVE_ERROR)
+            .block() ?: throw ServerErrorException(
+            message = "Klarte ikke opprette oppgave",
+            errorCode = ErrorCode.OPPGAVE_ERROR
+        )
     }
 
     @Metrics(
@@ -75,7 +78,10 @@ class OppgaveConsumer(
             .retrieve()
             .bodyToMono(String::class.java)
             .doOnError { t -> handleError(t, "oppgave (endre oppgave)") }
-            .block() ?: throw ServerErrorException("Klarte ikke endre oppgave", ErrorCode.OPPGAVE_ERROR)
+            .block() ?: throw ServerErrorException(
+            message = "Klarte ikke endre oppgave",
+            errorCode = ErrorCode.OPPGAVE_ERROR
+        )
     }
 
     @Metrics(
@@ -97,7 +103,10 @@ class OppgaveConsumer(
             .retrieve()
             .bodyToMono(HentOppgaveResponseTo::class.java)
             .doOnError { t -> handleError(t, "oppgave (hent oppgave)") }
-            .block() ?: throw ServerErrorException("Klarte ikke hente oppgave", ErrorCode.OPPGAVE_ERROR)
+            .block() ?: throw ServerErrorException(
+            message = "Klarte ikke hente oppgave",
+            errorCode = ErrorCode.OPPGAVE_ERROR
+        )
     }
 
     private fun handleError(error: Throwable, serviceName: String) {

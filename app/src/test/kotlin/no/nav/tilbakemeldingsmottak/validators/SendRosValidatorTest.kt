@@ -29,7 +29,7 @@ internal class SendRosValidatorTest {
             Assertions.assertThrows(ClientErrorException::class.java) { sendRosValidator.validateRequest(sendRosRequest) }
 
         // Then
-        assertTrue(thrown.message!!.contains("hvemRoses er påkrevd"))
+        assertTrue(thrown.message.contains("hvemRoses er påkrevd"))
     }
 
     @Test
@@ -42,7 +42,7 @@ internal class SendRosValidatorTest {
             Assertions.assertThrows(ClientErrorException::class.java) { sendRosValidator.validateRequest(sendRosRequest) }
 
         // Then
-        assertTrue(thrown.message!!.contains("navKontor er påkrevd dersom hvemRoses=NAV_KONTOR"))
+        assertTrue(thrown.message.contains("navKontor er påkrevd dersom hvemRoses=NAV_KONTOR"))
     }
 
     @Test
@@ -55,6 +55,6 @@ internal class SendRosValidatorTest {
             Assertions.assertThrows(ClientErrorException::class.java) { sendRosValidator.validateRequest(sendRosRequest) }
 
         // Then
-        assertTrue(thrown.message!!.contains("melding er påkrevd"))
+        assertTrue(thrown.message.contains("melding er påkrevd"))
     }
 }

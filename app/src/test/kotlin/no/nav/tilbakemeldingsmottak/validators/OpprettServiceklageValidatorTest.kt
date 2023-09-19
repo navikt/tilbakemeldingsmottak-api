@@ -88,7 +88,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("klagetyper er påkrevd"))
+        assertTrue(thrown.message.contains("klagetyper er påkrevd"))
     }
 
     @Test
@@ -102,7 +102,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("gjelderSosialhjelp er påkrevd dersom klagetyper=LOKALT_NAV_KONTOR"))
+        assertTrue(thrown.message.contains("gjelderSosialhjelp er påkrevd dersom klagetyper=LOKALT_NAV_KONTOR"))
     }
 
     @Test
@@ -113,7 +113,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("klagetekst er påkrevd"))
+        assertTrue(thrown.message.contains("klagetekst er påkrevd"))
     }
 
     @Test
@@ -125,7 +125,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("oenskerAaKontaktes er påkrevd"))
+        assertTrue(thrown.message.contains("oenskerAaKontaktes er påkrevd"))
     }
 
     @Test
@@ -137,7 +137,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("paaVegneAv er påkrevd"))
+        assertTrue(thrown.message.contains("paaVegneAv er påkrevd"))
     }
 
     @Test
@@ -148,7 +148,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("innmelder er påkrevd"))
+        assertTrue(thrown.message.contains("innmelder er påkrevd"))
     }
 
     @Test
@@ -161,7 +161,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("innmelder.navn er påkrevd"))
+        assertTrue(thrown.message.contains("innmelder.navn er påkrevd"))
     }
 
     @Test
@@ -174,7 +174,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("innmelder.telefonnummer er påkrevd dersom oenskerAaKontaktes=true"))
+        assertTrue(thrown.message.contains("innmelder.telefonnummer er påkrevd dersom oenskerAaKontaktes=true"))
     }
 
     @Test
@@ -187,7 +187,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("innmelder.personnummer er påkrevd dersom paaVegneAv=PRIVATPERSON"))
+        assertTrue(thrown.message.contains("innmelder.personnummer er påkrevd dersom paaVegneAv=PRIVATPERSON"))
     }
 
     @Test
@@ -200,7 +200,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("innmelder.harFullmakt er påkrevd dersom paaVegneAv=ANNEN_PERSON"))
+        assertTrue(thrown.message.contains("innmelder.harFullmakt er påkrevd dersom paaVegneAv=ANNEN_PERSON"))
     }
 
     @Test
@@ -213,7 +213,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("innmelder.rolle er påkrevd dersom paaVegneAv=ANNEN_PERSON"))
+        assertTrue(thrown.message.contains("innmelder.rolle er påkrevd dersom paaVegneAv=ANNEN_PERSON"))
     }
 
     @Test
@@ -225,7 +225,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("paaVegneAvPerson er påkrevd dersom paaVegneAv=ANNEN_PERSON"))
+        assertTrue(thrown.message.contains("paaVegneAvPerson er påkrevd dersom paaVegneAv=ANNEN_PERSON"))
     }
 
     @Test
@@ -238,7 +238,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("paaVegneAvPerson.navn er påkrevd"))
+        assertTrue(thrown.message.contains("paaVegneAvPerson.navn er påkrevd"))
     }
 
     @Test
@@ -251,7 +251,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("paaVegneAvPerson.personnummer er påkrevd"))
+        assertTrue(thrown.message.contains("paaVegneAvPerson.personnummer er påkrevd"))
     }
 
     @Test
@@ -265,7 +265,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("oenskerAaKontaktes kan ikke være satt dersom klagen er meldt inn på vegne av annen person uten fullmakt"))
+        assertTrue(thrown.message.contains("oenskerAaKontaktes kan ikke være satt dersom klagen er meldt inn på vegne av annen person uten fullmakt"))
     }
 
     @Test
@@ -279,7 +279,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("innmelder.telefonnummer er påkrevd dersom oenskerAaKontaktes=true"))
+        assertTrue(thrown.message.contains("innmelder.telefonnummer er påkrevd dersom oenskerAaKontaktes=true"))
     }
 
     @Test
@@ -294,7 +294,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("innmelder.telefonnummer er påkrevd dersom oenskerAaKontaktes=true"))
+        assertTrue(thrown.message.contains("innmelder.telefonnummer er påkrevd dersom oenskerAaKontaktes=true"))
     }
 
     @Test
@@ -308,7 +308,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("innmelder.navn er påkrevd dersom paaVegneAv=BEDRIFT og oenskerAaKontaktes=true"))
+        assertTrue(thrown.message.contains("innmelder.navn er påkrevd dersom paaVegneAv=BEDRIFT og oenskerAaKontaktes=true"))
     }
 
     @Test
@@ -319,7 +319,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("paaVegneAvBedrift er påkrevd dersom paaVegneAv=BEDRIFT"))
+        assertTrue(thrown.message.contains("paaVegneAvBedrift er påkrevd dersom paaVegneAv=BEDRIFT"))
     }
 
     @Test
@@ -333,7 +333,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("paaVegneAvBedrift.navn er påkrevd"))
+        assertTrue(thrown.message.contains("paaVegneAvBedrift.navn er påkrevd"))
     }
 
     @Test
@@ -345,7 +345,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("paaVegneAvBedrift.organisasjonsnummer er påkrevd"))
+        assertTrue(thrown.message.contains("paaVegneAvBedrift.organisasjonsnummer er påkrevd"))
     }
 
     @Test
@@ -356,7 +356,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("enhetsnummerPaaklaget er påkrevd dersom paaVegneAv=BEDRIFT"))
+        assertTrue(thrown.message.contains("enhetsnummerPaaklaget er påkrevd dersom paaVegneAv=BEDRIFT"))
     }
 
     @Test
@@ -368,7 +368,7 @@ internal class OpprettServiceklageValidatorTest {
             opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null)
         }
 
-        assertTrue(thrown.message!!.contains("enhetsnummerPaaklaget må ha fire siffer"))
+        assertTrue(thrown.message.contains("enhetsnummerPaaklaget må ha fire siffer"))
     }
 
     // FIXME
@@ -388,7 +388,7 @@ internal class OpprettServiceklageValidatorTest {
 //        val thrown = Assertions.assertThrows(ClientErrorException::class.java) {
 //            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
 //        }
-//        assertTrue(thrown.message!!.contains("Fant ingen aktørId for ident"))
+//        assertTrue(thrown.message.contains("Fant ingen aktørId for ident"))
 //    }
 
     @Test
@@ -402,6 +402,6 @@ internal class OpprettServiceklageValidatorTest {
             )
         }
 
-        assertTrue(thrown.message!!.contains("innmelder.personnummer samsvarer ikke med brukertoken"))
+        assertTrue(thrown.message.contains("innmelder.personnummer samsvarer ikke med brukertoken"))
     }
 }

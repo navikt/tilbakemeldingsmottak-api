@@ -24,8 +24,8 @@ class HentDokumentService(
         val dokumentInfo: Journalpost.DokumentInfo
         if (journalpost.dokumenter.isEmpty()) {
             throw NoContentException(
-                String.format("Fant ingen dokument på journalpost %s", journalpostId),
-                ErrorCode.JOURNALPOST_MISSING_DOKUMENT
+                message = "Fant ingen dokument på journalpost $journalpostId",
+                errorCode = ErrorCode.JOURNALPOST_MISSING_DOKUMENT
             )
         } else {
             dokumentInfo = journalpost.dokumenter[0]
@@ -33,8 +33,8 @@ class HentDokumentService(
                 dokumentInfo.dokumentvarianter.any { it.variantformat == Variantformat.SLADDET } -> Variantformat.SLADDET
                 dokumentInfo.dokumentvarianter.any { it.variantformat == Variantformat.ARKIV } -> Variantformat.ARKIV
                 else -> throw NoContentException(
-                    "Fant ingen tilgjengelig dokument på journalpost $journalpostId",
-                    ErrorCode.JOURNALPOST_MISSING_DOKUMENT
+                    message = "Fant ingen tilgjengelig dokument på journalpost $journalpostId",
+                    errorCode = ErrorCode.JOURNALPOST_MISSING_DOKUMENT
                 )
             }
         }
