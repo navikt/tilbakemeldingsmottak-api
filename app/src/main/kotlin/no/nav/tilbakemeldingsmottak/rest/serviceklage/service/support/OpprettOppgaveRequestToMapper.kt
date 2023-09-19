@@ -30,8 +30,8 @@ class OpprettOppgaveRequestToMapper(private val pdlService: PdlService) {
         return OpprettOppgaveRequestTo(
             tildeltEnhetsnr = KLAGEINSTANS_ENHETSNR,
             prioritet = PRIORITET,
-            aktoerId = if (paaVegneAv == PaaVegneAv.BEDRIFT) "" else pdlService.hentAktorIdForIdent(klagenGjelderId),
-            orgnr = if (paaVegneAv == PaaVegneAv.BEDRIFT) klagenGjelderId else "",
+            aktoerId = if (paaVegneAv == PaaVegneAv.BEDRIFT) null else pdlService.hentAktorIdForIdent(klagenGjelderId),
+            orgnr = if (paaVegneAv == PaaVegneAv.BEDRIFT) klagenGjelderId else null,
             aktivDato = LocalDate.now().toString(),
             journalpostId = opprettJournalpostResponseTo.journalpostId,
             tema = SERVICEKLAGE_TEMA,
