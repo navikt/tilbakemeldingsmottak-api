@@ -65,7 +65,7 @@ class EregConsumer(
             }
 
             if (statusCode == HttpStatus.NOT_FOUND) {
-                throw ClientErrorForbiddenException(errorMessage, error, ErrorCode.EREG_NOT_FOUND)
+                throw ClientErrorNotFoundException(errorMessage, error, ErrorCode.EREG_NOT_FOUND)
             }
 
             if (statusCode.is4xxClientError) {
