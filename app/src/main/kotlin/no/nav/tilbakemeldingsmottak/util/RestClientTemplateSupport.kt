@@ -54,6 +54,13 @@ class RestClientTemplateSupport(
     }
 
     @Bean
+    @Qualifier("norg2Client")
+    @Scope("prototype")
+    fun norg2Client(): WebClient {
+        return buildWebClient(buildHttpClient(5000, 60, 60))
+    }
+
+    @Bean
     @Qualifier("oppgaveClient")
     @Scope("prototype")
     fun oppgaveClient(): WebClient {
