@@ -10,19 +10,15 @@ import no.nav.security.token.support.client.spring.ClientConfigurationProperties
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Scope
 import org.springframework.http.HttpHeaders
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.http.codec.ClientCodecConfigurer
-import org.springframework.web.client.RestTemplate
 import org.springframework.web.reactive.function.client.*
 import reactor.netty.Connection
 import reactor.netty.http.client.HttpClient
-import java.time.Duration
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 @Configuration
@@ -44,21 +40,21 @@ class RestClientTemplateSupport(
         val clientProperties = clientConfigurationProperties.registration["arkiv"]
             ?: throw RuntimeException("Fant ikke konfigurering for arkiv")
 
-        return buildWebClient(buildHttpClient(5000, 60, 60), clientProperties)
+        return webclientBuilder(buildHttpClient(5000, 60, 60), clientProperties).build()
     }
 
     @Bean
     @Qualifier("eregClient")
     @Scope("prototype")
     fun eregClient(): WebClient {
-        return buildWebClient(buildHttpClient(5000, 60, 60))
+        return webclientBuilder(buildHttpClient(5000, 60, 60)).build()
     }
 
     @Bean
     @Qualifier("norg2Client")
     @Scope("prototype")
     fun norg2Client(): WebClient {
-        return buildWebClient(buildHttpClient(5000, 60, 60))
+        return webclientBuilder(buildHttpClient(5000, 60, 60)).build()
     }
 
     @Bean
@@ -68,7 +64,7 @@ class RestClientTemplateSupport(
         val clientProperties = clientConfigurationProperties.registration["oppgave"]
             ?: throw RuntimeException("Fant ikke konfigurering for oppgave")
 
-        return buildWebClient(buildHttpClient(5000, 60, 60), clientProperties)
+        return webclientBuilder(buildHttpClient(5000, 60, 60), clientProperties).build()
     }
 
     @Bean
@@ -78,7 +74,7 @@ class RestClientTemplateSupport(
         val clientProperties = clientConfigurationProperties.registration["saf-maskintilmaskin"]
             ?: throw RuntimeException("Fant ikke konfigurering for saf-maskintilmaskin")
 
-        return buildWebClient(buildHttpClient(5000, 60, 60), clientProperties)
+        return webclientBuilder(buildHttpClient(5000, 60, 60), clientProperties).build()
     }
 
     @Bean
@@ -90,18 +86,7 @@ class RestClientTemplateSupport(
 
         return GraphQLWebClient(
             url = pdlUrl,
-            builder = WebClient.builder()
-                .defaultHeader("Content-Type", "application/json")
-                .defaultUriVariables(Collections.singletonMap("url", pdlUrl))
-                .exchangeStrategies(ExchangeStrategies.builder()
-                    .codecs { configurer: ClientCodecConfigurer ->
-                        configurer
-                            .defaultCodecs()
-                            .maxInMemorySize(MAX_FILE_SIZE)
-                    }
-                    .build())
-                .clientConnector(ReactorClientHttpConnector(buildHttpClient(5000, 60, 60)))
-                .filter(bearerTokenExchange(clientProperties))
+            builder = webclientBuilder(buildHttpClient(5000, 60, 60), clientProperties)
         )
     }
 
@@ -115,50 +100,22 @@ class RestClientTemplateSupport(
             }
     }
 
-    private fun buildWebClient(httpClient: HttpClient, clientProperties: ClientProperties): WebClient {
+    fun webclientBuilder(httpClient: HttpClient, clientProperties: ClientProperties): WebClient.Builder {
         return WebClient.builder()
-            .exchangeStrategies(ExchangeStrategies.builder()
-                .codecs { configurer: ClientCodecConfigurer ->
-                    configurer
-                        .defaultCodecs()
-                        .maxInMemorySize(MAX_FILE_SIZE)
-                }
-                .build())
+            .exchangeStrategies(createExchangeStrategies())
             .clientConnector(ReactorClientHttpConnector(httpClient))
             .filter(bearerTokenExchange(clientProperties))
-            .build()
     }
 
-    private fun buildWebClientWithUrl(
-        httpClient: HttpClient,
-        clientProperties: ClientProperties,
-        url: String?
-    ): WebClient {
+    fun webclientBuilder(httpClient: HttpClient): WebClient.Builder {
         return WebClient.builder()
-            .baseUrl(url!!)
-            .defaultHeader("Content-Type", "application/json").defaultUriVariables(Collections.singletonMap("url", url))
-            .exchangeStrategies(ExchangeStrategies.builder()
-                .codecs { configurer: ClientCodecConfigurer ->
-                    configurer
-                        .defaultCodecs()
-                        .maxInMemorySize(MAX_FILE_SIZE)
-                }
-                .build())
+            .exchangeStrategies(createExchangeStrategies())
             .clientConnector(ReactorClientHttpConnector(httpClient))
-            .filter(bearerTokenExchange(clientProperties))
-            .build()
     }
 
-    private fun buildWebClient(httpClient: HttpClient): WebClient {
-        return WebClient.builder()
-            .exchangeStrategies(ExchangeStrategies.builder()
-                .codecs { configurer: ClientCodecConfigurer ->
-                    configurer
-                        .defaultCodecs()
-                        .maxInMemorySize(MAX_FILE_SIZE)
-                }
-                .build())
-            .clientConnector(ReactorClientHttpConnector(httpClient))
+    private fun createExchangeStrategies(): ExchangeStrategies {
+        return ExchangeStrategies.builder()
+            .codecs { configurer: ClientCodecConfigurer -> configurer.defaultCodecs().maxInMemorySize(MAX_FILE_SIZE) }
             .build()
     }
 
@@ -172,18 +129,6 @@ class RestClientTemplateSupport(
                 .build()
             exchangeFunction.exchange(filtered)
         }
-    }
-
-    @Bean
-    @Qualifier("basicclient")
-    @Scope("prototype")
-    fun eregClientRestTemplate(
-        restTemplateBuilder: RestTemplateBuilder
-    ): RestTemplate {
-        return restTemplateBuilder
-            .setConnectTimeout(Duration.ofSeconds(5))
-            .setReadTimeout(Duration.ofSeconds(20))
-            .build()
     }
 
 }
