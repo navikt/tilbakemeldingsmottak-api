@@ -47,6 +47,13 @@ class RestClientTemplateSupport(
     }
 
     @Bean
+    @Qualifier("eregClient")
+    @Scope("prototype")
+    fun eregClient(): WebClient {
+        return buildWebClient(buildHttpClient(5000, 60, 60))
+    }
+
+    @Bean
     @Qualifier("oppgaveClient")
     @Scope("prototype")
     fun oppgaveClient(): WebClient {

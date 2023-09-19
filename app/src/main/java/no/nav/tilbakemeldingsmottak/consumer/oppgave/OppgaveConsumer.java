@@ -41,6 +41,7 @@ public class OppgaveConsumer {
     @Metrics(value = DOK_CONSUMER, extraTags = {PROCESS_CODE, "opprettOppgave"}, percentiles = {0.5, 0.95}, histogram = true)
     public OpprettOppgaveResponseTo opprettOppgave(OpprettOppgaveRequestTo opprettOppgaveRequestTo) {
         log.info("Oppretter oppgave for journalpostId: {}", opprettOppgaveRequestTo.getJournalpostId());
+        log.info("Oppretter oppgave med {}", opprettOppgaveRequestTo);
 
         var oppgaveResponse = webClient
                 .method(HttpMethod.POST)
