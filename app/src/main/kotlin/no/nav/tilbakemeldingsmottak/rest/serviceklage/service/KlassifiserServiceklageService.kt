@@ -174,7 +174,11 @@ class KlassifiserServiceklageService(
     }
 
     private fun getOrCreateServiceklage(journalpostId: String?): Serviceklage {
-        var serviceklage = serviceklageRepository.findByJournalpostId(journalpostId!!)
+        if (journalpostId == null) {
+            throw ClientErrorException("JournalpostId kan ikke være null")
+        }
+        
+        var serviceklage = serviceklageRepository.findByJournalpostId(journalpostId)
         if (serviceklage == null) {
             val journalpost = getJournalPost(journalpostId)
             serviceklage = Serviceklage(
@@ -186,7 +190,7 @@ class KlassifiserServiceklageService(
         return serviceklage
     }
 
-    private fun getJournalPost(journalpostId: String?): Journalpost {
+    private fun getJournalPost(journalpostId: String): Journalpost {
         val authorizationHeader = "Bearer " + oidcUtils.getFirstValidToken()
         return safJournalpostQueryService.hentJournalpost(journalpostId, authorizationHeader)
     }

@@ -16,7 +16,7 @@ class HentDokumentService(
     private val hentDokumentConsumer: HentDokumentConsumer,
     private val oidcUtils: OidcUtils
 ) {
-    fun hentDokument(journalpostId: String?): HentDokumentResponse {
+    fun hentDokument(journalpostId: String): HentDokumentResponse {
         val authorizationHeader = "Bearer ${oidcUtils.getFirstValidToken()}"
         val journalpost = safJournalpostQueryService.hentJournalpost(journalpostId, authorizationHeader)
 

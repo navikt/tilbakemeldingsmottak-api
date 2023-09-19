@@ -3,7 +3,6 @@ package no.nav.tilbakemeldingsmottak.consumer.saf.graphql
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat
-import no.nav.tilbakemeldingsmottak.consumer.saf.util.MappingUtil.stringToEnum
 import java.time.LocalDateTime
 
 class JournalpostToMapper {
@@ -33,7 +32,7 @@ class JournalpostToMapper {
 
     private fun mapDokumentVariant(dokumentvariant: SafJournalpostTo.Dokumentvariant): Journalpost.Dokumentvariant {
         return Journalpost.Dokumentvariant(
-            variantformat = stringToEnum(Variantformat::class.java, dokumentvariant.variantformat),
+            variantformat = Variantformat.valueOf(dokumentvariant.variantformat),
             saksbehandlerHarTilgang = dokumentvariant.saksbehandlerHarTilgang
         )
     }

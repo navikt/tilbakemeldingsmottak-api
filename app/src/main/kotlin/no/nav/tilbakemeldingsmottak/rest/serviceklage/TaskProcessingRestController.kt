@@ -100,7 +100,7 @@ class TaskProcessingRestController(
         OppgaveUtils.assertIkkeFerdigstilt(hentOppgaveResponseTo)
         OppgaveUtils.assertHarJournalpost(hentOppgaveResponseTo)
 
-        val response = hentDokumentService.hentDokument(hentOppgaveResponseTo.journalpostId)
+        val response = hentOppgaveResponseTo.journalpostId?.let { hentDokumentService.hentDokument(it) }
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(response)
