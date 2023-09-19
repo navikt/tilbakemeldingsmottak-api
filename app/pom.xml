@@ -24,26 +24,10 @@
             <version>${jakarta.inject.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.graphql-java</groupId>
-            <artifactId>graphql-java-extended-scalars</artifactId>
-            <version>${graphql-java.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.graphql-java-generator</groupId>
-            <artifactId>graphql-java-client-runtime</artifactId>
-            <version>${graphql-maven-plugin.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>${netty-all.version}</version>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-            <version>${lombok.version}</version>
         </dependency>
         <dependency>
             <groupId>io.reactivex.rxjava3</groupId>
@@ -145,28 +129,6 @@
             <groupId>no.nav.security</groupId>
             <artifactId>token-client-spring</artifactId>
             <version>${token-support.version}</version>
-        </dependency>
-
-        <!-- CXF/WS-->
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
-            <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.eclipse.angus</groupId>
-                    <artifactId>angus-activation</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.angus</groupId>
-                    <artifactId>angus-mail</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-ws-security</artifactId>
-            <version>${cxf.version}</version>
         </dependency>
 
         <!-- Database -->
@@ -361,52 +323,16 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+
         <plugins>
-
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <finalName>app</finalName>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>com.graphql-java-generator</groupId>
-                <artifactId>graphql-maven-plugin</artifactId>
-                <version>${graphql-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generateClientCode</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <packageName>no.nav.tilbakemeldingsmottak.graphql</packageName>
-                    <schemaFileFolder>${project.basedir}/src/main/resources/graphql/pdl</schemaFileFolder>
-                    <customScalars>
-                        <customScalar>
-                            <graphQLTypeName>Date</graphQLTypeName>
-                            <javaType>java.util.Date</javaType>
-                            <graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.Date
-                            </graphQLScalarTypeStaticField>
-                        </customScalar>
-                        <customScalar>
-                            <graphQLTypeName>DateTime</graphQLTypeName>
-                            <javaType>java.time.OffsetDateTime</javaType>
-                            <graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.DateTime
-                            </graphQLScalarTypeStaticField>
-                        </customScalar>
-                        <customScalar>
-                            <graphQLTypeName>Long</graphQLTypeName>
-                            <javaType>java.lang.Long</javaType>
-                            <graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.GraphQLLong
-                            </graphQLScalarTypeStaticField>
-                        </customScalar>
-                    </customScalars>
                 </configuration>
             </plugin>
 
@@ -447,7 +373,6 @@
                     <compilerPlugins>
                         <plugin>spring</plugin>
                         <plugin>jpa</plugin>
-                        <!--                        <plugin>kotlinx-serialization</plugin>-->
                     </compilerPlugins>
                     <jvmTarget>${java.version}</jvmTarget>
                 </configuration>
@@ -484,7 +409,7 @@
                         </goals>
                         <configuration>
                             <queryFileDirectory>${project.basedir}/src/main/resources/graphql/pdl</queryFileDirectory>
-                            <schemaFile>${project.basedir}/src/main/resources/graphql/pdl/pdl-api-sdl.graphqls
+                            <schemaFile>${project.basedir}/src/main/resources/graphql/pdl/pdl-api-sdl.graphql
                             </schemaFile>
                             <packageName>no.nav.tilbakemeldingsmottak.pdl.generated</packageName>
                         </configuration>

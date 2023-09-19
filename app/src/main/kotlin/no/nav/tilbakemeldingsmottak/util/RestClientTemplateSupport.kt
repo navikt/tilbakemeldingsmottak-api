@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.util
 
+import com.expediagroup.graphql.client.spring.GraphQLWebClient
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
@@ -80,14 +81,28 @@ class RestClientTemplateSupport(
         return buildWebClient(buildHttpClient(5000, 60, 60), clientProperties)
     }
 
-    // Denne overskriver den genererte SpringConfiguration sin webClient (i target/generated-sources)
-    // Akkurat nå støttes bare én graphql server, men det kan støttes flere ved å følge denne: https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_more_than_one_graphql_servers
-    @Bean(name = ["webClient"])
-    fun webClient(): WebClient {
+    @Bean
+    @Qualifier("pdlClient")
+    @Scope("prototype")
+    fun pdlClient(): GraphQLWebClient {
         val clientProperties = clientConfigurationProperties.registration["pdl"]
             ?: throw RuntimeException("Fant ikke konfigurering for pdl")
 
-        return buildWebClientWithUrl(buildHttpClient(5000, 60, 60), clientProperties, pdlUrl)
+        return GraphQLWebClient(
+            url = pdlUrl,
+            builder = WebClient.builder()
+                .defaultHeader("Content-Type", "application/json")
+                .defaultUriVariables(Collections.singletonMap("url", pdlUrl))
+                .exchangeStrategies(ExchangeStrategies.builder()
+                    .codecs { configurer: ClientCodecConfigurer ->
+                        configurer
+                            .defaultCodecs()
+                            .maxInMemorySize(MAX_FILE_SIZE)
+                    }
+                    .build())
+                .clientConnector(ReactorClientHttpConnector(buildHttpClient(5000, 60, 60)))
+                .filter(bearerTokenExchange(clientProperties))
+        )
     }
 
     private fun buildHttpClient(connection_timeout: Int, readTimeout: Int, writeTimeout: Int): HttpClient {

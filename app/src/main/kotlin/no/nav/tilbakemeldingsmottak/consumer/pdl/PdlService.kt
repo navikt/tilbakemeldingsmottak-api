@@ -10,11 +10,12 @@ import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import no.nav.tilbakemeldingsmottak.pdl.generated.HentIdenter
 import no.nav.tilbakemeldingsmottak.util.handleErrors
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
 @Service
-class PdlService(private val pdlGraphQLClient: GraphQLWebClient) {
+class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQLWebClient) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -38,7 +39,8 @@ class PdlService(private val pdlGraphQLClient: GraphQLWebClient) {
         )
         if (response.data != null) {
             checkForErrors(response.errors)
-            log.info("Hentet identer")
+            // FIXME: Fjern logg
+            log.info("Hentet identer: ${response.data}")
             return response.data
         } else {
             log.error("Oppslag mot personregisteret feilet. Fikk feil i kall for å hente identer fra personregisteret")

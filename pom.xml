@@ -40,7 +40,6 @@
         <httpclient5.version>5.2.1</httpclient5.version>
         <okhttp3.version>4.11.0</okhttp3.version>
         <rxjava.version>3.1.7</rxjava.version>
-        <cxf.version>4.0.2</cxf.version>
         <microsoft-graph.version>5.68.0</microsoft-graph.version>
         <microsoft-graph-core.version>2.0.19</microsoft-graph-core.version>
         <azure.identity.version>1.10.0</azure.identity.version>
@@ -57,7 +56,6 @@
         <jakarta-annotation.version>2.1.1</jakarta-annotation.version>
 
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
-        <lombok.version>1.18.28</lombok.version>
         <mockito-junit-jupiter.version>5.5.0</mockito-junit-jupiter.version>
         <resilience4j.version>2.0.2</resilience4j.version>
         <resilience4j-prometheus.version>1.7.1</resilience4j-prometheus.version>
@@ -111,12 +109,6 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>io.github.resilience4j</groupId>
                 <artifactId>resilience4j-spring-boot</artifactId>
                 <version>${resilience4j.version}</version>
@@ -160,28 +152,7 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav-jackrabbit</artifactId>
-                <version>${wagon-webdav-jackrabbit.version}</version>
-            </extension>
-        </extensions>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
