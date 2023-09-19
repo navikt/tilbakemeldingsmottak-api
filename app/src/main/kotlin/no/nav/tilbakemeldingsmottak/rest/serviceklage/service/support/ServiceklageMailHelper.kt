@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component
 @Component
 class ServiceklageMailHelper(private val emailService: AzureEmailService) {
     fun sendEmail(
-        fromAddress: String?,
+        fromAddress: String,
         toAddress: String,
-        subject: String?,
-        text: String?,
-        fysiskDokument: ByteArray?
+        subject: String,
+        text: String,
+        fysiskDokument: ByteArray
     ) {
         try {
             val mottakere = toAddress.split(";")
@@ -22,7 +22,7 @@ class ServiceklageMailHelper(private val emailService: AzureEmailService) {
         }
     }
 
-    fun sendEmail(fromAddress: String?, toAddress: String?, subject: String?, text: String?) {
+    fun sendEmail(fromAddress: String, toAddress: String, subject: String, text: String) {
         emailService.sendSimpleMessage(toAddress, subject, text)
     }
 }

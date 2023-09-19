@@ -6,9 +6,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class EndreOppgaveRequestToMapper {
-    companion object {
-        private const val STATUS_FERDIGSTILT = "FERDIGSTILT"
-    }
+
+    private val STATUS_FERDIGSTILT = "FERDIGSTILT"
 
     fun createBaseRequest(hentOppgaveResponseTo: HentOppgaveResponseTo): EndreOppgaveRequestTo {
         return EndreOppgaveRequestTo(
@@ -27,5 +26,5 @@ class EndreOppgaveRequestToMapper {
     fun mapFerdigstillRequest(hentOppgaveResponseTo: HentOppgaveResponseTo): EndreOppgaveRequestTo {
         return createBaseRequest(hentOppgaveResponseTo).copy(status = STATUS_FERDIGSTILT)
     }
-    
+
 }

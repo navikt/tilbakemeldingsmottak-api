@@ -8,15 +8,13 @@ import org.springframework.stereotype.Component
 @Component
 class OpprettJournalpostRequestToMapper {
 
-    companion object {
-        private const val TEMA_SER = "SER"
-        private const val KANAL_NAV_NO = "NAV_NO"
-        private const val KANAL_NAV_NO_UINNLOGGET = "NAV_NO_UINNLOGGET"
-        private const val TITTEL_SERVICEKLAGE = "Serviceklage"
-        private const val JOURNALFOERENDE_ENHET = "9999"
-        private const val FILTYPE_PDFA = "PDFA"
-        private const val VARIANTFORMAT_ARKIV = "ARKIV"
-    }
+    private val TEMA_SER = "SER"
+    private val KANAL_NAV_NO = "NAV_NO"
+    private val KANAL_NAV_NO_UINNLOGGET = "NAV_NO_UINNLOGGET"
+    private val TITTEL_SERVICEKLAGE = "Serviceklage"
+    private val JOURNALFOERENDE_ENHET = "9999"
+    private val FILTYPE_PDFA = "PDFA"
+    private val VARIANTFORMAT_ARKIV = "ARKIV"
 
     fun map(
         request: OpprettServiceklageRequest,

@@ -11,18 +11,16 @@ import java.time.LocalDate
 @Component
 class OpprettOppgaveRequestToMapper(private val pdlService: PdlService) {
 
-    companion object {
-        const val KLAGEINSTANS_ENHETSNR = "4200"
-        const val FAGPOST_ENHETSNR = "2950"
-        const val PRIORITET = "NORM"
-        const val SERVICEKLAGE_TEMA = "SER"
-        const val RETTING_TEMA = "RPO"
-        const val OPPGAVETYPE_VUR = "VUR"
-        const val OPPGAVETYPE_JFR = "JFR"
-        const val JOURNALSTATUS_ENDELIG = "ENDELIG"
-        const val BESKRIVELSE_SLETTING = "Skal slettes da det ikke er en serviceklage"
-        const val DAGER_FRIST = 18L
-    }
+    private val KLAGEINSTANS_ENHETSNR = "4200"
+    private val FAGPOST_ENHETSNR = "2950"
+    private val PRIORITET = "NORM"
+    private val SERVICEKLAGE_TEMA = "SER"
+    private val RETTING_TEMA = "RPO"
+    private val OPPGAVETYPE_VUR = "VUR"
+    private val OPPGAVETYPE_JFR = "JFR"
+    private val JOURNALSTATUS_ENDELIG = "ENDELIG"
+    private val BESKRIVELSE_SLETTING = "Skal slettes da det ikke er en serviceklage"
+    private val DAGER_FRIST = 18L
 
     fun mapServiceklageOppgave(
         klagenGjelderId: String,
