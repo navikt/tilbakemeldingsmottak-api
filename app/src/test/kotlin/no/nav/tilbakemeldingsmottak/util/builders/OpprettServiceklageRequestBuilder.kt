@@ -63,7 +63,7 @@ class OpprettServiceklageRequestBuilder {
         paaVegneAv = PaaVegneAv.BEDRIFT
         paaVegneAvPerson = null
         paaVegneAvBedrift = PaaVegneAvBedriftBuilder().build()
-        innmelder = InnmelderBuilder().build(rolle = "CEO", harFullmakt = true)
+        innmelder = InnmelderBuilder().build(rolle = "CEO")
         enhetsnummerPaaklaget = "1234"
         return this
     }
