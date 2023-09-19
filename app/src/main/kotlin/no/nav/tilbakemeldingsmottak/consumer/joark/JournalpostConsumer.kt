@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.consumer.joark
 
-import jakarta.inject.Inject
 import no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostRequestTo
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo
@@ -22,17 +21,13 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 
 @Component
-class JournalpostConsumer {
+class JournalpostConsumer(
+    @Qualifier("arkivClient") private val webClient: WebClient,
+    @Value("\${Journalpost_v1_url}") private val journalpostUrl: String
+) {
 
     private val log: Logger = getLogger(javaClass)
     private val FORSOEK_FERDIGSTILL = "?forsoekFerdigstill=true"
-
-    @Inject
-    @Qualifier("arkivClient")
-    private lateinit var webClient: WebClient
-
-    @Value("\${Journalpost_v1_url}")
-    private lateinit var journalpostUrl: String
 
     @Metrics(
         value = DOK_CONSUMER,

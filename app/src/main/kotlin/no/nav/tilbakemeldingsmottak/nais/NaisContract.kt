@@ -2,7 +2,6 @@ package no.nav.tilbakemeldingsmottak.nais
 
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
-import jakarta.inject.Inject
 import no.nav.security.token.support.core.api.Unprotected
 import no.nav.tilbakemeldingsmottak.model.SelfCheckResult
 import no.nav.tilbakemeldingsmottak.model.SelftestResult
@@ -17,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @RestController
 @Unprotected
-class NaisContract @Inject constructor(
+class NaisContract(
     registry: MeterRegistry,
     @Value("\${APP_NAME:tilbakemeldingsmottak}") private val appName: String,
     @Value("\${APP_VERSION:0}") private val version: String

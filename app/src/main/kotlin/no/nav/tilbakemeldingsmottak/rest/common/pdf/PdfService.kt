@@ -7,11 +7,9 @@ import no.nav.tilbakemeldingsmottak.generer.modeller.ServiceklagePdfModell
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.Klagetyper
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAv
-import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.stream.Collectors
 
 @Component
 class PdfService {
@@ -33,57 +31,76 @@ class PdfService {
     }
 
     private fun lagKlageMap(request: OpprettServiceklageRequest, fremmet: LocalDateTime): Map<String, String?> {
-        val klageMap: MutableMap<String, String?> = HashMap()
-        klageMap["Kanal"] = KANAL_SERVICEKLAGESKJEMA_ANSWER
-        klageMap["Dato fremmet"] = fremmet.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))
-        if (!StringUtils.isBlank(request.innmelder!!.navn)) {
-            klageMap["Navn til innmelder"] = request.innmelder!!.navn
-        }
-        if (!StringUtils.isBlank(request.innmelder!!.personnummer)) {
-            klageMap["Personnummer til innmelder"] = request.innmelder!!.personnummer
+        val klageMap = mutableMapOf(
+            "Kanal" to KANAL_SERVICEKLAGESKJEMA_ANSWER,
+            "Dato fremmet" to fremmet.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))
+        )
+
+        request.innmelder?.let {
+            if (!it.navn.isNullOrBlank()) {
+                klageMap["Navn til innmelder"] = it.navn
+            }
+            if (!it.personnummer.isNullOrBlank()) {
+                klageMap["Personnummer til innmelder"] = it.personnummer
+            }
         }
 
         when (request.paaVegneAv) {
             PaaVegneAv.PRIVATPERSON -> {}
             PaaVegneAv.ANNEN_PERSON -> {
-                if (!StringUtils.isBlank(request.innmelder!!.rolle)) {
-                    klageMap["Innmelders rolle"] = request.innmelder!!.rolle
-                    klageMap["Innmelder har fullmakt"] = if (request.innmelder!!.harFullmakt!!) "Ja" else "Nei"
+                request.innmelder?.let {
+                    if (!it.rolle.isNullOrBlank()) {
+                        klageMap["Innmelders rolle"] = it.rolle
+                        klageMap["Innmelder har fullmakt"] =
+                            if (it.harFullmakt == true) "Ja" else "Nei"
+                    }
                 }
-                klageMap["Navn til forulempet person"] = request.paaVegneAvPerson!!.navn
-                klageMap["Personnummer til forulempet person"] = request.paaVegneAvPerson!!.personnummer
+                request.paaVegneAvPerson?.let {
+                    klageMap["Navn til forulempet person"] = it.navn
+                    klageMap["Personnummer til forulempet person"] = it.personnummer
+                }
             }
 
             PaaVegneAv.BEDRIFT -> {
-                if (!StringUtils.isBlank(request.innmelder!!.rolle)) {
-                    klageMap["Innmelders rolle"] = request.innmelder!!.rolle
-                    klageMap["Innmelder har fullmakt"] = if (request.innmelder!!.harFullmakt!!) "Ja" else "Nei"
+                request.innmelder?.let {
+                    if (!it.rolle.isNullOrBlank()) {
+                        klageMap["Innmelders rolle"] = it.rolle
+                    }
                 }
-                klageMap["Navn til forulempet bedrift"] = request.paaVegneAvBedrift!!.navn
-                klageMap["Orgnr til forulempet bedrift"] = request.paaVegneAvBedrift!!.organisasjonsnummer
+                request.paaVegneAvBedrift?.let {
+                    klageMap["Navn til forulempet bedrift"] = it.navn
+                    klageMap["Orgnr til forulempet bedrift"] = it.organisasjonsnummer
+                }
             }
 
             null -> throw ServerErrorException("PaaVegneAv er ikke satt")
         }
-        if (!StringUtils.isBlank(request.enhetsnummerPaaklaget)) {
-            klageMap["Påklaget enhet"] = request.enhetsnummerPaaklaget
+
+        request.enhetsnummerPaaklaget?.let {
+            klageMap["Påklaget enhet"] = it
         }
-        klageMap["Klagetype"] = StringUtils.join(
-            request.klagetyper!!.stream().map { x: Klagetyper -> x.value }.collect(Collectors.toList()), ", "
-        )
-        if (request.klagetyper!!.contains(Klagetyper.LOKALT_NAV_KONTOR)) {
-            klageMap["Gjelder økonomisk sosialhjelp/sosiale tjenester"] = request.gjelderSosialhjelp!!.value
+
+        klageMap["Klagetype"] = request.klagetyper?.joinToString(", ") { it.value }
+
+        if (request.klagetyper?.contains(Klagetyper.LOKALT_NAV_KONTOR) == true) {
+            klageMap["Gjelder økonomisk sosialhjelp/sosiale tjenester"] =
+                request.gjelderSosialhjelp?.value
         }
-        if (request.klagetyper!!.contains(Klagetyper.ANNET) && !StringUtils.isBlank(request.klagetypeUtdypning)) {
+
+        if (request.klagetyper?.contains(Klagetyper.ANNET) == true && !request.klagetypeUtdypning.isNullOrBlank()) {
             klageMap["Klagetype spesifisert i fritekst"] = request.klagetypeUtdypning
         }
+
         klageMap["Klagetekst"] = request.klagetekst
-        if (request.oenskerAaKontaktes != null) {
-            klageMap["Ønsker å kontaktes"] = if (request.oenskerAaKontaktes!!) "Ja" else "Nei"
+
+        request.oenskerAaKontaktes?.let {
+            klageMap["Ønsker å kontaktes"] = if (it) "Ja" else "Nei"
         }
-        if (!StringUtils.isBlank(request.innmelder!!.telefonnummer)) {
-            klageMap["Telefonnummer til innmelder"] = request.innmelder!!.telefonnummer
+
+        request.innmelder?.telefonnummer?.let {
+            klageMap["Telefonnummer til innmelder"] = it
         }
+
         return klageMap
     }
 
