@@ -74,6 +74,12 @@
             <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.expediagroup</groupId>
+            <artifactId>graphql-kotlin-spring-client</artifactId>
+            <version>${graphql-kotlin.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
 
         <!-- Springframework -->
@@ -464,47 +470,26 @@
                 </dependencies>
             </plugin>
 
+
+            <!-- Graphql-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
+                <groupId>com.expediagroup</groupId>
+                <artifactId>graphql-kotlin-maven-plugin</artifactId>
+                <version>${graphql-kotlin.version}</version>
                 <executions>
-                    <!-- Replacing default-compile as it is treated specially by Maven -->
                     <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <!-- Replacing default-testCompile as it is treated specially by Maven -->
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>java-compile</id>
-                        <phase>compile</phase>
+                        <id>generate-pdl-client</id>
                         <goals>
-                            <goal>compile</goal>
+                            <goal>generate-client</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>java-test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
+                        <configuration>
+                            <queryFileDirectory>${project.basedir}/src/main/resources/graphql/pdl</queryFileDirectory>
+                            <schemaFile>${project.basedir}/src/main/resources/graphql/pdl/pdl-api-sdl.graphqls
+                            </schemaFile>
+                            <packageName>no.nav.tilbakemeldingsmottak.pdl.generated</packageName>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
             </plugin>
         </plugins>
     </build>
