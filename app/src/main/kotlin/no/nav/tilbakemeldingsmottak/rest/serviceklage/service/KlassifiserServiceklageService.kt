@@ -1,8 +1,9 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service
 
 import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklageEventType
 import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery
@@ -124,47 +125,57 @@ class KlassifiserServiceklageService(
         } else {
             hentSkjemaService.readSkjema()
         }
-        val answersMap = ObjectMapper().registerKotlinModule().readValue(
-            serviceklage.klassifiseringJson,
-            object : TypeReference<Map<String, String>>() {})
-            .filterValues { it != null }
-            .filterNot { defaultValuesContainsEntry(skjemaResponse, it) }
+        val answersMap = serviceklage.klassifiseringJson?.let { klassifiseringsJson ->
+            jacksonObjectMapper().readValue<Map<String, String?>>(klassifiseringsJson)
+                .filterValues { value -> value != null }
+                .filterNot { defaultValuesContainsEntry(skjemaResponse, it) }
+        }
 
-        addEntriesToQuestionAnswerMap(answersMap, skjemaResponse.questions, questionAnswerMap)
+        if (answersMap != null) {
+            skjemaResponse.questions?.let { addEntriesToQuestionAnswerMap(answersMap, it, questionAnswerMap) }
+        }
+        
         return questionAnswerMap
     }
 
     private fun addEntriesToQuestionAnswerMap(
-        answersMap: Map<String, String>,
+        answersMap: Map<String, String?>,
         questions: List<Question>?,
         questionAnswerMap: MutableMap<String, String>
     ) {
-        for ((questionId, text, type, _, _, answers) in questions!!) {
-            if (answersMap.containsKey(questionId) && !questionAnswerMap.containsKey(text)) {
-                val (_, text1) = getQuestionById(questions, questionId!!)
-                    ?: throw ServerErrorException("Finner ikke spørsmål med id=$questionId")
-                if (text1 != null) {
-                    questionAnswerMap[text1] = answersMap[questionId] ?: ""
-                }
-            }
+        questions?.let { questionList ->
+            for (question in questionList) {
+                if (answersMap.containsKey(question.id) && !questionAnswerMap.containsKey(question.text)) {
+                    val foundQuestion = question.id?.let { getQuestionById(questionList, it) }
+                        ?: throw ServerErrorException("Finner ikke spørsmål med id=${question.id}")
 
-            if (type == Question.Type.RADIO) {
-                val answer = answers!!.stream()
-                    .filter { (answer): Answer -> answer == answersMap[questionId] }
-                    .findFirst()
-                if (answer.isPresent && answer.get().questions != null && answer.get().questions!!.isNotEmpty()
-                    && NONE != answer.get().next
-                ) {
-                    addEntriesToQuestionAnswerMap(answersMap, answer.get().questions, questionAnswerMap)
+                    val questionText = foundQuestion.text
+                    if (questionText != null) {
+                        questionAnswerMap[questionText] = answersMap[foundQuestion.id] ?: ""
+                    }
+                }
+
+                if (question.type == Question.Type.RADIO) {
+                    val answer = question.answers?.stream()
+                        ?.filter { (answer): Answer -> answer == answersMap[question.id] }
+                        ?.findFirst()
+                    if (answer?.isPresent == true && answer.get().questions != null && answer.get().questions?.isNotEmpty() == true
+                        && NONE != answer.get().next
+                    ) {
+                        addEntriesToQuestionAnswerMap(answersMap, answer.get().questions, questionAnswerMap)
+                    }
                 }
             }
         }
     }
 
-    private fun defaultValuesContainsEntry(skjemaResponse: HentSkjemaResponse, entry: Map.Entry<*, *>): Boolean {
-        return if (skjemaResponse.defaultAnswers == null || skjemaResponse.defaultAnswers!!.answers == null) {
+    private fun defaultValuesContainsEntry(
+        skjemaResponse: HentSkjemaResponse,
+        entry: Map.Entry<String, String?>
+    ): Boolean {
+        return if (skjemaResponse.defaultAnswers == null || skjemaResponse.defaultAnswers?.answers == null) {
             false
-        } else skjemaResponse.defaultAnswers!!.answers!!.containsKey(entry.key.toString())
+        } else skjemaResponse.defaultAnswers?.answers?.containsKey(entry.key) == true
     }
 
     private fun opprettSlettingOppgave(hentOppgaveResponseTo: HentOppgaveResponseTo) {
@@ -263,11 +274,13 @@ class KlassifiserServiceklageService(
         if (StringUtils.isBlank(enhet)) {
             return null
         }
-        val l = enhet!!.trim { it <= ' ' }.length
-        if (l >= 4) {
-            val enhetsnummer = enhet.trim { it <= ' ' }.substring(l - 4)
-            if (StringUtils.isNumeric(enhetsnummer)) {
-                return enhetsnummer
+        val l = enhet?.trim { it <= ' ' }?.length
+        if (l != null) {
+            if (l >= 4) {
+                val enhetsnummer = enhet.trim { it <= ' ' }.substring(l - 4)
+                if (StringUtils.isNumeric(enhetsnummer)) {
+                    return enhetsnummer
+                }
             }
         }
         throw ClientErrorException("Klarer ikke å hente ut enhetsnummer for enhet=$enhet")

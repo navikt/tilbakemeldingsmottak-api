@@ -48,7 +48,7 @@ object TestUtils {
 
         fun createHentSkjemaResponse(): HentSkjemaResponse {
             val schema = TestUtils::class.java.classLoader.getResourceAsStream("schema/schema.yaml")
-            val mapper = ObjectMapper(YAMLFactory())
+            val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
             val classpathSkjema = schema?.bufferedReader(StandardCharsets.UTF_8).use { it?.readText() }
             var response = mapper.readValue(classpathSkjema, HentSkjemaResponse::class.java)
 
@@ -73,25 +73,6 @@ object TestUtils {
             return response.copy(defaultAnswers = DefaultAnswers(answers = answers))
         }
     }
-
-
-    // FIXME:
-//    fun createHentAktoerIdForIdentResponse(aktoerId: String?): Identliste {
-//        return Identliste.builder()
-//            .withIdenter(
-//                List.of<IdentInformasjon>(
-//                    IdentInformasjon.builder()
-//                        .withIdent(aktoerId)
-//                        .withGruppe(IdentGruppe.AKTORID)
-//                        .withHistorisk(false)
-//                        .build()
-//                )
-//            ).build()
-//    }
-//
-//    fun createEmptyHentAktoerIdForIdentResponse(): Identliste {
-//        return Identliste.builder().withIdenter(emptyList<IdentInformasjon>()).build()
-//    }
 
     @JvmStatic
     fun createNorg2Response(): String {

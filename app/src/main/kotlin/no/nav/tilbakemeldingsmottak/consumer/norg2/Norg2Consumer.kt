@@ -42,8 +42,8 @@ class Norg2Consumer(
     )
     fun hentEnheter(): List<Enhet> {
         log.info("Henter enheter fra norg2")
-        
-        return webClient
+
+        val response = webClient
             .method(HttpMethod.GET)
             .uri("$norg2Url/enhet")
             .contentType(MediaType.APPLICATION_JSON)
@@ -54,6 +54,10 @@ class Norg2Consumer(
             .bodyToMono(object : ParameterizedTypeReference<List<Enhet>>() {})
             .doOnError { t: Throwable -> handleError(t, "norg2") }
             .block() ?: emptyList()
+
+        log.info("Hentet enheter fra norg2: $response") //FIXME: Fjern
+
+        return response
     }
 
     private fun handleError(error: Throwable, serviceName: String) {

@@ -44,9 +44,7 @@
         <microsoft-graph-core.version>2.0.19</microsoft-graph-core.version>
         <azure.identity.version>1.10.0</azure.identity.version>
 
-        <jackson-bom.version>2.15.2</jackson-bom.version>
         <jackson-module-kotlin.version>2.15.2</jackson-module-kotlin.version>
-        <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
 
         <jakarta.inject.version>2.0.1</jakarta.inject.version>
         <jakarta.xml-bind.version>4.0.0</jakarta.xml-bind.version>

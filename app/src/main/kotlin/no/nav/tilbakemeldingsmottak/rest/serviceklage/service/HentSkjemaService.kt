@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.tilbakemeldingsmottak.consumer.norg2.Norg2Consumer
 import no.nav.tilbakemeldingsmottak.domain.Serviceklage
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER
@@ -41,7 +42,7 @@ class HentSkjemaService(
     }
 
     private var classpathSkjema: String = ""
-    private val mapper = ObjectMapper(YAMLFactory()).apply {
+    private val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule().apply {
         findAndRegisterModules()
     }
 

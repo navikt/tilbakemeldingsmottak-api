@@ -39,8 +39,6 @@ class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQLWe
         )
         if (response.data != null) {
             checkForErrors(response.errors)
-            // FIXME: Fjern logg
-            log.info("Hentet identer: ${response.data}")
             return response.data
         } else {
             log.error("Oppslag mot personregisteret feilet. Fikk feil i kall for å hente identer fra personregisteret")
@@ -58,8 +56,6 @@ class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQLWe
         if (identer.isEmpty()) {
             throw ClientErrorException("Fant ingen aktørId for ident", null, ErrorCode.PDL_MISSING_AKTORID)
         }
-        log.info("Returnerer: ${identer[0].ident}") // FIXME: Fjern
-
         return identer[0].ident
     }
 }
