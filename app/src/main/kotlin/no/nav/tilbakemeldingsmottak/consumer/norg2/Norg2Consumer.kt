@@ -14,8 +14,6 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType
-import org.springframework.retry.annotation.Backoff
-import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
@@ -23,7 +21,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @Component
 class Norg2Consumer(
     @Value("\${norg2.api.v1.url}") private val norg2Url: String,
-    @Qualifier("eregClient") private val webClient: WebClient
+    @Qualifier("norg2Client") private val webClient: WebClient
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -34,7 +32,7 @@ class Norg2Consumer(
         percentiles = [0.5, 0.95],
         histogram = true
     )
-    @Retryable(include = [ServerErrorException::class], backoff = Backoff(delay = 1000))
+//    @Retryable(include = [ServerErrorException::class], backoff = Backoff(delay = 1000))
 //    @Cacheable(
 //        CacheConfig.NORG2_CACHE
 //    ) // FIXME: Revert utkommenteringen
@@ -50,16 +48,20 @@ class Norg2Consumer(
             .header("Nav-Consumer-Id", "Tilbakemeldingsmottak")
             .retrieve()
             .bodyToMono(object : ParameterizedTypeReference<List<Enhet>>() {})
-            .doOnError { t: Throwable -> handleError(t, "norg2") }
+            .doOnError { error -> handleError(error, "norg2") }
             .block() ?: emptyList()
 
+        log.info("hentet enheter antall: ${response.size}")
         log.info("Hentet enheter fra norg2: $response") //FIXME: Fjern
 
         return response
     }
 
     private fun handleError(error: Throwable, serviceName: String) {
+        log.info("Inside handleError")
         if (error is WebClientResponseException) {
+            log.info("Inside WebClientResponseException")
+
             val statusCode: HttpStatusCode = error.statusCode
             val responseBody: String = error.responseBodyAsString
             val errorMessage =
