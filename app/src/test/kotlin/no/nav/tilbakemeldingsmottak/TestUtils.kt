@@ -77,11 +77,11 @@ object TestUtils {
     @JvmStatic
     fun createNorg2Response(): String {
         val enheter = listOf(
-            Enhet(NAV_ENHETSNR_1, NAV_ENHETSNAVN_1, NAV_ENHET_STATUS),
-            Enhet(NAV_ENHETSNR_2, NAV_ENHETSNAVN_2, NAV_ENHET_STATUS),
-            Enhet(NAV_ENHETSNR_3, NAV_ENHETSNAVN_3, NAV_ENHET_STATUS),
-            Enhet(NAV_ENHETSNR_4, NAV_ENHETSNAVN_4, NAV_ENHET_STATUS),
-            Enhet(NAV_ENHETSNR_5, NAV_ENHETSNAVN_5, NAV_ENHET_STATUS)
+            Enhet(enhetNr = NAV_ENHETSNR_1, navn = NAV_ENHETSNAVN_1, status = NAV_ENHET_STATUS),
+            Enhet(enhetNr = NAV_ENHETSNR_2, navn = NAV_ENHETSNAVN_2, status = NAV_ENHET_STATUS),
+            Enhet(enhetNr = NAV_ENHETSNR_3, navn = NAV_ENHETSNAVN_3, status = NAV_ENHET_STATUS),
+            Enhet(enhetNr = NAV_ENHETSNR_4, navn = NAV_ENHETSNAVN_4, status = NAV_ENHET_STATUS),
+            Enhet(enhetNr = NAV_ENHETSNR_5, navn = NAV_ENHETSNAVN_5, status = NAV_ENHET_STATUS),
         )
         return objectMapper.writeValueAsString(enheter)
     }

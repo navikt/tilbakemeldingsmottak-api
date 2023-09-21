@@ -1,8 +1,9 @@
 package no.nav.tilbakemeldingsmottak.consumer.norg2
 
-// FIXME: Deserialization only works in this order
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class Enhet(
-    val navn: String? = null,
-    val enhetNr: String? = null,
-    val status: String? = null
+    @JsonProperty("navn") val navn: String? = null,
+    @JsonProperty("enhetNr") val enhetNr: String? = null,
+    @JsonProperty("status") val status: String? = null
 )
