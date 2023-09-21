@@ -339,26 +339,27 @@ internal class ServiceklageIT : ApplicationTest() {
         TestTransaction.end()
         TestTransaction.start()
         assertEquals(serviceklageRepository!!.count(), 1)
-        val (_, _, _, _, _, _, _, _, _, behandlesSomServiceklage, _, fremmetDato1, innsender, kanal, _, enhetsnummerPaaklaget, enhetsnummerBehandlende, gjelder, beskrivelse, ytelse, relatert, tema, temaUtdypning, utfall, aarsak, tiltak, svarmetode, svarmetodeUtdypning, _, _, _, klassifiseringJson) = serviceklageRepository!!.findAll()
-            .iterator().next()
-        assertEquals(behandlesSomServiceklage, BEHANDLES_SOM_SERVICEKLAGE_ANSWER)
-        assertEquals(fremmetDato1.toString(), fremmetDato)
-        assertEquals(innsender, INNSENDER_ANSWER)
-        assertEquals(kanal, KANAL_SERVICEKLAGESKJEMA_ANSWER)
-        assertEquals(enhetsnummerPaaklaget, NAV_ENHETSNR_1)
-        assertEquals(enhetsnummerBehandlende, NAV_ENHETSNR_2)
-        assertEquals(gjelder, GJELDER)
-        assertEquals(beskrivelse, BESKRIVELSE)
-        assertEquals(relatert, RELATERT)
-        assertEquals(ytelse, YTELSE)
-        assertEquals(tema, TEMA)
-        assertEquals(temaUtdypning, VENTE)
-        assertEquals(utfall, UTFALL)
-        assertEquals(aarsak, AARSAK)
-        assertEquals(tiltak, TILTAK)
-        assertEquals(svarmetode, SVAR_IKKE_NOEDVENDIG_ANSWER)
-        assertEquals(svarmetodeUtdypning, BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
-        assertEquals(klassifiseringJson, objectMapper.writeValueAsString(request))
+
+        val serviceklage = serviceklageRepository!!.findAll().iterator().next()
+
+        assertEquals(serviceklage.behandlesSomServiceklage, BEHANDLES_SOM_SERVICEKLAGE_ANSWER)
+        assertEquals(serviceklage.fremmetDato.toString(), fremmetDato)
+        assertEquals(serviceklage.innsender, INNSENDER_ANSWER)
+        assertEquals(serviceklage.kanal, KANAL_SERVICEKLAGESKJEMA_ANSWER)
+        assertEquals(serviceklage.enhetsnummerPaaklaget, NAV_ENHETSNR_1)
+        assertEquals(serviceklage.enhetsnummerBehandlende, NAV_ENHETSNR_2)
+        assertEquals(serviceklage.gjelder, GJELDER)
+        assertEquals(serviceklage.beskrivelse, BESKRIVELSE)
+        assertEquals(serviceklage.relatert, RELATERT)
+        assertEquals(serviceklage.ytelse, YTELSE)
+        assertEquals(serviceklage.tema, TEMA)
+        assertEquals(serviceklage.temaUtdypning, VENTE)
+        assertEquals(serviceklage.utfall, UTFALL)
+        assertEquals(serviceklage.aarsak, AARSAK)
+        assertEquals(serviceklage.tiltak, TILTAK)
+        assertEquals(serviceklage.svarmetode, SVAR_IKKE_NOEDVENDIG_ANSWER)
+        assertEquals(serviceklage.svarmetodeUtdypning, BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
+        assertEquals(serviceklage.klassifiseringJson, objectMapper.writeValueAsString(request))
     }
 
     @Test
@@ -392,10 +393,11 @@ internal class ServiceklageIT : ApplicationTest() {
         TestTransaction.start()
         WireMock.verify(2, WireMock.postRequestedFor(WireMock.urlPathMatching("/OPPGAVE")))
         assertEquals(serviceklageRepository!!.count(), 1)
-        val (_, _, _, _, _, _, _, _, _, behandlesSomServiceklage, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, klassifiseringJson) = serviceklageRepository!!.findAll()
-            .iterator().next()
-        assertEquals(behandlesSomServiceklage, KOMMUNAL_KLAGE)
-        assertEquals(klassifiseringJson, objectMapper.writeValueAsString(request))
+
+        val oppdatertServiceklage = serviceklageRepository!!.findAll().iterator().next()
+
+        assertEquals(oppdatertServiceklage.behandlesSomServiceklage, KOMMUNAL_KLAGE)
+        assertEquals(oppdatertServiceklage.klassifiseringJson, objectMapper.writeValueAsString(request))
     }
 
     @Test
@@ -412,30 +414,30 @@ internal class ServiceklageIT : ApplicationTest() {
             KlassifiserServiceklageResponse::class.java
         )
         assertEquals(HttpStatus.OK, response.statusCode)
-        val (serviceklageId, journalpostId, opprettetDato, _, _, klagetyper, _, _, klagetekst, behandlesSomServiceklage, _, fremmetDato, innsender, kanal, _, enhetsnummerPaaklaget, enhetsnummerBehandlende, gjelder, beskrivelse, ytelse, _, tema, temaUtdypning, utfall, aarsak, tiltak, svarmetode, svarmetodeUtdypning, _, _, _, klassifiseringJson) = serviceklageRepository!!.findAll()
-            .iterator().next()
-        assertNotNull(serviceklageId)
-        assertNotNull(opprettetDato)
-        assertNull(klagetyper)
-        assertNull(klagetekst)
-        assertEquals(journalpostId, JOURNALPOST_ID)
-        assertEquals(behandlesSomServiceklage, BEHANDLES_SOM_SERVICEKLAGE_ANSWER)
-        assertEquals(fremmetDato.toString(), FREMMET_DATO_ANSWER)
-        assertEquals(innsender, INNSENDER_ANSWER)
-        assertEquals(kanal, KANAL_SERVICEKLAGESKJEMA_ANSWER)
-        assertEquals(enhetsnummerPaaklaget, NAV_ENHETSNR_1)
-        assertEquals(enhetsnummerBehandlende, NAV_ENHETSNR_2)
-        assertEquals(gjelder, GJELDER)
-        assertEquals(beskrivelse, BESKRIVELSE)
-        assertEquals(ytelse, YTELSE)
-        assertEquals(tema, TEMA)
-        assertEquals(temaUtdypning, VENTE)
-        assertEquals(utfall, UTFALL)
-        assertEquals(aarsak, AARSAK)
-        assertEquals(tiltak, TILTAK)
-        assertEquals(svarmetode, SVAR_IKKE_NOEDVENDIG_ANSWER)
-        assertEquals(svarmetodeUtdypning, BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
-        assertEquals(klassifiseringJson, objectMapper.writeValueAsString(request))
+        val serviceklage = serviceklageRepository!!.findAll().iterator().next()
+
+        assertNotNull(serviceklage.serviceklageId)
+        assertNotNull(serviceklage.opprettetDato)
+        assertNull(serviceklage.klagetyper)
+        assertNull(serviceklage.klagetekst)
+        assertEquals(serviceklage.journalpostId, JOURNALPOST_ID)
+        assertEquals(serviceklage.behandlesSomServiceklage, BEHANDLES_SOM_SERVICEKLAGE_ANSWER)
+        assertEquals(serviceklage.fremmetDato.toString(), FREMMET_DATO_ANSWER)
+        assertEquals(serviceklage.innsender, INNSENDER_ANSWER)
+        assertEquals(serviceklage.kanal, KANAL_SERVICEKLAGESKJEMA_ANSWER)
+        assertEquals(serviceklage.enhetsnummerPaaklaget, NAV_ENHETSNR_1)
+        assertEquals(serviceklage.enhetsnummerBehandlende, NAV_ENHETSNR_2)
+        assertEquals(serviceklage.gjelder, GJELDER)
+        assertEquals(serviceklage.beskrivelse, BESKRIVELSE)
+        assertEquals(serviceklage.ytelse, YTELSE)
+        assertEquals(serviceklage.tema, TEMA)
+        assertEquals(serviceklage.temaUtdypning, VENTE)
+        assertEquals(serviceklage.utfall, UTFALL)
+        assertEquals(serviceklage.aarsak, AARSAK)
+        assertEquals(serviceklage.tiltak, TILTAK)
+        assertEquals(serviceklage.svarmetode, SVAR_IKKE_NOEDVENDIG_ANSWER)
+        assertEquals(serviceklage.svarmetodeUtdypning, BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
+        assertEquals(serviceklage.klassifiseringJson, objectMapper.writeValueAsString(request))
     }
 
     @Test
@@ -496,7 +498,6 @@ internal class ServiceklageIT : ApplicationTest() {
             ), OpprettServiceklageResponse::class.java
         )
         assertEquals(serviceklageRepository!!.count(), 1)
-        val (_, _, _, _, _, _, _, _, _, _, _, fremmetDato1) = serviceklageRepository!!.findAll().iterator().next()
         assertNotNull(opprettResponse.body)
         val response = restTemplate!!.exchange(
             URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + opprettResponse.body!!.oppgaveId,
@@ -521,7 +522,7 @@ internal class ServiceklageIT : ApplicationTest() {
             OpprettServiceklageResponse::class.java
         )
         assertEquals(serviceklageRepository!!.count(), 1)
-        val (_, _, _, _, _, _, _, _, _, _, _, fremmetDato1) = serviceklageRepository!!.findAll().iterator().next()
+
         val response = restTemplate!!.exchange(
             "$URL_BEHANDLE_SERVICEKLAGE/$HENT_DOKUMENT/99",
             HttpMethod.GET,

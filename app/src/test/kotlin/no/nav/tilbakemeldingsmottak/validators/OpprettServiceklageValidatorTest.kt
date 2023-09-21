@@ -371,26 +371,6 @@ internal class OpprettServiceklageValidatorTest {
         assertTrue(thrown.message.contains("enhetsnummerPaaklaget må ha fire siffer"))
     }
 
-    // FIXME
-//    @Test
-//    fun shouldThrowExceptionIfPersonnummerResponseIsEmpty() {
-//        Identliste
-//        Mockito.`when`<Identliste>(
-//            pdlService.hentIdenter(
-//                ArgumentMatchers.anyString(),
-//                ArgumentMatchers.anyList<IdentGruppe>()
-//            )
-//        ).thenReturn(Identliste.builder().build())
-//        Mockito.`when`(pdlService!!.hentAktorIdForIdent(ArgumentMatchers.anyString())).thenCallRealMethod()
-//
-//        opprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
-//
-//        val thrown = Assertions.assertThrows(ClientErrorException::class.java) {
-//            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest)
-//        }
-//        assertTrue(thrown.message.contains("Fant ingen aktørId for ident"))
-//    }
-
     @Test
     fun shouldThrowExceptionIfPersonnummerDoesntMatchTokenIdent() {
         opprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson().build()

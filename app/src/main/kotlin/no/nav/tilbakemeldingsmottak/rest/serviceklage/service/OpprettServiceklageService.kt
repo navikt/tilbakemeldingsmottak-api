@@ -121,6 +121,15 @@ class OpprettServiceklageService(
                 e,
                 e.errorCode
             )
+        } catch (e: Exception) {
+            mailHelper.sendEmail(
+                fromAddress,
+                toAddress,
+                SUBJECT_JOURNALPOST_FEILET,
+                TEXT_JOURNALPOST_FEILET,
+                fysiskDokument
+            )
+            throw EksterntKallException("Feil ved opprettelse av journalpost, klage videresendt til $toAddress", e)
         }
     }
 
@@ -170,6 +179,14 @@ class OpprettServiceklageService(
                 e,
                 e.errorCode
             )
+        } catch (e: Exception) {
+            mailHelper.sendEmail(
+                fromAddress,
+                toAddress,
+                SUBJECT_OPPGAVE_FEILET,
+                TEXT_OPPGAVE_FEILET + opprettJournalpostResponseTo.journalpostId
+            )
+            throw EksterntKallException("Feil ved opprettelse av oppgave, journalpostId videresendt til $toAddress", e)
         }
     }
 

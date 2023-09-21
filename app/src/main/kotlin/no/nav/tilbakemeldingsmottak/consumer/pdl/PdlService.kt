@@ -21,13 +21,8 @@ class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQLWe
 
     fun hentPersonIdents(brukerId: String): List<IdentDto> = runBlocking {
         log.info("Skal hente en personsidenter fra PDL")
-        try {
-            hentIdenter(brukerId)?.hentIdenter?.identer?.map { IdentDto(it.ident, it.gruppe.toString(), it.historisk) }
-                ?: listOf(IdentDto(brukerId, "AKTORID", false))
-        } catch (ex: Exception) {
-            log.warn(("Henting fra PDL feilet med ${ex.message}. Returnerer pålogget ident"))
-            listOf(IdentDto(brukerId, "FOLKEREGISTERIDENT", false))
-        }
+        hentIdenter(brukerId)?.hentIdenter?.identer?.map { IdentDto(it.ident, it.gruppe.toString(), it.historisk) }
+            ?: listOf(IdentDto(brukerId, "AKTORID", false))
     }
 
     @Cacheable("hentIdenter")

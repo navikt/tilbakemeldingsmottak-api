@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.norg2
 
 import no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID
-import no.nav.tilbakemeldingsmottak.config.cache.CacheConfig
 import no.nav.tilbakemeldingsmottak.exceptions.*
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -37,9 +35,9 @@ class Norg2Consumer(
         histogram = true
     )
     @Retryable(include = [ServerErrorException::class], backoff = Backoff(delay = 1000))
-    @Cacheable(
-        CacheConfig.NORG2_CACHE
-    )
+//    @Cacheable(
+//        CacheConfig.NORG2_CACHE
+//    ) // FIXME: Revert utkommenteringen
     fun hentEnheter(): List<Enhet> {
         log.info("Henter enheter fra norg2")
 

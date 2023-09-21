@@ -50,7 +50,7 @@ class HentSkjemaService(
         classpathSkjema = StreamUtils.copyToString(schema.inputStream, CHARSET)
     }
 
-    // Hent skjema fra schema.yaml og oppdater med enheter fra norg2 og default svar fra serviceklage
+    // Get questions/answers from schema.yaml and update the answers with "enheter" from norg2 og default answers from "serviceklage"
     fun hentSkjema(journalpostId: String): HentSkjemaResponse {
         var response = readSkjema()
         val enheter = hentEnheter()
