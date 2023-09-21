@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.consumer.norg2
 
 import no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID
+import no.nav.tilbakemeldingsmottak.config.cache.CacheConfig
 import no.nav.tilbakemeldingsmottak.exceptions.*
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE
@@ -9,11 +10,14 @@ import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
@@ -32,10 +36,10 @@ class Norg2Consumer(
         percentiles = [0.5, 0.95],
         histogram = true
     )
-//    @Retryable(include = [ServerErrorException::class], backoff = Backoff(delay = 1000))
-//    @Cacheable(
-//        CacheConfig.NORG2_CACHE
-//    ) // FIXME: Revert utkommenteringen
+    @Retryable(include = [ServerErrorException::class], backoff = Backoff(delay = 1000))
+    @Cacheable(
+        CacheConfig.NORG2_CACHE
+    )
     fun hentEnheter(): List<Enhet> {
         log.info("Henter enheter fra norg2")
 
@@ -51,8 +55,7 @@ class Norg2Consumer(
             .doOnError { error -> handleError(error, "norg2") }
             .block() ?: emptyList()
 
-        log.info("hentet enheter antall: ${response.size}")
-        log.info("Hentet enheter fra norg2: $response") //FIXME: Fjern
+        log.info("Hentet enheter ${response.size} enheter fra norg2")
 
         return response
     }

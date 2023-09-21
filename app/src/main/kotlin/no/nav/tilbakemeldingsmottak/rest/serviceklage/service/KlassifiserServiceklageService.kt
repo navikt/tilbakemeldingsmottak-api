@@ -22,7 +22,6 @@ import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorNotFoundException
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
 import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import no.nav.tilbakemeldingsmottak.model.Answer
-import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest
 import no.nav.tilbakemeldingsmottak.model.Question
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
@@ -39,7 +38,6 @@ import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-// FIXME: Se over objectmapper serialization, optional handling, og om koden kan forbedres
 @Service
 class KlassifiserServiceklageService(
     private val serviceklageRepository: ServiceklageRepository,
@@ -128,7 +126,6 @@ class KlassifiserServiceklageService(
         val answersMap = serviceklage.klassifiseringJson?.let { klassifiseringsJson ->
             jacksonObjectMapper().readValue<Map<String, String?>>(klassifiseringsJson)
                 .filterValues { value -> value != null }
-                .filterNot { defaultValuesContainsEntry(skjemaResponse, it) }
         }
 
         if (answersMap != null) {
@@ -167,15 +164,6 @@ class KlassifiserServiceklageService(
                 }
             }
         }
-    }
-
-    private fun defaultValuesContainsEntry(
-        skjemaResponse: HentSkjemaResponse,
-        entry: Map.Entry<String, String?>
-    ): Boolean {
-        return if (skjemaResponse.defaultAnswers == null || skjemaResponse.defaultAnswers?.answers == null) {
-            false
-        } else skjemaResponse.defaultAnswers?.answers?.containsKey(entry.key) == true
     }
 
     private fun opprettSlettingOppgave(hentOppgaveResponseTo: HentOppgaveResponseTo) {

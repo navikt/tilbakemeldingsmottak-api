@@ -97,7 +97,7 @@ class KlassifiserServiceklageValidator : RequestValidator() {
         } catch (e: DateTimeParseException) {
             throw ClientErrorException("Innsendt svar på spørsmål med id=${question.id} er ikke gyldig")
         } catch (e: Exception) {
-            throw ClientErrorException("Jalla svar på spørsmål med id=${question.id} er ikke gyldig")
+            throw ClientErrorException("Innsendt svar på spørsmål med id=${question.id} er ikke gyldig")
         }
     }
 
