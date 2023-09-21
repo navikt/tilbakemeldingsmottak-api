@@ -23,7 +23,7 @@ class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQLWe
         log.info("Skal hente en personsidenter fra PDL")
         try {
             hentIdenter(brukerId)?.hentIdenter?.identer?.map { IdentDto(it.ident, it.gruppe.toString(), it.historisk) }
-                ?: listOf(IdentDto(brukerId, "FOLKEREGISTERIDENT", false))
+                ?: listOf(IdentDto(brukerId, "AKTORID", false))
         } catch (ex: Exception) {
             log.warn(("Henting fra PDL feilet med ${ex.message}. Returnerer pålogget ident"))
             listOf(IdentDto(brukerId, "FOLKEREGISTERIDENT", false))
@@ -53,10 +53,13 @@ class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQLWe
     }
 
     fun hentAktorIdForIdent(ident: String): String {
+        log.info("Skal hente aktørId for ident")
         val identer = hentPersonIdents(ident)
         if (identer.isEmpty()) {
             throw ClientErrorException("Fant ingen aktørId for ident", null, ErrorCode.PDL_MISSING_AKTORID)
         }
+        log.info("Returnerer: ${identer[0].ident}") // FIXME: Fjern
+
         return identer[0].ident
     }
 }
