@@ -77,14 +77,28 @@ class HentSkjemaService(
         return response
     }
 
-    // FIXME: This also needs to account for recursion for all questions (ENHETSNUMMER_BEHANDLENDE is under PAAKLAGET_ENHET_ER_BEHANDLENDE)
     fun updateQuestionInResponse(response: HentSkjemaResponse, updatedQuestion: Question): HentSkjemaResponse {
-        val updatedQuestions = response.questions?.map {
-            if (it.id == updatedQuestion.id) updatedQuestion else it
-        } ?: emptyList()
-
+        val updatedQuestions = updateQuestionInResponseRecursively(response.questions, updatedQuestion)
         return response.copy(questions = updatedQuestions)
     }
+
+    fun updateQuestionInResponseRecursively(questions: List<Question>?, updatedQuestion: Question): List<Question> {
+        return questions?.map { question ->
+            if (question.id == updatedQuestion.id) {
+                // If the current question matches the updated question, replace it
+                updatedQuestion
+            } else {
+                // If it's not the updated question, check if it has answers with nested questions
+                val updatedAnswers = question.answers?.map { answer ->
+                    val updatedQuestionsInAnswer =
+                        updateQuestionInResponseRecursively(answer.questions, updatedQuestion)
+                    answer.copy(questions = updatedQuestionsInAnswer)
+                }
+                question.copy(answers = updatedAnswers)
+            }
+        } ?: emptyList()
+    }
+
 
     fun readSkjema(): HentSkjemaResponse {
         return try {

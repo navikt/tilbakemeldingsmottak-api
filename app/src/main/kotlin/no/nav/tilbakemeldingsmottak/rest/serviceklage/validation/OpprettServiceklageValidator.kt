@@ -11,6 +11,7 @@ import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator
 import org.apache.commons.lang3.StringUtils
 import org.springframework.stereotype.Component
 
+// FIXME: Sjekk alle optionals
 @Component
 class OpprettServiceklageValidator(
     private val eregConsumer: EregConsumer,
