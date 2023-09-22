@@ -38,8 +38,6 @@
         <!-- Dependencies that should be on the latest version -->
         <kotlin.version>1.9.10</kotlin.version>
         <httpclient5.version>5.2.1</httpclient5.version>
-        <okhttp3.version>4.11.0</okhttp3.version>
-        <rxjava.version>3.1.7</rxjava.version>
         <microsoft-graph.version>5.68.0</microsoft-graph.version>
         <microsoft-graph-core.version>2.0.19</microsoft-graph-core.version>
         <azure.identity.version>1.10.0</azure.identity.version>
@@ -47,7 +45,6 @@
         <jackson-module-kotlin.version>2.15.2</jackson-module-kotlin.version>
         <jackson.version>2.15.2</jackson.version>
 
-        <jakarta.inject.version>2.0.1</jakarta.inject.version>
         <jakarta.xml-bind.version>4.0.0</jakarta.xml-bind.version>
         <jakarta.activation.version>2.1.2</jakarta.activation.version>
         <jakarta-servlet-api.version>6.0.0</jakarta-servlet-api.version>
