@@ -45,6 +45,7 @@
         <azure.identity.version>1.10.0</azure.identity.version>
 
         <jackson-module-kotlin.version>2.15.2</jackson-module-kotlin.version>
+        <jackson.version>2.15.2</jackson.version>
 
         <jakarta.inject.version>2.0.1</jakarta.inject.version>
         <jakarta.xml-bind.version>4.0.0</jakarta.xml-bind.version>

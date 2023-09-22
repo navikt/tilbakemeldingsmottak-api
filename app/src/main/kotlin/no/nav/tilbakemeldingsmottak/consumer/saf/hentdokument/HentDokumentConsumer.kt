@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument
 
-import jakarta.inject.Inject
 import no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID
 import no.nav.tilbakemeldingsmottak.consumer.saf.util.HttpHeadersUtil
 import no.nav.tilbakemeldingsmottak.exceptions.*
@@ -23,7 +22,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.util.function.Consumer
 
 @Component
-class HentDokumentConsumer @Inject constructor(
+class HentDokumentConsumer(
     @Value("\${hentdokument.url}") private val hentDokumentUrl: String,
     @Qualifier("safclient") private val webClient: WebClient
 ) : HentDokument {

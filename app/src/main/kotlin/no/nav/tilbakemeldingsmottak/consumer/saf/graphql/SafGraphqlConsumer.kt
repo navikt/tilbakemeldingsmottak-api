@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.graphql
 
-import jakarta.inject.Inject
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJsonJournalpost
 import no.nav.tilbakemeldingsmottak.consumer.saf.util.HttpHeadersUtil
@@ -20,7 +19,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.util.function.Consumer
 
 @Component
-class SafGraphqlConsumer @Inject constructor(
+class SafGraphqlConsumer(
     @Value("\${saf.graphql.url}") private val graphQLurl: String,
     @Qualifier("safclient") private val webClient: WebClient
 ) {

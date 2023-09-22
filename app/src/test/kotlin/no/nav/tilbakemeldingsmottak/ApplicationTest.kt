@@ -3,7 +3,6 @@ package no.nav.tilbakemeldingsmottak
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader
 import com.nimbusds.jose.JOSEObjectType
-import jakarta.inject.Inject
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
@@ -51,10 +50,10 @@ import java.util.*
 @EnableMockOAuth2Server(port = 1888)
 @AutoConfigureWireMock(port = 5490)
 class ApplicationTest {
-    @Inject
+    @Autowired
     protected var serviceklageRepository: ServiceklageRepository? = null
 
-    @Inject
+    @Autowired
     protected var restTemplate: TestRestTemplate? = null
 
     @Autowired

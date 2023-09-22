@@ -37,7 +37,6 @@ class OppgaveConsumer(
     )
     fun opprettOppgave(opprettOppgaveRequestTo: OpprettOppgaveRequestTo): OpprettOppgaveResponseTo {
         log.info("Oppretter oppgave for journalpostId: {}", opprettOppgaveRequestTo.journalpostId)
-        log.info("Oppretter oppgave med {}", opprettOppgaveRequestTo)
 
         return webClient
             .method(HttpMethod.POST)

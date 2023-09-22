@@ -104,7 +104,7 @@ class KlassifiserServiceklageService(
         val pdf = pdfService.opprettKlassifiseringPdf(questionAnswerMap)
         mailHelper.sendEmail(
             fromAddress,
-            "stulenmorten@gmail.com", //FIXME: Fjern
+            toAddress,
             "Kvittering på innsendt klassifiseringsskjema",
             "Serviceklage med oppgave-id " + hentOppgaveResponseTo.id + " har blitt klassifisert. " +
                     "Innholdet i ditt utfylte skjema ligger vedlagt.",
