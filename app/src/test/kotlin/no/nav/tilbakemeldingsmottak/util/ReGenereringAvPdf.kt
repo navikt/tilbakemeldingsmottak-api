@@ -8,7 +8,6 @@ import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.FileOutputStream
-import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -116,7 +115,6 @@ internal class ReGenereringAvPdf {
         }
     }
 
-    @Throws(IOException::class)
     private fun writeBytesToFile(data: ByteArray, filePath: String) {
         FileOutputStream(filePath).use { fos -> fos.write(data) }
     }

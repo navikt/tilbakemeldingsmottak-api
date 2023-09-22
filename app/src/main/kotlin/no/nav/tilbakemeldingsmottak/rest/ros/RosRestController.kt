@@ -3,7 +3,6 @@ package no.nav.tilbakemeldingsmottak.rest.ros
 import jakarta.transaction.Transactional
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.tilbakemeldingsmottak.api.RosRestControllerApi
-import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE
 import no.nav.tilbakemeldingsmottak.metrics.Metrics
@@ -25,9 +24,6 @@ class RosRestController(
 
     @Transactional
     @Metrics(value = DOK_REQUEST, extraTags = [PROCESS_CODE, "sendRos"], percentiles = [0.5, 0.95], histogram = true)
-    @Throws(
-        SendEmailException::class
-    )
     override fun sendRos(@RequestBody sendRosRequest: SendRosRequest): ResponseEntity<SendRosResponse> {
         sendRosValidator.validateRequest(sendRosRequest)
         rosService.sendRos(sendRosRequest)

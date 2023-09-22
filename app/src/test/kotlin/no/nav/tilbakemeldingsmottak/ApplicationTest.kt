@@ -2,7 +2,6 @@ package no.nav.tilbakemeldingsmottak
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader
-import com.microsoft.graph.models.Message
 import com.nimbusds.jose.JOSEObjectType
 import jakarta.inject.Inject
 import no.nav.security.mock.oauth2.MockOAuth2Server
@@ -12,13 +11,10 @@ import no.nav.security.token.support.spring.test.MockLoginController
 import no.nav.tilbakemeldingsmottak.TestUtils.createNorg2Response
 import no.nav.tilbakemeldingsmottak.TestUtils.createSafGraphqlResponse
 import no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER
-import no.nav.tilbakemeldingsmottak.consumer.email.aad.AADMailClient
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.data.ldap.AutoConfigureDataLdap
@@ -63,12 +59,6 @@ class ApplicationTest {
 
     @Autowired
     lateinit var mockOAuth2Server: MockOAuth2Server
-
-    @Autowired
-    lateinit var emailService: AADMailClient
-
-    @Captor
-    var messageCaptor: ArgumentCaptor<Message>? = null
 
     @Autowired
     lateinit var webApplicationContext: WebApplicationContext

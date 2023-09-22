@@ -10,8 +10,8 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 @Configuration
 class RestConfig {
     @Bean
-    fun requestFactory(httpClient: HttpClient?): ClientHttpRequestFactory {
-        return HttpComponentsClientHttpRequestFactory(httpClient!!)
+    fun requestFactory(httpClient: HttpClient): ClientHttpRequestFactory {
+        return HttpComponentsClientHttpRequestFactory(httpClient)
     }
 
     @Bean

@@ -74,7 +74,6 @@ object TestUtils {
         }
     }
 
-    @JvmStatic
     fun createNorg2Response(): String {
         val enheter = listOf(
             Enhet(enhetNr = NAV_ENHETSNR_1, navn = NAV_ENHETSNAVN_1, status = NAV_ENHET_STATUS),
@@ -86,7 +85,6 @@ object TestUtils {
         return objectMapper.writeValueAsString(enheter)
     }
 
-    @JvmStatic
     fun createSafGraphqlResponse(): String {
         val bruker = SafJournalpostTo.Bruker(PERSONNUMMER)
         val dokumentVarianter = listOf(
@@ -102,7 +100,6 @@ object TestUtils {
         return objectMapper.writeValueAsString(safJsonJournalpost)
     }
 
-    @JvmStatic
     fun createSafGraphqlNoDocumentsResponse(): String {
         val bruker = SafJournalpostTo.Bruker(PERSONNUMMER)
         val dokumenter = listOf(SafJournalpostTo.DokumentInfo(DOKUMENT_INFO_ID, listOf()))
@@ -114,7 +111,6 @@ object TestUtils {
         return objectMapper.writeValueAsString(safJsonJournalpost)
     }
 
-    @JvmStatic
     fun getStringFromByteArrayPdf(bytes: ByteArray?): String {
         val documentStream: InputStream = ByteArrayInputStream(bytes)
         val document = PDDocument.load(documentStream)

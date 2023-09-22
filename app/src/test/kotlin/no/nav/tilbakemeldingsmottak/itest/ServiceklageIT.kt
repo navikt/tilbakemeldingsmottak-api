@@ -62,18 +62,23 @@ internal class ServiceklageIT : ApplicationTest() {
 
     @Test
     fun happyPathPrivatperson() {
-        val msg: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
-        val requestEntity =
-            HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, msg.innmelder!!.personnummer!!, true))
+        // Given
+        val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
+        val personnummer = msg.innmelder!!.personnummer!!
+
+        val requestEntity = HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, personnummer, true))
         val response = restTemplate!!.exchange(
             URL_SENDINN_SERVICEKLAGE,
             HttpMethod.POST,
             requestEntity,
             OpprettServiceklageResponse::class.java
         )
-        val serviceklage = serviceklageRepository!!.findAll().iterator().next()
+
+        // When
         assertEquals(HttpStatus.OK, response.statusCode)
 
+        // Then
+        val serviceklage = serviceklageRepository!!.findAll().first()
         assertNotNull(serviceklage.serviceklageId)
         assertEquals(JOURNALPOST_ID, serviceklage.journalpostId)
         assertNotNull(serviceklage.opprettetDato)
@@ -88,18 +93,24 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
     }
 
+
     @Test
     fun happyPathPrivatpersonIkkePaLogget() {
-        val msg: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
-        val requestEntity =
-            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!, false))
+        // Given
+        val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
+        val personnummer = msg.innmelder!!.personnummer!!
+
+        // When
+        val requestEntity = HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, personnummer, false))
         val response = restTemplate!!.exchange(
             URL_SENDINN_SERVICEKLAGE,
             HttpMethod.POST,
             requestEntity,
             OpprettServiceklageResponse::class.java
         )
-        val serviceklage = serviceklageRepository!!.findAll().iterator().next()
+
+        // Then
+        val serviceklage = serviceklageRepository!!.findAll().first()
 
         assertEquals(HttpStatus.OK, response.statusCode)
         assertNotNull(serviceklage.serviceklageId)
@@ -114,8 +125,8 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
-
     }
+
 
     @Test
     fun happyPathAnnenPerson() {

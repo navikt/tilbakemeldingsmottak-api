@@ -34,14 +34,15 @@ class HentSkjemaService(
     private val norg2Consumer: Norg2Consumer
 ) {
     companion object {
-        private const val MESSAGE = "Feltet ble fylt ut under registrering av serviceklage"
-        private const val NEDLAGT = "nedlagt"
-        private const val ANNET = "Annet"
         private const val SCHEMA_PATH = "classpath:schema/schema.yaml"
-        private val CHARSET = StandardCharsets.UTF_8
     }
 
     private var classpathSkjema: String = ""
+    private val MESSAGE = "Feltet ble fylt ut under registrering av serviceklage"
+    private val NEDLAGT = "nedlagt"
+    private val ANNET = "Annet"
+    private val CHARSET = StandardCharsets.UTF_8
+
     private val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule().apply {
         findAndRegisterModules()
     }

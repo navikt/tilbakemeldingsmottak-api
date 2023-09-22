@@ -16,7 +16,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy
 @ConfigurationPropertiesScan
 class CoreConfig {
     @Bean
-    fun timedAspect(meterRegistry: MeterRegistry?): DokTimedAspect {
-        return DokTimedAspect(meterRegistry!!)
+    fun timedAspect(meterRegistry: MeterRegistry): DokTimedAspect {
+        return DokTimedAspect(meterRegistry)
     }
 }

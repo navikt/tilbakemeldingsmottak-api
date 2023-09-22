@@ -1,9 +1,7 @@
 package no.nav.tilbakemeldingsmottak.exceptions
 
 // En samling av alle error codes som frontend klienter kan bruke for å vise brukervennlige feilmeldinger
-enum class ErrorCode(
-    @JvmField val value: String
-) {
+enum class ErrorCode(val value: String) {
     // GENERELLE
     GENERAL_ERROR("GENERAL_ERROR"), // generell feilmelding "noe gikk galt"
     AUTH_ERROR("AUTH_ERROR"), // feilmelding for autentisering

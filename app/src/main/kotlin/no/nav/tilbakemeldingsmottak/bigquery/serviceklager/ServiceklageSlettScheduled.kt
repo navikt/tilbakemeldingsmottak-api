@@ -83,7 +83,7 @@ class ServiceklageSlettScheduled(
                     serviceklageRepository.findAllByOpprettetDatoAfterOrAvsluttetDatoAfter(datoFra, datoFra)
                 for (serviceklage in serviceklager) {
                     serviceklagerBigQuery.insertServiceklage(
-                        serviceklage!!,
+                        serviceklage,
                         ServiceklageEventType.OPPDATER_SERVICEKLAGE
                     )
                 }

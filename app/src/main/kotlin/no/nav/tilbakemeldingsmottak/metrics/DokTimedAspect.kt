@@ -32,33 +32,32 @@ class DokTimedAspect private constructor(
     )
 
     @Around("execution (@no.nav.tilbakemeldingsmottak.metrics.Metrics * *.*(..))")
-    @Throws(Throwable::class)
     fun incrementMetrics(pjp: ProceedingJoinPoint): Any {
         val method = (pjp.signature as MethodSignature).method
         val metrics = Objects.requireNonNull(AnnotationUtils.getAnnotation(method, Metrics::class.java))
-        if (metrics!!.value.isEmpty()) {
+        if (metrics?.value?.isEmpty() == true) {
             return pjp.proceed()
         }
         val sample = Timer.start(registry)
         return try {
             pjp.proceed()
         } catch (e: Exception) {
-            Counter.builder(metrics.value + "_exception")
+            Counter.builder((metrics?.value ?: "") + "_exception")
                 .tags("error_type", if (isFunctionalException(method, e)) "functional" else "technical")
                 .tags("exception_name", e.javaClass.getSimpleName())
-                .tags(*metrics.extraTags)
+                .tags(*metrics?.extraTags ?: emptyArray())
                 .tags(tagsBasedOnJoinpoint.apply(pjp))
                 .register(registry)
                 .increment()
             throw e
         } finally {
             sample.stop(
-                Timer.builder(metrics.value)
-                    .description(metrics.description.ifEmpty { null })
-                    .tags(*metrics.extraTags)
+                Timer.builder(metrics?.value ?: "")
+                    .description(metrics?.description?.ifEmpty { null })
+                    .tags(*metrics?.extraTags ?: emptyArray())
                     .tags(tagsBasedOnJoinpoint.apply(pjp))
-                    .publishPercentileHistogram(metrics.histogram)
-                    .publishPercentiles(*(if (metrics.percentiles.isEmpty()) null else metrics.percentiles)!!)
+                    .publishPercentileHistogram(metrics?.histogram)
+                    .publishPercentiles(*((if (metrics?.percentiles?.isEmpty() == true) null else metrics?.percentiles)!!))
                     .register(registry)
             )
         }

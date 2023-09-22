@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 
+
 @Service
 class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQLWebClient) {
 
@@ -21,8 +22,12 @@ class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQLWe
 
     fun hentPersonIdents(brukerId: String): List<IdentDto> = runBlocking {
         log.info("Skal hente en personsidenter fra PDL")
-        hentIdenter(brukerId)?.hentIdenter?.identer?.map { IdentDto(it.ident, it.gruppe.toString(), it.historisk) }
-            ?: listOf(IdentDto(brukerId, "AKTORID", false))
+        try {
+            hentIdenter(brukerId)?.hentIdenter?.identer?.map { IdentDto(it.ident, it.gruppe.toString(), it.historisk) }
+                ?: listOf(IdentDto(brukerId, "AKTORID", false))
+        } catch (e: Exception) {
+            throw ClientErrorException("Graphql query mot PDL feilet", e, ErrorCode.PDL_ERROR)
+        }
     }
 
     @Cacheable("hentIdenter")
