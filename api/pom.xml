@@ -19,6 +19,12 @@
             <artifactId>spring-web</artifactId>
             <version>${spring-core.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+
         <!--Jakarta-->
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -38,21 +44,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-            <version>${okhttp3.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>logging-interceptor</artifactId>
-            <version>${okhttp3.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${gson.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>${junit-jupiter.version}</version>
@@ -63,30 +54,9 @@
             <version>${swagger-annotations.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>${findbugs.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.gsonfire</groupId>
-            <artifactId>gson-fire</artifactId>
-            <version>${gson-fire.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openapitools</groupId>
-            <artifactId>jackson-databind-nullable</artifactId>
-            <version>${jackson-databind-nullable.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>${springdoc-openapi.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -106,7 +76,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/tilbakemeldingsmottak-api.yml</inputSpec>
-                            <generatorName>spring</generatorName>
+                            <generatorName>kotlin-spring</generatorName>
                             <apiPackage>no.nav.tilbakemeldingsmottak.api</apiPackage>
                             <modelPackage>no.nav.tilbakemeldingsmottak.model</modelPackage>
                             <templateDirectory>${project.basedir}/src/main/resources/custom-templates
@@ -117,10 +87,26 @@
                                 <exceptionHandler>false</exceptionHandler>
                                 <interfaceOnly>true</interfaceOnly>
                                 <swaggerAnnotations>true</swaggerAnnotations>
-                                <additionalModelTypeAnnotations>@lombok.Builder</additionalModelTypeAnnotations>
                                 <useTags>true</useTags>
+                                <enumPropertyNaming>UPPERCASE</enumPropertyNaming>
                             </configOptions>
                         </configuration>
+                    </execution>
+                </executions>
+
+
+            </plugin>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

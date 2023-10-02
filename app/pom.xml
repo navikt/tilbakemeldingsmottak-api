@@ -19,35 +19,10 @@
             <version>${jakarta.activation.version}</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.inject</groupId>
-            <artifactId>jakarta.inject-api</artifactId>
-            <version>${jakarta.inject.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.graphql-java</groupId>
-            <artifactId>graphql-java-extended-scalars</artifactId>
-            <version>${graphql-java.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.graphql-java-generator</groupId>
-            <artifactId>graphql-java-client-runtime</artifactId>
-            <version>${graphql-maven-plugin.version}</version>
-        </dependency>
-        <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>${netty-all.version}</version>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.reactivex.rxjava3</groupId>
-            <artifactId>rxjava</artifactId>
-            <version>${rxjava.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
@@ -60,13 +35,19 @@
             <version>${httpclient5.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-            <version>${okhttp3.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.expediagroup</groupId>
+            <artifactId>graphql-kotlin-spring-client</artifactId>
+            <version>${graphql-kotlin.version}</version>
+            <scope>compile</scope>
         </dependency>
 
 
@@ -101,11 +82,6 @@
             <artifactId>spring-context-support</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-client</artifactId>
-            <version>${spring-security-oauth2.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
             <version>${spring-retry.version}</version>
@@ -135,28 +111,6 @@
             <version>${token-support.version}</version>
         </dependency>
 
-        <!-- CXF/WS-->
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-spring-boot-starter-jaxws</artifactId>
-            <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.eclipse.angus</groupId>
-                    <artifactId>angus-activation</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.eclipse.angus</groupId>
-                    <artifactId>angus-mail</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-ws-security</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-
         <!-- Database -->
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -164,9 +118,14 @@
             <version>${flyway.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <version>${jackson-module-kotlin.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>${jackson-bom.version}</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
@@ -236,12 +195,6 @@
         <!-- Modul dependencies -->
         <dependency>
             <groupId>no.nav.tilbakemeldingsmottak</groupId>
-            <artifactId>domain</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.nav.tilbakemeldingsmottak</groupId>
             <artifactId>pdfutility</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -269,6 +222,12 @@
         </dependency>
 
         <!-- Test -->
+        <dependency>
+            <groupId>com.ninja-squad</groupId>
+            <artifactId>springmockk</artifactId>
+            <version>4.0.2</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>token-validation-spring-test</artifactId>
@@ -312,6 +271,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>io.mockk</groupId>
+            <artifactId>mockk-jvm</artifactId>
+            <version>${mockk.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <version>${spring-boot.version}</version>
@@ -344,21 +309,10 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>${lombok.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -369,40 +323,84 @@
             </plugin>
 
             <plugin>
-                <groupId>com.graphql-java-generator</groupId>
-                <artifactId>graphql-maven-plugin</artifactId>
-                <version>${graphql-maven-plugin.version}</version>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
                 <executions>
                     <execution>
+                        <id>compile</id>
                         <goals>
-                            <goal>generateClientCode</goal>
+                            <goal>compile</goal>
                         </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                                <sourceDir>${project.basedir}/src/main/java</sourceDir>
+                                <sourceDir>${project.basedir}/target/generated-sources</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+                            </sourceDirs>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
-                    <packageName>no.nav.tilbakemeldingsmottak.graphql</packageName>
-                    <schemaFileFolder>${project.basedir}/src/main/resources/graphql/pdl</schemaFileFolder>
-                    <customScalars>
-                        <customScalar>
-                            <graphQLTypeName>Date</graphQLTypeName>
-                            <javaType>java.util.Date</javaType>
-                            <graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.Date
-                            </graphQLScalarTypeStaticField>
-                        </customScalar>
-                        <customScalar>
-                            <graphQLTypeName>DateTime</graphQLTypeName>
-                            <javaType>java.time.OffsetDateTime</javaType>
-                            <graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.DateTime
-                            </graphQLScalarTypeStaticField>
-                        </customScalar>
-                        <customScalar>
-                            <graphQLTypeName>Long</graphQLTypeName>
-                            <javaType>java.lang.Long</javaType>
-                            <graphQLScalarTypeStaticField>graphql.scalars.ExtendedScalars.GraphQLLong
-                            </graphQLScalarTypeStaticField>
-                        </customScalar>
-                    </customScalars>
+                    <args>
+                        <arg>-Xjsr305=strict</arg>
+                    </args>
+                    <compilerPlugins>
+                        <plugin>spring</plugin>
+                        <plugin>jpa</plugin>
+                    </compilerPlugins>
+                    <jvmTarget>${java.version}</jvmTarget>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-allopen</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-noarg</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-serialization</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+
+            <!-- Graphql-->
+            <plugin>
+                <groupId>com.expediagroup</groupId>
+                <artifactId>graphql-kotlin-maven-plugin</artifactId>
+                <version>${graphql-kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-pdl-client</id>
+                        <goals>
+                            <goal>generate-client</goal>
+                        </goals>
+                        <configuration>
+                            <queryFileDirectory>${project.basedir}/src/main/resources/graphql/pdl</queryFileDirectory>
+                            <schemaFile>${project.basedir}/src/main/resources/graphql/pdl/pdl-api-sdl.graphql
+                            </schemaFile>
+                            <packageName>no.nav.tilbakemeldingsmottak.pdl.generated</packageName>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

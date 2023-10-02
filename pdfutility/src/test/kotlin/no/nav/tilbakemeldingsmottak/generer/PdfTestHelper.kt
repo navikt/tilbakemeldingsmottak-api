@@ -7,7 +7,6 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.OutputStreamWriter
-import java.util.*
 
 
 class PDFTextLocator : PDFTextStripper() {
@@ -15,7 +14,6 @@ class PDFTextLocator : PDFTextStripper() {
     private var x: Float = -1f
     private var y: Float = -1f
 
-    @Throws(IOException::class)
     override fun writeString(string: String, textPositions: List<TextPosition>) {
         if (string.contains(keyString!!)) {
             val text = textPositions[0]
@@ -26,7 +24,6 @@ class PDFTextLocator : PDFTextStripper() {
         }
     }
 
-    @Throws(IOException::class)
     fun getCoordiantes(bytes: ByteArray, phrase: String?, page: Int): Map<String, Float> {
         try {
             ByteArrayInputStream(bytes).use { stream ->

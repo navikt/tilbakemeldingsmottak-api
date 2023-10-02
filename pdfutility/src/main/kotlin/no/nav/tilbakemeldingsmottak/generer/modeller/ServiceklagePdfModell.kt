@@ -4,7 +4,7 @@ import no.nav.tilbakemeldingsmottak.utils.PdfUtils
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-data class ServiceklagePdfModell @JvmOverloads constructor(
+data class ServiceklagePdfModell(
     val tittel: String,
     val subtittel: String?,
     val data: Map<String, String?>,
