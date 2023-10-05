@@ -103,12 +103,12 @@ class KlassifiserServiceklageService(
         val questionAnswerMap = createQuestionAnswerMap(serviceklage, hentOppgaveResponseTo)
         val pdf = pdfService.opprettKlassifiseringPdf(questionAnswerMap)
         mailHelper.sendEmail(
-            fromAddress,
-            toAddress,
-            "Kvittering på innsendt klassifiseringsskjema",
-            "Serviceklage med oppgave-id " + hentOppgaveResponseTo.id + " har blitt klassifisert. " +
+            fromAddress = fromAddress,
+            toAddress = email,
+            subject = "Kvittering på innsendt klassifiseringsskjema",
+            text = "Serviceklage med oppgave-id " + hentOppgaveResponseTo.id + " har blitt klassifisert. " +
                     "Innholdet i ditt utfylte skjema ligger vedlagt.",
-            pdf
+            fysiskDokument = pdf
         )
         log.info("Kvittering sendt på mail til saksbehandler")
     }
