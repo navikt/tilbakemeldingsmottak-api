@@ -3,6 +3,9 @@ package no.nav.tilbakemeldingsmottak.nais
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.security.token.support.core.api.Unprotected
+import no.nav.tilbakemeldingsmottak.api.HealthApi
+import no.nav.tilbakemeldingsmottak.model.ApplicationStatus
+import no.nav.tilbakemeldingsmottak.model.ApplicationStatusType
 import no.nav.tilbakemeldingsmottak.model.SelfCheckResult
 import no.nav.tilbakemeldingsmottak.model.SelftestResult
 import org.springframework.beans.factory.annotation.Value
@@ -20,7 +23,7 @@ class NaisContract(
     registry: MeterRegistry,
     @Value("\${APP_NAME:tilbakemeldingsmottak}") private val appName: String,
     @Value("\${APP_VERSION:0}") private val version: String
-) {
+) : HealthApi {
 
     private val APPLICATION_ALIVE = "Application is alive!"
     private val APPLICATION_READY = "Application is ready for traffic!"
@@ -49,6 +52,13 @@ class NaisContract(
             version = version,
             result = SelfCheckResult.OK,
             dependencyCheckResults = emptyList()
+        )
+    }
+
+    override fun getStatus(): ResponseEntity<ApplicationStatus> {
+        return ResponseEntity(
+            ApplicationStatus(status = ApplicationStatusType.OK, description = "OK"),
+            HttpStatus.OK
         )
     }
 }
