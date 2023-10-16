@@ -19,6 +19,8 @@ spec:
           namespace: personbruker
         - application: samisk-samtale-bestilling
           namespace: personbruker
+        - application: statuspoll
+          namespace: navdig
         - application: tilbakemeldingsmottak-frontend
           permissions:
             scopes:
