@@ -52,6 +52,8 @@ email_serviceklage_address: nav-serviceklager@trygdeetaten.no
 gcp_team_project_id: gcp-team-project-id
 big_query_dataset: dataset
 
+log_url: "https://logs.adeo.no"
+
 retry-config:
     send-mail:
         max-attempts: 5

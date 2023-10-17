@@ -19,6 +19,8 @@ spec:
           namespace: personbruker
         - application: samisk-samtale-bestilling
           namespace: personbruker
+        - application: statuspoll
+          namespace: navdig
         - application: tilbakemeldingsmottak-frontend
           permissions:
             scopes:
@@ -119,3 +121,5 @@ spec:
       value: {{ AAD_EMAIL }}
     - name: BIG_QUERY_DATASET
       value: {{ BIG_QUERY_DATASET }}
+    - name: LOG_URL
+      value: {{ LOG_URL }}

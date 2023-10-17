@@ -44,6 +44,8 @@ graphql:
 gcp_team_project_id: ${GCP_TEAM_PROJECT_ID}
 big_query_dataset: ${BIG_QUERY_DATASET}
 
+log_url: ${LOG_URL}
+
 retry-config:
     send-mail:
         max-attempts: 5
