@@ -121,3 +121,5 @@ spec:
       value: {{ AAD_EMAIL }}
     - name: BIG_QUERY_DATASET
       value: {{ BIG_QUERY_DATASET }}
+    - name: LOG_URL
+      value: {{ LOG_URL }}

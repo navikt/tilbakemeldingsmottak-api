@@ -22,7 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger
 class NaisContract(
     registry: MeterRegistry,
     @Value("\${APP_NAME:tilbakemeldingsmottak}") private val appName: String,
-    @Value("\${APP_VERSION:0}") private val version: String
+    @Value("\${APP_VERSION:0}") private val version: String,
+    @Value("\${log_url}") private val logUrl: String
 ) : HealthApi {
 
     private val APPLICATION_ALIVE = "Application is alive!"
@@ -57,7 +58,7 @@ class NaisContract(
 
     override fun getStatus(): ResponseEntity<ApplicationStatus> {
         return ResponseEntity(
-            ApplicationStatus(status = ApplicationStatusType.OK, description = "OK"),
+            ApplicationStatus(status = ApplicationStatusType.OK, description = "OK", logLink = logUrl),
             HttpStatus.OK
         )
     }
