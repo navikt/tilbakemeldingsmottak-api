@@ -1,12 +1,12 @@
 package no.nav.tilbakemeldingsmottak.bigquery.serviceklager
 
 enum class ServiceklageEventType {
-    // Ved oppdatering av serviceklage (feks ved feilregistrering eller ved manglende felt)
+    // Ved opprettelse av serviceklage
     OPPRETT_SERVICEKLAGE,
 
-    // Ved opprettelse av serviceklage
+    // Ved klassifisering av serviceklage
     KLASSIFISER_SERVICEKLAGE,
 
-    // Ved klassifisering av serviceklage
+    // Ved oppdatering av serviceklage (feks ved feilregistrering eller ved manglende felt)
     OPPDATER_SERVICEKLAGE,
 }

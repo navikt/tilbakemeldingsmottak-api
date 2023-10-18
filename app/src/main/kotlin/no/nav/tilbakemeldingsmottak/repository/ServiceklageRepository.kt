@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.repository
 
-import no.nav.tilbakemeldingsmottak.domain.Serviceklage
+import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import org.springframework.data.repository.CrudRepository
 import java.time.LocalDateTime
 

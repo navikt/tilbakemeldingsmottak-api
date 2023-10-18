@@ -5,7 +5,7 @@ import com.google.cloud.bigquery.BigQuery
 import com.google.cloud.bigquery.BigQueryError
 import com.google.cloud.bigquery.InsertAllRequest
 import com.google.cloud.bigquery.TableId
-import no.nav.tilbakemeldingsmottak.domain.Serviceklage
+import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.env.Environment

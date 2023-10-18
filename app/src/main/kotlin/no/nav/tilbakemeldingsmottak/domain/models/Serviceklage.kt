@@ -1,7 +1,8 @@
-package no.nav.tilbakemeldingsmottak.domain
+package no.nav.tilbakemeldingsmottak.domain.models
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
+import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants
 import java.time.LocalDate
 import java.time.LocalDateTime
 

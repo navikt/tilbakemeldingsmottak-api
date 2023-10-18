@@ -1,10 +1,10 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support
 
-import no.nav.tilbakemeldingsmottak.domain.Serviceklage
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.INNMELDER_MANGLER_FULLMAKT_ANSWER
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER
+import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAv.*
 import org.springframework.stereotype.Component

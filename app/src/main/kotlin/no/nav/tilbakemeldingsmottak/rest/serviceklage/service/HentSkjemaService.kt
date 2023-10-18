@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.tilbakemeldingsmottak.consumer.norg2.Norg2Consumer
-import no.nav.tilbakemeldingsmottak.domain.Serviceklage
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.ENHETSNUMMER_PAAKLAGET
@@ -14,6 +13,7 @@ import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KANAL
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.SVARMETODE
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.SVARMETODE_UTDYPNING
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG
+import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import no.nav.tilbakemeldingsmottak.model.Answer
 import no.nav.tilbakemeldingsmottak.model.DefaultAnswers
