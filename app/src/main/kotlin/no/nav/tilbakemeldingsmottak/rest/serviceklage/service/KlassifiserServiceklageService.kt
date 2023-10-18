@@ -12,11 +12,11 @@ import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo
 import no.nav.tilbakemeldingsmottak.consumer.saf.SafJournalpostQueryService
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost
-import no.nav.tilbakemeldingsmottak.domain.Serviceklage
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.ANNET
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.JA
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KOMMUNAL_KLAGE
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.NONE
+import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorNotFoundException
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
@@ -40,6 +40,7 @@ import java.time.LocalDateTime
 
 @Service
 class KlassifiserServiceklageService(
+    private val hendelseService: HendelseService,
     private val serviceklageRepository: ServiceklageRepository,
     private val oppgaveConsumer: OppgaveConsumer,
     private val endreOppgaveRequestToMapper: EndreOppgaveRequestToMapper,
@@ -68,6 +69,7 @@ class KlassifiserServiceklageService(
         val serviceklage = getOrCreateServiceklage(hentOppgaveResponseTo.journalpostId)
         updateServiceklage(serviceklage, request)
         serviceklageRepository.save(serviceklage)
+        hendelseService.classifyServiceklage(serviceklage)
         serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventType.KLASSIFISER_SERVICEKLAGE)
 
         log.info(

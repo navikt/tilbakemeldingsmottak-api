@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class OpprettServiceklageService(
+    private val hendelseService: HendelseService,
     private val serviceklageRepository: ServiceklageRepository,
     private val opprettServiceklageRequestMapper: OpprettServiceklageRequestMapper,
     private val opprettJournalpostRequestToMapper: OpprettJournalpostRequestToMapper,
@@ -58,6 +59,7 @@ class OpprettServiceklageService(
         val serviceklage = opprettServiceklageRequestMapper.map(request, innlogget)
         serviceklage.journalpostId = opprettJournalpostResponseTo.journalpostId
         serviceklageRepository.save(serviceklage)
+        hendelseService.createServiceklage(serviceklage)
         serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventType.OPPRETT_SERVICEKLAGE)
         log.info("Serviceklage med serviceklageId={} opprettet", serviceklage.serviceklageId)
 
