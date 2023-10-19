@@ -7,12 +7,12 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-open class BigQueryServiceConfig {
+class BigQueryServiceConfig {
     @Value("\${gcp_team_project_id}")
     private val projectId: String? = null
 
     @Bean
-    open fun bigQueryService(): BigQuery {
+    fun bigQueryService(): BigQuery {
         return BigQueryOptions.newBuilder().setProjectId(projectId).build().service
     }
 }

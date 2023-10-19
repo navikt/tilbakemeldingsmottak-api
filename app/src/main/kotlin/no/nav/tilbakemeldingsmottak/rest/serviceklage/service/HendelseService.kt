@@ -4,8 +4,10 @@ import no.nav.tilbakemeldingsmottak.domain.enums.HendelseType
 import no.nav.tilbakemeldingsmottak.domain.models.Hendelse
 import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import no.nav.tilbakemeldingsmottak.repository.HendelseRepository
+import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 
+@Service
 class HendelseService(private val hendelseRepository: HendelseRepository) {
     fun saveHendelse(hendelseType: HendelseType, journalpostId: String?, oppgaveId: String?) {
         val hendelse = Hendelse(

@@ -10,7 +10,9 @@ import no.nav.security.token.support.spring.test.MockLoginController
 import no.nav.tilbakemeldingsmottak.TestUtils.createNorg2Response
 import no.nav.tilbakemeldingsmottak.TestUtils.createSafGraphqlResponse
 import no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER
+import no.nav.tilbakemeldingsmottak.repository.HendelseRepository
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
+import no.nav.tilbakemeldingsmottak.util.Api
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
@@ -54,6 +56,9 @@ class ApplicationTest {
     protected var serviceklageRepository: ServiceklageRepository? = null
 
     @Autowired
+    protected var hendelseRepository: HendelseRepository? = null
+
+    @Autowired
     protected var restTemplate: TestRestTemplate? = null
 
     @Autowired
@@ -68,8 +73,12 @@ class ApplicationTest {
     private val INNLOGGET_BRUKER = "14117119611"
     private val AUD = "aud-localhost"
 
+    var api: Api? = null
+
     @BeforeEach
     fun setup() {
+        api = Api(restTemplate!!)
+        hendelseRepository!!.deleteAll()
         serviceklageRepository!!.deleteAll()
         TestTransaction.flagForCommit()
         TestTransaction.end()
