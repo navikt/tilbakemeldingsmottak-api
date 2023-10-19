@@ -58,14 +58,24 @@ class OpprettServiceklageService(
 
         val serviceklage = opprettServiceklageRequestMapper.map(request, innlogget)
         serviceklage.journalpostId = opprettJournalpostResponseTo.journalpostId
-        serviceklageRepository.save(serviceklage)
-        hendelseService.createServiceklage(serviceklage)
-        serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventType.OPPRETT_SERVICEKLAGE)
-        log.info("Serviceklage med serviceklageId={} opprettet", serviceklage.serviceklageId)
+
+        val savedServiceklage = serviceklageRepository.save(serviceklage)
+        hendelseService.createServiceklage(savedServiceklage)
+        serviceklagerBigQuery.insertServiceklage(savedServiceklage, ServiceklageEventType.OPPRETT_SERVICEKLAGE)
+        log.info("Serviceklage med serviceklageId={} opprettet", savedServiceklage.serviceklageId)
 
         val opprettOppgaveResponseTo =
             forsoekOpprettOppgave(serviceklage.klagenGjelderId, request.paaVegneAv, opprettJournalpostResponseTo)
         log.info("Oppgave med oppgaveId={} opprettet", opprettOppgaveResponseTo.id)
+
+        savedServiceklage.oppgaveId = opprettOppgaveResponseTo.id
+        serviceklageRepository.save(savedServiceklage)
+        serviceklagerBigQuery.insertServiceklage(savedServiceklage, ServiceklageEventType.OPPDATER_SERVICEKLAGE)
+        log.info(
+            "Serviceklage med serviceklageId={} er oppdatert med oppgaveId={}",
+            savedServiceklage.serviceklageId,
+            savedServiceklage.oppgaveId
+        )
 
         return OpprettServiceklageResponse(
             message = "Serviceklage opprettet",

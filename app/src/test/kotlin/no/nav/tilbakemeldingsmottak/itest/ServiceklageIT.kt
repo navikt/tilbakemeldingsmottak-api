@@ -36,7 +36,6 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.transaction.TestTransaction
-import java.time.LocalDate
 
 internal class ServiceklageIT : ApplicationTest() {
     private val objectMapper = ObjectMapper().registerKotlinModule()
@@ -61,17 +60,17 @@ internal class ServiceklageIT : ApplicationTest() {
     private val TILTAK = "Gi bedre service"
     private val INNSENDER_ANSWER = "Bruker selv som privatperson"
     private val BEHANDLES_SOM_SERVICEKLAGE_ANSWER = "Ja"
-    private val FREMMET_DATO_ANSWER = LocalDate.now().toString()
 
     private fun assertBasicServiceklageFields(serviceklage: Serviceklage) {
         assertNotNull(serviceklage.serviceklageId)
         assertEquals(JOURNALPOST_ID, serviceklage.journalpostId)
         assertNotNull(serviceklage.opprettetDato)
         assertNotNull(serviceklage.fremmetDato)
+        assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
+
         if (serviceklage.klagetekst != null) {
             assertEquals(KLAGETEKST, serviceklage.klagetekst)
         }
-        assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
     }
 
     @Test
@@ -96,6 +95,7 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(PaaVegneAv.PRIVATPERSON.value, serviceklage.innsender)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
 
@@ -121,6 +121,7 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(PaaVegneAv.PRIVATPERSON.value, serviceklage.innsender)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
 
@@ -144,6 +145,7 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(PaaVegneAv.ANNEN_PERSON.value, serviceklage.innsender)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
     @Test
@@ -161,7 +163,7 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(PaaVegneAv.BEDRIFT.value, serviceklage.innsender)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
-
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
     @Test
@@ -185,6 +187,7 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(Klagetyper.NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
         assertNull(serviceklage.svarmetode)
         assertNull(serviceklage.svarmetodeUtdypning)
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
     @Test
@@ -211,6 +214,7 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
         assertEquals(INNMELDER_MANGLER_FULLMAKT_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
     @Test
@@ -240,7 +244,7 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
-
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
     @Test

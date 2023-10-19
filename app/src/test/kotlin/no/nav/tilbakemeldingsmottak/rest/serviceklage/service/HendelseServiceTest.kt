@@ -23,29 +23,31 @@ class HendelseServiceTest {
     }
 
     @Test
-    fun `should create a serviceklage hendelse`() {
+    fun `Should create a serviceklage hendelse`() {
         // Given
         val journalpostId = "123"
-        val serviceklage = Serviceklage(journalpostId = journalpostId)
+        val oppgaveId = "456"
+        val serviceklage = Serviceklage(journalpostId = journalpostId, oppgaveId = oppgaveId)
 
         // When
         hendelseService.createServiceklage(serviceklage)
 
         // Then
-        verify { hendelseRepository.save(match { it.hendelsetype == "OPPRETT_SERVICEKLAGE" && it.journalpostId == journalpostId }) }
+        verify { hendelseRepository.save(match { it.hendelsetype == "OPPRETT_SERVICEKLAGE" && it.journalpostId == journalpostId && it.oppgaveId == oppgaveId }) }
     }
 
     @Test
-    fun `should classify a serviceklage hendelse`() {
+    fun `Should classify a serviceklage hendelse`() {
         // Given
-        val journalpostId = "456"
-        val serviceklage = Serviceklage(journalpostId = journalpostId)
+        val journalpostId = "234"
+        val oppgaveId = "567"
+        val serviceklage = Serviceklage(journalpostId = journalpostId, oppgaveId = oppgaveId)
 
         // When
         hendelseService.classifyServiceklage(serviceklage)
 
         // Then
-        verify { hendelseRepository.save(match { it.hendelsetype == "KLASSIFISER_SERVICEKLAGE" && it.journalpostId == journalpostId }) }
+        verify { hendelseRepository.save(match { it.hendelsetype == "KLASSIFISER_SERVICEKLAGE" && it.journalpostId == journalpostId && it.oppgaveId == oppgaveId }) }
 
     }
 

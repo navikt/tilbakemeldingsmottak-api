@@ -70,6 +70,7 @@ class ServiceklagerBigQuery(private val env: Environment, private val bigQueryCl
             map["relatert"] = serviceklage.relatert
             map["klagetype_utdypning"] = serviceklage.klagetypeUtdypning
             map["innlogget"] = serviceklage.innlogget
+            map["oppgave_id"] = serviceklage.oppgaveId
 
             val request = InsertAllRequest.newBuilder(TableId.of(dataset, TABLE_NAME)).addRow(map).build()
             logger.info("Inserting rows into Big Query")

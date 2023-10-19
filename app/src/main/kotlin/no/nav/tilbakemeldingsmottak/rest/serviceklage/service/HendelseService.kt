@@ -27,7 +27,7 @@ class HendelseService(private val hendelseRepository: HendelseRepository) {
         saveHendelse(
             hendelseType = HendelseType.OPPRETT_SERVICEKLAGE,
             journalpostId = serviceklage.journalpostId,
-            oppgaveId = null // FIXME: Add oppgaveId
+            oppgaveId = serviceklage.oppgaveId
         )
     }
 
@@ -35,7 +35,7 @@ class HendelseService(private val hendelseRepository: HendelseRepository) {
         saveHendelse(
             hendelseType = HendelseType.KLASSIFISER_SERVICEKLAGE,
             journalpostId = serviceklage.journalpostId,
-            oppgaveId = null // FIXME: Add oppgaveId
+            oppgaveId = serviceklage.oppgaveId
         )
     }
 }

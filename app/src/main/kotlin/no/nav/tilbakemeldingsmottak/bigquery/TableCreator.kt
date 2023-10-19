@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
+
+// FIXME: Flyway supports BigQuery so should set up that instead
+// https://documentation.red-gate.com/fd/google-bigquery-186679473.html
 @Component
 @Profile("nais")
 class TableCreator(private val bigQueryClient: BigQuery) {
@@ -23,6 +26,7 @@ class TableCreator(private val bigQueryClient: BigQuery) {
     private fun createTable(tableName: String, schema: Schema) {
         val table = bigQueryClient.getTable(getTableId(tableName))
         if (table != null && table.exists()) {
+            addColumn(tableName, "oppgave_id", StandardSQLTypeName.STRING)
             logger.info("Table {} already exists", table.tableId.table)
             return
         }
@@ -36,6 +40,30 @@ class TableCreator(private val bigQueryClient: BigQuery) {
             logger.info("Table {} created", tableInfo.tableId.table)
         } catch (e: Exception) {
             logger.error("Error creating table", e)
+        }
+    }
+
+    fun addColumn(tableName: String, newColumnName: String?, type: StandardSQLTypeName) {
+        try {
+            val table = bigQueryClient.getTable(getTableId(tableName))
+            val schema: Schema? = table.getDefinition<TableDefinition>().schema
+            val fields = schema?.fields
+
+            if (fields?.any { it.name == newColumnName } == true) {
+                logger.info("Column {} already exists", newColumnName)
+                return
+            }
+
+            val newField = Field.of(newColumnName, type)
+            fields?.add(newField)
+            val newSchema = Schema.of(fields)
+
+            // Update the table with the new schema
+            val updatedTable = table.toBuilder().setDefinition(StandardTableDefinition.of(newSchema)).build()
+            updatedTable.update()
+            logger.info("{} column successfully added to table", newColumnName)
+        } catch (e: BigQueryException) {
+            logger.warn("{} column was not added", newColumnName, e)
         }
     }
 
