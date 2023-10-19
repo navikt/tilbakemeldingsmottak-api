@@ -9,4 +9,3 @@ CREATE TABLE hendelse
 
 CREATE INDEX hendelse_journalpostid_idx ON hendelse (journalpostid);
 CREATE INDEX hendelse_oppgaveid_idx ON hendelse (oppgaveid);
-CREATE INDEX hendelse_hendelsetype_idx ON hendelse (hendelsetype);

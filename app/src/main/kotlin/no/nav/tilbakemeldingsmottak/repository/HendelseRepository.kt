@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository
 
 interface HendelseRepository : CrudRepository<Hendelse, Long> {
     fun findAllByJournalpostId(journalpostId: String): List<Hendelse>
-    fun findByOppgaveId(oppgaveId: String): Hendelse?
+    fun findAllByOppgaveId(oppgaveId: String): List<Hendelse>
 }
