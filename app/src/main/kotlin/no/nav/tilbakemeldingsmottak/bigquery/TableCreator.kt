@@ -47,16 +47,20 @@ class TableCreator(private val bigQueryClient: BigQuery) {
         try {
             val table = bigQueryClient.getTable(getTableId(tableName))
             val schema: Schema? = table.getDefinition<TableDefinition>().schema
-            val fields = schema?.fields
+            val fields = schema?.fields ?: return
 
-            if (fields?.any { it.name == newColumnName } == true) {
+            if (fields.any { it.name == newColumnName }) {
                 logger.info("Column {} already exists", newColumnName)
                 return
             }
 
             val newField = Field.of(newColumnName, type)
-            fields?.add(newField)
-            val newSchema = Schema.of(fields)
+
+            val fieldList = mutableListOf<Field>()
+            fields.forEach(fieldList::add)
+            fieldList.add(newField)
+
+            val newSchema = Schema.of(fieldList)
 
             // Update the table with the new schema
             val updatedTable = table.toBuilder().setDefinition(StandardTableDefinition.of(newSchema)).build()
