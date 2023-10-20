@@ -191,7 +191,7 @@ internal class ServiceklageIT : ApplicationTest() {
     }
 
     @Test
-    fun `Should return correct data when the person on behalf of someone else is missing power of attorney`() {
+    fun `Should return correct data when the person on behalf of someone else is missing power of attorney (fullmakt)`() {
         // Given
         val request: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPersonPaaVegneAv()
             .build(
@@ -218,7 +218,7 @@ internal class ServiceklageIT : ApplicationTest() {
     }
 
     @Test
-    fun `Should return correct data when there is more than one complaint type`() {
+    fun `Should return correct data when there is more than one complaint type (klagetype)`() {
         // Given
         val request: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson()
             .build(klagetyper = listOf(Klagetyper.BREV, Klagetyper.TELEFON))
@@ -349,7 +349,7 @@ internal class ServiceklageIT : ApplicationTest() {
     }
 
     @Test
-    fun `Should delete documents if the complaint is municipal`() {
+    fun `Should delete documents if the complaint is municipal (kommune)`() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val requestEntityOpprett =
