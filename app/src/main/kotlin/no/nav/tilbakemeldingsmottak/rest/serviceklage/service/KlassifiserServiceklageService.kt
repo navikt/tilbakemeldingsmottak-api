@@ -135,6 +135,14 @@ class KlassifiserServiceklageService(
             skjemaResponse.questions?.let { addEntriesToQuestionAnswerMap(answersMap, it, questionAnswerMap) }
         }
 
+        serviceklage.journalpostId?.let {
+            questionAnswerMap["journalpostId"] = it
+        }
+
+        serviceklage.oppgaveId?.let {
+            questionAnswerMap["oppgaveId"] = it
+        }
+
         return questionAnswerMap
     }
 
