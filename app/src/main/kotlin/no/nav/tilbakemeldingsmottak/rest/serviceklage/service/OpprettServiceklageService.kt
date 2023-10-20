@@ -60,29 +60,27 @@ class OpprettServiceklageService(
         val serviceklage = opprettServiceklageRequestMapper.map(request, innlogget)
         serviceklage.journalpostId = opprettJournalpostResponseTo.journalpostId
 
-        val savedServiceklage = serviceklageRepository.save(serviceklage)
-        hendelseService.saveHendelse(savedServiceklage, HendelseType.OPPRETT_SERVICEKLAGE)
-        serviceklagerBigQuery.insertServiceklage(savedServiceklage, ServiceklageEventType.OPPRETT_SERVICEKLAGE)
-        log.info("Serviceklage med serviceklageId={} opprettet", savedServiceklage.serviceklageId)
+        val opprettOppgaveResponseTo: OpprettOppgaveResponseTo?
+        try {
+            opprettOppgaveResponseTo =
+                forsoekOpprettOppgave(serviceklage.klagenGjelderId, request.paaVegneAv, opprettJournalpostResponseTo)
+            log.info("Oppgave med oppgaveId={} opprettet", opprettOppgaveResponseTo.id)
 
-        val opprettOppgaveResponseTo =
-            forsoekOpprettOppgave(serviceklage.klagenGjelderId, request.paaVegneAv, opprettJournalpostResponseTo)
-        log.info("Oppgave med oppgaveId={} opprettet", opprettOppgaveResponseTo.id)
-
-        savedServiceklage.oppgaveId = opprettOppgaveResponseTo.id
-        serviceklageRepository.save(savedServiceklage)
-        serviceklagerBigQuery.insertServiceklage(savedServiceklage, ServiceklageEventType.OPPDATER_SERVICEKLAGE)
-        log.info(
-            "Serviceklage med serviceklageId={} er oppdatert med oppgaveId={}",
-            savedServiceklage.serviceklageId,
-            savedServiceklage.oppgaveId
-        )
+            serviceklage.oppgaveId = opprettOppgaveResponseTo.id
+        } catch (ex: Exception) {
+            throw ex
+        } finally {
+            serviceklageRepository.save(serviceklage)
+            serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventType.OPPRETT_SERVICEKLAGE)
+            hendelseService.saveHendelse(serviceklage, HendelseType.OPPRETT_SERVICEKLAGE)
+            log.info("Serviceklage med serviceklageId={} opprettet", serviceklage.serviceklageId)
+        }
 
         return OpprettServiceklageResponse(
             message = "Serviceklage opprettet",
             serviceklageId = serviceklage.serviceklageId.toString(),
             journalpostId = serviceklage.journalpostId,
-            oppgaveId = opprettOppgaveResponseTo.id
+            oppgaveId = opprettOppgaveResponseTo?.id
         )
     }
 
