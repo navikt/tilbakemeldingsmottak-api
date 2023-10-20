@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
+import no.nav.tilbakemeldingsmottak.domain.enums.HendelseType
 import no.nav.tilbakemeldingsmottak.domain.models.Hendelse
 import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import no.nav.tilbakemeldingsmottak.repository.HendelseRepository
@@ -30,7 +31,7 @@ class HendelseServiceTest {
         val serviceklage = Serviceklage(journalpostId = journalpostId, oppgaveId = oppgaveId)
 
         // When
-        hendelseService.createServiceklage(serviceklage)
+        hendelseService.saveHendelse(serviceklage, HendelseType.OPPRETT_SERVICEKLAGE)
 
         // Then
         verify { hendelseRepository.save(match { it.hendelsetype == "OPPRETT_SERVICEKLAGE" && it.journalpostId == journalpostId && it.oppgaveId == oppgaveId }) }
@@ -44,7 +45,7 @@ class HendelseServiceTest {
         val serviceklage = Serviceklage(journalpostId = journalpostId, oppgaveId = oppgaveId)
 
         // When
-        hendelseService.classifyServiceklage(serviceklage)
+        hendelseService.saveHendelse(serviceklage, HendelseType.KLASSIFISER_SERVICEKLAGE)
 
         // Then
         verify { hendelseRepository.save(match { it.hendelsetype == "KLASSIFISER_SERVICEKLAGE" && it.journalpostId == journalpostId && it.oppgaveId == oppgaveId }) }

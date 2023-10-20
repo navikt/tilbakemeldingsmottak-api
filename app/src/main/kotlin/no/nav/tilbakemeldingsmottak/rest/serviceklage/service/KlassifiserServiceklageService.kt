@@ -16,6 +16,7 @@ import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.ANNET
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.JA
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KOMMUNAL_KLAGE
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.NONE
+import no.nav.tilbakemeldingsmottak.domain.enums.HendelseType
 import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorNotFoundException
@@ -69,7 +70,7 @@ class KlassifiserServiceklageService(
         val serviceklage = getOrCreateServiceklage(hentOppgaveResponseTo.journalpostId)
         updateServiceklage(serviceklage, request)
         serviceklageRepository.save(serviceklage)
-        hendelseService.classifyServiceklage(serviceklage)
+        hendelseService.saveHendelse(serviceklage, HendelseType.KLASSIFISER_SERVICEKLAGE)
         serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventType.KLASSIFISER_SERVICEKLAGE)
 
         log.info(

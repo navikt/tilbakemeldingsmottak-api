@@ -6,6 +6,7 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.JournalpostConsumer
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo
+import no.nav.tilbakemeldingsmottak.domain.enums.HendelseType
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException
@@ -60,7 +61,7 @@ class OpprettServiceklageService(
         serviceklage.journalpostId = opprettJournalpostResponseTo.journalpostId
 
         val savedServiceklage = serviceklageRepository.save(serviceklage)
-        hendelseService.createServiceklage(savedServiceklage)
+        hendelseService.saveHendelse(savedServiceklage, HendelseType.OPPRETT_SERVICEKLAGE)
         serviceklagerBigQuery.insertServiceklage(savedServiceklage, ServiceklageEventType.OPPRETT_SERVICEKLAGE)
         log.info("Serviceklage med serviceklageId={} opprettet", savedServiceklage.serviceklageId)
 

@@ -23,17 +23,9 @@ class HendelseService(private val hendelseRepository: HendelseRepository) {
         hendelseRepository.save(hendelse)
     }
 
-    fun createServiceklage(serviceklage: Serviceklage) {
+    fun saveHendelse(serviceklage: Serviceklage, hendelseType: HendelseType) {
         saveHendelse(
-            hendelseType = HendelseType.OPPRETT_SERVICEKLAGE,
-            journalpostId = serviceklage.journalpostId,
-            oppgaveId = serviceklage.oppgaveId
-        )
-    }
-
-    fun classifyServiceklage(serviceklage: Serviceklage) {
-        saveHendelse(
-            hendelseType = HendelseType.KLASSIFISER_SERVICEKLAGE,
+            hendelseType = hendelseType,
             journalpostId = serviceklage.journalpostId,
             oppgaveId = serviceklage.oppgaveId
         )
