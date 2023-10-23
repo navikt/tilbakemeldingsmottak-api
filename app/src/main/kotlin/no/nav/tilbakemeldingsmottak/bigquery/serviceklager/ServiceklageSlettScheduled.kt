@@ -42,7 +42,7 @@ class ServiceklageSlettScheduled(
         )
     }
 
-    @Scheduled(cron = "\${cron.deleteBigQueryServiceKlagerScheduled}")
+    @Scheduled(cron = "\${cron.deleteServiceKlagerScheduled}")
     fun deleteServiceKlager() {
         try {
             val cutoffDate = LocalDateTime.now().minusDays(deleteServiceKlagerOlderThan?.toLong() ?: 90)

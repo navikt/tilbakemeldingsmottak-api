@@ -61,6 +61,7 @@ aad:
 
 cron:
     deleteBigQueryServiceKlagerScheduled: "0 0 0 * * *" # midnight every day
+    deleteServiceKlagerScheduled: "0 0 0 * * *" # midnight every day
     deleteBigQueryServiceKlagerOlderThan: 7 # days
     deleteServiceKlagerOlderThan: 90 # days (3 months)
 
