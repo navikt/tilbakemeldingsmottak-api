@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.rest.common.pdf
 
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER
+import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import no.nav.tilbakemeldingsmottak.generer.PdfGeneratorService
 import no.nav.tilbakemeldingsmottak.generer.modeller.ServiceklagePdfModell
@@ -104,9 +105,16 @@ class PdfService {
         return klageMap
     }
 
-    fun opprettKlassifiseringPdf(questionAnswerMap: Map<String, String?>): ByteArray {
+    fun opprettKlassifiseringPdf(questionAnswerMap: Map<String, String?>, serviceklage: Serviceklage): ByteArray {
         return try {
-            val serviceklagePdfModell = ServiceklagePdfModell("Serviceklage klassifisering", null, questionAnswerMap)
+            var subtitle = "Journalpost: ${serviceklage.journalpostId}"
+
+            if (serviceklage.oppgaveId != null) {
+                subtitle += " - Oppgave: ${serviceklage.oppgaveId}"
+            }
+
+            val serviceklagePdfModell =
+                ServiceklagePdfModell("Serviceklage klassifisering", subtitle, questionAnswerMap)
             PdfGeneratorService().genererServiceklagePdf(serviceklagePdfModell)
         } catch (e: Exception) {
             throw ServerErrorException("Opprett serviceklage klassifiserings PDF", e)

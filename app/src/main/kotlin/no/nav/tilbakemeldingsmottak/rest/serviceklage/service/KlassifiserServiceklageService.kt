@@ -104,7 +104,7 @@ class KlassifiserServiceklageService(
         log.info("Kvittering på innsendt klassifiseringsskjema sendes til epost: {}", email)
 
         val questionAnswerMap = createQuestionAnswerMap(serviceklage, hentOppgaveResponseTo)
-        val pdf = pdfService.opprettKlassifiseringPdf(questionAnswerMap)
+        val pdf = pdfService.opprettKlassifiseringPdf(questionAnswerMap, serviceklage)
         mailHelper.sendEmail(
             fromAddress = fromAddress,
             toAddress = email,
@@ -133,14 +133,6 @@ class KlassifiserServiceklageService(
 
         if (answersMap != null) {
             skjemaResponse.questions?.let { addEntriesToQuestionAnswerMap(answersMap, it, questionAnswerMap) }
-        }
-
-        serviceklage.journalpostId?.let {
-            questionAnswerMap["journalpostId"] = it
-        }
-
-        serviceklage.oppgaveId?.let {
-            questionAnswerMap["oppgaveId"] = it
         }
 
         return questionAnswerMap
