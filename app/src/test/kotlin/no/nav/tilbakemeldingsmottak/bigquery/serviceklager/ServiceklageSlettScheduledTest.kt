@@ -30,7 +30,7 @@ internal class ServiceklageSlettScheduledTest : ApplicationTest() {
 
         serviceklageRepository?.save(serviceklage1DayAgo)
         serviceklageRepository?.save(serviceklageNotAvsluttet)
-        val saved = serviceklageRepository?.save(seviceklage100daysAgo)
+        serviceklageRepository?.save(seviceklage100daysAgo)
 
         assertEquals(3, serviceklageRepository?.count())
 
@@ -43,7 +43,7 @@ internal class ServiceklageSlettScheduledTest : ApplicationTest() {
         val all = serviceklageRepository?.findAll()
         assertNotNull(all?.find { it.serviceklageId == serviceklage1DayAgo.serviceklageId })
         assertNotNull(all?.find { it.serviceklageId == serviceklageNotAvsluttet.serviceklageId })
-        assertNull(all?.find { it.serviceklageId == seviceklage100daysAgo.serviceklageId })
+        assertNull(all?.find { it.serviceklageId == seviceklage100daysAgo.serviceklageId }, "Should be deleted")
 
     }
 
