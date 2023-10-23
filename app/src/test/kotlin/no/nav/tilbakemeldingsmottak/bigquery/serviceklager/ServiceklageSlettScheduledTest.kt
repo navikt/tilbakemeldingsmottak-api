@@ -4,7 +4,7 @@ import com.google.cloud.bigquery.BigQuery
 import com.google.cloud.bigquery.QueryJobConfiguration
 import no.nav.tilbakemeldingsmottak.ApplicationTest
 import no.nav.tilbakemeldingsmottak.util.builders.ServiceklageBuilder
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,13 +22,15 @@ internal class ServiceklageSlettScheduledTest : ApplicationTest() {
     @Test
     fun `Should delete serviceklager from database that has avsluttet_dato before cutoffDate`() {
         // Given
-        val serviceklage1DayAgo = ServiceklageBuilder().avsluttetDato(LocalDateTime.now().minusDays(1)).build()
-        val serviceklageNotAvsluttet = ServiceklageBuilder().avsluttetDato(null).build()
-        val seviceklage100daysAgo = ServiceklageBuilder().avsluttetDato(LocalDateTime.now().minusDays(100)).build()
-        
+        val serviceklage1DayAgo =
+            ServiceklageBuilder().avsluttetDato(LocalDateTime.now().minusDays(1)).serviceklageId(1).build()
+        val serviceklageNotAvsluttet = ServiceklageBuilder().avsluttetDato(null).serviceklageId(2).build()
+        val seviceklage100daysAgo =
+            ServiceklageBuilder().avsluttetDato(LocalDateTime.now().minusDays(100)).serviceklageId(3).build()
+
         serviceklageRepository?.save(serviceklage1DayAgo)
         serviceklageRepository?.save(serviceklageNotAvsluttet)
-        serviceklageRepository?.save(seviceklage100daysAgo)
+        val saved = serviceklageRepository?.save(seviceklage100daysAgo)
 
         assertEquals(3, serviceklageRepository?.count())
 
@@ -37,6 +39,12 @@ internal class ServiceklageSlettScheduledTest : ApplicationTest() {
 
         // Then
         assertEquals(2, serviceklageRepository?.count())
+
+        val all = serviceklageRepository?.findAll()
+        assertNotNull(all?.find { it.serviceklageId == serviceklage1DayAgo.serviceklageId })
+        assertNotNull(all?.find { it.serviceklageId == serviceklageNotAvsluttet.serviceklageId })
+        assertNull(all?.find { it.serviceklageId == seviceklage100daysAgo.serviceklageId })
+
     }
 
 
