@@ -1,7 +1,8 @@
-package no.nav.tilbakemeldingsmottak.domain
+package no.nav.tilbakemeldingsmottak.domain.models
 
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
+import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -129,5 +130,9 @@ data class Serviceklage(
 
     @Column(name = ServiceklageConstants.KLASSIFISERING_JSON)
     @field:Size(max = 40000)
-    var klassifiseringJson: String? = null
+    var klassifiseringJson: String? = null,
+
+    @Column(name = ServiceklageConstants.OPPGAVEID)
+    @field:Size(max = 15)
+    var oppgaveId: String? = null
 )

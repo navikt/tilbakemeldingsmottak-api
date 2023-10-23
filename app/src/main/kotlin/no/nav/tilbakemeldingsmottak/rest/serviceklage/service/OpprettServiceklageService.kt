@@ -6,6 +6,7 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.JournalpostConsumer
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResponseTo
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveResponseTo
+import no.nav.tilbakemeldingsmottak.domain.enums.HendelseType
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class OpprettServiceklageService(
+    private val hendelseService: HendelseService,
     private val serviceklageRepository: ServiceklageRepository,
     private val opprettServiceklageRequestMapper: OpprettServiceklageRequestMapper,
     private val opprettJournalpostRequestToMapper: OpprettJournalpostRequestToMapper,
@@ -57,19 +59,28 @@ class OpprettServiceklageService(
 
         val serviceklage = opprettServiceklageRequestMapper.map(request, innlogget)
         serviceklage.journalpostId = opprettJournalpostResponseTo.journalpostId
-        serviceklageRepository.save(serviceklage)
-        serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventType.OPPRETT_SERVICEKLAGE)
-        log.info("Serviceklage med serviceklageId={} opprettet", serviceklage.serviceklageId)
 
-        val opprettOppgaveResponseTo =
-            forsoekOpprettOppgave(serviceklage.klagenGjelderId, request.paaVegneAv, opprettJournalpostResponseTo)
-        log.info("Oppgave med oppgaveId={} opprettet", opprettOppgaveResponseTo.id)
+        val opprettOppgaveResponseTo: OpprettOppgaveResponseTo?
+        try {
+            opprettOppgaveResponseTo =
+                forsoekOpprettOppgave(serviceklage.klagenGjelderId, request.paaVegneAv, opprettJournalpostResponseTo)
+            log.info("Oppgave med oppgaveId={} opprettet", opprettOppgaveResponseTo.id)
+
+            serviceklage.oppgaveId = opprettOppgaveResponseTo.id
+        } catch (ex: Exception) {
+            throw ex
+        } finally {
+            serviceklageRepository.save(serviceklage)
+            serviceklagerBigQuery.insertServiceklage(serviceklage, ServiceklageEventType.OPPRETT_SERVICEKLAGE)
+            hendelseService.saveHendelse(serviceklage, HendelseType.OPPRETT_SERVICEKLAGE)
+            log.info("Serviceklage med serviceklageId={} opprettet", serviceklage.serviceklageId)
+        }
 
         return OpprettServiceklageResponse(
             message = "Serviceklage opprettet",
             serviceklageId = serviceklage.serviceklageId.toString(),
             journalpostId = serviceklage.journalpostId,
-            oppgaveId = opprettOppgaveResponseTo.id
+            oppgaveId = opprettOppgaveResponseTo?.id
         )
     }
 

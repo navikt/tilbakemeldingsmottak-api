@@ -14,8 +14,12 @@ import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.INNSENDER
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KOMMUNAL_KLAGE
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER
+import no.nav.tilbakemeldingsmottak.domain.enums.HendelseType
+import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
-import no.nav.tilbakemeldingsmottak.model.*
+import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest
+import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageResponse
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.Klagetyper
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAv
 import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse
@@ -32,7 +36,6 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.transaction.TestTransaction
-import java.time.LocalDate
 
 internal class ServiceklageIT : ApplicationTest() {
     private val objectMapper = ObjectMapper().registerKotlinModule()
@@ -43,7 +46,6 @@ internal class ServiceklageIT : ApplicationTest() {
     private val URL_SENDINN_SERVICEKLAGE = "/rest/serviceklage"
     private val URL_BEHANDLE_SERVICEKLAGE = "/rest/taskserviceklage"
     private val KLASSIFISER = "klassifiser"
-    private val HENT_SKJEMA = "hentskjema"
     private val HENT_DOKUMENT = "hentdokument"
     private val JOURNALPOST_ID = "12345"
     private val OPPGAVE_ID = "1234567"
@@ -58,203 +60,179 @@ internal class ServiceklageIT : ApplicationTest() {
     private val TILTAK = "Gi bedre service"
     private val INNSENDER_ANSWER = "Bruker selv som privatperson"
     private val BEHANDLES_SOM_SERVICEKLAGE_ANSWER = "Ja"
-    private val FREMMET_DATO_ANSWER = LocalDate.now().toString()
+
+    private fun assertBasicServiceklageFields(serviceklage: Serviceklage) {
+        assertNotNull(serviceklage.serviceklageId)
+        assertEquals(JOURNALPOST_ID, serviceklage.journalpostId)
+        assertNotNull(serviceklage.opprettetDato)
+        assertNotNull(serviceklage.fremmetDato)
+        assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
+
+        if (serviceklage.klagetekst != null) {
+            assertEquals(KLAGETEKST, serviceklage.klagetekst)
+        }
+    }
 
     @Test
-    fun happyPathPrivatperson() {
+    fun `Should return correct data as a private person`() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val personnummer = msg.innmelder!!.personnummer!!
 
         val requestEntity = HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, personnummer, true))
-        val response = restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            requestEntity,
-            OpprettServiceklageResponse::class.java
-        )
+        val response = api?.createServiceklage(requestEntity)
 
         // When
-        assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals(HttpStatus.OK, response?.statusCode)
 
         // Then
         val serviceklage = serviceklageRepository!!.findAll().first()
-        assertNotNull(serviceklage.serviceklageId)
-        assertEquals(JOURNALPOST_ID, serviceklage.journalpostId)
-        assertNotNull(serviceklage.opprettetDato)
+
+        assertBasicServiceklageFields(serviceklage)
         assertEquals(PERSONNUMMER, serviceklage.klagenGjelderId)
         assertEquals(Klagetyper.NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
-        assertEquals(KLAGETEKST, serviceklage.klagetekst)
-        assertNotNull(serviceklage.fremmetDato)
         assertTrue(serviceklage.innlogget!!)
         assertEquals(PaaVegneAv.PRIVATPERSON.value, serviceklage.innsender)
-        assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
-        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
+        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
 
     @Test
-    fun happyPathPrivatpersonIkkePaLogget() {
+    fun `Should return correct data as a private person when not logged in`() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val personnummer = msg.innmelder!!.personnummer!!
 
         // When
         val requestEntity = HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, personnummer, false))
-        val response = restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            requestEntity,
-            OpprettServiceklageResponse::class.java
-        )
+        val response = api?.createServiceklage(requestEntity)
 
         // Then
         val serviceklage = serviceklageRepository!!.findAll().first()
 
-        assertEquals(HttpStatus.OK, response.statusCode)
-        assertNotNull(serviceklage.serviceklageId)
-        assertEquals(JOURNALPOST_ID, serviceklage.journalpostId)
-        assertNotNull(serviceklage.opprettetDato)
+        assertEquals(HttpStatus.OK, response?.statusCode)
+
+        assertBasicServiceklageFields(serviceklage)
         assertEquals(PERSONNUMMER, serviceklage.klagenGjelderId)
         assertEquals(Klagetyper.NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
-        assertEquals(KLAGETEKST, serviceklage.klagetekst)
-        assertNotNull(serviceklage.fremmetDato)
         assertFalse(serviceklage.innlogget!!)
         assertEquals(PaaVegneAv.PRIVATPERSON.value, serviceklage.innsender)
-        assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
-        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
+        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
 
     @Test
-    fun happyPathAnnenPerson() {
+    fun `Should return correct data when acting on behalf of another person`() {
+        // Given
         val request: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPersonPaaVegneAv().build()
         val requestEntity =
             HttpEntity(request, createHeaders(Constants.TOKENX_ISSUER, request.innmelder!!.personnummer!!, true))
-        val response = restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            requestEntity,
-            OpprettServiceklageResponse::class.java
-        )
+
+        // When
+        val response = api?.createServiceklage(requestEntity)
+
+        // Then
         val serviceklage = serviceklageRepository!!.findAll().iterator().next()
 
-        assertEquals(HttpStatus.OK, response.statusCode)
-        assertNotNull(serviceklage.serviceklageId)
-        assertEquals(JOURNALPOST_ID, serviceklage.journalpostId)
-        assertNotNull(serviceklage.opprettetDato)
+        assertEquals(HttpStatus.OK, response?.statusCode)
+        assertBasicServiceklageFields(serviceklage)
         assertEquals(PAAVEGNEAV_PERSONNUMMER, serviceklage.klagenGjelderId)
         assertEquals(Klagetyper.NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
-        assertEquals(KLAGETEKST, serviceklage.klagetekst)
-        assertNotNull(serviceklage.fremmetDato)
         assertEquals(PaaVegneAv.ANNEN_PERSON.value, serviceklage.innsender)
-        assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
-        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
+        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
     @Test
-    fun happyPathBedrift() {
+    fun `Should return correct data when acting on behalf of a company`() {
         val request: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().asBedrift().build()
         val requestEntity = HttpEntity(request, createHeaders())
-        val response = restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            requestEntity,
-            OpprettServiceklageResponse::class.java
-        )
+        val response = api?.createServiceklage(requestEntity)
+
         val serviceklage = serviceklageRepository!!.findAll().iterator().next()
 
-        assertEquals(HttpStatus.OK, response.statusCode)
-        assertNotNull(serviceklage.serviceklageId)
-        assertEquals(JOURNALPOST_ID, serviceklage.journalpostId)
-        assertNotNull(serviceklage.opprettetDato)
+        assertEquals(HttpStatus.OK, response?.statusCode)
+        assertBasicServiceklageFields(serviceklage)
         assertEquals(ORGANISASJONSNUMMER, serviceklage.klagenGjelderId)
         assertEquals(Klagetyper.NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
-        assertEquals(KLAGETEKST, serviceklage.klagetekst)
-        assertNotNull(serviceklage.fremmetDato)
         assertEquals(PaaVegneAv.BEDRIFT.value, serviceklage.innsender)
-        assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
-        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
-
+        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
     @Test
-    fun happyPathOenskerAaKontaktes() {
+    fun `Should return correct data when the person wish to be contacted`() {
+        // Given
         val request = OpprettServiceklageRequestBuilder().asPrivatPerson()
             .build(innmelder = InnmelderBuilder().build(telefonnummer = "12345678"), oenskerAaKontaktes = true)
         val requestEntity =
             HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, request.innmelder!!.personnummer!!, true))
-        val response = restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            requestEntity,
-            OpprettServiceklageResponse::class.java
-        )
+
+        // When
+        val response = api?.createServiceklage(requestEntity)
+
+        // Then
         val serviceklage = serviceklageRepository!!.findAll().iterator().next()
 
-        assertEquals(response.statusCode, HttpStatus.OK)
-        assertNotNull(serviceklage.serviceklageId)
-        assertNotNull(serviceklage.opprettetDato)
+        assertEquals(response?.statusCode, HttpStatus.OK)
+        assertBasicServiceklageFields(serviceklage)
         assertEquals(PaaVegneAv.PRIVATPERSON.value, serviceklage.innsender)
         assertEquals(PERSONNUMMER, serviceklage.klagenGjelderId)
         assertEquals(Klagetyper.NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
-        assertEquals(KLAGETEKST, serviceklage.klagetekst)
         assertNull(serviceklage.svarmetode)
         assertNull(serviceklage.svarmetodeUtdypning)
-        assertEquals(JOURNALPOST_ID, serviceklage.journalpostId)
-
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
     @Test
-    fun happyPathInnsenderManglerFullmakt() {
+    fun `Should return correct data when the person on behalf of someone else is missing power of attorney (fullmakt)`() {
+        // Given
         val request: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPersonPaaVegneAv()
             .build(
                 oenskerAaKontaktes = null,
                 innmelder = InnmelderBuilder().build(harFullmakt = false, rolle = "Advokat")
             )
         val requestEntity = HttpEntity(request, createHeaders())
-        val response = restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            requestEntity,
-            OpprettServiceklageResponse::class.java
-        )
+
+        // When
+        val response = api?.createServiceklage(requestEntity)
+
+        // Then
         val serviceklage = serviceklageRepository!!.findAll().iterator().next()
 
-        assertEquals(HttpStatus.OK, response.statusCode)
-        assertNotNull(serviceklage.serviceklageId)
-        assertEquals(JOURNALPOST_ID, serviceklage.journalpostId)
-        assertNotNull(serviceklage.opprettetDato)
+        assertBasicServiceklageFields(serviceklage)
+        assertEquals(HttpStatus.OK, response?.statusCode)
         assertEquals(PAAVEGNEAV_PERSONNUMMER, serviceklage.klagenGjelderId)
         assertEquals(Klagetyper.NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
-        assertEquals(KLAGETEKST, serviceklage.klagetekst)
-        assertNotNull(serviceklage.fremmetDato)
         assertEquals(PaaVegneAv.ANNEN_PERSON.value, serviceklage.innsender)
         assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
-        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(INNMELDER_MANGLER_FULLMAKT_ANSWER, serviceklage.svarmetodeUtdypning)
+        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
     @Test
-    fun happyPathFlereKlagetyper() {
+    fun `Should return correct data when there is more than one complaint type (klagetype)`() {
+        // Given
         val request: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson()
             .build(klagetyper = listOf(Klagetyper.BREV, Klagetyper.TELEFON))
 
         val requestEntity =
             HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, request.innmelder!!.personnummer!!, true))
-        val response = restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            requestEntity,
-            OpprettServiceklageResponse::class.java
-        )
+
+        // When
+        val response = api?.createServiceklage(requestEntity)
+
+        // Then
         val serviceklage = serviceklageRepository!!.findAll().iterator().next()
 
-        assertEquals(HttpStatus.OK, response.statusCode)
+        assertEquals(HttpStatus.OK, response?.statusCode)
         assertNotNull(serviceklage.serviceklageId)
         assertEquals(JOURNALPOST_ID, serviceklage.journalpostId)
         assertNotNull(serviceklage.opprettetDato)
@@ -266,11 +244,12 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
-
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
     @Test
-    fun happyPathOpprettJournalpostFeil() {
+    fun `Should return OK even when creating a journalpost fails (reverts to sending email)`() {
+        // Given
         WireMock.stubFor(
             WireMock.post(WireMock.urlPathMatching("/OPPRETT_JOURNALPOST/journalpost/")).willReturn(
                 WireMock.aResponse().withStatus(500)
@@ -280,18 +259,18 @@ internal class ServiceklageIT : ApplicationTest() {
 
         val requestEntity =
             HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, request.innmelder!!.personnummer!!))
-        val response = restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            requestEntity,
-            OpprettServiceklageResponse::class.java
-        )
-        assertEquals(HttpStatus.OK, response.statusCode)
+
+        // When
+        val response = api?.createServiceklage(requestEntity)
+
+        // Then
+        assertEquals(HttpStatus.OK, response?.statusCode)
         assertEquals(0, serviceklageRepository!!.count())
     }
 
     @Test
-    fun happyPathOpprettOppgaveFeil() {
+    fun `Should return OK even when creating a oppgave fails (reverts to sending email)`() {
+        // Given
         WireMock.stubFor(
             WireMock.post(WireMock.urlPathMatching("/OPPGAVE")).willReturn(WireMock.aResponse().withStatus(500))
         )
@@ -299,53 +278,49 @@ internal class ServiceklageIT : ApplicationTest() {
 
         val requestEntity =
             HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, request.innmelder!!.personnummer!!))
-        val response = restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            requestEntity,
-            OpprettServiceklageResponse::class.java
-        )
-        assertEquals(HttpStatus.OK, response.statusCode)
+
+        // When
+        val response = api?.createServiceklage(requestEntity)
+
+        // Then
+        assertEquals(HttpStatus.OK, response?.statusCode)
         assertEquals(1, serviceklageRepository!!.count())
     }
 
     @Test
-    fun shouldFailIfKlagetekstTooLarge() {
+    fun `Should fail if the complaint text is too long`() {
+        // Given
         val request = OpprettServiceklageRequestBuilder().asPrivatPerson()
             .build(klagetekst = RandomStringUtils.randomAlphabetic(50000))
         val requestEntity =
             HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, request.innmelder!!.personnummer!!))
-        val response = restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            requestEntity,
-            OpprettServiceklageResponse::class.java
-        )
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.statusCode)
+
+        // When
+        val response = api?.createServiceklage(requestEntity)
+
+        // Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response?.statusCode)
     }
 
     @Test
-    fun happyPathKlassifiserServiceklage() {
+    fun `Should return correct data when classifying serviceklage`() {
+        // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
-        restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!)),
-            OpprettServiceklageResponse::class.java
-        )
+        val requestEntityOpprett =
+            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!))
+        api?.createServiceklage(requestEntityOpprett)
+
         assertEquals(serviceklageRepository!!.count(), 1)
         val fremmetDato = serviceklageRepository!!.findAll().iterator().next().fremmetDato.toString()
-        val request: KlassifiserServiceklageRequest =
-            KlassifiserServiceklageRequestBuilder().build(FREMMET_DATO = fremmetDato)
+        val request = KlassifiserServiceklageRequestBuilder().build(FREMMET_DATO = fremmetDato)
         val requestEntity =
             HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
-        val response = restTemplate!!.exchange(
-            "$URL_BEHANDLE_SERVICEKLAGE/$KLASSIFISER?oppgaveId=$OPPGAVE_ID",
-            HttpMethod.PUT,
-            requestEntity,
-            KlassifiserServiceklageResponse::class.java
-        )
-        assertEquals(HttpStatus.OK, response.statusCode)
+
+        // When
+        val response = api?.classifyServiceklage(requestEntity, OPPGAVE_ID)
+
+        // Then
+        assertEquals(HttpStatus.OK, response?.statusCode)
         TestTransaction.flagForCommit()
         TestTransaction.end()
         TestTransaction.start()
@@ -353,52 +328,48 @@ internal class ServiceklageIT : ApplicationTest() {
 
         val serviceklage = serviceklageRepository!!.findAll().iterator().next()
 
-        assertEquals(serviceklage.behandlesSomServiceklage, BEHANDLES_SOM_SERVICEKLAGE_ANSWER)
-        assertEquals(serviceklage.fremmetDato.toString(), fremmetDato)
-        assertEquals(serviceklage.innsender, INNSENDER_ANSWER)
-        assertEquals(serviceklage.kanal, KANAL_SERVICEKLAGESKJEMA_ANSWER)
-        assertEquals(serviceklage.enhetsnummerPaaklaget, NAV_ENHETSNR_1)
-        assertEquals(serviceklage.enhetsnummerBehandlende, NAV_ENHETSNR_2)
-        assertEquals(serviceklage.gjelder, GJELDER)
-        assertEquals(serviceklage.beskrivelse, BESKRIVELSE)
-        assertEquals(serviceklage.relatert, RELATERT)
-        assertEquals(serviceklage.ytelse, YTELSE)
-        assertEquals(serviceklage.tema, TEMA)
-        assertEquals(serviceklage.temaUtdypning, VENTE)
-        assertEquals(serviceklage.utfall, UTFALL)
-        assertEquals(serviceklage.aarsak, AARSAK)
-        assertEquals(serviceklage.tiltak, TILTAK)
-        assertEquals(serviceklage.svarmetode, SVAR_IKKE_NOEDVENDIG_ANSWER)
-        assertEquals(serviceklage.svarmetodeUtdypning, BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
-        assertEquals(serviceklage.klassifiseringJson, objectMapper.writeValueAsString(request))
+        assertBasicServiceklageFields(serviceklage)
+        assertEquals(BEHANDLES_SOM_SERVICEKLAGE_ANSWER, serviceklage.behandlesSomServiceklage)
+        assertEquals(fremmetDato, serviceklage.fremmetDato.toString())
+        assertEquals(INNSENDER_ANSWER, serviceklage.innsender)
+        assertEquals(NAV_ENHETSNR_1, serviceklage.enhetsnummerPaaklaget)
+        assertEquals(NAV_ENHETSNR_2, serviceklage.enhetsnummerBehandlende)
+        assertEquals(GJELDER, serviceklage.gjelder)
+        assertEquals(BESKRIVELSE, serviceklage.beskrivelse)
+        assertEquals(RELATERT, serviceklage.relatert)
+        assertEquals(YTELSE, serviceklage.ytelse)
+        assertEquals(TEMA, serviceklage.tema)
+        assertEquals(VENTE, serviceklage.temaUtdypning)
+        assertEquals(UTFALL, serviceklage.utfall)
+        assertEquals(AARSAK, serviceklage.aarsak)
+        assertEquals(TILTAK, serviceklage.tiltak)
+        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
+        assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
+        assertEquals(objectMapper.writeValueAsString(request), serviceklage.klassifiseringJson)
     }
 
     @Test
-    fun dersomDetErKommunaltSkalDokumenterSlettes() {
+    fun `Should delete documents if the complaint is municipal (kommune)`() {
+        // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
-        val opprettServiceklageResponse = restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, HttpEntity(
-                msg, createHeaders(
-                    Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!
-                )
-            ), OpprettServiceklageResponse::class.java
-        )
-        assertNotNull(opprettServiceklageResponse.body)
+        val requestEntityOpprett =
+            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!))
+        val opprettServiceklageResponse = api?.createServiceklage(requestEntityOpprett)
+
         val serviceklage = serviceklageRepository!!.findByJournalpostId(
-            opprettServiceklageResponse.body!!.journalpostId!!
+            opprettServiceklageResponse?.body!!.journalpostId!!
         )
 
         val fremmetDato = serviceklage?.fremmetDato.toString()
         val request = KlassifiserServiceklageRequestBuilder().asKommunalKlage().build(FREMMET_DATO = fremmetDato)
         val requestEntity =
             HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
-        val response = restTemplate!!.exchange(
-            URL_BEHANDLE_SERVICEKLAGE + "/" + KLASSIFISER + "?oppgaveId=" + opprettServiceklageResponse.body!!.oppgaveId,
-            HttpMethod.PUT,
-            requestEntity,
-            KlassifiserServiceklageResponse::class.java
-        )
-        assertEquals(HttpStatus.OK, response.statusCode)
+
+        // When
+        val response = api?.classifyServiceklage(requestEntity, opprettServiceklageResponse.body!!.oppgaveId!!)
+
+        // Then
+        assertEquals(HttpStatus.OK, response?.statusCode)
         TestTransaction.flagForCommit()
         TestTransaction.end()
         TestTransaction.start()
@@ -407,12 +378,13 @@ internal class ServiceklageIT : ApplicationTest() {
 
         val oppdatertServiceklage = serviceklageRepository!!.findAll().iterator().next()
 
+        assertNotNull(opprettServiceklageResponse.body)
         assertEquals(oppdatertServiceklage.behandlesSomServiceklage, KOMMUNAL_KLAGE)
         assertEquals(oppdatertServiceklage.klassifiseringJson, objectMapper.writeValueAsString(request))
     }
 
     @Test
-    fun enServiceklageSkalOpprettesOmDenMangler() {
+    fun `Should create a serviceklage if it's missing`() {
         val request: KlassifiserServiceklageRequest = KlassifiserServiceklageRequestBuilder().build()
         val requestEntity = HttpEntity(
             request,
@@ -427,54 +399,44 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(HttpStatus.OK, response.statusCode)
         val serviceklage = serviceklageRepository!!.findAll().iterator().next()
 
-        assertNotNull(serviceklage.serviceklageId)
-        assertNotNull(serviceklage.opprettetDato)
-        assertNull(serviceklage.klagetyper)
-        assertNull(serviceklage.klagetekst)
-        assertEquals(serviceklage.journalpostId, JOURNALPOST_ID)
-        assertEquals(serviceklage.behandlesSomServiceklage, BEHANDLES_SOM_SERVICEKLAGE_ANSWER)
-        assertEquals(serviceklage.fremmetDato.toString(), FREMMET_DATO_ANSWER)
-        assertEquals(serviceklage.innsender, INNSENDER_ANSWER)
-        assertEquals(serviceklage.kanal, KANAL_SERVICEKLAGESKJEMA_ANSWER)
-        assertEquals(serviceklage.enhetsnummerPaaklaget, NAV_ENHETSNR_1)
-        assertEquals(serviceklage.enhetsnummerBehandlende, NAV_ENHETSNR_2)
-        assertEquals(serviceklage.gjelder, GJELDER)
-        assertEquals(serviceklage.beskrivelse, BESKRIVELSE)
-        assertEquals(serviceklage.ytelse, YTELSE)
-        assertEquals(serviceklage.tema, TEMA)
-        assertEquals(serviceklage.temaUtdypning, VENTE)
-        assertEquals(serviceklage.utfall, UTFALL)
-        assertEquals(serviceklage.aarsak, AARSAK)
-        assertEquals(serviceklage.tiltak, TILTAK)
-        assertEquals(serviceklage.svarmetode, SVAR_IKKE_NOEDVENDIG_ANSWER)
-        assertEquals(serviceklage.svarmetodeUtdypning, BRUKER_IKKE_BEDT_OM_SVAR_ANSWER)
-        assertEquals(serviceklage.klassifiseringJson, objectMapper.writeValueAsString(request))
+        assertBasicServiceklageFields(serviceklage)
+        assertEquals(BEHANDLES_SOM_SERVICEKLAGE_ANSWER, serviceklage.behandlesSomServiceklage)
+        assertEquals(INNSENDER_ANSWER, serviceklage.innsender)
+        assertEquals(NAV_ENHETSNR_1, serviceklage.enhetsnummerPaaklaget)
+        assertEquals(NAV_ENHETSNR_2, serviceklage.enhetsnummerBehandlende)
+        assertEquals(GJELDER, serviceklage.gjelder)
+        assertEquals(BESKRIVELSE, serviceklage.beskrivelse)
+        assertEquals(RELATERT, serviceklage.relatert)
+        assertEquals(YTELSE, serviceklage.ytelse)
+        assertEquals(TEMA, serviceklage.tema)
+        assertEquals(VENTE, serviceklage.temaUtdypning)
+        assertEquals(UTFALL, serviceklage.utfall)
+        assertEquals(AARSAK, serviceklage.aarsak)
+        assertEquals(TILTAK, serviceklage.tiltak)
+        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
+        assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
+        assertEquals(objectMapper.writeValueAsString(request), serviceklage.klassifiseringJson)
     }
 
     @Test
-    fun happyPathHentSkjema() {
+    fun `Should return correct data when getting schema`() {
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
-        restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!)),
-            OpprettServiceklageResponse::class.java
-        )
+        val requestEntityOpprett =
+            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!))
+        api?.createServiceklage(requestEntityOpprett)
+
         assertEquals(1, serviceklageRepository!!.count())
         val fremmetDato = serviceklageRepository!!.findAll().iterator().next().fremmetDato.toString()
 
-        val response = restTemplate!!.exchange(
-            "$URL_BEHANDLE_SERVICEKLAGE/$HENT_SKJEMA/$JOURNALPOST_ID", HttpMethod.GET, HttpEntity<Any?>(
-                createHeaders(
-                    Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"
-                )
-            ), HentSkjemaResponse::class.java
-        )
-        assertEquals(HttpStatus.OK, response.statusCode)
+        val requestEntity =
+            HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
+
+        val response = api?.getSkjema(requestEntity, JOURNALPOST_ID)
+        assertEquals(HttpStatus.OK, response?.statusCode)
         TestTransaction.flagForCommit()
         TestTransaction.end()
         TestTransaction.start()
-        val hentSkjemaResponse = response.body
+        val hentSkjemaResponse = response?.body
         assertNotNull(hentSkjemaResponse)
         assertEquals(
             hentSkjemaResponse!!.defaultAnswers!!.answers!![FREMMET_DATO],
@@ -499,52 +461,45 @@ internal class ServiceklageIT : ApplicationTest() {
     }
 
     @Test
-    fun happyPathHentDokument() {
+    fun `Should return correct data when getting document`() {
+        // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
-        val opprettResponse = restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, HttpEntity(
-                msg, createHeaders(
-                    Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!
-                )
-            ), OpprettServiceklageResponse::class.java
-        )
+        val requestEntityOpprett =
+            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!))
+        val opprettResponse = api?.createServiceklage(requestEntityOpprett)
+
         assertEquals(serviceklageRepository!!.count(), 1)
-        assertNotNull(opprettResponse.body)
-        val response = restTemplate!!.exchange(
-            URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + opprettResponse.body!!.oppgaveId,
-            HttpMethod.GET,
-            HttpEntity<Any?>(
-                createHeaders(
-                    Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"
-                )
-            ),
-            HentDokumentResponse::class.java
-        )
-        assertEquals(HttpStatus.OK, response.statusCode)
+        assertNotNull(opprettResponse?.body)
+        val requestEntity =
+            HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
+
+        // When
+        val response = api?.getDocument(requestEntity, opprettResponse?.body!!.oppgaveId!!)
+
+        // Then
+        assertEquals(HttpStatus.OK, response?.statusCode)
     }
 
     @Test
-    fun journalpostManglerSkalKaste204() {
+    fun `Should return 204 when there is no document`() {
+        // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
-        restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!)),
-            OpprettServiceklageResponse::class.java
-        )
-        assertEquals(serviceklageRepository!!.count(), 1)
+        val opprettRequestEntity =
+            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!))
+        api?.createServiceklage(opprettRequestEntity)
 
-        val response = restTemplate!!.exchange(
-            "$URL_BEHANDLE_SERVICEKLAGE/$HENT_DOKUMENT/99",
-            HttpMethod.GET,
-            HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering")),
-            HentDokumentResponse::class.java
-        )
-        assertEquals(HttpStatus.NO_CONTENT, response.statusCode)
+        val requestEntity =
+            HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
+
+        // When
+        val response = api?.getDocument(requestEntity, "99")
+
+        // Then
+        assertEquals(HttpStatus.NO_CONTENT, response?.statusCode)
     }
 
     @Test
-    fun shouldReturn404WhenEregIsNotFound() {
+    fun `Should return 404 when ereg is not found`() {
         // Given
         val request = OpprettServiceklageRequestBuilder().asBedrift().build()
         val requestEntity = HttpEntity<Any>(request, createHeaders())
@@ -562,20 +517,19 @@ internal class ServiceklageIT : ApplicationTest() {
     }
 
     @Test
-    fun shouldReturn403WhenMissingAccessToJoarkDocument() {
+    fun `Should return 403 when missing access to Joark Document`() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
-        val opprettResponse = restTemplate!!.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            HttpEntity<Any>(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!)),
-            OpprettServiceklageResponse::class.java
-        )
+        val requestEntityOpprett =
+            HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, msg.innmelder!!.personnummer!!))
+
+        val opprettResponse = api?.createServiceklage(requestEntityOpprett)
+
         WireMock.setScenarioState("hent_dokument", "saf_403")
 
         // When
         val response: ResponseEntity<ErrorResponse>? = restTemplate!!.exchange(
-            URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + opprettResponse.body!!.oppgaveId,
+            URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + opprettResponse?.body!!.oppgaveId,
             HttpMethod.GET,
             HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering")),
             ErrorResponse::class.java
@@ -586,6 +540,52 @@ internal class ServiceklageIT : ApplicationTest() {
         assertNotNull(response?.body)
         assertNotNull(response?.body?.errorCode)
         assertEquals(ErrorCode.SAF_FORBIDDEN.value, response?.body?.errorCode)
+    }
+
+    @Test
+    fun `Should add hendelse when creating a serviceklage`() {
+        // Given
+        val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
+        val personnummer = msg.innmelder!!.personnummer!!
+
+        val requestEntity = HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, personnummer, true))
+
+        // When
+        val response = api?.createServiceklage(requestEntity)
+
+        // Then
+        val hendelser = hendelseRepository?.findAllByJournalpostId(response!!.body!!.journalpostId!!)
+        val hendelse = hendelser?.get(0)
+        assertEquals(HendelseType.OPPRETT_SERVICEKLAGE.name, hendelse?.hendelsetype)
+        assertEquals(JOURNALPOST_ID, hendelse?.journalpostId)
+    }
+
+    @Test
+    fun `Should add hendelse when classifying a serviceklage`() {
+        // Given
+        val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
+        val requestEntityOpprett =
+            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!))
+        val opprettResponse = api?.createServiceklage(requestEntityOpprett)
+
+        val fremmetDato = serviceklageRepository!!.findAll().iterator().next().fremmetDato.toString()
+        val request = KlassifiserServiceklageRequestBuilder().build(FREMMET_DATO = fremmetDato)
+        val requestEntity =
+            HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
+
+        // When
+        api?.classifyServiceklage(requestEntity, OPPGAVE_ID)
+
+        // Then
+        val hendelser = hendelseRepository?.findAllByJournalpostId(opprettResponse!!.body!!.journalpostId!!)
+        val createdHendelse = hendelser?.find { it.hendelsetype == HendelseType.OPPRETT_SERVICEKLAGE.name }
+        val classifiedHendelse = hendelser?.find { it.hendelsetype == HendelseType.KLASSIFISER_SERVICEKLAGE.name }
+
+        assertEquals(HendelseType.OPPRETT_SERVICEKLAGE.name, createdHendelse?.hendelsetype)
+        assertEquals(JOURNALPOST_ID, createdHendelse?.journalpostId)
+
+        assertEquals(HendelseType.KLASSIFISER_SERVICEKLAGE.name, classifiedHendelse?.hendelsetype)
+        assertEquals(JOURNALPOST_ID, classifiedHendelse?.journalpostId)
     }
 
 }
