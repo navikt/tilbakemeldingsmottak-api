@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.bigquery.serviceklager
 
 import com.google.cloud.bigquery.BigQuery
 import com.google.cloud.bigquery.QueryJobConfiguration
+import jakarta.transaction.Transactional
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -43,11 +44,13 @@ class ServiceklageSlettScheduled(
     }
 
     @Scheduled(cron = "\${cron.deleteServiceKlagerScheduled}")
+    @Transactional
     fun deleteServiceKlager() {
         try {
+            logger.info("Skal slette serviceklager fra databasen eldre enn {} dager", deleteServiceKlagerOlderThan)
             val cutoffDate = LocalDateTime.now().minusDays(deleteServiceKlagerOlderThan?.toLong() ?: 90)
             serviceklageRepository.deleteServiceklageOlderThan(cutoffDate)
-            logger.info("Slettet serviceklager eldre enn {} dager", deleteServiceKlagerOlderThan)
+            logger.info("Slettet serviceklager fra databasen eldre enn {} dager", deleteServiceKlagerOlderThan)
         } catch (e: Exception) {
             logger.error("Kunne ikke slette serviceklager eldre enn {} dager", deleteServiceKlagerOlderThan, e)
         }
@@ -56,7 +59,10 @@ class ServiceklageSlettScheduled(
     @Scheduled(cron = "\${cron.deleteBigQueryServiceKlagerScheduled}")
     fun deleteBigQueryServiceKlager() {
         try {
-            logger.info("Sletter serviceklager eldre enn {} dager", deleteBigQueryServiceKlagerOlderThan)
+            logger.info(
+                "Skal slette serviceklager fra big query eldre enn {} dager",
+                deleteBigQueryServiceKlagerOlderThan
+            )
 
             // Slett alle opprettede serviceklager som er eldre enn 1 uke
             val slettOpprettedeServiceklager =
@@ -77,6 +83,9 @@ class ServiceklageSlettScheduled(
             val slettKlassifiserteServiceklagerQueryConfig =
                 QueryJobConfiguration.newBuilder(slettKlassifiserteServiceklager).build()
             bigQueryClient.query(slettKlassifiserteServiceklagerQueryConfig)
+
+            logger.info("Slettet serviceklager fra big query eldre enn {} dager", deleteBigQueryServiceKlagerOlderThan)
+
         } catch (e: Exception) {
             logger.error(
                 "Kunne ikke slette Big Query serviceklager eldre enn {} dager",
