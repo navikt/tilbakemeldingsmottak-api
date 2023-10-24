@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage
 
-import jakarta.transaction.Transactional
 import no.nav.security.token.support.core.api.Protected
 import no.nav.tilbakemeldingsmottak.api.ServiceklageRestControllerApi
 import no.nav.tilbakemeldingsmottak.config.Constants.TOKENX_ISSUER
@@ -16,6 +15,7 @@ import no.nav.tilbakemeldingsmottak.util.OidcUtils
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
@@ -29,7 +29,7 @@ class ServiceklageRestController(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @Transactional(dontRollbackOn = [EksterntKallException::class])
+    @Transactional(noRollbackFor = [EksterntKallException::class])
     @Metrics(
         value = DOK_REQUEST,
         extraTags = [PROCESS_CODE, "opprettServiceklage"],

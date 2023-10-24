@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale
 
-import jakarta.transaction.Transactional
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.tilbakemeldingsmottak.api.BestillingAvSamtaleRestControllerApi
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
@@ -11,6 +10,7 @@ import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.service.BestillingA
 import no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.validation.BestillSamtaleValidator
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
