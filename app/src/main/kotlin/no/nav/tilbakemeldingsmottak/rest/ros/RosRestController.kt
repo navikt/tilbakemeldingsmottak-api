@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.ros
 
-import jakarta.transaction.Transactional
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.tilbakemeldingsmottak.api.RosRestControllerApi
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST
@@ -12,6 +11,7 @@ import no.nav.tilbakemeldingsmottak.rest.ros.service.RosService
 import no.nav.tilbakemeldingsmottak.rest.ros.validation.SendRosValidator
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 

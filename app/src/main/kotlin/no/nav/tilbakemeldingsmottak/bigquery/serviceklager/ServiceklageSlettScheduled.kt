@@ -2,13 +2,13 @@ package no.nav.tilbakemeldingsmottak.bigquery.serviceklager
 
 import com.google.cloud.bigquery.BigQuery
 import com.google.cloud.bigquery.QueryJobConfiguration
-import jakarta.transaction.Transactional
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Service

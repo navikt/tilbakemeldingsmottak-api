@@ -4,6 +4,7 @@ import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 interface ServiceklageRepository : CrudRepository<Serviceklage, Long> {
@@ -14,6 +15,7 @@ interface ServiceklageRepository : CrudRepository<Serviceklage, Long> {
     ): List<Serviceklage>
 
     @Modifying
+    @Transactional
     @Query("DELETE FROM Serviceklage WHERE avsluttetDato IS NOT NULL AND avsluttetDato < :cutoffDate")
     fun deleteServiceklageOlderThan(cutoffDate: LocalDateTime)
 }
