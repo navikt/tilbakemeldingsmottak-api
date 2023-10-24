@@ -29,7 +29,7 @@ class ServiceklageRestController(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @Transactional(dontRollbackOn = [EksterntKallException::class])
+    @Transactional(noRollbackFor = [EksterntKallException::class])
     @Metrics(
         value = DOK_REQUEST,
         extraTags = [PROCESS_CODE, "opprettServiceklage"],
