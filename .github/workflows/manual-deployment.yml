@@ -32,6 +32,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17.x'
+          cache: 'maven'
 
       - name: Build with maven
         run: mvn install --file pom.xml
