@@ -30,7 +30,7 @@ jobs:
           java-version: 17
 
       - name: Build
-        run: mvn install --file pom.xml
+        run: mvn install --file pom.xml -DskipTests
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
