@@ -99,7 +99,7 @@
         <maven-enforcer.version>3.4.1</maven-enforcer.version>
         <versions-maven-plugin.version>2.16.1</versions-maven-plugin.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-        <graphql-kotlin.version>6.5.6</graphql-kotlin.version>
+        <graphql-kotlin.version>7.0.2</graphql-kotlin.version>
     </properties>
 
     <dependencyManagement>
