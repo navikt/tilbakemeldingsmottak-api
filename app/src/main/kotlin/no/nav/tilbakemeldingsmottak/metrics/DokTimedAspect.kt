@@ -3,7 +3,6 @@ package no.nav.tilbakemeldingsmottak.metrics
 import io.micrometer.core.annotation.Incubating
 import io.micrometer.core.instrument.*
 import io.micrometer.core.instrument.Timer
-import io.micrometer.core.lang.NonNullApi
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
@@ -15,7 +14,6 @@ import java.util.*
 import java.util.function.Function
 
 @Aspect
-@NonNullApi
 @Incubating(since = "1.0.0")
 class DokTimedAspect private constructor(
     private val registry: MeterRegistry,

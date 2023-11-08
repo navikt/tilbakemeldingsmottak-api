@@ -5,7 +5,7 @@ import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.*
 import no.nav.tilbakemeldingsmottak.model.PaaVegneAvPerson
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.FileOutputStream
 import java.time.LocalDateTime
@@ -98,7 +98,7 @@ internal class ReGenereringAvPdf {
                         )
                     )
                     //writeBytesToFile(klagePdf, "src/test/resources/serviceklage-jp-"+ klage.get(1) +".pdf");
-                    Assertions.assertTrue(klagePdf != null && klagePdf.isNotEmpty())
+                    assertTrue(klagePdf.isNotEmpty())
                 } else if ("På vegne av en annen privatperson".equals(klage[10], ignoreCase = true)) {
                     val request = createOpprettServiceklageRequestPaaVegneAvPerson(klage)
                     val klagePdf = pdfService.opprettServiceklagePdf(
@@ -107,7 +107,7 @@ internal class ReGenereringAvPdf {
                         )
                     )
                     //writeBytesToFile(klagePdf, "src/test/resources/serviceklage-jp-"+ klage.get(1) +".pdf");
-                    Assertions.assertTrue(klagePdf != null && klagePdf.isNotEmpty())
+                    assertTrue(klagePdf.isNotEmpty())
                 }
             }
         } catch (e: Exception) {
