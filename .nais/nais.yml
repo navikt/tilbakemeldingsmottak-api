@@ -123,3 +123,5 @@ spec:
       value: {{ BIG_QUERY_DATASET }}
     - name: LOG_URL
       value: {{ LOG_URL }}
+    - name: SPRING_PROFILES_ACTIVE
+      value: {{ SPRING_PROFILES_ACTIVE }}

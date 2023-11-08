@@ -2,12 +2,14 @@ Tilbakemeldingsmottak
 ================
 
 Tilbakemeldingsmottak / Serviceklage er en backend applikasjon for mottak og behandling av serviceklager, samt ris/ros.
-Applikasjonen har skjema som sendes inn via [tilbakemeldinger](https://www.nav.no/person/kontakt-oss/nb/tilbakemeldinger/)  
-Serviceklager omgjøres til en pdf og det opprettes en kontrolloppgave som følges opp av ansvarlig enhet. Ris/ros sendes videre på mail til den ansvarlige.
+Applikasjonen har skjema som sendes inn
+via [tilbakemeldinger](https://www.nav.no/person/kontakt-oss/nb/tilbakemeldinger/)  
+Serviceklager omgjøres til en pdf og det opprettes en kontrolloppgave som følges opp av ansvarlig enhet. Ris/ros sendes
+videre på mail til den ansvarlige.
 
 # Komme i gang
 
-Applikasjonen kjører Java 17. Hvordan bygge, teste og kjøre koden:
+Applikasjonen kjører Java 21. Hvordan bygge, teste og kjøre koden:
 
 ## Bygging lokalt
 
@@ -38,9 +40,10 @@ For å teste appliaksjonen er en avhengig av å ha:
     - Brukeren må ha nasjonal tilgang, tilgang til gosys, enhet 4200 og tema SRV Serviceklage
 2. Testperson opprettet i [dolly](https://dolly.nais.preprod.local/)
 
-Innsending gjøres innlogget/uinlogget fra [Kontakt oss/Tilbakemelding](https://www.intern.dev.nav.no/person/kontakt-oss/nb/tilbakemeldinger)
+Innsending gjøres innlogget/uinlogget
+fra [Kontakt oss/Tilbakemelding](https://www.intern.dev.nav.no/person/kontakt-oss/nb/tilbakemeldinger)
 
-Saksbehandling gjøres via [Gosys](https://gosys-nais-q1.nais.preprod.local/gosys/) 
+Saksbehandling gjøres via [Gosys](https://gosys-nais-q1.nais.preprod.local/gosys/)
 
 ## Regenerering av serviceklage PDF
 

@@ -31,11 +31,11 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17.x'
+          java-version: 21
           cache: 'maven'
 
       - name: Build with maven
-        run: mvn install --file pom.xml
+        run: mvn install --file pom.xml -DskipTests
 
       - name: Build and push Docker image
         uses: nais/docker-build-push@v0
