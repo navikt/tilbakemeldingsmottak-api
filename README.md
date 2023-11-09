@@ -43,7 +43,7 @@ For å teste appliaksjonen er en avhengig av å ha:
 Innsending gjøres innlogget/uinlogget
 fra [Kontakt oss/Tilbakemelding](https://www.intern.dev.nav.no/person/kontakt-oss/nb/tilbakemeldinger)
 
-Saksbehandling gjøres via [Gosys](https://gosys-nais-q1.nais.preprod.local/gosys/)
+Saksbehandling gjøres via [Gosys](https://gosys-q1.dev.intern.nav.no/gosys/)
 
 ## Regenerering av serviceklage PDF
 
