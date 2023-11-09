@@ -1,8 +1,10 @@
-FROM ghcr.io/navikt/baseimages/temurin:17
+FROM gcr.io/distroless/java21-debian12:nonroot
+
+ENV LANG='nb_NO.UTF-8' LANGUAGE='nb_NO:nb' LC_ALL='nb:NO.UTF-8' TZ="Europe/Oslo"
 
 COPY app/target/app.jar /app/app.jar
 
-ENV JAVA_OPTS="-Xmx1024m \
-               --enable-preview \
-               -Dspring.profiles.active=nais"
-EXPOSE 9069
+WORKDIR /app
+
+CMD ["app.jar"]
+

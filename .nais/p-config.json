@@ -1,6 +1,7 @@
 {
   "NAMESPACE": "teamserviceklage",
   "DATABASE_NAME": "tilbakemeldingsmottak",
+  "SPRING_PROFILES_ACTIVE": "nais",
   "JOURNALPOST_V1_URL": "https://dokarkiv.prod-fss-pub.nais.io/rest/journalpostapi/v1",
   "OPPGAVE_OPPGAVER_URL": "https://oppgave.prod-fss-pub.nais.io/api/v1/oppgaver",
   "EREG_API_URL": "https://ereg-services.prod-fss-pub.nais.io",

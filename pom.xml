@@ -22,7 +22,7 @@
     <properties>
         <!-- Project config -->
         <spring-boot.version>3.1.5</spring-boot.version>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
         <kotlin.version>1.9.20</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -36,7 +36,6 @@
         <netty-all.version>4.1.100.Final</netty-all.version>
 
         <!-- Dependencies that should be on the latest version -->
-        <kotlin.version>1.9.10</kotlin.version>
         <httpclient5.version>5.2.1</httpclient5.version>
         <microsoft-graph.version>5.75.0</microsoft-graph.version>
         <microsoft-graph-core.version>2.0.20</microsoft-graph-core.version>
