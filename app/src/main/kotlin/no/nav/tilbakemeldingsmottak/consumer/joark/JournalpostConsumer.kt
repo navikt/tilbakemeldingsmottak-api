@@ -36,7 +36,8 @@ class JournalpostConsumer(
         histogram = true
     )
     fun opprettJournalpost(opprettJournalpostRequestTo: OpprettJournalpostRequestTo): OpprettJournalpostResponseTo {
-        log.info("Oppretter journalpost")
+        val callId = MDC.get(MDC_CALL_ID)
+        log.info("Oppretter journalpost for callId {}", callId)
 
         val journalpostReponse = webClient
             .method(HttpMethod.POST)
@@ -44,7 +45,7 @@ class JournalpostConsumer(
             .contentType(APPLICATION_JSON)
             .accept(APPLICATION_JSON)
             .body(BodyInserters.fromValue(opprettJournalpostRequestTo))
-            .header("Nav-Callid", MDC.get(MDC_CALL_ID))
+            .header("Nav-Callid", callId)
             .header("Nav-Consumer-Id", "srvtilbakemeldings")
             .retrieve()
             .bodyToMono(OpprettJournalpostResponseTo::class.java)
