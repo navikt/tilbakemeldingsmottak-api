@@ -1,8 +1,10 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support
 
+import no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID
 import no.nav.tilbakemeldingsmottak.consumer.joark.domain.*
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAv.*
+import org.slf4j.MDC
 import org.springframework.stereotype.Component
 
 @Component
@@ -38,7 +40,8 @@ class OpprettJournalpostRequestToMapper {
             tema = TEMA_SER,
             tittel = TITTEL_SERVICEKLAGE,
             kanal = if (innlogget) KANAL_NAV_NO else KANAL_NAV_NO_UINNLOGGET,
-            dokumenter = listOf(buildDokument(fysiskDokument))
+            dokumenter = listOf(buildDokument(fysiskDokument)),
+            eksternReferanseId = MDC.get(MDC_CALL_ID)
         )
     }
 
