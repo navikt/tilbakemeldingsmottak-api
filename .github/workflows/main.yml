@@ -7,12 +7,14 @@ on:
       - '**.md'
       - '**/**.md'
 
+permissions:
+  contents: "write"
+  id-token: "write"
+
 jobs:
   bygg-app-main:
     name: Bygg app/image, push til github
-    permissions:
-          contents: "write"
-          id-token: "write"
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -52,9 +54,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Deploy
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           PRINT_PAYLOAD: true
           CLUSTER: prod-gcp
           RESOURCE: .nais/nais.yml
@@ -70,9 +71,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Deploy to prod
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
           RESOURCE: .nais/alerts.yml
           VARS: .nais/prod-alert.json
