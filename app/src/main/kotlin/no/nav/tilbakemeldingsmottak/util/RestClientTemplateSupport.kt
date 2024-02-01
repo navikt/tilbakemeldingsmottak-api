@@ -7,6 +7,7 @@ import io.netty.handler.timeout.WriteTimeoutHandler
 import no.nav.security.token.support.client.core.ClientProperties
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -122,10 +123,15 @@ class RestClientTemplateSupport(
     private fun bearerTokenExchange(clientProperties: ClientProperties): ExchangeFilterFunction {
         return ExchangeFilterFunction { clientRequest: ClientRequest?, exchangeFunction: ExchangeFunction ->
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
+
+            if (response?.accessToken == null) {
+                throw ServerErrorException("Fikk ikke accessToken fra token exchange")
+            }
+
             val filtered = ClientRequest.from(
                 clientRequest!!
             )
-                .headers { headers: HttpHeaders -> headers.setBearerAuth(response.accessToken) }
+                .headers { headers: HttpHeaders -> headers.setBearerAuth(response.accessToken as String) }
                 .build()
             exchangeFunction.exchange(filtered)
         }
