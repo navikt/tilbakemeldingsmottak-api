@@ -11,7 +11,7 @@ class OidcUtils(private val tokenValidationContextHolder: TokenValidationContext
     private val log: Logger = LoggerFactory.getLogger(OidcUtils::class.java)
 
     fun getSubjectForIssuer(issuer: String): String? {
-        val userToken = tokenValidationContextHolder.tokenValidationContext.getJwtToken(issuer)
+        val userToken = tokenValidationContextHolder.getTokenValidationContext().getJwtToken(issuer)
         return try {
             userToken?.subject
         } catch (e: Exception) {
@@ -20,7 +20,7 @@ class OidcUtils(private val tokenValidationContextHolder: TokenValidationContext
     }
 
     fun getEmailForIssuer(issuer: String): String? {
-        val userToken = tokenValidationContextHolder.tokenValidationContext.getJwtToken(issuer)
+        val userToken = tokenValidationContextHolder.getTokenValidationContext().getJwtToken(issuer)
         return try {
             userToken?.jwtTokenClaims?.getStringClaim("preferred_username")
         } catch (e: Exception) {
@@ -29,7 +29,7 @@ class OidcUtils(private val tokenValidationContextHolder: TokenValidationContext
     }
 
     fun getPidForIssuer(issuer: String): String? {
-        val userToken = tokenValidationContextHolder.tokenValidationContext.getJwtToken(issuer)
+        val userToken = tokenValidationContextHolder.getTokenValidationContext().getJwtToken(issuer)
         return try {
             val pid = userToken?.jwtTokenClaims?.getStringClaim("pid")
             pid.takeIf { it != null }
@@ -39,21 +39,21 @@ class OidcUtils(private val tokenValidationContextHolder: TokenValidationContext
     }
 
     fun getFirstValidToken(): String {
-        return tokenValidationContextHolder.tokenValidationContext.firstValidToken?.get()?.tokenAsString
+        return tokenValidationContextHolder.getTokenValidationContext().firstValidToken?.encodedToken
             ?: throw RuntimeException("Finner ikke validert OIDC-token")
     }
 
     fun getSubjectForFirstValidToken(): String? {
-        return tokenValidationContextHolder.tokenValidationContext.firstValidToken?.get()?.subject
+        return tokenValidationContextHolder.getTokenValidationContext().firstValidToken?.subject
     }
 
     fun checkSubjectOnEachIssuer() {
-        val issuers = tokenValidationContextHolder.tokenValidationContext.issuers
+        val issuers = tokenValidationContextHolder.getTokenValidationContext().issuers
         issuers.forEach { issuer -> logClaims(issuer) }
     }
 
     private fun logClaims(issuer: String) {
-        val userToken = tokenValidationContextHolder.tokenValidationContext.getJwtTokenAsOptional(issuer)
+        val userToken = tokenValidationContextHolder.getTokenValidationContext().getJwtTokenAsOptional(issuer)
         log.info("Context issuer=$issuer User=${userToken.map { it.subject }.orElse("Ikke funnet")}")
     }
 
