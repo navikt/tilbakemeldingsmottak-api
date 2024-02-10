@@ -7,6 +7,8 @@ import no.nav.tilbakemeldingsmottak.consumer.pdl.domain.IdentDto
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
 import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
+import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
+import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import no.nav.tilbakemeldingsmottak.pdl.generated.HentIdenter
 import no.nav.tilbakemeldingsmottak.util.handleErrors
 import org.slf4j.LoggerFactory
@@ -20,6 +22,12 @@ class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQLWe
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+    @Metrics(
+        value = MetricLabels.DOK_CONSUMER,
+        extraTags = [MetricLabels.PROCESS_CODE, "hentAktoerIdForIdent"],
+        percentiles = [0.5, 0.95],
+        histogram = true
+    )
     fun hentPersonIdents(brukerId: String): List<IdentDto> = runBlocking {
         log.info("Skal hente en personsidenter fra PDL")
         try {
