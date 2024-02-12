@@ -87,7 +87,7 @@ class RestClientTemplateSupport(
 
         return GraphQLWebClient(
             url = pdlUrl,
-            builder = webclientBuilder(buildHttpClient(5000, 60, 60), clientProperties)
+            builder = pdlWebclientBuilder(buildHttpClient(5000, 60, 60), clientProperties)
         )
     }
 
@@ -106,6 +106,14 @@ class RestClientTemplateSupport(
             .exchangeStrategies(createExchangeStrategies())
             .clientConnector(ReactorClientHttpConnector(httpClient))
             .filter(bearerTokenExchange(clientProperties))
+    }
+
+    fun pdlWebclientBuilder(httpClient: HttpClient, clientProperties: ClientProperties): WebClient.Builder {
+        return WebClient.builder()
+            .exchangeStrategies(createExchangeStrategies())
+            .clientConnector(ReactorClientHttpConnector(httpClient))
+            .filter(bearerTokenExchange(clientProperties))
+            .defaultRequest { it.header(HEADER_BEHANDLINGSNUMMER, PDL_BEHANDLINGSNUMMER) }
     }
 
     fun webclientBuilder(httpClient: HttpClient): WebClient.Builder {
