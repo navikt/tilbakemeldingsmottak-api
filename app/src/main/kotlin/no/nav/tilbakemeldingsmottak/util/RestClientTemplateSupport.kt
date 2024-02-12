@@ -7,6 +7,8 @@ import io.netty.handler.timeout.WriteTimeoutHandler
 import no.nav.security.token.support.client.core.ClientProperties
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties
+import no.nav.tilbakemeldingsmottak.config.Constants.HEADER_BEHANDLINGSNUMMER
+import no.nav.tilbakemeldingsmottak.config.Constants.PDL_BEHANDLINGSNUMMER
 import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
