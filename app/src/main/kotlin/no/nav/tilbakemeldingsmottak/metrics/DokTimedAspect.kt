@@ -65,7 +65,7 @@ class DokTimedAspect private constructor(
                     .register(registry)
             )
             if (oidcUtils.getPidForIssuer(Constants.TOKENX_ISSUER) == null
-                && oidcUtils.getSubjectForIssuer(Constants.AZURE_ISSUER) == null
+                && oidcUtils.getPidForIssuer(Constants.AZURE_ISSUER) == null
                 && DOK_REQUEST.equals(metrics?.value, true)
             ) {
                 incrementNotLoggedInRequestCounter(metrics)
