@@ -113,7 +113,7 @@ internal class ServiceklageIT : ApplicationTest() {
         val personnummer = msg.innmelder!!.personnummer!!
 
         // When
-        val requestEntity = HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, personnummer, false))
+        val requestEntity = HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, personnummer, false))
         val response = api?.createServiceklage(requestEntity)
 
         // Then
