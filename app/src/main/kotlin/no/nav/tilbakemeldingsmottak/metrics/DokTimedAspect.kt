@@ -5,6 +5,8 @@ import io.micrometer.core.instrument.*
 import io.micrometer.core.instrument.Timer
 import no.nav.tilbakemeldingsmottak.config.Constants
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
+import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST
+import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE
 import no.nav.tilbakemeldingsmottak.util.OidcUtils
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
@@ -62,14 +64,17 @@ class DokTimedAspect private constructor(
                     .publishPercentiles(*((if (metrics?.percentiles?.isEmpty() == true) null else metrics?.percentiles)!!))
                     .register(registry)
             )
-            if (oidcUtils.getPidForIssuer(Constants.TOKENX_ISSUER) == null) {
+            if (oidcUtils.getPidForIssuer(Constants.TOKENX_ISSUER) == null
+                && oidcUtils.getSubjectForIssuer(Constants.AZURE_ISSUER) == null
+                && DOK_REQUEST.equals(metrics?.value, true)
+            ) {
                 incrementNotLoggedInRequestCounter(metrics)
             }
         }
     }
 
     fun incrementNotLoggedInRequestCounter(metrics: Metrics?) {
-        Counter.builder((metrics?.value ?: "") + "_not_logged_in")
+        Counter.builder("${metrics?.value ?: ""}_not_logged_in")
             .description(metrics?.description?.ifEmpty { null })
             .tags(*metrics?.extraTags ?: emptyArray())
             .register(registry)

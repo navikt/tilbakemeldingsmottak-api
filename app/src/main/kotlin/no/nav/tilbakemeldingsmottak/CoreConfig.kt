@@ -4,6 +4,7 @@ import io.micrometer.core.instrument.MeterRegistry
 import no.nav.security.token.support.client.spring.oauth2.EnableOAuth2Client
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
 import no.nav.tilbakemeldingsmottak.metrics.DokTimedAspect
+import no.nav.tilbakemeldingsmottak.util.OidcUtils
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,7 +17,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy
 @ConfigurationPropertiesScan
 class CoreConfig {
     @Bean
-    fun dokTimedAspect(meterRegistry: MeterRegistry): DokTimedAspect {
-        return DokTimedAspect(meterRegistry)
+    fun dokTimedAspect(meterRegistry: MeterRegistry, oidcUtils: OidcUtils): DokTimedAspect {
+        return DokTimedAspect(meterRegistry, oidcUtils)
     }
 }

@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.itest
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.tomakehurst.wiremock.client.WireMock
+import io.micrometer.core.instrument.search.MeterNotFoundException
 import no.nav.tilbakemeldingsmottak.ApplicationTest
 import no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER
 import no.nav.tilbakemeldingsmottak.config.Constants
@@ -17,6 +18,8 @@ import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.SVAR_IKKE_NOEDV
 import no.nav.tilbakemeldingsmottak.domain.enums.HendelseType
 import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
+import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER
+import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageResponse
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
@@ -31,6 +34,7 @@ import no.nav.tilbakemeldingsmottak.util.builders.OpprettServiceklageRequestBuil
 import org.apache.commons.lang3.RandomStringUtils
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -96,6 +100,9 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
+        assertThrows<MeterNotFoundException> {
+            metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count()
+        }
     }
 
 
@@ -106,7 +113,7 @@ internal class ServiceklageIT : ApplicationTest() {
         val personnummer = msg.innmelder!!.personnummer!!
 
         // When
-        val requestEntity = HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, personnummer, false))
+        val requestEntity = HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, personnummer, false))
         val response = api?.createServiceklage(requestEntity)
 
         // Then
@@ -122,6 +129,7 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
+        assertTrue(metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count() == 1.0)
     }
 
 
@@ -307,10 +315,12 @@ internal class ServiceklageIT : ApplicationTest() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val requestEntityOpprett =
-            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!))
+            HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, msg.innmelder!!.personnummer!!, false))
         api?.createServiceklage(requestEntityOpprett)
 
         assertEquals(serviceklageRepository!!.count(), 1)
+        assertTrue(metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count() == 1.0)
+
         val fremmetDato = serviceklageRepository!!.findAll().iterator().next().fremmetDato.toString()
         val request = KlassifiserServiceklageRequestBuilder().build(FREMMET_DATO = fremmetDato)
         val requestEntity =
@@ -325,6 +335,7 @@ internal class ServiceklageIT : ApplicationTest() {
         TestTransaction.end()
         TestTransaction.start()
         assertEquals(serviceklageRepository!!.count(), 1)
+        assertTrue(metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count() == 1.0)
 
         val serviceklage = serviceklageRepository!!.findAll().iterator().next()
 
@@ -346,6 +357,8 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(objectMapper.writeValueAsString(request), serviceklage.klassifiseringJson)
+        assertTrue(metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count() == 1.0)
+
     }
 
     @Test
