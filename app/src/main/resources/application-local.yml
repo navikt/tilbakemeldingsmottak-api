@@ -4,8 +4,10 @@ spring:
       on-profile: local
   flyway:
     enabled: true
-    out-of-order: false
+    outOfOrder: false
     table: schema_version
+    validateOnMigrate: true
+    validateMigrationNaming: true
   jpa:
     open-in-view: false
     properties:
