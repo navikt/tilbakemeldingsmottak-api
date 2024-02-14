@@ -68,6 +68,8 @@ class DokTimedAspect private constructor(
                 && DOK_REQUEST.equals(metrics?.value, true)
             ) {
                 incrementNotLoggedInRequestCounter(metrics, pjp)
+            } else {
+                incrementNotLoggedInRequestCounter(metrics, pjp)
             }
         }
     }
