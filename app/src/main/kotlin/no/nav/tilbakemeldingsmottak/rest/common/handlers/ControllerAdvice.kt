@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import org.springframework.web.servlet.resource.NoResourceFoundException
 
 @RestControllerAdvice
 class ControllerAdvice {
@@ -105,7 +106,7 @@ class ControllerAdvice {
     }
 
     // 404
-    @ExceptionHandler(value = [ClientErrorNotFoundException::class])
+    @ExceptionHandler(value = [ClientErrorNotFoundException::class, NoResourceFoundException::class])
     fun notFoundErrorResponse(
         request: HttpServletRequest,
         ex: ClientErrorNotFoundException
