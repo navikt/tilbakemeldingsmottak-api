@@ -20,8 +20,7 @@ import java.util.function.Function
 @Incubating(since = "1.0.0")
 class DokTimedAspect private constructor(
     private val registry: MeterRegistry,
-    private val tagsBasedOnJoinpoint: Function<ProceedingJoinPoint, Iterable<Tag>>,
-    private val oidcUtils: OidcUtils
+    private val tagsBasedOnJoinpoint: Function<ProceedingJoinPoint, Iterable<Tag>>
 ) {
     constructor(registry: MeterRegistry, oidcUtils: OidcUtils) : this(
         registry,
@@ -30,8 +29,7 @@ class DokTimedAspect private constructor(
                 "class", pjp.staticPart.signature.declaringTypeName,
                 "method", pjp.staticPart.signature.name
             )
-        },
-        oidcUtils
+        }
     )
 
     @Around("execution (@no.nav.tilbakemeldingsmottak.metrics.Metrics * *.*(..))")
@@ -43,12 +41,6 @@ class DokTimedAspect private constructor(
         }
         val sample = Timer.start(registry)
         return try {
-            if (DOK_REQUEST.equals(metrics?.value, true) &&
-                (oidcUtils.getPidForIssuer(Constants.TOKENX_ISSUER) == null) &&
-                !(pjp.staticPart?.signature?.declaringTypeName?.contains("TaskProcessingRestController") ?: true)
-            ) {
-                incrementNotLoggedInRequestCounter(metrics, pjp)
-            }
             pjp.proceed()
         } catch (e: Exception) {
             Counter.builder((metrics?.value ?: "") + "_exception")
@@ -72,14 +64,6 @@ class DokTimedAspect private constructor(
         }
     }
 
-    fun incrementNotLoggedInRequestCounter(metrics: Metrics?, pjp: ProceedingJoinPoint) {
-        Counter.builder("${metrics?.value ?: ""}_not_logged_in")
-            .description(metrics?.description?.ifEmpty { null })
-            .tags(*metrics?.extraTags ?: emptyArray())
-            .tags(tagsBasedOnJoinpoint.apply(pjp))
-            .register(registry)
-            .increment()
-    }
 
     private fun isFunctionalException(method: Method, e: Exception): Boolean {
         return listOf(*method.exceptionTypes).contains(e.javaClass) || isFunctionalException(e)

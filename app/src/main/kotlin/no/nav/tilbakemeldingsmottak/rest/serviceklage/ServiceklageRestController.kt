@@ -7,6 +7,7 @@ import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE
 import no.nav.tilbakemeldingsmottak.metrics.Metrics
+import no.nav.tilbakemeldingsmottak.metrics.MetricsUtils
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageResponse
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.OpprettServiceklageService
@@ -24,7 +25,8 @@ import org.springframework.web.bind.annotation.RestController
 class ServiceklageRestController(
     private val opprettServiceklageService: OpprettServiceklageService,
     private val opprettServiceklageValidator: OpprettServiceklageValidator,
-    private val oidcUtils: OidcUtils
+    private val oidcUtils: OidcUtils,
+    private val metricsUtils: MetricsUtils
 ) : ServiceklageRestControllerApi {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -41,6 +43,9 @@ class ServiceklageRestController(
         val paloggetBruker = oidcUtils.getPidForIssuer(TOKENX_ISSUER)
         val innlogget = paloggetBruker != null
         log.info("Bruker er innlogget $innlogget")
+        if (!innlogget) {
+            metricsUtils.incrementNotLoggedInRequestCounter(this.javaClass.name, "opprettServiceklage")
+        }
 
         opprettServiceklageValidator.validateRequest(opprettServiceklageRequest, paloggetBruker)
 

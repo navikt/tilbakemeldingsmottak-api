@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.itest
 
-import io.micrometer.core.instrument.search.MeterNotFoundException
 import no.nav.tilbakemeldingsmottak.ApplicationTest
 import no.nav.tilbakemeldingsmottak.config.Constants
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
@@ -8,7 +7,6 @@ import no.nav.tilbakemeldingsmottak.model.SendRosResponse
 import no.nav.tilbakemeldingsmottak.util.builders.SendRosRequestBuilder
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
