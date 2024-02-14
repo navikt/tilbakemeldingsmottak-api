@@ -1,8 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.ros.service
 
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService
-import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
-import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import no.nav.tilbakemeldingsmottak.model.SendRosRequest
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent
 import org.slf4j.LoggerFactory

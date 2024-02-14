@@ -5,8 +5,6 @@ import com.microsoft.graph.requests.AttachmentCollectionPage
 import com.microsoft.graph.requests.AttachmentCollectionResponse
 import no.nav.tilbakemeldingsmottak.consumer.email.EmailService
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException
-import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
-import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -25,12 +23,6 @@ class AzureEmailService(private val mailClient: AADMailClient) : EmailService {
         sendSimpleMessage(mottakere, subject, content)
     }
 
-    @Metrics(
-        value = MetricLabels.DOK_CONSUMER,
-        extraTags = [MetricLabels.PROCESS_CODE, "sendEpost"],
-        percentiles = [0.5, 0.95],
-        histogram = true
-    )
     override fun sendSimpleMessage(mottakere: List<String>, subject: String, content: String) {
         val message = createMessage(mottakere, subject, content)
         sendMessage(message)
@@ -47,12 +39,6 @@ class AzureEmailService(private val mailClient: AADMailClient) : EmailService {
         sendMessageWithAttachments(mottakere, subject, content, attachment, attachmentName)
     }
 
-    @Metrics(
-        value = MetricLabels.DOK_CONSUMER,
-        extraTags = [MetricLabels.PROCESS_CODE, "sendEpost"],
-        percentiles = [0.5, 0.95],
-        histogram = true
-    )
     override fun sendMessageWithAttachments(
         mottakere: List<String>,
         subject: String,
