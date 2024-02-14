@@ -42,17 +42,13 @@ class DokTimedAspect private constructor(
             return pjp.proceed()
         }
         val sample = Timer.start(registry)
-        try {
+        return try {
             if (DOK_REQUEST.equals(metrics?.value, true) &&
                 (oidcUtils.getPidForIssuer(Constants.TOKENX_ISSUER) == null) &&
                 !(pjp.staticPart?.signature?.declaringTypeName?.contains("TaskProcessingRestController") ?: true)
             ) {
                 incrementNotLoggedInRequestCounter(metrics, pjp)
             }
-        } catch (ex: Exception) {
-            throw ex
-        }
-        return try {
             pjp.proceed()
         } catch (e: Exception) {
             Counter.builder((metrics?.value ?: "") + "_exception")
