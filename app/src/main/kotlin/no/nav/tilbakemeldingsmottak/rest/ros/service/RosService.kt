@@ -17,12 +17,6 @@ class RosService(private val emailService: AzureEmailService) {
     @Value("\${email_nav_support_address}")
     private lateinit var emailToAddress: String
 
-    @Metrics(
-        value = MetricLabels.DOK_CONSUMER,
-        extraTags = [MetricLabels.PROCESS_CODE, "sendEpost"],
-        percentiles = [0.5, 0.95],
-        histogram = true
-    )
     fun sendRos(request: SendRosRequest) {
         emailService.sendSimpleMessage(
             emailToAddress,
