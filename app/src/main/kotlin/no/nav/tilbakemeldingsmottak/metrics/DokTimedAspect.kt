@@ -6,7 +6,6 @@ import io.micrometer.core.instrument.Timer
 import no.nav.tilbakemeldingsmottak.config.Constants
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST
-import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE
 import no.nav.tilbakemeldingsmottak.util.OidcUtils
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
@@ -68,15 +67,16 @@ class DokTimedAspect private constructor(
                 && !pjp.staticPart.signature.declaringTypeName.contains("TaskProcessingRestController")
                 && DOK_REQUEST.equals(metrics?.value, true)
             ) {
-                incrementNotLoggedInRequestCounter(metrics)
+                incrementNotLoggedInRequestCounter(metrics, pjp)
             }
         }
     }
 
-    fun incrementNotLoggedInRequestCounter(metrics: Metrics?) {
+    fun incrementNotLoggedInRequestCounter(metrics: Metrics?, pjp: ProceedingJoinPoint) {
         Counter.builder("${metrics?.value ?: ""}_not_logged_in")
             .description(metrics?.description?.ifEmpty { null })
             .tags(*metrics?.extraTags ?: emptyArray())
+            .tags(tagsBasedOnJoinpoint.apply(pjp))
             .register(registry)
             .increment()
     }
