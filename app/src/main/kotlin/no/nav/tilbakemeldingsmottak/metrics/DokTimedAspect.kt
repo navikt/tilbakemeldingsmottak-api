@@ -3,10 +3,7 @@ package no.nav.tilbakemeldingsmottak.metrics
 import io.micrometer.core.annotation.Incubating
 import io.micrometer.core.instrument.*
 import io.micrometer.core.instrument.Timer
-import no.nav.tilbakemeldingsmottak.config.Constants
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
-import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST
-import no.nav.tilbakemeldingsmottak.util.OidcUtils
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
@@ -22,7 +19,7 @@ class DokTimedAspect private constructor(
     private val registry: MeterRegistry,
     private val tagsBasedOnJoinpoint: Function<ProceedingJoinPoint, Iterable<Tag>>
 ) {
-    constructor(registry: MeterRegistry, oidcUtils: OidcUtils) : this(
+    constructor(registry: MeterRegistry) : this(
         registry,
         Function<ProceedingJoinPoint, Iterable<Tag>> { pjp: ProceedingJoinPoint ->
             Tags.of(
@@ -63,7 +60,6 @@ class DokTimedAspect private constructor(
             )
         }
     }
-
 
     private fun isFunctionalException(method: Method, e: Exception): Boolean {
         return listOf(*method.exceptionTypes).contains(e.javaClass) || isFunctionalException(e)
