@@ -63,9 +63,9 @@ class DokTimedAspect private constructor(
                     .publishPercentiles(*((if (metrics?.percentiles?.isEmpty() == true) null else metrics?.percentiles)!!))
                     .register(registry)
             )
-            if (oidcUtils.getPidForIssuer(Constants.TOKENX_ISSUER) == null &&
-                !pjp.staticPart.signature.declaringTypeName.contains("TaskProcessingRestController") &&
-                DOK_REQUEST.equals(metrics?.value, true)
+            if ((oidcUtils.getPidForIssuer(Constants.TOKENX_ISSUER) == null) &&
+                DOK_REQUEST.equals(metrics?.value, true) &&
+                !(pjp.staticPart?.signature?.declaringTypeName?.contains("TaskProcessingRestController") ?: true)
             ) {
                 incrementNotLoggedInRequestCounter(metrics, pjp)
             }
