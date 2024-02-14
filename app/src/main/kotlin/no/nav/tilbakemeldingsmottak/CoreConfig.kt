@@ -18,6 +18,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy
 class CoreConfig {
     @Bean
     fun dokTimedAspect(meterRegistry: MeterRegistry, oidcUtils: OidcUtils): DokTimedAspect {
-        return DokTimedAspect(meterRegistry, oidcUtils)
+        return DokTimedAspect(meterRegistry)
     }
 }
