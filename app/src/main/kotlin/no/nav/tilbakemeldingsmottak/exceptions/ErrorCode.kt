@@ -6,6 +6,7 @@ enum class ErrorCode(val value: String) {
     GENERAL_ERROR("GENERAL_ERROR"), // generell feilmelding "noe gikk galt"
     AUTH_ERROR("AUTH_ERROR"), // feilmelding for autentisering
     TOKEN_EMAIL_MISSING("TOKEN_EMAIL_MISSING"), // kan ikke hente ut epost fra token
+    NOT_FOUND("NOT_FOUND"), // ressurs ikke funnet
 
     // EREG
     EREG_UNAUTHORIZED("EREG_UNAUTHORIZED"), // ikke autentisert for å hente data fra ereg

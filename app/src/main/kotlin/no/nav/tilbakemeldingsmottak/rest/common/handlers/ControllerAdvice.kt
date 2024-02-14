@@ -109,12 +109,18 @@ class ControllerAdvice {
     @ExceptionHandler(value = [ClientErrorNotFoundException::class, NoResourceFoundException::class])
     fun notFoundErrorResponse(
         request: HttpServletRequest,
-        ex: ClientErrorNotFoundException
+        ex: Exception
     ): ResponseEntity<ErrorResponse> {
-        log.warn("Feil i kall til {}: ({}) {}", request.requestURI, ex.errorCode.value, ex.message, ex)
+        if (ex is ClientErrorNotFoundException) {
+            log.warn("Feil i kall til {}: ({}) {}", request.requestURI, ex.errorCode.value, ex.message, ex)
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ErrorResponse(ex.message, ex.errorCode.value))
+        }
+        log.warn("Feil i kall til {}: {}", request.requestURI, ex.message, ex)
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
-            .body(ErrorResponse(ex.message, ex.errorCode.value))
+            .body(ErrorResponse(ex.message, ErrorCode.NOT_FOUND.value))
     }
 
     // 500
