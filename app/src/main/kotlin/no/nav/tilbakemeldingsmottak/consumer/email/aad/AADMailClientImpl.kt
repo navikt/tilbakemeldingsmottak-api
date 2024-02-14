@@ -20,12 +20,14 @@ class AADMailClientImpl(private val aadProperties: AADProperties, private val gr
     @Value("\${retry-config.send-mail.max-attempts}")
     private val mailMaxAttempts: Int = 0
 
-    @Metrics(
-        value = MetricLabels.DOK_CONSUMER,
-        extraTags = [MetricLabels.PROCESS_CODE, "sendEpost"],
-        percentiles = [0.5, 0.95],
-        histogram = true
-    )
+    /*
+        @Metrics(
+            value = MetricLabels.DOK_CONSUMER,
+            extraTags = [MetricLabels.PROCESS_CODE, "sendEpost"],
+            percentiles = [0.5, 0.95],
+            histogram = true
+        )
+    */
     override fun sendMailViaClient(message: Message) {
         log.debug("Skal sende melding: ${message.subject}, ${message.body?.content}")
 

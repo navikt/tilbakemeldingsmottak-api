@@ -1,6 +1,8 @@
 package no.nav.tilbakemeldingsmottak.rest.ros.service
 
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService
+import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
+import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import no.nav.tilbakemeldingsmottak.model.SendRosRequest
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent
 import org.slf4j.LoggerFactory
@@ -15,6 +17,12 @@ class RosService(private val emailService: AzureEmailService) {
     @Value("\${email_nav_support_address}")
     private lateinit var emailToAddress: String
 
+    @Metrics(
+        value = MetricLabels.DOK_CONSUMER,
+        extraTags = [MetricLabels.PROCESS_CODE, "sendEpost"],
+        percentiles = [0.5, 0.95],
+        histogram = true
+    )
     fun sendRos(request: SendRosRequest) {
         emailService.sendSimpleMessage(
             emailToAddress,
