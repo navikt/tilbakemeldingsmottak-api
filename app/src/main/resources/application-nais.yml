@@ -15,8 +15,7 @@ spring:
     enabled: true
     outOfOrder: false
     table: schema_version
-    validateOnMigrate: true
-    validateMigrationNaming: true
+    validateOnMigrate: false
   jpa:
     open-in-view: false
     properties:
