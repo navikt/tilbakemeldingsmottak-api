@@ -13,9 +13,9 @@ spring:
       leak-detection-threshold: 60000
   flyway:
     enabled: true
-    out-of-order: false
+    outOfOrder: false
     table: schema_version
-    validate-on-migrate: false
+    validateOnMigrate: false
   jpa:
     open-in-view: false
     properties:
