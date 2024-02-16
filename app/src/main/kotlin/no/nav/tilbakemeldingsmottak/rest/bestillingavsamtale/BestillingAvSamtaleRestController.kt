@@ -32,13 +32,16 @@ class BestillingAvSamtaleRestController(
         value = MetricLabels.DOK_REQUEST,
         extraTags = [MetricLabels.PROCESS_CODE, "bestill-samtale"],
         percentiles = [0.5, 0.95],
-        histogram = true
+        histogram = true,
+        internal = false
     )
     override fun bestillingAvSamtale(@RequestBody bestillSamtaleRequest: BestillSamtaleRequest): ResponseEntity<BestillSamtaleResponse> {
-        if (oidcUtils.getPidForIssuer(Constants.TOKENX_ISSUER) == null) {
-            metricsUtils.incrementNotLoggedInRequestCounter(this.javaClass.name, "bestillingAvSamtale")
-        }
-        bestillSamtaleValidator.validateRequest(bestillSamtaleRequest)
+        /*
+                if (oidcUtils.getPidForIssuer(Constants.TOKENX_ISSUER) == null) {
+                    metricsUtils.incrementNotLoggedInRequestCounter(this.javaClass.name, "bestillingAvSamtale")
+                }
+                bestillSamtaleValidator.validateRequest(bestillSamtaleRequest)
+        */
         bestillingAvSamtaleService.bestillSamtale(bestillSamtaleRequest)
         return ResponseEntity
             .status(HttpStatus.OK)

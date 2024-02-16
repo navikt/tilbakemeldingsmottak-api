@@ -36,16 +36,19 @@ class ServiceklageRestController(
         value = DOK_REQUEST,
         extraTags = [PROCESS_CODE, "opprettServiceklage"],
         percentiles = [0.5, 0.95],
-        histogram = true
+        histogram = true,
+        internal = false
     )
     override fun opprettServiceklage(@RequestBody opprettServiceklageRequest: OpprettServiceklageRequest): ResponseEntity<OpprettServiceklageResponse> {
         log.info("Mottatt serviceklage via skjema på nav.no")
         val paloggetBruker = oidcUtils.getPidForIssuer(TOKENX_ISSUER)
         val innlogget = paloggetBruker != null
         log.info("Bruker er innlogget $innlogget")
-        if (!innlogget) {
-            metricsUtils.incrementNotLoggedInRequestCounter(this.javaClass.name, "opprettServiceklage")
-        }
+        /*
+                if (!innlogget) {
+                    metricsUtils.incrementNotLoggedInRequestCounter(this.javaClass.name, "opprettServiceklage")
+                }
+        */
 
         opprettServiceklageValidator.validateRequest(opprettServiceklageRequest, paloggetBruker)
 

@@ -28,11 +28,19 @@ class RosRestController(
 ) : RosRestControllerApi {
 
     @Transactional
-    @Metrics(value = DOK_REQUEST, extraTags = [PROCESS_CODE, "sendRos"], percentiles = [0.5, 0.95], histogram = true)
+    @Metrics(
+        value = DOK_REQUEST,
+        extraTags = [PROCESS_CODE, "sendRos"],
+        percentiles = [0.5, 0.95],
+        histogram = true,
+        internal = false
+    )
     override fun sendRos(@RequestBody sendRosRequest: SendRosRequest): ResponseEntity<SendRosResponse> {
-        if (oidcUtils.getPidForIssuer(Constants.TOKENX_ISSUER) == null) {
-            metricsUtils.incrementNotLoggedInRequestCounter(this.javaClass.name, "sendRos")
-        }
+        /*
+                if (oidcUtils.getPidForIssuer(Constants.TOKENX_ISSUER) == null) {
+                    metricsUtils.incrementNotLoggedInRequestCounter(this.javaClass.name, "sendRos")
+                }
+        */
         sendRosValidator.validateRequest(sendRosRequest)
         rosService.sendRos(sendRosRequest)
         return ResponseEntity

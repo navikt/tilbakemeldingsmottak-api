@@ -34,7 +34,8 @@ class Norg2Consumer(
         value = DOK_CONSUMER,
         extraTags = [PROCESS_CODE, "hentEnheter"],
         percentiles = [0.5, 0.95],
-        histogram = true
+        histogram = true,
+        internal = true
     )
     @Retryable(include = [ServerErrorException::class], backoff = Backoff(delay = 1000))
     @Cacheable(

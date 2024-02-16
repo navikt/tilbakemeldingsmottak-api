@@ -4,6 +4,7 @@ import io.micrometer.core.annotation.Incubating
 import io.micrometer.core.instrument.*
 import io.micrometer.core.instrument.Timer
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
+import no.nav.tilbakemeldingsmottak.util.OidcUtils
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
@@ -17,16 +18,20 @@ import java.util.function.Function
 @Incubating(since = "1.0.0")
 class DokTimedAspect private constructor(
     private val registry: MeterRegistry,
-    private val tagsBasedOnJoinpoint: Function<ProceedingJoinPoint, Iterable<Tag>>
+    private val tagsBasedOnJoinpoint: Function<ProceedingJoinPoint, Iterable<Tag>>,
+    private val oidcUtils: OidcUtils,
+    private val metricsUtils: MetricsUtils
 ) {
-    constructor(registry: MeterRegistry) : this(
+    constructor(registry: MeterRegistry, oidcUtils: OidcUtils, metricsUtils: MetricsUtils) : this(
         registry,
         Function<ProceedingJoinPoint, Iterable<Tag>> { pjp: ProceedingJoinPoint ->
             Tags.of(
                 "class", pjp.staticPart.signature.declaringTypeName,
                 "method", pjp.staticPart.signature.name
             )
-        }
+        },
+        oidcUtils,
+        metricsUtils
     )
 
     @Around("execution (@no.nav.tilbakemeldingsmottak.metrics.Metrics * *.*(..))")
@@ -58,6 +63,13 @@ class DokTimedAspect private constructor(
                     .publishPercentiles(*((if (metrics?.percentiles?.isEmpty() == true) null else metrics?.percentiles)!!))
                     .register(registry)
             )
+            if (!(metrics?.internal ?: false) && !oidcUtils.isLoggedIn(metrics?.internal ?: false)) {
+                metricsUtils.incrementNotLoggedInRequestCounter(
+                    clazz = method.declaringClass.name,
+                    method = method.name
+                )
+            }
+
         }
     }
 

@@ -33,7 +33,8 @@ class HentDokumentConsumer(
         value = DOK_CONSUMER,
         extraTags = [PROCESS_CODE, "hentDokument"],
         percentiles = [0.5, 0.95],
-        histogram = true
+        histogram = true,
+        internal = true
     )
     @Retryable(include = [ServerErrorException::class], backoff = Backoff(delay = 3, multiplier = 500.0))
     override fun hentDokument(

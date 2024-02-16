@@ -33,7 +33,8 @@ class JournalpostConsumer(
         value = DOK_CONSUMER,
         extraTags = [PROCESS_CODE, "opprettJournalpost"],
         percentiles = [0.5, 0.95],
-        histogram = true
+        histogram = true,
+        internal = true
     )
     fun opprettJournalpost(opprettJournalpostRequestTo: OpprettJournalpostRequestTo): OpprettJournalpostResponseTo {
         val callId = MDC.get(MDC_CALL_ID)

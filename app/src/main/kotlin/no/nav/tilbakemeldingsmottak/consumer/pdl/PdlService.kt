@@ -26,7 +26,8 @@ class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQLWe
         value = MetricLabels.DOK_CONSUMER,
         extraTags = [MetricLabels.PROCESS_CODE, "hentAktoerIdForIdent"],
         percentiles = [0.5, 0.95],
-        histogram = true
+        histogram = true,
+        internal = true
     )
     fun hentPersonIdents(brukerId: String): List<IdentDto> = runBlocking {
         log.info("Skal hente en personsidenter fra PDL")

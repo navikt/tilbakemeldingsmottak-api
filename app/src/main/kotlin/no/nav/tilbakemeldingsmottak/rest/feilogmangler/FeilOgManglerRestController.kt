@@ -30,12 +30,15 @@ class FeilOgManglerRestController(
         value = MetricLabels.DOK_REQUEST,
         extraTags = [MetricLabels.PROCESS_CODE, "meldFeilOgMangler"],
         percentiles = [0.5, 0.95],
-        histogram = true
+        histogram = true,
+        internal = false
     )
     override fun meldFeilOgMangler(@RequestBody meldFeilOgManglerRequest: MeldFeilOgManglerRequest): ResponseEntity<MeldFeilOgManglerResponse> {
-        if (oidcUtils.getPidForIssuer(Constants.TOKENX_ISSUER) == null) {
-            metricsUtils.incrementNotLoggedInRequestCounter(this.javaClass.name, "meldFeilOgMangler")
-        }
+        /*
+                if (oidcUtils.getPidForIssuer(Constants.TOKENX_ISSUER) == null) {
+                    metricsUtils.incrementNotLoggedInRequestCounter(this.javaClass.name, "meldFeilOgMangler")
+                }
+        */
         meldFeilOgManglerValidator.validateRequest(meldFeilOgManglerRequest)
         feilOgManglerService.meldFeilOgMangler(meldFeilOgManglerRequest)
         return ResponseEntity
