@@ -2,6 +2,8 @@ package no.nav.tilbakemeldingsmottak.util
 
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import no.nav.security.token.support.core.jwt.JwtToken
+import no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER
+import no.nav.tilbakemeldingsmottak.config.Constants.TOKENX_ISSUER
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -35,6 +37,14 @@ class OidcUtils(private val tokenValidationContextHolder: TokenValidationContext
             pid.takeIf { it != null }
         } catch (e: Exception) {
             throw RuntimeException("Feil i parsing av token (getPidForIssuer)", e)
+        }
+    }
+
+    fun isLoggedIn(internal: Boolean): Boolean {
+        if (internal) {
+            return getPidForIssuer(AZURE_ISSUER) != null
+        } else {
+            return getPidForIssuer(TOKENX_ISSUER) != null
         }
     }
 

@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader
 import com.nimbusds.jose.JOSEObjectType
+import io.micrometer.core.instrument.MeterRegistry
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
@@ -66,6 +67,9 @@ class ApplicationTest {
 
     @Autowired
     lateinit var webApplicationContext: WebApplicationContext
+
+    @Autowired
+    lateinit var metricsRegistery: MeterRegistry
 
     @Value("\${local.server.port}")
     private val serverPort = 0
@@ -189,6 +193,7 @@ class ApplicationTest {
                         .withBody("{}")
                 )
         )
+        metricsRegistery.clear()
     }
 
     @AfterEach

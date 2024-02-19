@@ -25,7 +25,8 @@ class FeilOgManglerRestController(
         value = MetricLabels.DOK_REQUEST,
         extraTags = [MetricLabels.PROCESS_CODE, "meldFeilOgMangler"],
         percentiles = [0.5, 0.95],
-        histogram = true
+        histogram = true,
+        internal = false
     )
     override fun meldFeilOgMangler(@RequestBody meldFeilOgManglerRequest: MeldFeilOgManglerRequest): ResponseEntity<MeldFeilOgManglerResponse> {
         meldFeilOgManglerValidator.validateRequest(meldFeilOgManglerRequest)

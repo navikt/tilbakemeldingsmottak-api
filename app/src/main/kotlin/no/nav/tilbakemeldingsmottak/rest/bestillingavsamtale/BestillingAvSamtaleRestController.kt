@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController
 
 @ProtectedWithClaims(issuer = "azuread")
 @RestController
-class BestillingAvSamtaleRestController(private val bestillingAvSamtaleService: BestillingAvSamtaleService) :
-    BestillingAvSamtaleRestControllerApi {
+class BestillingAvSamtaleRestController(
+    private val bestillingAvSamtaleService: BestillingAvSamtaleService
+) : BestillingAvSamtaleRestControllerApi {
+
     private val bestillSamtaleValidator: BestillSamtaleValidator = BestillSamtaleValidator()
 
     @Transactional
@@ -25,7 +27,8 @@ class BestillingAvSamtaleRestController(private val bestillingAvSamtaleService: 
         value = MetricLabels.DOK_REQUEST,
         extraTags = [MetricLabels.PROCESS_CODE, "bestill-samtale"],
         percentiles = [0.5, 0.95],
-        histogram = true
+        histogram = true,
+        internal = false
     )
     override fun bestillingAvSamtale(@RequestBody bestillSamtaleRequest: BestillSamtaleRequest): ResponseEntity<BestillSamtaleResponse> {
         bestillSamtaleValidator.validateRequest(bestillSamtaleRequest)

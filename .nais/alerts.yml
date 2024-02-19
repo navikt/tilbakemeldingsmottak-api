@@ -39,3 +39,18 @@ spec:
             special_type_to_use_in_alertmanager_config: {{common-labels.special_type_to_use_in_alertmanager_config}}
             alert_type: custom
             severity: warning
+        - alert: High number of not logged in user requests
+          expr: sum by(app) (increase(dok_request_not_logged_in_total{container="{{common-labels.service}}", namespace="{{common-labels.namespace}}"}[30m])) > {{number_of_not_logged_in_requests}}
+          for: 5m
+          annotations:
+            title: "High number of not logged in user requests"
+            consequence: "This might indicate a denial of service attack. Check Grafana and also logs for cause and evaluation of consequences."
+            action: {{ error_grafana_url }}
+            summary: "Service has reported more than {{number_of_not_logged_in_requests}} not-logged-on user requests within 30 minutes."
+            sla: "Action should be taken as soon as possible to check the cause of this unusal activity"
+          labels:
+            service: {{common-labels.service}}
+            namespace: {{common-labels.to_namespace}}
+            special_type_to_use_in_alertmanager_config: {{common-labels.special_type_to_use_in_alertmanager_config}}
+            alert_type: custom
+            severity: warning

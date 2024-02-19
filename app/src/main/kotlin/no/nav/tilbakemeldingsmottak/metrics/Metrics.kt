@@ -18,5 +18,6 @@ annotation class Metrics(
     val extraTags: Array<String> = [],
     val percentiles: DoubleArray = [],
     val description: String = "",
-    val histogram: Boolean = false
+    val histogram: Boolean = false,
+    val internal: Boolean = true // Brukes for å skille mellom Eksterne Rest endepunkt og interne endepunkt
 )

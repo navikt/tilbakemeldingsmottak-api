@@ -3,6 +3,8 @@ package no.nav.tilbakemeldingsmottak.consumer.email.aad
 import com.microsoft.graph.models.Message
 import com.microsoft.graph.models.UserSendMailParameterSet
 import com.microsoft.graph.requests.GraphServiceClient
+import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
+import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile

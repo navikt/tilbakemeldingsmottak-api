@@ -74,7 +74,9 @@ class TaskProcessingRestController(
     }
 
     @Transactional
-    @Metrics(value = DOK_REQUEST, extraTags = [PROCESS_CODE, "hentSkjema"], percentiles = [0.5, 0.95], histogram = true)
+    @Metrics(
+        value = DOK_REQUEST, extraTags = [PROCESS_CODE, "hentSkjema"], percentiles = [0.5, 0.95], histogram = true
+    )
     override fun hentSkjema(@PathVariable oppgaveId: String): ResponseEntity<HentSkjemaResponse> {
         val hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId)
 
