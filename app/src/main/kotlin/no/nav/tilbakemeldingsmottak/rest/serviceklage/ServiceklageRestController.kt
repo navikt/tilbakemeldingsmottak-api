@@ -25,8 +25,7 @@ import org.springframework.web.bind.annotation.RestController
 class ServiceklageRestController(
     private val opprettServiceklageService: OpprettServiceklageService,
     private val opprettServiceklageValidator: OpprettServiceklageValidator,
-    private val oidcUtils: OidcUtils,
-    private val metricsUtils: MetricsUtils
+    private val oidcUtils: OidcUtils
 ) : ServiceklageRestControllerApi {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -44,11 +43,6 @@ class ServiceklageRestController(
         val paloggetBruker = oidcUtils.getPidForIssuer(TOKENX_ISSUER)
         val innlogget = paloggetBruker != null
         log.info("Bruker er innlogget $innlogget")
-        /*
-                if (!innlogget) {
-                    metricsUtils.incrementNotLoggedInRequestCounter(this.javaClass.name, "opprettServiceklage")
-                }
-        */
 
         opprettServiceklageValidator.validateRequest(opprettServiceklageRequest, paloggetBruker)
 

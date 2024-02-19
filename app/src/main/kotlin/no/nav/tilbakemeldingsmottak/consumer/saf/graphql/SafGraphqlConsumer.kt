@@ -28,8 +28,7 @@ class SafGraphqlConsumer(
         value = DOK_CONSUMER,
         extraTags = [PROCESS_CODE, "safJournalpostquery"],
         percentiles = [0.5, 0.95],
-        histogram = true,
-        internal = true
+        histogram = true
     )
     @Retryable(include = [ServerErrorException::class], maxAttempts = 3, backoff = Backoff(delay = 500))
     fun performQuery(graphQLRequest: GraphQLRequest, authorizationHeader: String?): SafJournalpostTo {

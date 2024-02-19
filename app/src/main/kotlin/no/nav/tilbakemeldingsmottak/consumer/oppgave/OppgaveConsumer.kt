@@ -33,8 +33,7 @@ class OppgaveConsumer(
         value = DOK_CONSUMER,
         extraTags = [PROCESS_CODE, "opprettOppgave"],
         percentiles = [0.5, 0.95],
-        histogram = true,
-        internal = true
+        histogram = true
     )
     fun opprettOppgave(opprettOppgaveRequestTo: OpprettOppgaveRequestTo): OpprettOppgaveResponseTo {
         log.info("Oppretter oppgave for journalpostId: {}", opprettOppgaveRequestTo.journalpostId)
@@ -59,8 +58,7 @@ class OppgaveConsumer(
         value = DOK_CONSUMER,
         extraTags = [PROCESS_CODE, "endreOppgave"],
         percentiles = [0.5, 0.95],
-        histogram = true,
-        internal = true
+        histogram = true
     )
     fun endreOppgave(endreOppgaveRequestTo: EndreOppgaveRequestTo): String {
         log.info(
@@ -89,8 +87,7 @@ class OppgaveConsumer(
         value = DOK_CONSUMER,
         extraTags = [PROCESS_CODE, "hentOppgave"],
         percentiles = [0.5, 0.95],
-        histogram = true,
-        internal = true
+        histogram = true
     )
     fun hentOppgave(oppgaveId: String): HentOppgaveResponseTo {
         log.info("Henter oppgave med id={}", oppgaveId)

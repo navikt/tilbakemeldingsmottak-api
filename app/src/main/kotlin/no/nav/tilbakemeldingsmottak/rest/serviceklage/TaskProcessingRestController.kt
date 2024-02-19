@@ -43,8 +43,7 @@ class TaskProcessingRestController(
         value = DOK_REQUEST,
         extraTags = [PROCESS_CODE, "klassifiserServiceklage"],
         percentiles = [0.5, 0.95],
-        histogram = true,
-        internal = true
+        histogram = true
     )
     override fun klassifiserServiceklage(
         @RequestParam oppgaveId: String,
@@ -76,8 +75,7 @@ class TaskProcessingRestController(
 
     @Transactional
     @Metrics(
-        value = DOK_REQUEST, extraTags = [PROCESS_CODE, "hentSkjema"], percentiles = [0.5, 0.95], histogram = true,
-        internal = true
+        value = DOK_REQUEST, extraTags = [PROCESS_CODE, "hentSkjema"], percentiles = [0.5, 0.95], histogram = true
     )
     override fun hentSkjema(@PathVariable oppgaveId: String): ResponseEntity<HentSkjemaResponse> {
         val hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId)
@@ -96,8 +94,7 @@ class TaskProcessingRestController(
         value = DOK_REQUEST,
         extraTags = [PROCESS_CODE, "hentDokument"],
         percentiles = [0.5, 0.95],
-        histogram = true,
-        internal = true
+        histogram = true
     )
     override fun hentDokument(@PathVariable oppgaveId: String): ResponseEntity<HentDokumentResponse> {
         val hentOppgaveResponseTo = oppgaveConsumer.hentOppgave(oppgaveId)

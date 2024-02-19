@@ -63,9 +63,10 @@ class DokTimedAspect private constructor(
                     .publishPercentiles(*((if (metrics?.percentiles?.isEmpty() == true) null else metrics?.percentiles)!!))
                     .register(registry)
             )
-            if (!(metrics?.internal ?: false) && !oidcUtils.isLoggedIn(metrics?.internal ?: false)) {
+            val isInternal = metrics?.internal ?: false
+            if (!(isInternal) && !oidcUtils.isLoggedIn(isInternal)) {
                 metricsUtils.incrementNotLoggedInRequestCounter(
-                    clazz = method.declaringClass.name,
+                    className = method.declaringClass.name,
                     method = method.name
                 )
             }

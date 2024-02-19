@@ -44,8 +44,8 @@ spec:
           for: 5m
           annotations:
             title: "High number of not logged in user requests"
-            consequence: "This might indicate a denial of service attack. Check logs for cause and evaluation of consequences."
-            action: {{ error_log_url }}
+            consequence: "This might indicate a denial of service attack. Check Grafana and also logs for cause and evaluation of consequences."
+            action: {{ error_grafana_url }}
             summary: "Service has reported more than {{number_of_not_logged_in_requests}} not-logged-on user requests within 30 minutes."
             sla: "Action should be taken as soon as possible to check the cause of this unusal activity"
           labels:

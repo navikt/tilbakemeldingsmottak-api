@@ -28,8 +28,7 @@ class EregConsumer(
         value = DOK_CONSUMER,
         extraTags = [PROCESS_CODE, "eregHentInfo"],
         percentiles = [0.5, 0.95],
-        histogram = true,
-        internal = true
+        histogram = true
     )
     override fun hentInfo(orgnr: String): String {
         val orgnrTrimmed = orgnr.trim()

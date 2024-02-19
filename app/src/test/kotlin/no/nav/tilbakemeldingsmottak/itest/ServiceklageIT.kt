@@ -87,6 +87,9 @@ internal class ServiceklageIT : ApplicationTest() {
 
         // When
         assertEquals(HttpStatus.OK, response?.statusCode)
+        assertThrows<MeterNotFoundException> {
+            metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count()
+        }
 
         // Then
         val serviceklage = serviceklageRepository!!.findAll().first()
@@ -114,6 +117,7 @@ internal class ServiceklageIT : ApplicationTest() {
         // When
         val requestEntity = HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, personnummer, false))
         val response = api?.createServiceklage(requestEntity)
+        assertEquals(1.0, metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count())
 
         // Then
         val serviceklage = serviceklageRepository!!.findAll().first()
@@ -128,7 +132,7 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
-        assertTrue(metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count() == 1.0)
+        assertEquals(1.0, metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count())
     }
 
 
@@ -314,11 +318,11 @@ internal class ServiceklageIT : ApplicationTest() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val requestEntityOpprett =
-            HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, msg.innmelder!!.personnummer!!, false))
+            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!, false))
         api?.createServiceklage(requestEntityOpprett)
 
         assertEquals(serviceklageRepository!!.count(), 1)
-        assertTrue(metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count() == 1.0)
+        assertEquals(1.0, metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count())
 
         val fremmetDato = serviceklageRepository!!.findAll().iterator().next().fremmetDato.toString()
         val request = KlassifiserServiceklageRequestBuilder().build(FREMMET_DATO = fremmetDato)
@@ -334,7 +338,7 @@ internal class ServiceklageIT : ApplicationTest() {
         TestTransaction.end()
         TestTransaction.start()
         assertEquals(serviceklageRepository!!.count(), 1)
-        assertTrue(metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count() == 1.0)
+        assertEquals(1.0, metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count())
 
         val serviceklage = serviceklageRepository!!.findAll().iterator().next()
 
@@ -356,7 +360,6 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(objectMapper.writeValueAsString(request), serviceklage.klassifiseringJson)
-        assertTrue(metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count() == 1.0)
 
     }
 
