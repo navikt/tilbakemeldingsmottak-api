@@ -15,6 +15,7 @@ on:
         options:
           - none
           - preprod
+          - preprod-q2
           - prod
 
 jobs:
@@ -52,6 +53,7 @@ jobs:
   deploy-preprod:
     needs: [build-and-push]
     if: github.event.inputs.environment == 'preprod'
+    name: Deploy to preprod-q1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -60,6 +62,22 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: .nais/nais.yml
           VARS: .nais/preprod-config.json
+          VAR: image=${{needs.build-and-push.outputs.image}}
+          DRY_RUN: false
+
+
+  deploy-preprod-q2:
+    needs: [build-and-push]
+    if: github.event.inputs.environment == 'preprod-q2'
+    name: Deploy to preprod-q2
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/nais.yml
+          VARS: .nais/preprod-config-q2.json
           VAR: image=${{needs.build-and-push.outputs.image}}
           DRY_RUN: false
 
@@ -78,8 +96,8 @@ jobs:
           DRY_RUN: false
 
   deploy-alerts-preprod:
-    if: github.event.inputs.environment == 'preprod'
-    needs: [deploy-preprod]
+    needs: [deploy-preprod, deploy-preprod-q2]
+    if: ${{ always() && (needs.deploy-preprod.result == 'success' || needs.deploy-preprod-q2.result == 'success') }}
     name: Deploy alerts to dev
     runs-on: ubuntu-latest
     steps:
