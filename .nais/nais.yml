@@ -25,7 +25,6 @@ spec:
           permissions:
             scopes:
               - serviceklage-klassifisering
-
     outbound:
       external:
       {{#each outboundExternalHosts}}
@@ -33,6 +32,10 @@ spec:
       {{/each}}
   tokenx:
     enabled: true
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   liveness:
     path: /isAlive
     port: 9069
