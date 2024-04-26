@@ -12,20 +12,19 @@ import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType
+import org.springframework.http.client.ClientHttpResponse
 import org.springframework.stereotype.Component
+import org.springframework.web.client.RestClient
 import org.springframework.web.reactive.function.BodyInserters
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.lang.String.format
 
 @Component
 class OppgaveConsumer(
-    @Value("\${oppgave_oppgaver_url}") private val oppgaveUrl: String,
-    @Qualifier("oppgaveClient") private val webClient: WebClient
+    @Qualifier("oppgaveRestClient") private val restClient: RestClient
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -38,20 +37,18 @@ class OppgaveConsumer(
     fun opprettOppgave(opprettOppgaveRequestTo: OpprettOppgaveRequestTo): OpprettOppgaveResponseTo {
         log.info("Oppretter oppgave for journalpostId: {}", opprettOppgaveRequestTo.journalpostId)
 
-        return webClient
+        return restClient
             .method(HttpMethod.POST)
-            .uri(oppgaveUrl)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(opprettOppgaveRequestTo))
             .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
             .retrieve()
-            .bodyToMono(OpprettOppgaveResponseTo::class.java)
-            .doOnError { t -> handleError(t, "oppgave (opprett oppgave)") }
-            .block() ?: throw ServerErrorException(
-            message = "Klarte ikke opprette oppgave",
-            errorCode = ErrorCode.OPPGAVE_ERROR
-        )
+            .onStatus(HttpStatusCode::isError) { _, response ->
+                handleError(response, "oppgave (opprett oppgave)")
+            }
+            .body(OpprettOppgaveResponseTo::class.java)
+            ?: throw ClientErrorException("Ingen response ved oppretting av oppgave for journalpostId = $opprettOppgaveRequestTo.journalpostId")
     }
 
     @Metrics(
@@ -67,20 +64,19 @@ class OppgaveConsumer(
             endreOppgaveRequestTo.journalpostId
         )
 
-        return webClient
+        return restClient
             .method(HttpMethod.PATCH)
-            .uri("$oppgaveUrl/${endreOppgaveRequestTo.id}")
+            .uri("/${endreOppgaveRequestTo.id}")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(endreOppgaveRequestTo))
             .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
             .retrieve()
-            .bodyToMono(String::class.java)
-            .doOnError { t -> handleError(t, "oppgave (endre oppgave)") }
-            .block() ?: throw ServerErrorException(
-            message = "Klarte ikke endre oppgave",
-            errorCode = ErrorCode.OPPGAVE_ERROR
-        )
+            .onStatus(HttpStatusCode::isError) { _, response ->
+                handleError(response, "oppgave (endre oppgave)")
+            }
+            .body(String::class.java)
+            ?: "Ingen response ved endring av oppgave ${endreOppgaveRequestTo.id} for journalpostId ${endreOppgaveRequestTo.journalpostId}"
     }
 
     @Metrics(
@@ -92,46 +88,40 @@ class OppgaveConsumer(
     fun hentOppgave(oppgaveId: String): HentOppgaveResponseTo {
         log.info("Henter oppgave med id={}", oppgaveId)
 
-        return webClient
+        return restClient
             .method(HttpMethod.GET)
-            .uri("$oppgaveUrl/$oppgaveId")
+            .uri("/$oppgaveId")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(oppgaveId))
             .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
             .retrieve()
-            .bodyToMono(HentOppgaveResponseTo::class.java)
-            .doOnError { t -> handleError(t, "oppgave (hent oppgave)") }
-            .block() ?: throw ServerErrorException(
-            message = "Klarte ikke hente oppgave",
-            errorCode = ErrorCode.OPPGAVE_ERROR
-        )
+            .body(HentOppgaveResponseTo::class.java)
+            ?: throw ClientErrorException("Ingen oppgave hentet for oppgave id= $oppgaveId")
     }
 
-    private fun handleError(error: Throwable, serviceName: String) {
-        if (error is WebClientResponseException) {
-            val statusCode = error.statusCode
-            val responseBody = error.responseBodyAsString
-            val errorMessage =
-                format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody)
+    private fun handleError(response: ClientHttpResponse, serviceName: String) {
+        val statusCode = response.statusCode
+        val responseBody = response.body
+        val errorMessage =
+            format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody)
 
-            if (statusCode == HttpStatus.UNAUTHORIZED) {
-                throw ClientErrorUnauthorizedException(errorMessage, error, ErrorCode.OPPGAVE_UNAUTHORIZED)
-            }
-
-            if (statusCode == HttpStatus.FORBIDDEN) {
-                throw ClientErrorForbiddenException(errorMessage, error, ErrorCode.OPPGAVE_FORBIDDEN)
-            }
-
-            if (statusCode == HttpStatus.NOT_FOUND) {
-                throw ClientErrorNotFoundException(errorMessage, error, ErrorCode.OPPGAVE_NOT_FOUND)
-            }
-
-            if (statusCode.is4xxClientError) {
-                throw ClientErrorException(errorMessage, error, ErrorCode.OPPGAVE_ERROR)
-            }
-
-            throw ServerErrorException(errorMessage, error, ErrorCode.OPPGAVE_ERROR)
+        if (statusCode == HttpStatus.UNAUTHORIZED) {
+            throw ClientErrorUnauthorizedException(errorMessage, null, ErrorCode.OPPGAVE_UNAUTHORIZED)
         }
+
+        if (statusCode == HttpStatus.FORBIDDEN) {
+            throw ClientErrorForbiddenException(errorMessage, null, ErrorCode.OPPGAVE_FORBIDDEN)
+        }
+
+        if (statusCode == HttpStatus.NOT_FOUND) {
+            throw ClientErrorNotFoundException(errorMessage, null, ErrorCode.OPPGAVE_NOT_FOUND)
+        }
+
+        if (statusCode.is4xxClientError) {
+            throw ClientErrorException(errorMessage, null, ErrorCode.OPPGAVE_ERROR)
+        }
+
+        throw ServerErrorException(errorMessage, null, ErrorCode.OPPGAVE_ERROR)
     }
 }

@@ -36,39 +36,41 @@ class RestClientTemplateSupport(
     @Value("\${pdl.url}")
     lateinit var pdlUrl: String
 
-    @Bean
-    @Qualifier("arkivClient")
-    @Scope("prototype")
-    fun arkivClient(): WebClient {
-        val clientProperties = clientConfigurationProperties.registration["arkiv"]
-            ?: throw RuntimeException("Fant ikke konfigurering for arkiv")
+    /*
+        @Bean
+        @Qualifier("arkivClient")
+        @Scope("prototype")
+        fun arkivClient(): WebClient {
+            val clientProperties = clientConfigurationProperties.registration["arkiv"]
+                ?: throw RuntimeException("Fant ikke konfigurering for arkiv")
 
-        return webclientBuilder(buildHttpClient(5000, 60, 60), clientProperties).build()
-    }
+            return webclientBuilder(buildHttpClient(5000, 60, 60), clientProperties).build()
+        }
 
-    @Bean
-    @Qualifier("eregClient")
-    @Scope("prototype")
-    fun eregClient(): WebClient {
-        return webclientBuilder(buildHttpClient(5000, 60, 60)).build()
-    }
+        @Bean
+        @Qualifier("eregClient")
+        @Scope("prototype")
+        fun eregClient(): WebClient {
+            return webclientBuilder(buildHttpClient(5000, 60, 60)).build()
+        }
 
-    @Bean
-    @Qualifier("norg2Client")
-    @Scope("prototype")
-    fun norg2Client(): WebClient {
-        return webclientBuilder(buildHttpClient(5000, 60, 60)).build()
-    }
+        @Bean
+        @Qualifier("norg2Client")
+        @Scope("prototype")
+        fun norg2Client(): WebClient {
+            return webclientBuilder(buildHttpClient(5000, 60, 60)).build()
+        }
 
-    @Bean
-    @Qualifier("oppgaveClient")
-    @Scope("prototype")
-    fun oppgaveClient(): WebClient {
-        val clientProperties = clientConfigurationProperties.registration["oppgave"]
-            ?: throw RuntimeException("Fant ikke konfigurering for oppgave")
+        @Bean
+        @Qualifier("oppgaveClient")
+        @Scope("prototype")
+        fun oppgaveClient(): WebClient {
+            val clientProperties = clientConfigurationProperties.registration["oppgave"]
+                ?: throw RuntimeException("Fant ikke konfigurering for oppgave")
 
-        return webclientBuilder(buildHttpClient(5000, 60, 60), clientProperties).build()
-    }
+            return webclientBuilder(buildHttpClient(5000, 60, 60), clientProperties).build()
+        }
+    */
 
     @Bean
     @Qualifier("safclient")

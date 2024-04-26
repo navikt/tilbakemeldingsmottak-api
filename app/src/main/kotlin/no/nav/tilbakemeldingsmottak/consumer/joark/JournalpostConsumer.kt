@@ -11,19 +11,18 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory.getLogger
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.http.client.ClientHttpResponse
 import org.springframework.stereotype.Component
+import org.springframework.web.client.RestClient
 import org.springframework.web.reactive.function.BodyInserters
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
 
 @Component
 class JournalpostConsumer(
-    @Qualifier("arkivClient") private val webClient: WebClient,
-    @Value("\${Journalpost_v1_url}") private val journalpostUrl: String
+    @Qualifier("arkivRestClient") private val restClient: RestClient,
 ) {
 
     private val log: Logger = getLogger(javaClass)
@@ -39,47 +38,44 @@ class JournalpostConsumer(
         val callId = MDC.get(MDC_CALL_ID)
         log.info("Oppretter journalpost for callId {}", callId)
 
-        val journalpostReponse = webClient
+        val journalpostReponse = restClient
             .method(HttpMethod.POST)
-            .uri("$journalpostUrl/journalpost/$FORSOEK_FERDIGSTILL")
+            .uri("/journalpost/$FORSOEK_FERDIGSTILL")
             .contentType(APPLICATION_JSON)
             .accept(APPLICATION_JSON)
             .body(BodyInserters.fromValue(opprettJournalpostRequestTo))
             .header("Nav-Callid", callId)
             .header("Nav-Consumer-Id", "srvtilbakemeldings")
             .retrieve()
-            .bodyToMono(OpprettJournalpostResponseTo::class.java)
-            .doOnError { t -> handleError(t, "JOARK (dokarkiv)") }
-            .block() ?: throw ServerErrorException(
-            message = "Klarte ikke å opprette journalpost",
-            errorCode = ErrorCode.DOKARKIV_ERROR
-        )
+            .onStatus(HttpStatusCode::isError) { _, response ->
+                handleError(response, "JOARK (dokarkiv)")
+            }
+            .body(OpprettJournalpostResponseTo::class.java)
+            ?: throw ClientErrorException("Kall mot JOARK (dokarkiv) feilet")
 
         log.info("Opprettet journalpost med journalpostId: {}", journalpostReponse.journalpostId)
 
         return journalpostReponse
     }
 
-    private fun handleError(error: Throwable, serviceName: String) {
-        if (error is WebClientResponseException) {
-            val statusCode = error.statusCode
-            val responseBody = error.responseBodyAsString
-            val errorMessage =
-                String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody)
+    private fun handleError(response: ClientHttpResponse, serviceName: String) {
+        val statusCode = response.statusCode
+        val responseBody = response.body
+        val errorMessage =
+            String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody)
 
-            if (statusCode == HttpStatus.UNAUTHORIZED) {
-                throw ClientErrorUnauthorizedException(errorMessage, error, ErrorCode.DOKARKIV_UNAUTHORIZED)
-            }
-
-            if (statusCode == HttpStatus.FORBIDDEN) {
-                throw ClientErrorForbiddenException(errorMessage, error, ErrorCode.DOKARKIV_FORBIDDEN)
-            }
-
-            if (statusCode.is4xxClientError) {
-                throw ClientErrorException(errorMessage, error, ErrorCode.DOKARKIV_ERROR)
-            }
-
-            throw ServerErrorException(errorMessage, error, ErrorCode.DOKARKIV_ERROR)
+        if (statusCode == HttpStatus.UNAUTHORIZED) {
+            throw ClientErrorUnauthorizedException(errorMessage, null, ErrorCode.DOKARKIV_UNAUTHORIZED)
         }
+
+        if (statusCode == HttpStatus.FORBIDDEN) {
+            throw ClientErrorForbiddenException(errorMessage, null, ErrorCode.DOKARKIV_FORBIDDEN)
+        }
+
+        if (statusCode.is4xxClientError) {
+            throw ClientErrorException(errorMessage, null, ErrorCode.DOKARKIV_ERROR)
+        }
+
+        throw ServerErrorException(errorMessage, null, ErrorCode.DOKARKIV_ERROR)
     }
 }

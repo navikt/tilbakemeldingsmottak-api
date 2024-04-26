@@ -9,23 +9,21 @@ import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType
+import org.springframework.http.client.ClientHttpResponse
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
+import org.springframework.web.client.RestClient
 
 @Component
 class Norg2Consumer(
-    @Value("\${norg2.api.v1.url}") private val norg2Url: String,
-    @Qualifier("norg2Client") private val webClient: WebClient
+    @Qualifier("norg2RestClient") private val restClient: RestClient
 ) {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -43,43 +41,43 @@ class Norg2Consumer(
     fun hentEnheter(): List<Enhet> {
         log.info("Henter enheter fra norg2")
 
-        val response = webClient
+        val response = restClient
             .method(HttpMethod.GET)
-            .uri("$norg2Url/enhet")
+            .uri("/enhet")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .header("Nav-Callid", MDC.get(MDC_CALL_ID))
             .header("Nav-Consumer-Id", "Tilbakemeldingsmottak")
             .retrieve()
-            .bodyToMono(object : ParameterizedTypeReference<List<Enhet>>() {})
-            .doOnError { error -> handleError(error, "norg2") }
-            .block() ?: emptyList()
+            .onStatus(HttpStatusCode::isError) { _, response ->
+                handleError(response, "norg2")
+            }
+            .body(object : ParameterizedTypeReference<List<Enhet>>() {})
+            ?: throw ClientErrorException("Kall mot norg2 feilet")
 
         log.info("Hentet enheter ${response.size} enheter fra norg2")
 
         return response
     }
 
-    private fun handleError(error: Throwable, serviceName: String) {
+    private fun handleError(response: ClientHttpResponse, serviceName: String) {
         log.info("Inside handleError")
-        if (error is WebClientResponseException) {
-            log.info("Inside WebClientResponseException")
+        log.info("Inside WebClientResponseException")
 
-            val statusCode: HttpStatusCode = error.statusCode
-            val responseBody: String = error.responseBodyAsString
-            val errorMessage =
-                String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody)
-            if (statusCode === HttpStatus.UNAUTHORIZED) {
-                throw ClientErrorUnauthorizedException(errorMessage, error, ErrorCode.NORG2_UNAUTHORIZED)
-            }
-            if (statusCode === HttpStatus.FORBIDDEN) {
-                throw ClientErrorForbiddenException(errorMessage, error, ErrorCode.NORG2_FORBIDDEN)
-            }
-            if (statusCode.is4xxClientError) {
-                throw ClientErrorException(errorMessage, error, ErrorCode.NORG2_ERROR)
-            }
-            throw ServerErrorException(errorMessage, error, ErrorCode.NORG2_ERROR)
+        val statusCode: HttpStatusCode = response.statusCode
+        val responseBody = response.body
+        val errorMessage =
+            String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody)
+        if (statusCode === HttpStatus.UNAUTHORIZED) {
+            throw ClientErrorUnauthorizedException(errorMessage, null, ErrorCode.NORG2_UNAUTHORIZED)
         }
+        if (statusCode === HttpStatus.FORBIDDEN) {
+            throw ClientErrorForbiddenException(errorMessage, null, ErrorCode.NORG2_FORBIDDEN)
+        }
+        if (statusCode.is4xxClientError) {
+            throw ClientErrorException(errorMessage, null, ErrorCode.NORG2_ERROR)
+        }
+        throw ServerErrorException(errorMessage, null, ErrorCode.NORG2_ERROR)
     }
 
 }
