@@ -37,8 +37,7 @@ class OppgaveConsumer(
     fun opprettOppgave(opprettOppgaveRequestTo: OpprettOppgaveRequestTo): OpprettOppgaveResponseTo {
         log.info("Oppretter oppgave for journalpostId: {}", opprettOppgaveRequestTo.journalpostId)
 
-        return restClient
-            .method(HttpMethod.POST)
+        return restClient.post()
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(opprettOppgaveRequestTo))
@@ -64,8 +63,7 @@ class OppgaveConsumer(
             endreOppgaveRequestTo.journalpostId
         )
 
-        return restClient
-            .method(HttpMethod.PATCH)
+        return restClient.patch()
             .uri("/${endreOppgaveRequestTo.id}")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)

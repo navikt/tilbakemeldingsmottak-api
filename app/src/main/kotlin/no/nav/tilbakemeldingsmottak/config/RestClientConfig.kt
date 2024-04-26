@@ -109,9 +109,9 @@ class RestClientConfig {
         connectTimeoutSeconds: Long,
         exchangeTimeoutMinutes: Long? = null
     ): ClientHttpRequestFactory {
-        val factory = SimpleClientHttpRequestFactory()
+        val factory = JdkClientHttpRequestFactory()
         factory.setReadTimeout(Duration.ofMinutes(readTimeoutMinutes))
-        factory.setConnectTimeout(Duration.ofSeconds(connectTimeoutSeconds))
+        //factory.setConnectTimeout(Duration.ofSeconds(connectTimeoutSeconds))
         //factory.setExchangeTimeout(Duration.ofMinutes(exchangeTimeoutMinutes ?: readTimeoutMinutes))
         return factory
     }
