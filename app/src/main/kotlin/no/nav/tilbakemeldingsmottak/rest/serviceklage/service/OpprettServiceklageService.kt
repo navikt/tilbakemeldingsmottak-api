@@ -11,8 +11,8 @@ import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException
 import no.nav.tilbakemeldingsmottak.exceptions.EksterntKallException
 import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAv
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageResponse
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService
@@ -146,7 +146,7 @@ class OpprettServiceklageService(
 
     private fun forsoekOpprettOppgave(
         id: String?,
-        paaVegneAv: PaaVegneAv?,
+        paaVegneAv: OpprettServiceklagePaaVegneAv?,
         opprettJournalpostResponseTo: OpprettJournalpostResponseTo
     ): OpprettOppgaveResponseTo {
         return try {

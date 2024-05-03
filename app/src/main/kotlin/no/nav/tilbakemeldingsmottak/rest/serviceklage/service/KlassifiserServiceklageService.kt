@@ -25,6 +25,7 @@ import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import no.nav.tilbakemeldingsmottak.model.Answer
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest
 import no.nav.tilbakemeldingsmottak.model.Question
+import no.nav.tilbakemeldingsmottak.model.QuestionType.RADIO
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppgaveRequestToMapper
@@ -155,7 +156,7 @@ class KlassifiserServiceklageService(
                     }
                 }
 
-                if (question.type == Question.Type.RADIO) {
+                if (question.type == RADIO) {
                     val answer = question.answers?.stream()
                         ?.filter { (answer): Answer -> answer == answersMap[question.id] }
                         ?.findFirst()

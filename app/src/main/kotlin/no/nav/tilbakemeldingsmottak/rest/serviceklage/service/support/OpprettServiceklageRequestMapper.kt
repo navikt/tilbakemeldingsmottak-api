@@ -5,8 +5,9 @@ import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.INNMELDER_MANGL
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.SVAR_IKKE_NOEDVENDIG_ANSWER
 import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageKlagetype
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.*
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAv.*
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
@@ -32,12 +33,12 @@ class OpprettServiceklageRequestMapper {
     }
 
     fun mapKlagetypeUtdypning(request: OpprettServiceklageRequest): String? {
-        return if (request.klagetyper?.contains(OpprettServiceklageRequest.Klagetyper.ANNET) == true) {
+        return if (request.klagetyper?.contains(OpprettServiceklageKlagetype.ANNET) == true) {
             request.klagetypeUtdypning
         } else null
     }
 
-    private fun mapKlagetype(klagetype: List<OpprettServiceklageRequest.Klagetyper>?): String {
+    private fun mapKlagetype(klagetype: List<OpprettServiceklageKlagetype>?): String {
         return klagetype?.joinToString(", ") { it.value } ?: ""
     }
 

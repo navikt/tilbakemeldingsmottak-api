@@ -9,7 +9,7 @@ import no.nav.tilbakemeldingsmottak.model.DefaultAnswers
 import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest
 import no.nav.tilbakemeldingsmottak.model.Question
-import no.nav.tilbakemeldingsmottak.model.Question.Type.*
+import no.nav.tilbakemeldingsmottak.model.QuestionType.*
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator
 import org.apache.commons.lang3.StringUtils.isBlank
 import org.springframework.stereotype.Component

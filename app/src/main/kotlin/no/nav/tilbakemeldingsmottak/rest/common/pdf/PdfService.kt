@@ -5,9 +5,10 @@ import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import no.nav.tilbakemeldingsmottak.generer.PdfGeneratorService
 import no.nav.tilbakemeldingsmottak.generer.modeller.ServiceklagePdfModell
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageKlagetype.ANNET
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageKlagetype.LOKALT_NAV_KONTOR
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.*
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.Klagetyper
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAv
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -47,8 +48,8 @@ class PdfService {
         }
 
         when (request.paaVegneAv) {
-            PaaVegneAv.PRIVATPERSON -> {}
-            PaaVegneAv.ANNEN_PERSON -> {
+            PRIVATPERSON -> {}
+            ANNEN_PERSON -> {
                 request.innmelder?.let {
                     if (!it.rolle.isNullOrBlank()) {
                         klageMap["Innmelders rolle"] = it.rolle
@@ -62,7 +63,7 @@ class PdfService {
                 }
             }
 
-            PaaVegneAv.BEDRIFT -> {
+            BEDRIFT -> {
                 request.innmelder?.let {
                     if (!it.rolle.isNullOrBlank()) {
                         klageMap["Innmelders rolle"] = it.rolle
@@ -83,12 +84,12 @@ class PdfService {
 
         klageMap["Klagetype"] = request.klagetyper?.joinToString(", ") { it.value }
 
-        if (request.klagetyper?.contains(Klagetyper.LOKALT_NAV_KONTOR) == true) {
+        if (request.klagetyper?.contains(LOKALT_NAV_KONTOR) == true) {
             klageMap["Gjelder økonomisk sosialhjelp/sosiale tjenester"] =
                 request.gjelderSosialhjelp?.value
         }
 
-        if (request.klagetyper?.contains(Klagetyper.ANNET) == true && !request.klagetypeUtdypning.isNullOrBlank()) {
+        if (request.klagetyper?.contains(ANNET) == true && !request.klagetypeUtdypning.isNullOrBlank()) {
             klageMap["Klagetype spesifisert i fritekst"] = request.klagetypeUtdypning
         }
 

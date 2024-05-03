@@ -2,12 +2,9 @@ package no.nav.tilbakemeldingsmottak.itest.pdf
 
 import no.nav.tilbakemeldingsmottak.TestUtils.getStringFromByteArrayPdf
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KANAL_SERVICEKLAGESKJEMA_ANSWER
-import no.nav.tilbakemeldingsmottak.model.Innmelder
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.Klagetyper
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAv
-import no.nav.tilbakemeldingsmottak.model.PaaVegneAvBedrift
-import no.nav.tilbakemeldingsmottak.model.PaaVegneAvPerson
+import no.nav.tilbakemeldingsmottak.model.*
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.ANNEN_PERSON
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.BEDRIFT
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService
 import no.nav.tilbakemeldingsmottak.util.OidcUtils
 import no.nav.tilbakemeldingsmottak.util.builders.OpprettServiceklageRequestBuilder
@@ -197,15 +194,15 @@ internal class PdfServiceTest {
             )
         }
         assertInnmelder(request.innmelder, content)
-        if (request.paaVegneAv == PaaVegneAv.ANNEN_PERSON) {
+        if (request.paaVegneAv == ANNEN_PERSON) {
             assertAnnenPerson(request.paaVegneAvPerson, content)
         }
-        if (request.paaVegneAv == PaaVegneAv.BEDRIFT) {
+        if (request.paaVegneAv == BEDRIFT) {
             assertBedrift(request.paaVegneAvBedrift, content)
         }
     }
 
-    private fun assertKlagetyper(klagetyper: List<Klagetyper>?, content: String) {
+    private fun assertKlagetyper(klagetyper: List<OpprettServiceklageKlagetype>?, content: String) {
         for (k in klagetyper!!) {
             assertTrue(content.contains(k.value))
         }

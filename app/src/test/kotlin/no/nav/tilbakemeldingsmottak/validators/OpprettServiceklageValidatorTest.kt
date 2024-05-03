@@ -4,8 +4,8 @@ import no.nav.tilbakemeldingsmottak.TestUtils
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer
 import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageKlagetype.LOKALT_NAV_KONTOR
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.Klagetyper
 import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.validation.OpprettServiceklageValidator
 import no.nav.tilbakemeldingsmottak.util.OidcUtils
@@ -94,7 +94,7 @@ internal class OpprettServiceklageValidatorTest {
     @Test
     fun shouldThrowExceptionIfGjelderSosialhjelpNotSetForLokaltkontor() {
         opprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson().build(
-            klagetyper = listOf(Klagetyper.LOKALT_NAV_KONTOR),
+            klagetyper = listOf(LOKALT_NAV_KONTOR),
             gjelderSosialhjelp = null
         )
 

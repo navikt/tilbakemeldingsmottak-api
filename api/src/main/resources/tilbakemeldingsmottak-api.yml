@@ -335,15 +335,7 @@ components:
       type: object
       properties:
         paaVegneAv:
-          type: string
-          enum:
-            - Bruker selv som privatperson
-            - På vegne av en annen privatperson
-            - På vegne av virksomhet
-          x-enum-varnames:
-            - PRIVATPERSON
-            - ANNEN_PERSON
-            - BEDRIFT
+          $ref: '#/components/schemas/OpprettServiceklagePaaVegneAv'
         innmelder:
           $ref: '#/components/schemas/Innmelder'
         paaVegneAvPerson:
@@ -355,35 +347,49 @@ components:
         klagetyper:
           type: array
           items:
-            type: string
-            enum:
-              - Telefon
-              - Lokalt NAV-kontor
-              - NAVs digitale tjenester
-              - Brev
-              - Annet
-            x-enum-varnames:
-              - TELEFON
-              - LOKALT_NAV_KONTOR
-              - NAV_DIGITALE_TJENESTER
-              - BREV
-              - ANNET
+            $ref: '#/components/schemas/OpprettServiceklageKlagetype'
         klagetypeUtdypning:
           type: string
         gjelderSosialhjelp:
-          type: string
-          enum:
-            - Ja
-            - Nei
-            - Vet ikke
-          x-enum-varnames:
-              - JA
-              - NEI
-              - VET_IKKE
+          $ref: '#/components/schemas/OpprettServiceklageGjelderSosialhjelp'
         klagetekst:
           type: string
         oenskerAaKontaktes:
           type: boolean
+    OpprettServiceklageGjelderSosialhjelp:
+      type: string
+      enum:
+        - Ja
+        - Nei
+        - Vet ikke
+      x-enum-varnames:
+        - JA
+        - NEI
+        - VET_IKKE
+    OpprettServiceklageKlagetype:
+      type: string
+      enum:
+        - Telefon
+        - Lokalt NAV-kontor
+        - NAVs digitale tjenester
+        - Brev
+        - Annet
+      x-enum-varnames:
+        - TELEFON
+        - LOKALT_NAV_KONTOR
+        - NAV_DIGITALE_TJENESTER
+        - BREV
+        - ANNET
+    OpprettServiceklagePaaVegneAv:
+      type: string
+      enum:
+        - Bruker selv som privatperson
+        - På vegne av en annen privatperson
+        - På vegne av virksomhet
+      x-enum-varnames:
+        - PRIVATPERSON
+        - ANNEN_PERSON
+        - BEDRIFT
     PaaVegneAvBedrift:
       type: object
       properties:
@@ -413,19 +419,21 @@ components:
       type: object
       properties:
         hvemRoses:
-          type: string
-          enum:
-            - NAV Kontaktsenter
-            - NAVs digitale tjenester
-            - NAV-kontor
-          x-enum-varnames:
-            - NAV_KONTAKTSENTER
-            - NAV_DIGITALE_TJENESTER
-            - NAV_KONTOR
+          $ref: '#/components/schemas/SendRosRequestHvemRoses'
         navKontor:
           type: string
         melding:
           type: string
+    SendRosRequestHvemRoses:
+        type: string
+        enum:
+            - NAV Kontaktsenter
+            - NAVs digitale tjenester
+            - NAV-kontor
+        x-enum-varnames:
+            - NAV_KONTAKTSENTER
+            - NAV_DIGITALE_TJENESTER
+            - NAV_KONTOR
     SendRosResponse:
       type: object
       properties:
@@ -439,17 +447,19 @@ components:
         epost:
           type: string
         feiltype:
+          $ref: '#/components/schemas/MeldFeilOgManglerRequestFeiltype'
+        melding:
           type: string
-          enum:
+    MeldFeilOgManglerRequestFeiltype:
+        type: string
+        enum:
             - Teknisk feil
             - Feil informasjon
             - Feil på siden ved bruk av hjelpemiddelteknologi
-          x-enum-varnames:
+        x-enum-varnames:
             - TEKNISK_FEIL
             - FEIL_INFO
             - UNIVERSELL_UTFORMING
-        melding:
-          type: string
     MeldFeilOgManglerResponse:
       type: object
       properties:
@@ -465,15 +475,17 @@ components:
         telefonnummer:
           type: string
         tidsrom:
-          type: string
-          enum:
-            - 8.00-10.00
-            - 13.30-15.30
-            - 8.00-10.00 og 13.30-15.30
-          x-enum-varnames:
-              - FORMIDDAG
-              - ETTERMIDDAG
-              - BEGGE
+          $ref: '#/components/schemas/BestillSamtaleTidsrom'
+    BestillSamtaleTidsrom:
+      type: string
+      enum:
+        - 8.00-10.00
+        - 13.30-15.30
+        - 8.00-10.00 og 13.30-15.30
+      x-enum-varnames:
+          - FORMIDDAG
+          - ETTERMIDDAG
+          - BEGGE
     BestillSamtaleResponse:
       type: object
       properties:
@@ -566,12 +578,14 @@ components:
         message:
           type: string
         type:
-          type: string
-          enum:
-            - WARN
-            - INFO
-            - ERROR
-            - SUCCESS
+          $ref: '#/components/schemas/BannerType'
+    BannerType:
+      type: string
+      enum:
+        - WARN
+        - INFO
+        - ERROR
+        - SUCCESS
     Button:
       type: object
       properties:
@@ -607,15 +621,7 @@ components:
         text:
           type: string
         type:
-          type: string
-          enum:
-            - RADIO
-            - TEXT
-            - INPUT
-            - DATE
-            - SELECT
-            - DATALIST
-            - CHECKBOX
+          $ref: '#/components/schemas/QuestionType'
         emit:
           type: string
         next:
@@ -628,6 +634,16 @@ components:
           $ref: '#/components/schemas/Banner'
         optional:
           type: boolean
+    QuestionType:
+        type: string
+        enum:
+            - RADIO
+            - TEXT
+            - INPUT
+            - DATE
+            - SELECT
+            - DATALIST
+            - CHECKBOX
     HentDokumentResponse:
       type: object
       properties:
@@ -646,19 +662,23 @@ components:
         errorMessage:
           type: string
         type:
-          type: string
-          enum:
-            - SOAP
-            - REST
-            - LDAP
-            - QUEUE
+          $ref: '#/components/schemas/DependencyCheckType'
         importance:
-          type: string
-          enum:
-            - CRITICAL
-            - WARNING
+          $ref: '#/components/schemas/DependencyCheckImportance'
         responseTime:
           type: string
+    DependencyCheckType:
+      type: string
+      enum:
+        - SOAP
+        - REST
+        - LDAP
+        - QUEUE
+    DependencyCheckImportance:
+      type: string
+      enum:
+        - CRITICAL
+        - WARNING
     SelftestResult:
       type: object
       properties:
