@@ -34,9 +34,7 @@ class RestClientConfig {
         return restClientOAuth2Client(
             baseUrl = journalpostUrl,
             timeouts = timeouts(
-                readTimeoutMinutes = 1L,
-                connectTimeoutSeconds = 5L,
-                exchangeTimeoutMinutes = 1L
+                readTimeoutMinutes = 1L
             ),
             clientAccessProperties = clientConfigurationProperties.registration["arkiv"]!!,
             oAuth2AccessTokenService = oAuth2AccessTokenService
@@ -54,9 +52,7 @@ class RestClientConfig {
             .baseUrl(eregApiUrl)
             .requestFactory(
                 timeouts(
-                    readTimeoutMinutes = 1L,
-                    connectTimeoutSeconds = 5L,
-                    exchangeTimeoutMinutes = 1L
+                    readTimeoutMinutes = 1L
                 )
             )
             .build()
@@ -73,9 +69,7 @@ class RestClientConfig {
             .baseUrl(norg2Url)
             .requestFactory(
                 timeouts(
-                    readTimeoutMinutes = 1L,
-                    connectTimeoutSeconds = 5L,
-                    exchangeTimeoutMinutes = 1L
+                    readTimeoutMinutes = 1L
                 )
             )
             .build()
@@ -94,9 +88,7 @@ class RestClientConfig {
         return restClientOAuth2Client(
             baseUrl = oppgaveUrl,
             timeouts = timeouts(
-                readTimeoutMinutes = 1L,
-                connectTimeoutSeconds = 5L,
-                exchangeTimeoutMinutes = 1L
+                readTimeoutMinutes = 1L
             ),
             clientAccessProperties = clientConfigurationProperties.registration["oppgave"]!!,
             oAuth2AccessTokenService = oAuth2AccessTokenService
@@ -105,14 +97,11 @@ class RestClientConfig {
 
 
     private fun timeouts(
-        readTimeoutMinutes: Long,
-        connectTimeoutSeconds: Long,
-        exchangeTimeoutMinutes: Long? = null
+        readTimeoutMinutes: Long
     ): ClientHttpRequestFactory {
-        val factory = JdkClientHttpRequestFactory()
+        val factory =
+            JdkClientHttpRequestFactory() // Merk at SimpleClientHttpRequestFactory ikke har støtte for patch requests
         factory.setReadTimeout(Duration.ofMinutes(readTimeoutMinutes))
-        //factory.setConnectTimeout(Duration.ofSeconds(connectTimeoutSeconds))
-        //factory.setExchangeTimeout(Duration.ofMinutes(exchangeTimeoutMinutes ?: readTimeoutMinutes))
         return factory
     }
 

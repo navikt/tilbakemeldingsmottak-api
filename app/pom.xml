@@ -208,23 +208,11 @@
             <groupId>com.microsoft.graph</groupId>
             <artifactId>microsoft-graph</artifactId>
             <version>${microsoft-graph.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.skyscreamer</groupId>
-                    <artifactId>jsonassert</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.azure</groupId>
             <artifactId>azure-identity</artifactId>
             <version>${azure.identity.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.skyscreamer</groupId>
-                    <artifactId>jsonassert</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
 
@@ -321,6 +309,10 @@
                 <exclusion>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.skyscreamer</groupId>
+                    <artifactId>jsonassert</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
