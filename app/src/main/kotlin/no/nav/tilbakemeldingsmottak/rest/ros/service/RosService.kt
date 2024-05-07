@@ -2,6 +2,7 @@ package no.nav.tilbakemeldingsmottak.rest.ros.service
 
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService
 import no.nav.tilbakemeldingsmottak.model.SendRosRequest
+import no.nav.tilbakemeldingsmottak.model.SendRosRequestHvemRoses
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -27,7 +28,7 @@ class RosService(private val emailService: AzureEmailService) {
     private fun createContent(request: SendRosRequest): String {
         val content = HtmlContent()
         content.addParagraph("Hvem roses", request.hvemRoses.toString())
-        if (SendRosRequest.HvemRoses.NAV_KONTOR == request.hvemRoses) {
+        if (SendRosRequestHvemRoses.NAV_KONTOR == request.hvemRoses) {
             request.navKontor?.let { content.addParagraph("NAV-kontor", it) }
         }
         request.melding?.let { content.addParagraph("Melding", it) }

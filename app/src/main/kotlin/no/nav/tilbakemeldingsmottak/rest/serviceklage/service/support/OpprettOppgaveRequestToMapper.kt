@@ -4,7 +4,8 @@ import no.nav.tilbakemeldingsmottak.consumer.joark.domain.OpprettJournalpostResp
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.OpprettOppgaveRequestTo
 import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAv
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.BEDRIFT
 import org.springframework.stereotype.Component
 import java.time.LocalDate
 
@@ -24,14 +25,16 @@ class OpprettOppgaveRequestToMapper(private val pdlService: PdlService) {
 
     fun mapServiceklageOppgave(
         klagenGjelderId: String,
-        paaVegneAv: PaaVegneAv,
+        paaVegneAv: OpprettServiceklagePaaVegneAv,
         opprettJournalpostResponseTo: OpprettJournalpostResponseTo
     ): OpprettOppgaveRequestTo {
         return OpprettOppgaveRequestTo(
             tildeltEnhetsnr = KLAGEINSTANS_ENHETSNR,
             prioritet = PRIORITET,
-            aktoerId = if (paaVegneAv == PaaVegneAv.BEDRIFT) null else pdlService.hentAktorIdForIdent(klagenGjelderId),
-            orgnr = if (paaVegneAv == PaaVegneAv.BEDRIFT) klagenGjelderId else null,
+            aktoerId = if (paaVegneAv == BEDRIFT) null else pdlService.hentAktorIdForIdent(
+                klagenGjelderId
+            ),
+            orgnr = if (paaVegneAv == BEDRIFT) klagenGjelderId else null,
             aktivDato = LocalDate.now().toString(),
             journalpostId = opprettJournalpostResponseTo.journalpostId,
             tema = SERVICEKLAGE_TEMA,
