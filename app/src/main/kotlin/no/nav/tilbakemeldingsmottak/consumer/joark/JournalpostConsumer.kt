@@ -43,9 +43,8 @@ class JournalpostConsumer(
             .uri("/journalpost/$FORSOEK_FERDIGSTILL")
             .contentType(APPLICATION_JSON)
             .accept(APPLICATION_JSON)
-            .body(BodyInserters.fromValue(opprettJournalpostRequestTo))
+            .body(opprettJournalpostRequestTo)
             .header("Nav-Callid", callId)
-            .header("Nav-Consumer-Id", "srvtilbakemeldings")
             .retrieve()
             .onStatus(HttpStatusCode::isError) { _, response ->
                 handleError(response, "JOARK (dokarkiv)")
