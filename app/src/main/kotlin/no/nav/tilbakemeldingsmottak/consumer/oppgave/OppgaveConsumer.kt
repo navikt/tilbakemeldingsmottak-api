@@ -38,7 +38,6 @@ class OppgaveConsumer(
         log.info("Oppretter oppgave for journalpostId: {}", opprettOppgaveRequestTo.journalpostId)
 
         return restClient.post()
-            .uri("/oppgaver")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .body(opprettOppgaveRequestTo)
@@ -65,7 +64,7 @@ class OppgaveConsumer(
         )
 
         return restClient.patch()
-            .uri("/oppgaver/${endreOppgaveRequestTo.id}")
+            .uri("/${endreOppgaveRequestTo.id}")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .body(endreOppgaveRequestTo)
@@ -89,7 +88,7 @@ class OppgaveConsumer(
 
         return restClient
             .method(HttpMethod.GET)
-            .uri("/oppgaver/$oppgaveId")
+            .uri("/$oppgaveId")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
             .body(oppgaveId)
