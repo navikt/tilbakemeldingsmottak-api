@@ -38,9 +38,10 @@ class OppgaveConsumer(
         log.info("Oppretter oppgave for journalpostId: {}", opprettOppgaveRequestTo.journalpostId)
 
         return restClient.post()
+            .uri("/oppgaver")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromValue(opprettOppgaveRequestTo))
+            .body(opprettOppgaveRequestTo)
             .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
             .retrieve()
             .onStatus(HttpStatusCode::isError) { _, response ->
@@ -64,10 +65,10 @@ class OppgaveConsumer(
         )
 
         return restClient.patch()
-            .uri("/${endreOppgaveRequestTo.id}")
+            .uri("/oppgaver/${endreOppgaveRequestTo.id}")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromValue(endreOppgaveRequestTo))
+            .body(endreOppgaveRequestTo)
             .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
             .retrieve()
             .onStatus(HttpStatusCode::isError) { _, response ->
@@ -88,10 +89,10 @@ class OppgaveConsumer(
 
         return restClient
             .method(HttpMethod.GET)
-            .uri("/$oppgaveId")
+            .uri("/oppgaver/$oppgaveId")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromValue(oppgaveId))
+            .body(oppgaveId)
             .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
             .retrieve()
             .body(HentOppgaveResponseTo::class.java)

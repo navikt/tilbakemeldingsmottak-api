@@ -132,8 +132,16 @@ class RestClientConfig {
             execution: ClientHttpRequestExecution
         ): ClientHttpResponse {
             val token = tokenService.getToken()
+
+            logger.info(
+                ("Kaller service med callId=${MDC.get(MDCConstants.MDC_CALL_ID)}, og consumerId=${
+                    MDC.get(
+                        MDCConstants.MDC_CONSUMER_ID
+                    )
+                }")
+            )
             request.headers.setBearerAuth(token ?: "")
-            request.headers.set(MDCConstants.MDC_CALL_ID, MDC.get(MDCConstants.MDC_CALL_ID))
+            request.headers.set(MDCConstants.HEADER_CALL_ID, MDC.get(MDCConstants.MDC_CALL_ID))
             request.headers.set(MDCConstants.MDC_CONSUMER_ID, MDC.get(MDCConstants.MDC_CONSUMER_ID) ?: "")
 
             return execution.execute(request, body)
