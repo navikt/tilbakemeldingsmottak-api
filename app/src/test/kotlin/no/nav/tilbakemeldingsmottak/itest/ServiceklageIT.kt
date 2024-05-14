@@ -21,9 +21,9 @@ import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageResponse
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageKlagetype.*
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.*
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.Klagetyper
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAv
 import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETSNR_1
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETSNR_2
@@ -96,9 +96,9 @@ internal class ServiceklageIT : ApplicationTest() {
 
         assertBasicServiceklageFields(serviceklage)
         assertEquals(PERSONNUMMER, serviceklage.klagenGjelderId)
-        assertEquals(Klagetyper.NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
+        assertEquals(NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
         assertTrue(serviceklage.innlogget!!)
-        assertEquals(PaaVegneAv.PRIVATPERSON.value, serviceklage.innsender)
+        assertEquals(PRIVATPERSON.value, serviceklage.innsender)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
@@ -126,9 +126,9 @@ internal class ServiceklageIT : ApplicationTest() {
 
         assertBasicServiceklageFields(serviceklage)
         assertEquals(PERSONNUMMER, serviceklage.klagenGjelderId)
-        assertEquals(Klagetyper.NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
+        assertEquals(NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
         assertFalse(serviceklage.innlogget!!)
-        assertEquals(PaaVegneAv.PRIVATPERSON.value, serviceklage.innsender)
+        assertEquals(PRIVATPERSON.value, serviceklage.innsender)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
@@ -152,8 +152,8 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(HttpStatus.OK, response?.statusCode)
         assertBasicServiceklageFields(serviceklage)
         assertEquals(PAAVEGNEAV_PERSONNUMMER, serviceklage.klagenGjelderId)
-        assertEquals(Klagetyper.NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
-        assertEquals(PaaVegneAv.ANNEN_PERSON.value, serviceklage.innsender)
+        assertEquals(NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
+        assertEquals(ANNEN_PERSON.value, serviceklage.innsender)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
@@ -170,8 +170,8 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(HttpStatus.OK, response?.statusCode)
         assertBasicServiceklageFields(serviceklage)
         assertEquals(ORGANISASJONSNUMMER, serviceklage.klagenGjelderId)
-        assertEquals(Klagetyper.NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
-        assertEquals(PaaVegneAv.BEDRIFT.value, serviceklage.innsender)
+        assertEquals(NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
+        assertEquals(BEDRIFT.value, serviceklage.innsender)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
@@ -193,9 +193,9 @@ internal class ServiceklageIT : ApplicationTest() {
 
         assertEquals(response?.statusCode, HttpStatus.OK)
         assertBasicServiceklageFields(serviceklage)
-        assertEquals(PaaVegneAv.PRIVATPERSON.value, serviceklage.innsender)
+        assertEquals(PRIVATPERSON.value, serviceklage.innsender)
         assertEquals(PERSONNUMMER, serviceklage.klagenGjelderId)
-        assertEquals(Klagetyper.NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
+        assertEquals(NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
         assertNull(serviceklage.svarmetode)
         assertNull(serviceklage.svarmetodeUtdypning)
         assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
@@ -220,8 +220,8 @@ internal class ServiceklageIT : ApplicationTest() {
         assertBasicServiceklageFields(serviceklage)
         assertEquals(HttpStatus.OK, response?.statusCode)
         assertEquals(PAAVEGNEAV_PERSONNUMMER, serviceklage.klagenGjelderId)
-        assertEquals(Klagetyper.NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
-        assertEquals(PaaVegneAv.ANNEN_PERSON.value, serviceklage.innsender)
+        assertEquals(NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
+        assertEquals(ANNEN_PERSON.value, serviceklage.innsender)
         assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
         assertEquals(INNMELDER_MANGLER_FULLMAKT_ANSWER, serviceklage.svarmetodeUtdypning)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
@@ -232,7 +232,7 @@ internal class ServiceklageIT : ApplicationTest() {
     fun `Should return correct data when there is more than one complaint type (klagetype)`() {
         // Given
         val request: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson()
-            .build(klagetyper = listOf(Klagetyper.BREV, Klagetyper.TELEFON))
+            .build(klagetyper = listOf(BREV, TELEFON))
 
         val requestEntity =
             HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, request.innmelder!!.personnummer!!, true))
@@ -248,10 +248,10 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(JOURNALPOST_ID, serviceklage.journalpostId)
         assertNotNull(serviceklage.opprettetDato)
         assertEquals(PERSONNUMMER, serviceklage.klagenGjelderId)
-        assertEquals(Klagetyper.BREV.value + ", " + Klagetyper.TELEFON.value, serviceklage.klagetyper)
+        assertEquals(BREV.value + ", " + TELEFON.value, serviceklage.klagetyper)
         assertEquals(KLAGETEKST, serviceklage.klagetekst)
         assertNotNull(serviceklage.fremmetDato)
-        assertEquals(PaaVegneAv.PRIVATPERSON.value, serviceklage.innsender)
+        assertEquals(PRIVATPERSON.value, serviceklage.innsender)
         assertEquals(KANAL_SERVICEKLAGESKJEMA_ANSWER, serviceklage.kanal)
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)

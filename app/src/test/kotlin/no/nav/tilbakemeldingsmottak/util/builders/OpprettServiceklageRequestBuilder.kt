@@ -1,34 +1,34 @@
 package no.nav.tilbakemeldingsmottak.util.builders
 
 
-import no.nav.tilbakemeldingsmottak.model.Innmelder
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.*
-import no.nav.tilbakemeldingsmottak.model.PaaVegneAvBedrift
-import no.nav.tilbakemeldingsmottak.model.PaaVegneAvPerson
+import no.nav.tilbakemeldingsmottak.model.*
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageGjelderSosialhjelp.JA
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageKlagetype.*
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.*
 
 class OpprettServiceklageRequestBuilder {
 
-    private var paaVegneAv: PaaVegneAv? = PaaVegneAv.PRIVATPERSON
+    private var paaVegneAv: OpprettServiceklagePaaVegneAv? = PRIVATPERSON
     private var innmelder: Innmelder? = InnmelderBuilder().build()
     private var paaVegneAvPerson: PaaVegneAvPerson? = null
     private var paaVegneAvBedrift: PaaVegneAvBedrift? = null
     private var enhetsnummerPaaklaget: String? = null
-    private var klagetyper: List<Klagetyper>? = listOf(Klagetyper.NAV_DIGITALE_TJENESTER)
+    private var klagetyper: List<OpprettServiceklageKlagetype>? = listOf(NAV_DIGITALE_TJENESTER)
     private var klagetypeUtdypning: String? = null // Settes hvis klagetyper inneholder ANNET
-    private var gjelderSosialhjelp: GjelderSosialhjelp? = null // Settes hvis klagetyper inneholder LOKALT_NAV_KONTOR
+    private var gjelderSosialhjelp: OpprettServiceklageGjelderSosialhjelp? =
+        null // Settes hvis klagetyper inneholder LOKALT_NAV_KONTOR
     private var klagetekst: String? = "Dette er en klage"
     private var oenskerAaKontaktes: Boolean? = false
 
     fun build(
-        paaVegneAv: PaaVegneAv? = this.paaVegneAv,
+        paaVegneAv: OpprettServiceklagePaaVegneAv? = this.paaVegneAv,
         innmelder: Innmelder? = this.innmelder,
         paaVegneAvPerson: PaaVegneAvPerson? = this.paaVegneAvPerson,
         paaVegneAvBedrift: PaaVegneAvBedrift? = this.paaVegneAvBedrift,
         enhetsnummerPaaklaget: String? = this.enhetsnummerPaaklaget,
-        klagetyper: List<Klagetyper>? = this.klagetyper,
+        klagetyper: List<OpprettServiceklageKlagetype>? = this.klagetyper,
         klagetypeUtdypning: String? = this.klagetypeUtdypning,
-        gjelderSosialhjelp: GjelderSosialhjelp? = this.gjelderSosialhjelp,
+        gjelderSosialhjelp: OpprettServiceklageGjelderSosialhjelp? = this.gjelderSosialhjelp,
         klagetekst: String? = this.klagetekst,
         oenskerAaKontaktes: Boolean? = this.oenskerAaKontaktes
     ) = OpprettServiceklageRequest(
@@ -45,14 +45,14 @@ class OpprettServiceklageRequestBuilder {
     )
 
     fun asPrivatPerson(): OpprettServiceklageRequestBuilder {
-        paaVegneAv = PaaVegneAv.PRIVATPERSON
+        paaVegneAv = PRIVATPERSON
         paaVegneAvPerson = null
         paaVegneAvBedrift = null
         return this
     }
 
     fun asPrivatPersonPaaVegneAv(): OpprettServiceklageRequestBuilder {
-        paaVegneAv = PaaVegneAv.ANNEN_PERSON
+        paaVegneAv = ANNEN_PERSON
         paaVegneAvPerson = PaaVegneAvPersonBuilder().build()
         paaVegneAvBedrift = null
         innmelder = InnmelderBuilder().build(rolle = "Advokat", harFullmakt = true)
@@ -60,7 +60,7 @@ class OpprettServiceklageRequestBuilder {
     }
 
     fun asBedrift(): OpprettServiceklageRequestBuilder {
-        paaVegneAv = PaaVegneAv.BEDRIFT
+        paaVegneAv = BEDRIFT
         paaVegneAvPerson = null
         paaVegneAvBedrift = PaaVegneAvBedriftBuilder().build()
         innmelder = InnmelderBuilder().build(rolle = "CEO")
@@ -69,14 +69,14 @@ class OpprettServiceklageRequestBuilder {
     }
 
     fun withAnnetKlagetype(): OpprettServiceklageRequestBuilder {
-        klagetyper = listOf(Klagetyper.ANNET)
+        klagetyper = listOf(ANNET)
         klagetypeUtdypning = "Dette er en utdypning"
         return this
     }
 
     fun withLokaltKontorKlagetype(): OpprettServiceklageRequestBuilder {
-        klagetyper = listOf(Klagetyper.LOKALT_NAV_KONTOR)
-        gjelderSosialhjelp = GjelderSosialhjelp.JA
+        klagetyper = listOf(LOKALT_NAV_KONTOR)
+        gjelderSosialhjelp = JA
         return this
     }
 

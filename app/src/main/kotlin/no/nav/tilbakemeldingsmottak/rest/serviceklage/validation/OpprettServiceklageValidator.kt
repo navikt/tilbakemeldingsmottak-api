@@ -3,9 +3,9 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation
 import no.nav.tilbakemeldingsmottak.consumer.ereg.EregConsumer
 import no.nav.tilbakemeldingsmottak.consumer.pdl.PdlService
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageKlagetype.LOKALT_NAV_KONTOR
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.*
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.Klagetyper
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.PaaVegneAv
 import no.nav.tilbakemeldingsmottak.rest.common.validation.PersonnummerValidator
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator
 import org.apache.commons.lang3.StringUtils
@@ -23,16 +23,16 @@ class OpprettServiceklageValidator(
     fun validateRequest(request: OpprettServiceklageRequest, paloggetBruker: String?) {
         validateCommonRequiredFields(request)
         when (request.paaVegneAv) {
-            PaaVegneAv.PRIVATPERSON -> validatePaaVegneAvPrivatperson(request, paloggetBruker)
-            PaaVegneAv.ANNEN_PERSON -> validatePaaVegneAvAnnenPerson(request)
-            PaaVegneAv.BEDRIFT -> validatePaaVegneAvBedrift(request)
+            PRIVATPERSON -> validatePaaVegneAvPrivatperson(request, paloggetBruker)
+            ANNEN_PERSON -> validatePaaVegneAvAnnenPerson(request)
+            BEDRIFT -> validatePaaVegneAvBedrift(request)
             null -> throw ClientErrorException("paaVegneAv kan ikke være null")
         }
     }
 
     private fun validateCommonRequiredFields(request: OpprettServiceklageRequest) {
         isNotNull(request.klagetyper, "klagetyper")
-        if (request.klagetyper?.contains(Klagetyper.LOKALT_NAV_KONTOR) == true) {
+        if (request.klagetyper?.contains(LOKALT_NAV_KONTOR) == true) {
             isNotNull(request.gjelderSosialhjelp, "gjelderSosialhjelp", " dersom klagetyper=LOKALT_NAV_KONTOR")
         }
         isNotNull(request.paaVegneAv, "paaVegneAv")

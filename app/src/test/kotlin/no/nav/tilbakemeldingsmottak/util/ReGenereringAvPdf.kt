@@ -1,9 +1,9 @@
 package no.nav.tilbakemeldingsmottak.util
 
-import no.nav.tilbakemeldingsmottak.model.Innmelder
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest.*
-import no.nav.tilbakemeldingsmottak.model.PaaVegneAvPerson
+import no.nav.tilbakemeldingsmottak.model.*
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageGjelderSosialhjelp.VET_IKKE
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.ANNEN_PERSON
+import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.PRIVATPERSON
 import no.nav.tilbakemeldingsmottak.rest.common.pdf.PdfService
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -15,7 +15,7 @@ import java.util.*
 internal class ReGenereringAvPdf {
     private fun createOpprettServiceklageRequestPrivatperson(klage: List<String?>): OpprettServiceklageRequest {
         return OpprettServiceklageRequest(
-            paaVegneAv = PaaVegneAv.PRIVATPERSON,
+            paaVegneAv = PRIVATPERSON,
             innmelder = Innmelder(navn = klage[32], telefonnummer = klage[33], personnummer = klage[3]),
             klagetyper = konverterTilKlageType(
                 Arrays.stream(
@@ -34,16 +34,16 @@ internal class ReGenereringAvPdf {
         return LocalDateTime.parse(fremmetText!!.substring(0, 19), formatter)
     }
 
-    private fun konverterTilKlageType(klageTypeStrenger: List<String>): List<Klagetyper> {
-        val typer: MutableList<Klagetyper?> = LinkedList()
+    private fun konverterTilKlageType(klageTypeStrenger: List<String>): List<OpprettServiceklageKlagetype> {
+        val typer: MutableList<OpprettServiceklageKlagetype?> = LinkedList()
         for (klageStreng in klageTypeStrenger) {
             typer.add(findByText(klageStreng.trim { it <= ' ' }))
         }
         return typer.filterNotNull()
     }
 
-    private fun findByText(text: String): Klagetyper? {
-        for (v in Klagetyper.entries) {
+    private fun findByText(text: String): OpprettServiceklageKlagetype? {
+        for (v in OpprettServiceklageKlagetype.entries) {
             if (v.value.equals(text, ignoreCase = true)) {
                 return v
             }
@@ -51,17 +51,17 @@ internal class ReGenereringAvPdf {
         return null
     }
 
-    private fun findSosialhjelpTypeText(text: String?): GjelderSosialhjelp {
-        for (t in GjelderSosialhjelp.entries) {
+    private fun findSosialhjelpTypeText(text: String?): OpprettServiceklageGjelderSosialhjelp {
+        for (t in OpprettServiceklageGjelderSosialhjelp.entries) {
             if (t.value.equals(text, ignoreCase = true)) {
                 return t
             }
         }
-        return GjelderSosialhjelp.VET_IKKE
+        return VET_IKKE
     }
 
     private fun createOpprettServiceklageRequestPaaVegneAvPerson(klage: List<String?>): OpprettServiceklageRequest {
-        return OpprettServiceklageRequest(paaVegneAv = PaaVegneAv.ANNEN_PERSON,
+        return OpprettServiceklageRequest(paaVegneAv = ANNEN_PERSON,
             innmelder = Innmelder(
                 navn = klage[32],
                 telefonnummer = klage[33],
