@@ -50,7 +50,7 @@ class EregConsumer : Ereg {
 
         log.info("Hentet organisasjon $orgnrTrimmed : $eregResponse")
 
-        return eregResponse ?: "Organisasjon ikke funnet"
+        return eregResponse ?: "Organisasjon $orgnrTrimmed ikke funnet"
     }
 
     private fun handleError(error: ClientHttpResponse, serviceName: String) {

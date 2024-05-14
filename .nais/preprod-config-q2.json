@@ -15,7 +15,8 @@
   "outboundExternalHosts": [
     "ereg-services.dev-fss-pub.nais.io",
     "norg2.dev-fss-pub.nais.io",
-    "saf.dev-fss-pub.nais.io",
+    "saf-q2.dev.intern.nav.no",
+    "saf-q2.dev-fss-pub.nais.io",
     "oppgave-q1.dev-fss-pub.nais.io",
     "pdl-api.dev-fss-pub.nais.io",
     "dokarkiv.dev-fss-pub.nais.io"
