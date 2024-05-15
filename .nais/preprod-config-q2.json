@@ -6,8 +6,8 @@
   "OPPGAVE_OPPGAVER_URL": "https://oppgave.dev-fss-pub.nais.io/api/v1/oppgaver",
   "EREG_API_URL": "https://ereg-services.dev-fss-pub.nais.io",
   "NORG2_API_V1_URL": "https://norg2.dev-fss-pub.nais.io/norg2/api/v1",
-  "SAF_URL": "https://saf.dev-fss-pub.nais.io/graphql",
-  "SAF_HENTDOKUMENT_URL": "https://saf.dev-fss-pub.nais.io/rest/hentdokument",
+  "SAF_URL": "https://saf-q2.dev-fss-pub.nais.io/graphql",
+  "SAF_HENTDOKUMENT_URL": "https://saf-q2.dev-fss-pub.nais.io/rest/hentdokument",
   "PDL_URL": "https://pdl-api.dev-fss-pub.nais.io/graphql",
   "INGRESS": [
     "https://tilbakemeldingsmottak-gcp.intern.dev.nav.no"
@@ -15,7 +15,7 @@
   "outboundExternalHosts": [
     "ereg-services.dev-fss-pub.nais.io",
     "norg2.dev-fss-pub.nais.io",
-    "saf.dev-fss-pub.nais.io",
+    "saf-q2.dev-fss-pub.nais.io",
     "oppgave-q1.dev-fss-pub.nais.io",
     "pdl-api.dev-fss-pub.nais.io",
     "dokarkiv.dev-fss-pub.nais.io"
