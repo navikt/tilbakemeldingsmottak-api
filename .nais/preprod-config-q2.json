@@ -3,10 +3,10 @@
   "DATABASE_NAME": "tilbakemeldingsmottak-dev",
   "SPRING_PROFILES_ACTIVE": "nais",
   "JOURNALPOST_V1_URL": "https://dokarkiv-q2.dev-fss-pub.nais.io/rest/journalpostapi/v1",
-  "OPPGAVE_OPPGAVER_URL": "https://oppgave-q2.dev-fss-pub.nais.io/api/v1/oppgaver",
+  "OPPGAVE_OPPGAVER_URL": "https://oppgave.dev-fss-pub.nais.io/api/v1/oppgaver",
   "EREG_API_URL": "https://ereg-services.dev-fss-pub.nais.io",
   "NORG2_API_V1_URL": "https://norg2.dev-fss-pub.nais.io/norg2/api/v1",
-  "SAF_URL": "https://saf-q2.dev.intern.nav.no/graphql",
+  "SAF_URL": "https://saf-q2.dev-fss-pub.nais.io/graphql",
   "SAF_HENTDOKUMENT_URL": "https://saf-q2.dev-fss-pub.nais.io/rest/hentdokument",
   "PDL_URL": "https://pdl-api.dev-fss-pub.nais.io/graphql",
   "INGRESS": [
@@ -15,7 +15,7 @@
   "outboundExternalHosts": [
     "ereg-services.dev-fss-pub.nais.io",
     "norg2.dev-fss-pub.nais.io",
-    "saf.dev-fss-pub.nais.io",
+    "saf-q2.dev-fss-pub.nais.io",
     "oppgave-q1.dev-fss-pub.nais.io",
     "pdl-api.dev-fss-pub.nais.io",
     "dokarkiv.dev-fss-pub.nais.io"
@@ -31,7 +31,7 @@
   "EMAIL_SAMISK_KONTAKT_ADDRESS": "stulenmorten@gmail.com",
   "DOKARKIV_SCOPE": "api://dev-fss.teamdokumenthandtering.dokarkiv/.default",
   "SAF_SCOPE": "api://dev-fss.teamdokumenthandtering.saf/.default",
-  "OPPGAVE_SCOPE": "api://dev-fss.oppgavehandtering.oppgave-q2/.default",
+  "OPPGAVE_SCOPE": "api://dev-fss.oppgavehandtering.oppgave/.default",
   "PDL_SCOPE": "api://dev-fss.pdl.pdl-api/.default",
   "LOG_URL": "https://logs.adeo.no/app/discover#/view/b7d9c480-f977-11ed-b7f9-11953dd7a874"
 }

@@ -10,7 +10,7 @@ on:
       environment:
         description: 'Environment to deploy'
         required: true
-        default: 'preprod'
+        default: 'preprod-q2'
         type: choice
         options:
           - none

@@ -36,39 +36,6 @@ class RestClientTemplateSupport(
     @Value("\${pdl.url}")
     lateinit var pdlUrl: String
 
-    @Bean
-    @Qualifier("arkivClient")
-    @Scope("prototype")
-    fun arkivClient(): WebClient {
-        val clientProperties = clientConfigurationProperties.registration["arkiv"]
-            ?: throw RuntimeException("Fant ikke konfigurering for arkiv")
-
-        return webclientBuilder(buildHttpClient(5000, 60, 60), clientProperties).build()
-    }
-
-    @Bean
-    @Qualifier("eregClient")
-    @Scope("prototype")
-    fun eregClient(): WebClient {
-        return webclientBuilder(buildHttpClient(5000, 60, 60)).build()
-    }
-
-    @Bean
-    @Qualifier("norg2Client")
-    @Scope("prototype")
-    fun norg2Client(): WebClient {
-        return webclientBuilder(buildHttpClient(5000, 60, 60)).build()
-    }
-
-    @Bean
-    @Qualifier("oppgaveClient")
-    @Scope("prototype")
-    fun oppgaveClient(): WebClient {
-        val clientProperties = clientConfigurationProperties.registration["oppgave"]
-            ?: throw RuntimeException("Fant ikke konfigurering for oppgave")
-
-        return webclientBuilder(buildHttpClient(5000, 60, 60), clientProperties).build()
-    }
 
     @Bean
     @Qualifier("safclient")
@@ -116,12 +83,6 @@ class RestClientTemplateSupport(
             .clientConnector(ReactorClientHttpConnector(httpClient))
             .filter(bearerTokenExchange(clientProperties))
             .defaultRequest { it.header(HEADER_BEHANDLINGSNUMMER, PDL_BEHANDLINGSNUMMER) }
-    }
-
-    fun webclientBuilder(httpClient: HttpClient): WebClient.Builder {
-        return WebClient.builder()
-            .exchangeStrategies(createExchangeStrategies())
-            .clientConnector(ReactorClientHttpConnector(httpClient))
     }
 
     private fun createExchangeStrategies(): ExchangeStrategies {
