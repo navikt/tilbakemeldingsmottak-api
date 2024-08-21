@@ -45,7 +45,7 @@ class PdfGeneratorServiceTest {
         return map
     }
 
-    //@Test
+    @Test
     fun `Skal generere pdf med 1 side og som er pdfa 1b`() {
         // Gitt
         val serviceklagePdfModell =
