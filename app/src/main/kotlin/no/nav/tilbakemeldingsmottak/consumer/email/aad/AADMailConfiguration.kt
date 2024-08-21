@@ -11,18 +11,14 @@ import org.springframework.context.annotation.Profile
 @Profile("nais")
 class AADMailConfiguration(private val aadProperties: AADProperties) {
 
-
-    private val MICROSOFT_GRAPH_SCOPE_V2: String = "https://graph.microsoft.com/"
-    private val MICROSOFT_GRAPH_SCOPE_APP: String = "$MICROSOFT_GRAPH_SCOPE_V2.default"
     private val MICROSOFT_GRAPH_SCOPES: Set<String> = java.util.Set.of(
-        "openid",
-        MICROSOFT_GRAPH_SCOPE_V2 + "Mail.Send"
+        "Mail.Send"
     )
 
     @Bean
     fun getGraphClient(): GraphServiceClient {
 
-        return GraphServiceClient(getTokenCredentials(), MICROSOFT_GRAPH_SCOPE_V2 + "Mail.Send")
+        return GraphServiceClient(getTokenCredentials(), *MICROSOFT_GRAPH_SCOPES.toTypedArray())
     }
 
     private fun getTokenCredentials(): TokenCredential {
