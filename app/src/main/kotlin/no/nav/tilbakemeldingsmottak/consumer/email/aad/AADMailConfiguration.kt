@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.email.aad
 
-import com.azure.core.credential.TokenCredential
+import com.azure.identity.ClientSecretCredential
 import com.azure.identity.ClientSecretCredentialBuilder
 import com.microsoft.graph.serviceclient.GraphServiceClient
 import org.springframework.context.annotation.Bean
@@ -20,10 +20,10 @@ class AADMailConfiguration(private val aadProperties: AADProperties) {
 
     @Bean
     fun getGraphClient(): GraphServiceClient {
-        return GraphServiceClient(getTokenCredentials(), *MICROSOFT_GRAPH_SCOPES.toTypedArray())
+        return GraphServiceClient(getClientCredentials())
     }
 
-    private fun getTokenCredentials(): TokenCredential {
+    private fun getClientCredentials(): ClientSecretCredential {
         return ClientSecretCredentialBuilder()
             .tenantId(aadProperties.tenant)
             .clientId(aadProperties.clientId)
