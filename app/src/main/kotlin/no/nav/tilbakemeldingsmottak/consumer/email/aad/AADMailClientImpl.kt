@@ -23,9 +23,9 @@ class AADMailClientImpl(private val aadProperties: AADProperties, private val gr
 
         val sendMailPostRequestBody = SendMailPostRequestBody()
         sendMailPostRequestBody.message = message
-        sendMailPostRequestBody.saveToSentItems = true
-        graphClient
-            .me()
+        sendMailPostRequestBody.saveToSentItems = false
+
+        graphClient.users().byUserId(aadProperties.email)
             .sendMail()
             .post(sendMailPostRequestBody)
 
