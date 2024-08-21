@@ -1,8 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.email.aad
 
 import com.microsoft.graph.models.*
-import com.microsoft.graph.requests.AttachmentCollectionPage
-import com.microsoft.graph.requests.AttachmentCollectionResponse
 import no.nav.tilbakemeldingsmottak.consumer.email.EmailService
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException
 import org.slf4j.LoggerFactory
@@ -53,11 +51,11 @@ class AzureEmailService(private val mailClient: AADMailClient) : EmailService {
         attachments.name = attachmentName
         attachments.contentType = "application/pdf" // Assumes PDF
         attachments.contentBytes = attachment
-        attachments.oDataType = "#microsoft.graph.fileAttachment"
+        attachments.odataType = "#microsoft.graph.fileAttachment"
         attachmentsList.add(attachments)
         val attachmentCollectionResponse = AttachmentCollectionResponse()
         attachmentCollectionResponse.value = attachmentsList
-        message.attachments = AttachmentCollectionPage(attachmentsList, null)
+        message.attachments = attachmentsList
         sendMessage(message)
     }
 
@@ -77,7 +75,7 @@ class AzureEmailService(private val mailClient: AADMailClient) : EmailService {
         val message = Message()
         message.subject = subject
         val body = ItemBody()
-        body.contentType = BodyType.HTML
+        body.contentType = BodyType.Html
         body.content = content
         message.body = body
         val toRecipientsList = LinkedList<Recipient>()

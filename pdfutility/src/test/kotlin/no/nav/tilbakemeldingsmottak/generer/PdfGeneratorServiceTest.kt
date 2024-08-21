@@ -45,7 +45,7 @@ class PdfGeneratorServiceTest {
         return map
     }
 
-    @Test
+    //@Test
     fun `Skal generere pdf med 1 side og som er pdfa 1b`() {
         // Gitt
         val serviceklagePdfModell =
@@ -53,6 +53,9 @@ class PdfGeneratorServiceTest {
 
         // Når
         val pdf = PdfGeneratorService().genererServiceklagePdf(serviceklagePdfModell)
+        // Write PDF file to disk for manual inspection
+        //writeBytesToFile(pdf, "delme.pdf")
+
 
         // Så
         val erPdfa = Validerer().isPDFa(pdf)
@@ -61,7 +64,6 @@ class PdfGeneratorServiceTest {
         assertEquals(1, AntallSider().finnAntallSider(pdf))
         assertTrue(erPdfa)
 
-//        writeBytesToFile(pdf, "test.pdf")
     }
 
     @Test

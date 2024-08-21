@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.generer
 
+import org.apache.pdfbox.Loader
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
 import org.apache.pdfbox.text.TextPosition
@@ -27,7 +28,7 @@ class PDFTextLocator : PDFTextStripper() {
     fun getCoordiantes(bytes: ByteArray, phrase: String?, page: Int): Map<String, Float> {
         try {
             ByteArrayInputStream(bytes).use { stream ->
-                PDDocument.load(stream).use { document ->
+                Loader.loadPDF(bytes).use { document ->
                     keyString = phrase
                     sortByPosition = true
                     startPage = page
@@ -44,8 +45,5 @@ class PDFTextLocator : PDFTextStripper() {
         } catch (e: IOException) {
             throw RuntimeException("Klarer ikke å åpne PDF for å finne koordinater")
         }
-
     }
-
-
 }

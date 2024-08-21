@@ -37,17 +37,17 @@
 
         <!-- OpenHtmlToPdf-->
         <dependency>
-            <groupId>com.openhtmltopdf</groupId>
+            <groupId>io.github.openhtmltopdf</groupId>
             <artifactId>openhtmltopdf-core</artifactId>
             <version>${openhtml.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.openhtmltopdf</groupId>
+            <groupId>io.github.openhtmltopdf</groupId>
             <artifactId>openhtmltopdf-pdfbox</artifactId>
             <version>${openhtml.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.openhtmltopdf</groupId>
+            <groupId>io.github.openhtmltopdf</groupId>
             <artifactId>openhtmltopdf-slf4j</artifactId>
             <version>${openhtml.version}</version>
         </dependency>
@@ -56,6 +56,18 @@
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>preflight</artifactId>
+            <version>${pdfbox.version}</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
             <version>${pdfbox.version}</version>
             <scope>compile</scope>
             <exclusions>

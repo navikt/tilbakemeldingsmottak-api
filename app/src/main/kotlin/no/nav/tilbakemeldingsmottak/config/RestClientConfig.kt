@@ -18,6 +18,7 @@ import org.springframework.http.client.*
 import org.springframework.web.client.RestClient
 import java.time.Duration
 
+
 @Configuration
 @EnableConfigurationProperties(ClientConfigurationProperties::class)
 class RestClientConfig {

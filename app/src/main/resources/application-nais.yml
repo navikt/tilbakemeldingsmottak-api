@@ -57,6 +57,7 @@ aad:
   clientSecret:  ${AZURE_APP_CLIENT_SECRET}
   email: ${AAD_EMAIL}
   tenant: ${TENANT}
+  graphUserScopes: user.read, mail.send
 
 cron:
     deleteBigQueryServiceKlagerScheduled: "0 0 0 * * *" # midnight every day

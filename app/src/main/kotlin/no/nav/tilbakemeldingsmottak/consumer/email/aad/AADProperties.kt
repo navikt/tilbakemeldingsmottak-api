@@ -20,4 +20,6 @@ class AADProperties {
     var email: String = ""
 
     var tenant: String? = null
+
+    var graphUserScopes: String? = null
 }
