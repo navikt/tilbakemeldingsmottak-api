@@ -33,5 +33,6 @@
   "SAF_SCOPE": "api://prod-fss.teamdokumenthandtering.saf/.default",
   "OPPGAVE_SCOPE": "api://prod-fss.oppgavehandtering.oppgave/.default",
   "PDL_SCOPE": "api://prod-fss.pdl.pdl-api/.default",
-  "LOG_URL": "https://logs.adeo.no/app/discover#/view/7b4e4e60-f976-11ed-b7f9-11953dd7a874"
+  "LOG_URL": "https://logs.adeo.no/app/discover#/view/7b4e4e60-f976-11ed-b7f9-11953dd7a874",
+  "TIER": "db-f1-micro"
 }
