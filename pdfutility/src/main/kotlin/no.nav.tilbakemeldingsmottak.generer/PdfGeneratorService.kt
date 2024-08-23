@@ -35,7 +35,7 @@ class PdfGeneratorService {
 
                 builder.useFastMode()
                 builder.usePdfUaAccessbility(true)
-                builder.usePdfAConformance(PdfRendererBuilder.PdfAConformance.PDFA_2_U)
+                builder.usePdfAConformance(PdfRendererBuilder.PdfAConformance.PDFA_2_A)
 
                 // Fargeprofil, må være byte array
                 builder.useColorProfile(

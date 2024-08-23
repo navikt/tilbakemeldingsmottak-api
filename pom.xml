@@ -21,7 +21,7 @@
 
     <properties>
         <!-- Project config -->
-        <spring-boot.version>3.3.0</spring-boot.version>
+        <spring-boot.version>3.3.1</spring-boot.version>
         <java.version>21</java.version>
         <kotlin.version>2.0.0</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -69,8 +69,8 @@
         <spring-retry.version>2.0.6</spring-retry.version>
         <flyway.version>10.14.0</flyway.version>
         <tika-core.version>2.9.2</tika-core.version>
-        <pdfbox.version>3.0.2</pdfbox.version>
-        <openhtml.version>1.1.21</openhtml.version>
+        <pdfbox.version>3.0.1</pdfbox.version>
+        <openhtml.version>1.1.16</openhtml.version>
         <handlebars.version>4.4.0</handlebars.version>
         <springdoc-openapi.version>1.8.0</springdoc-openapi.version>
         <swagger-annotations.version>2.2.22</swagger-annotations.version>
@@ -185,5 +185,10 @@
             <name>maven central</name>
             <url>https://repo.maven.apache.org/maven2/</url>
         </repository>
+        <repository>
+            <id>openhtmltopdf</id>
+            <url>https://github.com/openhtmltopdf/openhtmltopdf</url>
+        </repository>
+
     </repositories>
 </project>
