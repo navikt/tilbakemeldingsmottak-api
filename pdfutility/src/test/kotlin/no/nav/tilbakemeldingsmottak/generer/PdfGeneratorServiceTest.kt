@@ -45,24 +45,28 @@ class PdfGeneratorServiceTest {
         return map
     }
 
-    @Test
-    fun `Skal generere pdf med 1 side og som er pdfa 1b`() {
-        // Gitt
-        val serviceklagePdfModell =
-            ServiceklagePdfModell(tittel = "Tittel", subtittel = "Subtittel", data = lagMeldingsMap())
+    //@Test Endret PDF/A versjon til 2A. PDFBox validerer kun mot 1B.
+    /*
+        fun `Skal generere pdf med 1 side og som er pdfa 1b`() {
+            // Gitt
+            val serviceklagePdfModell =
+                ServiceklagePdfModell(tittel = "Tittel", subtittel = "Subtittel", data = lagMeldingsMap())
 
-        // Når
-        val pdf = PdfGeneratorService().genererServiceklagePdf(serviceklagePdfModell)
+            // Når
+            val pdf = PdfGeneratorService().genererServiceklagePdf(serviceklagePdfModell)
+            // Write PDF file to disk for manual inspection
+            //writeBytesToFile(pdf, "delme.pdf")
 
-        // Så
-        val erPdfa = Validerer().isPDFa(pdf)
 
-        assertNotNull(pdf)
-        assertEquals(1, AntallSider().finnAntallSider(pdf))
-        assertTrue(erPdfa)
+            // Så
+            val erPdfa = Validerer().isPDFa(pdf)
 
-//        writeBytesToFile(pdf, "test.pdf")
-    }
+            assertNotNull(pdf)
+            assertEquals(1, AntallSider().finnAntallSider(pdf))
+            assertTrue(erPdfa)
+
+        }
+    */
 
     @Test
     fun `Skal lage to sider når teksten går over 2 sider`() {

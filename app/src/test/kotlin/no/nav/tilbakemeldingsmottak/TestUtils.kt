@@ -31,6 +31,7 @@ import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_KONTOR
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_KONTOR_3
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_KONTOR_4
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_KONTOR_5
+import org.apache.pdfbox.Loader
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
 import java.io.ByteArrayInputStream
@@ -112,8 +113,7 @@ object TestUtils {
     }
 
     fun getStringFromByteArrayPdf(bytes: ByteArray?): String {
-        val documentStream: InputStream = ByteArrayInputStream(bytes)
-        val document = PDDocument.load(documentStream)
+        val document = Loader.loadPDF(bytes)
         val stripper = PDFTextStripper()
         return stripper.getText(document)
     }

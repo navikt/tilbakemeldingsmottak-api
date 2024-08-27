@@ -3,6 +3,17 @@
 <head>
     <title>Serviceklage PDF</title>
     <meta charset="utf-8"/>
+    <meta name="author" content="NAV"/>
+    <meta name="subject" content="Serviceklage"/>
+    <meta name="description"
+          content="Klage fra bruker på hvordan vedkommende er blitt møtt av NAV enten direkte eller via elektroniske flater"/>
+
+    <bookmarks>
+        <bookmark name="tittel" href="#tittel"/>
+        <bookmark name="subtittel" href="#subtittel"/>
+        <bookmark name="klageinnhold" href="#klagetabell"/>
+    </bookmarks>
+
     <style>
         html {
             font-family: arial, serif;
@@ -109,16 +120,16 @@
 <body>
 
 <img class="navlogo" src="icons/navlogo.jpg" alt="navlogo"/>
-<h1 class="tittel">{{tittel}}</h1>
+<h1 class="tittel" id="tittel">{{tittel}}</h1>
 
 {{#if subtittel}}
-    <h2 class="subtittel">{{subtittel}}</h2>
+    <h2 class="subtittel" id="subtittel">{{subtittel}}</h2>
 {{/if}}
 
 <div class="sidetall">Side <span class="sidetall_antall"></span> av <span class="sidetall_total"></span></div>
 <div class="dato">{{dato}}</div>
 
-<table class="tabell">
+<table class="tabell" id="klagetabell">
     {{#each data}}
         <tr>
             <td class="tabell_key">{{@key}}:</td>

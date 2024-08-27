@@ -1,11 +1,8 @@
 package no.nav.tilbakemeldingsmottak.consumer.email.aad
 
-import com.azure.core.http.HttpClient
-import com.azure.core.util.HttpClientOptions
+import com.azure.identity.ClientSecretCredential
 import com.azure.identity.ClientSecretCredentialBuilder
-import com.microsoft.graph.authentication.TokenCredentialAuthProvider
-import com.microsoft.graph.httpcore.HttpClients
-import com.microsoft.graph.requests.GraphServiceClient
+import com.microsoft.graph.serviceclient.GraphServiceClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -13,29 +10,24 @@ import org.springframework.context.annotation.Profile
 @Configuration
 @Profile("nais")
 class AADMailConfiguration(private val aadProperties: AADProperties) {
+
+    private val MICROSOFT_GRAPH_SCOPE_V2: String = "https://graph.microsoft.com/"
+
+    private val MICROSOFT_GRAPH_SCOPES: Set<String> = java.util.Set.of(
+        MICROSOFT_GRAPH_SCOPE_V2 + ".default",
+        MICROSOFT_GRAPH_SCOPE_V2 + "Mail.Send"
+    )
+
     @Bean
-    fun getGraphClient(): GraphServiceClient<*> {
-        val authenticationProvider = getTokenProvider()
-        val graphHttpClient = HttpClients.createDefault(authenticationProvider)
-            .newBuilder()
-            .build()
-        return GraphServiceClient
-            .builder()
-            .httpClient(graphHttpClient)
-            .buildClient()
+    fun getGraphClient(): GraphServiceClient {
+        return GraphServiceClient(getClientCredentials())
     }
 
-    private fun getTokenProvider(): TokenCredentialAuthProvider {
-        val clientOptions = HttpClientOptions()
-        val azHttpClient = HttpClient.createDefault(clientOptions)
-
-        val clientSecretCredential = ClientSecretCredentialBuilder()
+    private fun getClientCredentials(): ClientSecretCredential {
+        return ClientSecretCredentialBuilder()
+            .tenantId(aadProperties.tenant)
             .clientId(aadProperties.clientId)
             .clientSecret(aadProperties.clientSecret)
-            .tenantId(aadProperties.tenant)
-            .httpClient(azHttpClient)
             .build()
-
-        return TokenCredentialAuthProvider(clientSecretCredential)
     }
 }

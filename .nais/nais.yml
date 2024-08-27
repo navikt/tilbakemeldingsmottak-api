@@ -64,6 +64,7 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_15
+        tier: {{ TIER }}
         databases:
           - name: {{ DATABASE_NAME }}
             envVarPrefix: DATABASE
