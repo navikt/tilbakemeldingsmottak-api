@@ -26,7 +26,7 @@ class Validerer() {
             document = Loader.loadPDF(bytes)
             document.save(file, CompressParameters.NO_COMPRESSION)
             result = PreflightParser.validate(file)
-            logger.info("PDF/A resultat: ${result.isValid}")
+            logger.debug("PDF/A resultat: ${result.isValid}")
             if (result != null && !result.isValid) {
                 logger.warn("Valideringsfeil: ${result.errorsList.map { it.details }.joinToString(";")}")
             }
