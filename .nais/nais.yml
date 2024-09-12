@@ -30,6 +30,12 @@ spec:
       {{#each outboundExternalHosts}}
        - host: "{{this}}"
       {{/each}}
+      rules:
+      {{#each accessPolicyOutbound.other-namespace}}
+        - application: "{{this.application}}"
+          namespace: "{{this.namespace}}"
+      {{/each}}
+
   tokenx:
     enabled: true
   observability:
