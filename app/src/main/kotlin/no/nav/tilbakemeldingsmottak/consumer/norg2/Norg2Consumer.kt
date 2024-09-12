@@ -9,6 +9,7 @@ import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
@@ -28,6 +29,9 @@ class Norg2Consumer(
 
     private val log = LoggerFactory.getLogger(javaClass)
 
+    @Value("\${norg2.api.v1.url}")
+    private val norg2Url: String? = null
+
     @Metrics(
         value = DOK_CONSUMER,
         extraTags = [PROCESS_CODE, "hentEnheter"],
@@ -39,7 +43,7 @@ class Norg2Consumer(
         CacheConfig.NORG2_CACHE
     )
     fun hentEnheter(): List<Enhet> {
-        log.info("Henter enheter fra norg2")
+        log.info("Henter enheter fra norg2 på $norg2Url")
 
         val response = restClient
             .method(HttpMethod.GET)
