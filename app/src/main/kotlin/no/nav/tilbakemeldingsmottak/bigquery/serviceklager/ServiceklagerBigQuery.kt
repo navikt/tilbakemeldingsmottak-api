@@ -43,7 +43,7 @@ class ServiceklagerBigQuery(private val env: Environment, private val bigQueryCl
             map["klagen_gjelder_id"] = serviceklage.klagenGjelderId
             map["klagetyper"] = serviceklage.klagetyper
             map["gjelder_sosialhjelp"] = serviceklage.gjelderSosialhjelp
-            map["klagetekst"] = serviceklage.klagetekst
+            map["klagetekst"] = null
             map["behandles_som_serviceklage"] = serviceklage.behandlesSomServiceklage
             map["behandles_som_serviceklage_utdypning"] = serviceklage.behandlesSomServiceklageUtdypning
             map["fremmet_dato"] =

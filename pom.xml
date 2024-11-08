@@ -50,7 +50,7 @@
         <jakarta-validation-api.version>3.1.0</jakarta-validation-api.version>
         <jakarta-annotation.version>3.0.0</jakarta-annotation.version>
 
-        <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
+        <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
         <mockito-junit-jupiter.version>5.13.0</mockito-junit-jupiter.version>
         <resilience4j.version>2.0.2</resilience4j.version>
         <resilience4j-prometheus.version>1.7.1</resilience4j-prometheus.version>
@@ -67,7 +67,7 @@
 
         <spring-retry.version>2.0.9</spring-retry.version>
         <flyway.version>10.18.0</flyway.version>
-        <tika-core.version>2.9.2</tika-core.version>
+        <tika-core.version>3.0.0</tika-core.version>
         <pdfbox.version>3.0.3</pdfbox.version>
         <openhtml.version>1.1.22</openhtml.version>
         <handlebars.version>4.4.0</handlebars.version>
@@ -94,7 +94,7 @@
         <maven-enforcer.version>3.5.0</maven-enforcer.version>
         <versions-maven-plugin.version>2.17.1</versions-maven-plugin.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-        <graphql-kotlin.version>7.1.1</graphql-kotlin.version>
+        <graphql-kotlin.version>8.2.1</graphql-kotlin.version>
     </properties>
 
     <dependencyManagement>

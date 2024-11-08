@@ -95,14 +95,14 @@ class RestClientTemplateSupport(
         return ExchangeFilterFunction { clientRequest: ClientRequest?, exchangeFunction: ExchangeFunction ->
             val response = oAuth2AccessTokenService.getAccessToken(clientProperties)
 
-            if (response?.accessToken == null) {
+            if (response.access_token == null) {
                 throw ServerErrorException("Fikk ikke accessToken fra token exchange")
             }
 
             val filtered = ClientRequest.from(
                 clientRequest!!
             )
-                .headers { headers: HttpHeaders -> headers.setBearerAuth(response.accessToken as String) }
+                .headers { headers: HttpHeaders -> headers.setBearerAuth(response.access_token as String) }
                 .build()
             exchangeFunction.exchange(filtered)
         }
