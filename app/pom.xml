@@ -411,7 +411,6 @@
                 </dependencies>
             </plugin>
 
-
             <!-- Graphql-->
             <plugin>
                 <groupId>com.expediagroup</groupId>

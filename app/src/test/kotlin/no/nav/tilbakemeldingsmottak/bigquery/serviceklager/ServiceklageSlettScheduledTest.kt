@@ -23,10 +23,10 @@ internal class ServiceklageSlettScheduledTest : ApplicationTest() {
     fun `Should delete serviceklager from database that has avsluttet_dato before cutoffDate`() {
         // Given
         val serviceklage1DayAgo =
-            ServiceklageBuilder().avsluttetDato(LocalDateTime.now().minusDays(1)).serviceklageId(1).build()
-        val serviceklageNotAvsluttet = ServiceklageBuilder().avsluttetDato(null).serviceklageId(2).build()
+            ServiceklageBuilder().avsluttetDato(LocalDateTime.now().minusDays(1)).serviceklageId(null).build()
+        val serviceklageNotAvsluttet = ServiceklageBuilder().avsluttetDato(null).serviceklageId(null).build()
         val seviceklage100daysAgo =
-            ServiceklageBuilder().avsluttetDato(LocalDateTime.now().minusDays(100)).serviceklageId(3).build()
+            ServiceklageBuilder().avsluttetDato(LocalDateTime.now().minusDays(100)).serviceklageId(null).build()
 
         serviceklageRepository?.save(serviceklage1DayAgo)
         serviceklageRepository?.save(serviceklageNotAvsluttet)
