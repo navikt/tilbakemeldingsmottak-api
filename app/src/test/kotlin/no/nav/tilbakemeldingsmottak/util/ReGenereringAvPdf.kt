@@ -12,6 +12,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
+@kotlin.ExperimentalStdlibApi
 internal class ReGenereringAvPdf {
     private fun createOpprettServiceklageRequestPrivatperson(klage: List<String?>): OpprettServiceklageRequest {
         return OpprettServiceklageRequest(
