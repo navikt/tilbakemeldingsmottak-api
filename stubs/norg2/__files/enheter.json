@@ -13036,7 +13036,7 @@
     {
         "enhetId": 100000525,
         "navn": "NAV Klageinstans styringsenhet",
-        "enhetNr": "4200",
+        "enhetNr": "4100",
         "antallRessurser": 0,
         "status": "Aktiv",
         "orgNivaa": "EN",
@@ -13048,7 +13048,7 @@
         "nedleggelsesdato": null,
         "oppgavebehandler": true,
         "versjon": 5,
-        "sosialeTjenester": "Besøksadresse: Anton Jenssens gate 7A\nPostadresse: Postboks 2435, 3104 TØNSBERG\nFaksnummer: \nEnhets-ID: 4200\n  \nTelf 21 07 17 30\n\nNAV Klage og anke styringsenheten\nE-post: nav.klageoganke.sentralt.styringsledd@nav.no \n\nFelles mottak for serviceklager \n\nKønummer til NAV Klageinstans 453 98 104 på AAP\n\nØST (Østfold, Buskerud, Vestfold): Uføretrygd, AAP, Hjelpemidler, barnebidrag,)\n\nOSLO OG AKERSHUS (Oslo): Medlemskap, sykepenger, AAP, Y-skade og sykdom, krigspensjon, samt sekretariat for ankenemnda for sykepenger i arb. giv. perioden.\n\nSØR (Telemark, Aust-Agder, Vest-Agder): Dagpenger, Arbeidsmarkedsloven, tilleggs stønad, AAP, samt alle erstatningskrav mot statlig del av NAV\n\nVEST (Rogaland, Hordaland, Sogn og Fjordane): Sykepenger, grunn og hjelpestønad., barnebidrag, pensjon, supplerende stønad, gravferdsstønad. \n\nMIDT-NORGE (Hedmark, Oppland, Møre og Romsdal, Sør Trøndelag, Nord Trøndelag): Uføretrygd, bil, foreldrepenger, barnetrygd, kontantstøtte. \n\nNORD (Nordland, Troms, Finnmark): Uføretrygd, enslig forsørger, barns sykdom, tvungen forvaltning, klager fra NAV innkreving på gebyr og motregning.",
+        "sosialeTjenester": "Besøksadresse: Anton Jenssens gate 7A\nPostadresse: Postboks 2435, 3104 TØNSBERG\nFaksnummer: \nEnhets-ID: 4100\n  \nTelf 21 07 17 30\n\nNAV Klage og anke styringsenheten\nE-post: nav.klageoganke.sentralt.styringsledd@nav.no \n\nFelles mottak for serviceklager \n\nKønummer til NAV Klageinstans 453 98 104 på AAP\n\nØST (Østfold, Buskerud, Vestfold): Uføretrygd, AAP, Hjelpemidler, barnebidrag,)\n\nOSLO OG AKERSHUS (Oslo): Medlemskap, sykepenger, AAP, Y-skade og sykdom, krigspensjon, samt sekretariat for ankenemnda for sykepenger i arb. giv. perioden.\n\nSØR (Telemark, Aust-Agder, Vest-Agder): Dagpenger, Arbeidsmarkedsloven, tilleggs stønad, AAP, samt alle erstatningskrav mot statlig del av NAV\n\nVEST (Rogaland, Hordaland, Sogn og Fjordane): Sykepenger, grunn og hjelpestønad., barnebidrag, pensjon, supplerende stønad, gravferdsstønad. \n\nMIDT-NORGE (Hedmark, Oppland, Møre og Romsdal, Sør Trøndelag, Nord Trøndelag): Uføretrygd, bil, foreldrepenger, barnetrygd, kontantstøtte. \n\nNORD (Nordland, Troms, Finnmark): Uføretrygd, enslig forsørger, barns sykdom, tvungen forvaltning, klager fra NAV innkreving på gebyr og motregning.",
         "kanalstrategi": null,
         "orgNrTilKommunaltNavKontor": null
     },
