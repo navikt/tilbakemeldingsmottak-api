@@ -37,7 +37,7 @@ TokenX brukes til å skille mellom innlogget og uinlogget innsending av servicek
 For å teste appliaksjonen er en avhengig av å ha:
 
 1. En test-ident for saksbehandler opprettet i [Ida](https://ida.nais.adeo.no/)
-    - Brukeren må ha nasjonal tilgang, tilgang til gosys, enhet 4200 og tema SRV Serviceklage
+    - Brukeren må ha nasjonal tilgang, tilgang til gosys, enhet 4100 (fra 2025, tidligere 4200) og tema SRV Serviceklage
 2. Testperson opprettet i [dolly](https://dolly.nais.preprod.local/)
 
 Innsending gjøres innlogget/uinlogget

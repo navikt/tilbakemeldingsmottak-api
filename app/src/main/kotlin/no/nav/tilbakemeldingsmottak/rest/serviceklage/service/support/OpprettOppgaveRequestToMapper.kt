@@ -12,7 +12,7 @@ import java.time.LocalDate
 @Component
 class OpprettOppgaveRequestToMapper(private val pdlService: PdlService) {
 
-    private val KLAGEINSTANS_ENHETSNR = "4200"
+    private val KLAGEINSTANS_ENHETSNR = "4100"
     private val FAGPOST_ENHETSNR = "2950"
     private val PRIORITET = "NORM"
     private val SERVICEKLAGE_TEMA = "SER"
