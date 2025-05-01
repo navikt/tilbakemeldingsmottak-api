@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
+        <version>3.4.5</version>
     </parent>
 
     <groupId>no.nav.tilbakemeldingsmottak</groupId>
@@ -21,7 +21,7 @@
 
     <properties>
         <!-- Project config -->
-        <spring-boot.version>3.4.4</spring-boot.version>
+        <spring-boot.version>3.4.5</spring-boot.version>
         <java.version>21</java.version>
         <kotlin.version>2.1.20</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,20 +29,20 @@
         <maven.version>3.2.5</maven.version>
 
         <!-- NAV internal dependencies -->
-        <token-support.version>5.0.24</token-support.version>
+        <token-support.version>5.0.25</token-support.version>
         <mock-oauth2-server.version>2.1.10</mock-oauth2-server.version>
-        <spring-core.version>6.2.5</spring-core.version>
+        <spring-core.version>6.2.6</spring-core.version>
         <caffeine.version>3.2.0</caffeine.version>
-        <netty-all.version>4.1.119.Final</netty-all.version>
+        <netty-all.version>4.2.0.Final</netty-all.version>
 
         <!-- Dependencies that should be on the latest version -->
-        <httpclient5.version>5.4.3</httpclient5.version>
-        <microsoft-graph.version>6.33.0</microsoft-graph.version>
+        <httpclient5.version>5.4.4</httpclient5.version>
+        <microsoft-graph.version>6.36.0</microsoft-graph.version>
         <microsoft-graph-core.version>3.6.1</microsoft-graph-core.version>
         <azure.identity.version>1.15.4</azure.identity.version>
 
-        <jackson-module-kotlin.version>2.18.3</jackson-module-kotlin.version>
-        <jackson.version>2.18.3</jackson.version>
+        <jackson-module-kotlin.version>2.19.0</jackson-module-kotlin.version>
+        <jackson.version>2.19.0</jackson.version>
 
         <jakarta.xml-bind.version>4.0.0</jakarta.xml-bind.version>
         <jakarta.activation.version>2.1.3</jakarta.activation.version>
@@ -50,11 +50,11 @@
         <jakarta-validation-api.version>3.1.1</jakarta-validation-api.version>
         <jakarta-annotation.version>3.0.0</jakarta-annotation.version>
 
-        <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
-        <mockito-junit-jupiter.version>5.16.1</mockito-junit-jupiter.version>
+        <logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
+        <mockito-junit-jupiter.version>5.17.0</mockito-junit-jupiter.version>
         <resilience4j.version>2.0.2</resilience4j.version>
         <resilience4j-prometheus.version>1.7.1</resilience4j-prometheus.version>
-        <micrometer.version>1.14.5</micrometer.version>
+        <micrometer.version>1.14.6</micrometer.version>
         <wiremock.version>2.27.2</wiremock.version>
         <spring-cloud-contract-wiremock.version>4.2.1</spring-cloud-contract-wiremock.version>
         <json-smart.version>2.4.11</json-smart.version>
@@ -62,24 +62,24 @@
         <graphql-java.version>21.0</graphql-java.version>
         <spring-security-oauth2.version>6.1.3</spring-security-oauth2.version>
         <google-cloud-bigquery.version>26.59.0</google-cloud-bigquery.version>
-        <bigquery.version>2.49.0</bigquery.version>
-        <mockk.version>1.13.17</mockk.version>
+        <bigquery.version>2.49.2</bigquery.version>
+        <mockk.version>1.14.2</mockk.version>
 
         <spring-retry.version>2.0.11</spring-retry.version>
-        <flyway.version>11.5.0</flyway.version>
+        <flyway.version>11.8.0</flyway.version>
         <tika-core.version>3.1.0</tika-core.version>
         <pdfbox.version>3.0.4</pdfbox.version>
-        <openhtml.version>1.1.26</openhtml.version>
+        <openhtml.version>1.1.28</openhtml.version>
         <handlebars.version>4.4.0</handlebars.version>
         <springdoc-openapi.version>1.8.0</springdoc-openapi.version>
-        <swagger-annotations.version>2.2.29</swagger-annotations.version>
+        <swagger-annotations.version>2.2.30</swagger-annotations.version>
         <gson.version>2.11.0</gson.version>
         <gson-fire.version>1.8.5</gson-fire.version>
         <findbugs.version>3.0.2</findbugs.version>
         <javax.activation.version>1.2.0</javax.activation.version>
         <javax.xml-bind.version>2.3.1</javax.xml-bind.version>
         <versions-maven-plugin>2.15.0</versions-maven-plugin>
-        <poi.version>5.4.0</poi.version>
+        <poi.version>5.4.1</poi.version>
 
         <!-- Maven plugins -->
         <wagon-webdav-jackrabbit.version>3.5.3</wagon-webdav-jackrabbit.version>
@@ -87,14 +87,14 @@
         <maven-failsafe-plugin.version>3.5.3</maven-failsafe-plugin.version>
         <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
-        <openapi-generator-maven-plugin.version>7.12.0</openapi-generator-maven-plugin.version>
+        <openapi-generator-maven-plugin.version>7.13.0</openapi-generator-maven-plugin.version>
         <graphql-maven-plugin.version>2.2</graphql-maven-plugin.version>
         <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
         <maven-filtering>3.4.0</maven-filtering>
         <maven-enforcer.version>3.5.0</maven-enforcer.version>
         <versions-maven-plugin.version>2.18.0</versions-maven-plugin.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-        <graphql-kotlin.version>8.4.0</graphql-kotlin.version>
+        <graphql-kotlin.version>8.7.0</graphql-kotlin.version>
     </properties>
 
     <dependencyManagement>
