@@ -57,4 +57,18 @@ internal class SendRosValidatorTest {
         // Then
         assertTrue(thrown.message.contains("melding er påkrevd"))
     }
+
+    @Test
+    fun shouldThrowExceptionIfMeldingContainsIllegalCharacters() {
+        // Given
+        sendRosRequest =
+            SendRosRequestBuilder().build(melding = "Dette er en ulovlig tekst; med ulovlige karakterer! F.eks. $ & # & *")
+
+        // When
+        val thrown =
+            Assertions.assertThrows(ClientErrorException::class.java) { sendRosValidator.validateRequest(sendRosRequest) }
+
+        // Then
+        assertTrue(thrown.message.contains("melding inneholder ulovlige karakterer ;, \$, &, #, *"))
+    }
 }
