@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils
 
 abstract class RequestValidator {
 
-    private val illegalCharRegex = Regex("[^\\p{L}\\p{N}@._+\\- ':!,\\u00C0-\\u017F]")
+    private val illegalCharRegex = Regex("[^\\p{L}\\p{N}@._+\\- ':!,&\\u00C0-\\u017F]")
 
     protected fun hasText(input: String?, feltnavn: String?, condition: String? = "") {
         if (StringUtils.isBlank(input)) {
