@@ -69,6 +69,6 @@ internal class SendRosValidatorTest {
             Assertions.assertThrows(ClientErrorException::class.java) { sendRosValidator.validateRequest(sendRosRequest) }
 
         // Then
-        assertTrue(thrown.message.contains("melding inneholder ulovlige karakterer ;, \$, &, #, *"))
+        assertTrue(thrown.message.contains("melding inneholder ulovlige karakterer ;, \$, #, *"))
     }
 }
