@@ -17,8 +17,12 @@ spec:
       rules:
         - application: tilbakemeldinger
           namespace: personbruker
+        - application: tilbakemeldinger
+          namespace: navno
         - application: samisk-samtale-bestilling
           namespace: personbruker
+        - application: samisk-samtale-bestilling
+          namespace: navno
         - application: statuspoll
           namespace: navdig
         - application: tilbakemeldingsmottak-frontend
