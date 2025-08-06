@@ -16,9 +16,9 @@ spec:
     inbound:
       rules:
         - application: tilbakemeldinger
-          namespace: personbruker
+          namespace: navno
         - application: samisk-samtale-bestilling
-          namespace: personbruker
+          namespace: navno
         - application: statuspoll
           namespace: navdig
         - application: tilbakemeldingsmottak-frontend
