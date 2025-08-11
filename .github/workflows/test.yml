@@ -17,7 +17,19 @@ jobs:
           distribution: 'temurin'
           java-version: 21
           cache: 'maven'
-      - name: Maven clean install
-        run: mvn clean install
+      - name: Cache dependencies
+
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Maven build
+        env:
+          GITHUB_NAV_TOKEN: ${{ secrets.READER_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+        run: |
+          mvn clean install --settings maven-settings.xml
 
 
