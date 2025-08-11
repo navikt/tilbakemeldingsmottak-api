@@ -35,7 +35,7 @@ jobs:
           mvn clean package --settings maven-settings.xml
 
       - name: Dependency submission (for dependabot)
-        uses: advanced-security/maven-dependency-submission-action@v4
+        uses: advanced-security/maven-dependency-submission-action@v5
 
       - name: Build and push Docker image
         uses: nais/docker-build-push@v0
