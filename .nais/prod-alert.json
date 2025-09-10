@@ -2,7 +2,7 @@
   "env-name": "prod-gcp",
   "number_of_errors": 2,
   "number_of_pods": 1,
-  "number_of_not_logged_in_requests": 20,
+  "number_of_not_logged_in_requests": 100,
   "error_log_url": "https://logs.adeo.no/app/discover#/view/7b4e4e60-f976-11ed-b7f9-11953dd7a874",
   "error_grafana_url": "https://grafana.nav.cloud.nais.io/d/BW5Ba8LWk/serviceklage-drift-dashboard-tilbakemeldingsmottak?orgId=1&from=now-1h&to=now&var-datasource=000000021&var-namespace=teamserviceklage&var-app=tilbakemeldingsmottak-api&var-version=2024.02.15-11.30-f4b27c8&var-query0=",
   "common-labels": {
