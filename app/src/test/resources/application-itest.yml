@@ -4,6 +4,11 @@ email_nav_support_address: nav-support@preprod.local
 email_samisk_kontakt_address: samisk-kontakt@preprod.local
 email_serviceklage_address: nav.serviceklager@preprod.local
 email_uu_address: uu@preprod.local
+
+# application.properties
+logging.level.org.springframework.http.converter.json: DEBUG
+logging.level.com.fasterxml.jackson.databind: DEBUG
+
 ereg:
   api:
     url: http://localhost:${wiremock.server.port}/ereg
@@ -97,6 +102,11 @@ graphql:
     url: ${pdl.url}
 
 spring:
+#  cache:
+#    type: simple
+#  aop:
+#    auto: true
+#    proxy-target-class: false
   jpa:
     properties:
       hibernate:

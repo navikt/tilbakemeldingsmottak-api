@@ -1,12 +1,13 @@
 package no.nav.tilbakemeldingsmottak.util
 
 import no.nav.tilbakemeldingsmottak.model.*
-import org.springframework.boot.test.web.client.TestRestTemplate
+import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse
 import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
+import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
+import org.springframework.test.web.reactive.server.WebTestClient
 
-class Api(val restTemplate: TestRestTemplate) {
+class Api(val restTemplate: WebTestClient) {
 
     private val URL_SENDINN_SERVICEKLAGE = "/rest/serviceklage"
     private val URL_BEHANDLE_SERVICEKLAGE = "/rest/taskserviceklage"
@@ -15,43 +16,102 @@ class Api(val restTemplate: TestRestTemplate) {
     private val KLASSIFISER = "klassifiser"
 
     fun createServiceklage(requestEntity: HttpEntity<OpprettServiceklageRequest>): ResponseEntity<OpprettServiceklageResponse> {
-        return restTemplate.exchange(
-            URL_SENDINN_SERVICEKLAGE,
-            HttpMethod.POST,
-            requestEntity,
-            OpprettServiceklageResponse::class.java
-        )
+
+        val result = restTemplate.post()
+            .uri(URL_SENDINN_SERVICEKLAGE)
+            .headers { it.addAll(requestEntity.headers) }
+            .bodyValue(requestEntity.body!!)
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(OpprettServiceklageResponse::class.java)
+            .returnResult()
+
+        return ResponseEntity
+            .status(result.status)
+            .headers(result.responseHeaders)
+            .body(result.responseBody)
     }
 
-    fun getDocument(requestEntity: HttpEntity<Any?>, oppgaveId: String): ResponseEntity<HentDokumentResponse> {
-        return restTemplate.exchange(
-            "$URL_BEHANDLE_SERVICEKLAGE/$HENT_DOKUMENT/$oppgaveId",
-            HttpMethod.GET,
-            requestEntity,
-            HentDokumentResponse::class.java
-        )
+
+    fun createServiceklageError(requestEntity: HttpEntity<OpprettServiceklageRequest>): ResponseEntity<ErrorResponse> {
+
+        val result = restTemplate.post()
+            .uri(URL_SENDINN_SERVICEKLAGE)
+            .headers { it.addAll(requestEntity.headers) }
+            .bodyValue(requestEntity.body!!)
+            .exchange()
+            .expectStatus().is4xxClientError
+            .expectBody(ErrorResponse::class.java)
+            .returnResult()
+
+        return ResponseEntity
+            .status(result.status)
+            .headers(result.responseHeaders)
+            .body(result.responseBody)
     }
 
-    fun getSkjema(requestEntity: HttpEntity<Any?>, journalpostId: String): ResponseEntity<HentSkjemaResponse> {
-        return restTemplate.exchange(
-            "$URL_BEHANDLE_SERVICEKLAGE/$HENT_SKJEMA/$journalpostId",
-            HttpMethod.GET,
-            requestEntity,
-            HentSkjemaResponse::class.java
-        )
+    fun getDocument(headers: HttpHeaders, oppgaveId: String): ResponseEntity<HentDokumentResponse> {
+        val result = restTemplate.get()
+            .uri("$URL_BEHANDLE_SERVICEKLAGE/$HENT_DOKUMENT/$oppgaveId")
+            .headers { it.addAll(headers) }
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(HentDokumentResponse::class.java)
+            .returnResult()
+
+        return ResponseEntity
+            .status(result.status)
+            .headers(result.responseHeaders)
+            .body(result.responseBody)
+    }
+
+
+    fun getDocumentError(headers: HttpHeaders, oppgaveId: String): ResponseEntity<ErrorResponse> {
+        val result = restTemplate.get()
+            .uri("$URL_BEHANDLE_SERVICEKLAGE/$HENT_DOKUMENT/$oppgaveId")
+            .headers { it.addAll(headers) }
+            .exchange()
+            .expectStatus().is4xxClientError
+            .expectBody(ErrorResponse::class.java)
+            .returnResult()
+
+        return ResponseEntity
+            .status(result.status)
+            .headers(result.responseHeaders)
+            .body(result.responseBody)
+    }
+
+    fun getSkjema(headers: HttpHeaders, journalpostId: String): ResponseEntity<HentSkjemaResponse> {
+        val result = restTemplate.get()
+            .uri("$URL_BEHANDLE_SERVICEKLAGE/$HENT_SKJEMA/$journalpostId")
+            .headers { it.addAll(headers) }
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(HentSkjemaResponse::class.java)
+            .returnResult()
+
+        return ResponseEntity
+            .status(result.status)
+            .headers(result.responseHeaders)
+            .body(result.responseBody)
     }
 
     fun classifyServiceklage(
         requestEntity: HttpEntity<KlassifiserServiceklageRequest>,
         oppgaveId: String
     ): ResponseEntity<KlassifiserServiceklageResponse> {
-        return restTemplate.exchange(
-            "$URL_BEHANDLE_SERVICEKLAGE/$KLASSIFISER?oppgaveId=$oppgaveId",
-            HttpMethod.PUT,
-            requestEntity,
-            KlassifiserServiceklageResponse::class.java
-        )
-    }
+        val result = restTemplate.put()
+            .uri("$URL_BEHANDLE_SERVICEKLAGE/$KLASSIFISER?oppgaveId=$oppgaveId")
+            .headers { it.addAll(requestEntity.headers) }
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(KlassifiserServiceklageResponse::class.java)
+            .returnResult()
 
+        return ResponseEntity
+            .status(result.status)
+            .headers(result.responseHeaders)
+            .body(result.responseBody)
+    }
 
 }

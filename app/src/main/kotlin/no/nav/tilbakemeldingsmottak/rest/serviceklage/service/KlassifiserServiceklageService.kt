@@ -1,10 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service
 
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklageEventType
 import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery
 import no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER
@@ -37,8 +32,12 @@ import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import tools.jackson.core.JacksonException
+import tools.jackson.core.type.TypeReference
 import java.time.LocalDate
 import java.time.LocalDateTime
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
 @Service
 class KlassifiserServiceklageService(
@@ -121,22 +120,30 @@ class KlassifiserServiceklageService(
         serviceklage: Serviceklage,
         hentOppgaveResponseTo: HentOppgaveResponseTo
     ): Map<String, String> {
+
+        // Create a mutable map to hold the question-answer pairs
         val questionAnswerMap = HashMap<String, String>()
-        val skjemaResponse = if (hentOppgaveResponseTo.journalpostId != null) {
-            hentSkjemaService.hentSkjema(hentOppgaveResponseTo.journalpostId)
-        } else {
-            hentSkjemaService.readSkjema()
-        }
-        val answersMap = serviceklage.klassifiseringJson?.let { klassifiseringsJson ->
-            jacksonObjectMapper().readValue<Map<String, String?>>(klassifiseringsJson)
+
+        // Fetch the skjemaResponse based on the journalpostId
+        val skjemaResponse = hentOppgaveResponseTo.journalpostId?.let {
+            hentSkjemaService.hentSkjema(it)
+        } ?: hentSkjemaService.readSkjema()
+
+        // Use tools.jackson ObjectMapper to read the klassifiseringJson
+        val answersMap: Map<String, String?>? = serviceklage.klassifiseringJson?.let { klassifiseringsJson ->
+            jacksonObjectMapper().readValue(klassifiseringsJson, object : TypeReference<Map<String, String?>>() {})
                 .filterValues { value -> value != null }
         }
 
-        if (answersMap != null) {
-            skjemaResponse.questions?.let { addEntriesToQuestionAnswerMap(answersMap, it, questionAnswerMap) }
+        // If answersMap is not null, add entries to questionAnswerMap
+        answersMap?.let {
+            skjemaResponse.questions?.let { questions ->
+                addEntriesToQuestionAnswerMap(it, questions, questionAnswerMap)
+            }
         }
 
         return questionAnswerMap
+
     }
 
     private fun addEntriesToQuestionAnswerMap(
@@ -223,8 +230,8 @@ class KlassifiserServiceklageService(
         serviceklage.svarmetodeUtdypning = mapSvarmetodeUtdypning(request)
         serviceklage.avsluttetDato = LocalDateTime.now()
         try {
-            serviceklage.klassifiseringJson = ObjectMapper().registerKotlinModule().writeValueAsString(request)
-        } catch (e: JsonProcessingException) {
+            serviceklage.klassifiseringJson = ObjectMapper().writeValueAsString(request)
+        } catch (e: JacksonException) {
             throw ServerErrorException("Kan ikke konvertere klassifiseringsrequest til JSON-string", e)
         }
     }

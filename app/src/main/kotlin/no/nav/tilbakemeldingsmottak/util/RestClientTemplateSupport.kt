@@ -1,9 +1,6 @@
 package no.nav.tilbakemeldingsmottak.util
 
 import com.expediagroup.graphql.client.spring.GraphQLWebClient
-import io.netty.channel.ChannelOption
-import io.netty.handler.timeout.ReadTimeoutHandler
-import io.netty.handler.timeout.WriteTimeoutHandler
 import no.nav.security.token.support.client.core.ClientProperties
 import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties
@@ -20,9 +17,13 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.http.codec.ClientCodecConfigurer
 import org.springframework.web.reactive.function.client.*
-import reactor.netty.Connection
 import reactor.netty.http.client.HttpClient
-import java.util.concurrent.TimeUnit
+
+import org.springframework.graphql.client.GraphQlClient
+import org.springframework.graphql.client.HttpGraphQlClient
+import org.springframework.web.reactive.function.client.WebClient
+import java.time.Duration
+
 
 @Configuration
 @EnableConfigurationProperties(ClientConfigurationProperties::class)
@@ -50,6 +51,22 @@ class RestClientTemplateSupport(
     @Bean
     @Qualifier("pdlClient")
     @Scope("prototype")
+    fun graphQlClient(): GraphQlClient {
+        val clientProperties = clientConfigurationProperties.registration["pdl"]
+            ?: throw RuntimeException("Fant ikke konfigurering for pdl")
+        val webClientBuilder = webclientBuilder(
+            buildHttpClient(5000, 60, 60),
+            clientProperties
+        )
+        return HttpGraphQlClient.builder(webClientBuilder)
+            .url(pdlUrl)
+            .build()
+    }
+
+
+    @Bean
+    @Qualifier("pdlClientOld")
+    @Scope("prototype")
     fun pdlClient(): GraphQLWebClient {
         val clientProperties = clientConfigurationProperties.registration["pdl"]
             ?: throw RuntimeException("Fant ikke konfigurering for pdl")
@@ -62,12 +79,7 @@ class RestClientTemplateSupport(
 
     private fun buildHttpClient(connection_timeout: Int, readTimeout: Int, writeTimeout: Int): HttpClient {
         return HttpClient.create()
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connection_timeout)
-            .doOnConnected { conn: Connection ->
-                conn
-                    .addHandlerLast(ReadTimeoutHandler(readTimeout.toLong(), TimeUnit.SECONDS))
-                    .addHandlerLast(WriteTimeoutHandler(writeTimeout))
-            }
+            .responseTimeout(Duration.ofSeconds(readTimeout.toLong()))
     }
 
     fun webclientBuilder(httpClient: HttpClient, clientProperties: ClientProperties): WebClient.Builder {

@@ -1,8 +1,8 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+//import com.fasterxml.jackson.databind.ObjectMapper
+//import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+//import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.tilbakemeldingsmottak.consumer.norg2.Norg2Consumer
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE
@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
 import org.springframework.util.StreamUtils
+import tools.jackson.databind.ObjectMapper
 import java.nio.charset.StandardCharsets
 
 @Service
@@ -43,9 +44,13 @@ class HentSkjemaService(
     private val ANNET = "Annet"
     private val CHARSET = StandardCharsets.UTF_8
 
-    private val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule().apply {
-        findAndRegisterModules()
-    }
+    private val mapper = ObjectMapper()
+    /*
+
+        private val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule().apply {
+            findAndRegisterModules()
+        }
+    */
 
     init {
         classpathSkjema = StreamUtils.copyToString(schema.inputStream, CHARSET)

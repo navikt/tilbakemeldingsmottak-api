@@ -1,26 +1,31 @@
 package no.nav.tilbakemeldingsmottak.consumer.pdl
 
-import com.expediagroup.graphql.client.spring.GraphQLWebClient
 import com.expediagroup.graphql.client.types.GraphQLClientError
 import kotlinx.coroutines.runBlocking
 import no.nav.tilbakemeldingsmottak.consumer.pdl.domain.IdentDto
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
-import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
 import no.nav.tilbakemeldingsmottak.metrics.Metrics
+import no.nav.tilbakemeldingsmottak.pdl.generated.HENT_IDENTER
 import no.nav.tilbakemeldingsmottak.pdl.generated.HentIdenter
 import no.nav.tilbakemeldingsmottak.util.handleErrors
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.graphql.client.GraphQlClient
+import org.springframework.graphql.client.GraphQlClientException
 import org.springframework.stereotype.Service
 
 
 @Service
-class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQLWebClient) {
+class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQlClient) {
 
     private val log = LoggerFactory.getLogger(javaClass)
+
+    @Value("\${pdl.url}")
+    lateinit var pdlUrl: String
 
     @Metrics(
         value = MetricLabels.DOK_CONSUMER,
@@ -28,6 +33,7 @@ class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQLWe
         percentiles = [0.5, 0.95],
         histogram = true
     )
+    @Cacheable("hentIdenter")
     fun hentPersonIdents(brukerId: String): List<IdentDto> = runBlocking {
         log.info("Skal hente en personsidenter fra PDL")
         try {
@@ -38,21 +44,32 @@ class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQLWe
         }
     }
 
-    @Cacheable("hentIdenter")
     suspend fun hentIdenter(ident: String): HentIdenter.Result? {
-        val response = pdlGraphQLClient.execute(
-            HentIdenter(
-                HentIdenter.Variables(ident)
-            )
-        )
-        if (response.data != null) {
-            checkForErrors(response.errors)
-            return response.data
-        } else {
-            log.error("Oppslag mot personregisteret feilet. Fikk feil i kall for å hente identer fra personregisteret")
-            throw ServerErrorException("Oppslag mot personregisteret feilet. Fikk feil i kallet for å hente identer fra personregisteret")
+        log.info("Henter identer for ident: $ident")
+
+        val query = HENT_IDENTER
+
+        // This will map only `data` part to HentIdenter.Result, if data is present
+        val responseData: HentIdenter.Result? = try {
+            pdlGraphQLClient.document(query)
+                .variable("ident", ident)
+                .retrieve(pdlUrl)
+                .toEntity(HentIdenter.Result::class.java)
+                .block()
+        } catch (e: GraphQlClientException) {
+            log.warn("GraphQL client transport or protocol error", e)
+            throw ClientErrorException("Feil ved kall til PDL", e, ErrorCode.PDL_ERROR)
         }
+
+        // Currently no method for accessing errors, validate data
+        if (responseData?.hentIdenter == null) {
+            log.warn("Fant ingen aktørId for ident")
+            return null
+        }
+
+        return responseData
     }
+
 
     private fun checkForErrors(errors: List<GraphQLClientError>?) {
         errors?.let { handleErrors(it, "Personregister") }

@@ -7,17 +7,20 @@ import no.nav.tilbakemeldingsmottak.util.builders.ServiceklageBuilder
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
 import java.time.LocalDateTime
+
+import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
+
 
 internal class ServiceklageSlettScheduledTest : ApplicationTest() {
 
-    @MockBean
+    @MockitoBean
     private lateinit var bigQueryClient: BigQuery
 
-    @Autowired
+    @MockitoSpyBean
     private lateinit var serviceklageSlettScheduled: ServiceklageSlettScheduled
+
 
     @Test
     fun `Should delete serviceklager from database that has avsluttet_dato before cutoffDate`() {
@@ -67,6 +70,7 @@ internal class ServiceklageSlettScheduledTest : ApplicationTest() {
         // Then
         verify(bigQueryClient, times(1)).query(slettOpprettedeServiceklagerQueryConfig)
         verify(bigQueryClient, times(1)).query(slettKlassifiserteServiceklagerQueryConfig)
+
         verifyNoMoreInteractions(bigQueryClient)
     }
 }

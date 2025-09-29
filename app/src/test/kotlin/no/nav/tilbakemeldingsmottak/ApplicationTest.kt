@@ -10,6 +10,7 @@ import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import no.nav.security.token.support.spring.test.MockLoginController
 import no.nav.tilbakemeldingsmottak.TestUtils.createNorg2Response
 import no.nav.tilbakemeldingsmottak.TestUtils.createSafGraphqlResponse
+import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery
 import no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER
 import no.nav.tilbakemeldingsmottak.repository.HendelseRepository
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
@@ -19,19 +20,21 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.autoconfigure.data.ldap.AutoConfigureDataLdap
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.transaction.TestTransaction
+import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
 import java.util.*
@@ -40,8 +43,9 @@ import java.util.*
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = ["spring.main.allow-bean-definition-overriding=true"],
-    classes = [Application::class]
+    classes = [Application::class],
 )
+@EnableAutoConfiguration
 @ExtendWith(
     SpringExtension::class
 )
@@ -56,11 +60,14 @@ class ApplicationTest {
     @Autowired
     protected var serviceklageRepository: ServiceklageRepository? = null
 
+    @MockitoBean
+    private lateinit var serviceklagerBigQuery: ServiceklagerBigQuery
+
     @Autowired
     protected var hendelseRepository: HendelseRepository? = null
 
     @Autowired
-    protected var restTemplate: TestRestTemplate? = null
+    protected var restTemplate: WebTestClient? = null
 
     @Autowired
     lateinit var mockOAuth2Server: MockOAuth2Server
@@ -72,7 +79,7 @@ class ApplicationTest {
     lateinit var metricsRegistery: MeterRegistry
 
     @Value("\${local.server.port}")
-    private val serverPort = 0
+    protected val serverPort = 0
 
     private val INNLOGGET_BRUKER = "14117119611"
     private val AUD = "aud-localhost"

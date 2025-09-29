@@ -39,6 +39,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.transaction.TestTransaction
+import org.springframework.http.HttpHeaders
 
 internal class ServiceklageIT : ApplicationTest() {
     private val objectMapper = ObjectMapper().registerKotlinModule()
@@ -405,13 +406,8 @@ internal class ServiceklageIT : ApplicationTest() {
             request,
             createHeaders(Constants.AZURE_ISSUER, request.INNSENDER!!, "serviceklage-klassifisering")
         )
-        val response = restTemplate!!.exchange(
-            "$URL_BEHANDLE_SERVICEKLAGE/$KLASSIFISER?oppgaveId=$OPPGAVE_ID",
-            HttpMethod.PUT,
-            requestEntity,
-            KlassifiserServiceklageResponse::class.java
-        )
-        assertEquals(HttpStatus.OK, response.statusCode)
+        val response = api?.classifyServiceklage(requestEntity, OPPGAVE_ID)
+        assertEquals(HttpStatus.OK, response?.statusCode)
         val serviceklage = serviceklageRepository!!.findAll().iterator().next()
 
         assertBasicServiceklageFields(serviceklage)
@@ -443,10 +439,10 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(1, serviceklageRepository!!.count())
         val fremmetDato = serviceklageRepository!!.findAll().iterator().next().fremmetDato.toString()
 
-        val requestEntity =
-            HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
-
-        val response = api?.getSkjema(requestEntity, JOURNALPOST_ID)
+        val response = api?.getSkjema(
+            createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"),
+            JOURNALPOST_ID
+        )
         assertEquals(HttpStatus.OK, response?.statusCode)
         TestTransaction.flagForCommit()
         TestTransaction.end()
@@ -485,11 +481,12 @@ internal class ServiceklageIT : ApplicationTest() {
 
         assertEquals(serviceklageRepository!!.count(), 1)
         assertNotNull(opprettResponse?.body)
-        val requestEntity =
-            HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
 
         // When
-        val response = api?.getDocument(requestEntity, opprettResponse?.body!!.oppgaveId!!)
+        val response = api?.getDocument(
+            headers = createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"),
+            oppgaveId = opprettResponse?.body!!.oppgaveId!!
+        )
 
         // Then
         assertEquals(HttpStatus.OK, response?.statusCode)
@@ -503,11 +500,11 @@ internal class ServiceklageIT : ApplicationTest() {
             HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!))
         api?.createServiceklage(opprettRequestEntity)
 
-        val requestEntity =
-            HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
-
         // When
-        val response = api?.getDocument(requestEntity, "99")
+        val response = api?.getDocument(
+            headers = createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"),
+            oppgaveId = "99"
+        )
 
         // Then
         assertEquals(HttpStatus.NO_CONTENT, response?.statusCode)
@@ -517,17 +514,16 @@ internal class ServiceklageIT : ApplicationTest() {
     fun `Should return 404 when ereg is not found`() {
         // Given
         val request = OpprettServiceklageRequestBuilder().asBedrift().build()
-        val requestEntity = HttpEntity<Any>(request, createHeaders())
+        val requestEntity = HttpEntity(request, createHeaders())
         WireMock.setScenarioState("opprett_serviceklage", "ereg_404")
 
         // When
-        val response =
-            restTemplate!!.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, ErrorResponse::class.java)
+        val response = api?.createServiceklageError(requestEntity)
 
         // Then
-        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
-        assertNotNull(response.body)
-        assertNotNull(response.body!!.errorCode)
+        assertEquals(HttpStatus.NOT_FOUND, response?.statusCode)
+        assertNotNull(response?.body)
+        assertNotNull(response?.body!!.errorCode)
         assertEquals(ErrorCode.EREG_NOT_FOUND.value, response.body!!.errorCode)
     }
 
@@ -543,11 +539,9 @@ internal class ServiceklageIT : ApplicationTest() {
         WireMock.setScenarioState("hent_dokument", "saf_403")
 
         // When
-        val response: ResponseEntity<ErrorResponse>? = restTemplate!!.exchange(
-            URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + opprettResponse?.body!!.oppgaveId,
-            HttpMethod.GET,
-            HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering")),
-            ErrorResponse::class.java
+        val response = api?.getDocumentError(
+            createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"),
+            opprettResponse?.body!!.oppgaveId!!
         )
 
         // Then
