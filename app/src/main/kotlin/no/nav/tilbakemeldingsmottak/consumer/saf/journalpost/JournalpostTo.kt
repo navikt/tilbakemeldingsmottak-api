@@ -2,7 +2,7 @@ package no.nav.tilbakemeldingsmottak.consumer.saf.journalpost
 
 import java.time.LocalDateTime
 
-data class Journalpost(
+data class JournalpostTo(
     val dokumenter: List<DokumentInfo> = ArrayList(),
     val bruker: Bruker,
     val datoOpprettet: LocalDateTime
@@ -13,7 +13,7 @@ data class Journalpost(
     )
 
     data class Dokumentvariant(
-        val variantformat: Variantformat,
+        val variantformat: VariantformatTo,
         val saksbehandlerHarTilgang: Boolean
     )
 

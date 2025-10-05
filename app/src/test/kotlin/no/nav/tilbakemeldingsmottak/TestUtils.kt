@@ -5,9 +5,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.tilbakemeldingsmottak.consumer.norg2.Enhet
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.DataJournalpost
-import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJsonJournalpost
-import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Variantformat
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.ENHETSNUMMER_PAAKLAGET
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KANAL
@@ -15,6 +13,11 @@ import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KANAL_SERVICEKL
 import no.nav.tilbakemeldingsmottak.model.Answer
 import no.nav.tilbakemeldingsmottak.model.DefaultAnswers
 import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse
+import no.nav.tilbakemeldingsmottak.saf.generated.enums.Variantformat
+import no.nav.tilbakemeldingsmottak.saf.generated.hentjournalpost.Bruker
+import no.nav.tilbakemeldingsmottak.saf.generated.hentjournalpost.DokumentInfo
+import no.nav.tilbakemeldingsmottak.saf.generated.hentjournalpost.Dokumentvariant
+import no.nav.tilbakemeldingsmottak.saf.generated.hentjournalpost.Journalpost
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETSNAVN_1
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETSNAVN_2
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETSNAVN_3
@@ -32,10 +35,7 @@ import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_KONTOR
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_KONTOR_4
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_KONTOR_5
 import org.apache.pdfbox.Loader
-import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.text.PDFTextStripper
-import java.io.ByteArrayInputStream
-import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
 
@@ -87,29 +87,29 @@ object TestUtils {
     }
 
     fun createSafGraphqlResponse(): String {
-        val bruker = SafJournalpostTo.Bruker(PERSONNUMMER)
+        val bruker = Bruker(PERSONNUMMER)
         val dokumentVarianter = listOf(
-            SafJournalpostTo.Dokumentvariant(Variantformat.ARKIV.name, true),
-            SafJournalpostTo.Dokumentvariant(Variantformat.SLADDET.name, true)
+            Dokumentvariant(variantformat = Variantformat.ARKIV, saksbehandlerHarTilgang = true),
+            Dokumentvariant(variantformat = Variantformat.SLADDET, saksbehandlerHarTilgang = true)
         )
-        val dokumenter = listOf(SafJournalpostTo.DokumentInfo(DOKUMENT_INFO_ID, dokumentVarianter))
-        val safJournalpostTo = SafJournalpostTo(dokumenter, bruker, LocalDateTime.now().toString())
+        val dokumenter = listOf(DokumentInfo(DOKUMENT_INFO_ID, dokumentVarianter))
+        val journalpost =
+            Journalpost(bruker = bruker, datoOpprettet = LocalDateTime.now().toString(), dokumenter = dokumenter)
+
         val dataJournalpost = DataJournalpost()
-        dataJournalpost.journalpost = safJournalpostTo
+        dataJournalpost.journalpost = journalpost
         val safJsonJournalpost = SafJsonJournalpost()
         safJsonJournalpost.data = dataJournalpost
-        return objectMapper.writeValueAsString(safJsonJournalpost)
+        //return objectMapper.writeValueAsString(safJsonJournalpost.data)
+        return "{\"data\": ${objectMapper.writeValueAsString(dataJournalpost)} }"
     }
 
     fun createSafGraphqlNoDocumentsResponse(): String {
-        val bruker = SafJournalpostTo.Bruker(PERSONNUMMER)
-        val dokumenter = listOf(SafJournalpostTo.DokumentInfo(DOKUMENT_INFO_ID, listOf()))
-        val safJournalpostTo = SafJournalpostTo(dokumenter, bruker, LocalDateTime.now().toString())
-        val dataJournalpost = DataJournalpost()
-        dataJournalpost.journalpost = safJournalpostTo
-        val safJsonJournalpost = SafJsonJournalpost()
-        safJsonJournalpost.data = dataJournalpost
-        return objectMapper.writeValueAsString(safJsonJournalpost)
+        val bruker = Bruker(PERSONNUMMER)
+        val dokumenter = listOf(DokumentInfo(DOKUMENT_INFO_ID, listOf()))
+        val journalpost =
+            Journalpost(bruker = bruker, datoOpprettet = LocalDateTime.now().toString(), dokumenter = dokumenter)
+        return objectMapper.writeValueAsString(journalpost)
     }
 
     fun getStringFromByteArrayPdf(bytes: ByteArray?): String {

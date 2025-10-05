@@ -111,6 +111,41 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+  security:
+    oauth2:
+      client:
+        registration:
+          pdl:
+            client-id: fake
+            client-secret: someSecret
+            authorization-grant-type: client_credentials
+            scope: scope
+          arkiv:
+            client-id: fake
+            client-secret: someSecret
+            authorization-grant-type: client_credentials
+            scope: scope
+          oppgave:
+            client-id: fake
+            client-secret: someSecret
+            authorization-grant-type: client_credentials
+            scope: scope
+          saf-maskintilmaskin:
+            client-id: fake
+            client-secret: someSecret
+            authorization-grant-type: client_credentials
+            scope: scope
+
+        provider:
+          pdl:
+            token-uri: http://localhost:${token.server.port}/fake/token
+          arkiv:
+            token-uri: http://localhost:${token.server.port}/fake/token
+          oppgave:
+            token-uri: http://localhost:${token.server.port}/fake/token
+          saf-maskintilmaskin:
+            token-uri: http://localhost:${token.server.port}/fake/token
+
 token:
   server:
     port: ${mock-oauth2-server.port}

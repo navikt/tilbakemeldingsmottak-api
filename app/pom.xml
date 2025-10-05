@@ -151,6 +151,11 @@
             <artifactId>jackson-module-kotlin</artifactId>
             <version>${jackson-module-kotlin.version}</version>
         </dependency>
+        <dependency>
+            <groupId>tools.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>${jackson-module-yaml.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -538,6 +543,20 @@
                             <schemaFile>${project.basedir}/src/main/resources/graphql/pdl/pdl-api-sdl.graphql
                             </schemaFile>
                             <packageName>no.nav.tilbakemeldingsmottak.pdl.generated</packageName>
+                            <outputDirectory>${project.build.directory}/generated-sources/graphql</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-saf-client</id>
+                        <goals>
+                            <goal>generate-client</goal>
+                        </goals>
+                        <configuration>
+                            <queryFileDirectory>${project.basedir}/src/main/resources/graphql/saf</queryFileDirectory>
+                            <schemaFile>${project.basedir}/src/main/resources/graphql/saf/saf.graphql
+                            </schemaFile>
+                            <packageName>no.nav.tilbakemeldingsmottak.saf.generated</packageName>
+                            <outputDirectory>${project.build.directory}/generated-sources/graphql</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

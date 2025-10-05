@@ -6,7 +6,7 @@ import no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo
 import no.nav.tilbakemeldingsmottak.consumer.saf.SafJournalpostQueryService
-import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost
+import no.nav.tilbakemeldingsmottak.saf.generated.hentjournalpost.Journalpost
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.ANNET
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.JA
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.KOMMUNAL_KLAGE
@@ -36,7 +36,6 @@ import tools.jackson.core.JacksonException
 import tools.jackson.core.type.TypeReference
 import java.time.LocalDate
 import java.time.LocalDateTime
-import tools.jackson.databind.ObjectMapper
 import tools.jackson.module.kotlin.jacksonObjectMapper
 
 @Service
@@ -193,16 +192,15 @@ class KlassifiserServiceklageService(
             val journalpost = getJournalPost(journalpostId)
             serviceklage = Serviceklage(
                 journalpostId = journalpostId,
-                opprettetDato = journalpost.datoOpprettet,
-                klagenGjelderId = journalpost.bruker.id
+                opprettetDato = LocalDateTime.parse(journalpost.datoOpprettet),
+                klagenGjelderId = journalpost.bruker!!.id
             )
         }
         return serviceklage
     }
 
     private fun getJournalPost(journalpostId: String): Journalpost {
-        val authorizationHeader = "Bearer " + oidcUtils.getFirstValidToken()
-        return safJournalpostQueryService.hentJournalpost(journalpostId, authorizationHeader)
+        return safJournalpostQueryService.hentJournalpost(journalpostId)
     }
 
     private fun updateServiceklage(serviceklage: Serviceklage, request: KlassifiserServiceklageRequest) {
@@ -230,7 +228,7 @@ class KlassifiserServiceklageService(
         serviceklage.svarmetodeUtdypning = mapSvarmetodeUtdypning(request)
         serviceklage.avsluttetDato = LocalDateTime.now()
         try {
-            serviceklage.klassifiseringJson = ObjectMapper().writeValueAsString(request)
+            serviceklage.klassifiseringJson = jacksonObjectMapper().writeValueAsString(request)
         } catch (e: JacksonException) {
             throw ServerErrorException("Kan ikke konvertere klassifiseringsrequest til JSON-string", e)
         }

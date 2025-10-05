@@ -9,18 +9,19 @@ import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
 import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import no.nav.tilbakemeldingsmottak.pdl.generated.HENT_IDENTER
 import no.nav.tilbakemeldingsmottak.pdl.generated.HentIdenter
+import no.nav.tilbakemeldingsmottak.pdl.generated.hentidenter.Identliste
 import no.nav.tilbakemeldingsmottak.util.handleErrors
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
-import org.springframework.graphql.client.GraphQlClient
 import org.springframework.graphql.client.GraphQlClientException
+import org.springframework.graphql.client.HttpGraphQlClient
 import org.springframework.stereotype.Service
 
 
 @Service
-class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQlClient) {
+class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGraphQlClient) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -47,14 +48,12 @@ class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQlCl
     suspend fun hentIdenter(ident: String): HentIdenter.Result? {
         log.info("Henter identer for ident: $ident")
 
-        val query = HENT_IDENTER
-
         // This will map only `data` part to HentIdenter.Result, if data is present
-        val responseData: HentIdenter.Result? = try {
-            pdlGraphQLClient.document(query)
+        val identliste: Identliste? = try {
+            pdlGraphQLClient.document(HENT_IDENTER)
                 .variable("ident", ident)
-                .retrieve(pdlUrl)
-                .toEntity(HentIdenter.Result::class.java)
+                .retrieve("hentIdenter")                              // <-- path relative to "data"
+                .toEntity(Identliste::class.java)
                 .block()
         } catch (e: GraphQlClientException) {
             log.warn("GraphQL client transport or protocol error", e)
@@ -62,18 +61,14 @@ class PdlService(@Qualifier("pdlClient") private val pdlGraphQLClient: GraphQlCl
         }
 
         // Currently no method for accessing errors, validate data
-        if (responseData?.hentIdenter == null) {
+        if (identliste == null) {
             log.warn("Fant ingen aktørId for ident")
             return null
         }
 
-        return responseData
+        return HentIdenter.Result(hentIdenter = identliste)
     }
 
-
-    private fun checkForErrors(errors: List<GraphQLClientError>?) {
-        errors?.let { handleErrors(it, "Personregister") }
-    }
 
     fun hentAktorIdForIdent(ident: String): String {
         log.info("Skal hente aktørId for ident")

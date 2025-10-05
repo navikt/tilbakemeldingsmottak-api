@@ -4,7 +4,7 @@ import no.nav.tilbakemeldingsmottak.consumer.saf.graphql.GraphQLRequest
 import no.nav.tilbakemeldingsmottak.consumer.saf.graphql.JournalpostToMapper
 import no.nav.tilbakemeldingsmottak.consumer.saf.graphql.JournalpostToValidator
 import no.nav.tilbakemeldingsmottak.consumer.saf.graphql.SafGraphqlConsumer
-import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.Journalpost
+import no.nav.tilbakemeldingsmottak.saf.generated.hentjournalpost.Journalpost
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import java.util.*
@@ -31,18 +31,17 @@ class SafJournalpostQueryServiceImpl(private val safGraphqlConsumer: SafGraphqlC
             "  }\n" +
             "}\n"
 
-    override fun hentJournalpost(journalpostid: String, authorizationHeader: String): Journalpost {
-        val journalpost = journalpostMapper.map(
+    override fun hentJournalpost(journalpostid: String): Journalpost {
+        val journalpost =
             journalpostToValidator.validateAndReturn(
                 safGraphqlConsumer.performQuery(
                     GraphQLRequest(
                         JOURNALPOST_QUERY,
                         "journalpost",
                         Collections.singletonMap("queryJournalpostId", journalpostid)
-                    ), authorizationHeader
+                    )
                 )
             )
-        )
         log.info("Hentet journalpost med journalpostId: $journalpostid")
         return journalpost
     }

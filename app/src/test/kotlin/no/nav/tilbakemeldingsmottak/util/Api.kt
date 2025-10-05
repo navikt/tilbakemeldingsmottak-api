@@ -6,6 +6,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.test.web.reactive.server.WebTestClient
+import java.time.Duration
 
 class Api(val restTemplate: WebTestClient) {
 
@@ -17,10 +18,15 @@ class Api(val restTemplate: WebTestClient) {
 
     fun createServiceklage(requestEntity: HttpEntity<OpprettServiceklageRequest>): ResponseEntity<OpprettServiceklageResponse> {
 
-        val result = restTemplate.post()
+        val result = restTemplate
+            .mutate()
+            .responseTimeout(Duration.ofMinutes(2))
+            .build()
+            .post()
             .uri(URL_SENDINN_SERVICEKLAGE)
             .headers { it.addAll(requestEntity.headers) }
             .bodyValue(requestEntity.body!!)
+
             .exchange()
             .expectStatus().isOk
             .expectBody(OpprettServiceklageResponse::class.java)
@@ -35,7 +41,11 @@ class Api(val restTemplate: WebTestClient) {
 
     fun createServiceklageError(requestEntity: HttpEntity<OpprettServiceklageRequest>): ResponseEntity<ErrorResponse> {
 
-        val result = restTemplate.post()
+        val result = restTemplate
+            .mutate()
+            .responseTimeout(Duration.ofMinutes(2))
+            .build()
+            .post()
             .uri(URL_SENDINN_SERVICEKLAGE)
             .headers { it.addAll(requestEntity.headers) }
             .bodyValue(requestEntity.body!!)
@@ -50,12 +60,38 @@ class Api(val restTemplate: WebTestClient) {
             .body(result.responseBody)
     }
 
+
+    fun createServiceklageServerError(requestEntity: HttpEntity<OpprettServiceklageRequest>): ResponseEntity<ErrorResponse> {
+
+        val result = restTemplate
+            .mutate()
+            .responseTimeout(Duration.ofMinutes(2))
+            .build()
+            .post()
+            .uri(URL_SENDINN_SERVICEKLAGE)
+            .headers { it.addAll(requestEntity.headers) }
+            .bodyValue(requestEntity.body!!)
+            .exchange()
+            .expectStatus().is5xxServerError
+            .expectBody(ErrorResponse::class.java)
+            .returnResult()
+
+        return ResponseEntity
+            .status(result.status)
+            .headers(result.responseHeaders)
+            .body(result.responseBody)
+    }
+
     fun getDocument(headers: HttpHeaders, oppgaveId: String): ResponseEntity<HentDokumentResponse> {
-        val result = restTemplate.get()
+        val result = restTemplate
+            .mutate()
+            .responseTimeout(Duration.ofMinutes(12))
+            .build()
+            .get()
             .uri("$URL_BEHANDLE_SERVICEKLAGE/$HENT_DOKUMENT/$oppgaveId")
             .headers { it.addAll(headers) }
             .exchange()
-            .expectStatus().isOk
+            .expectStatus().is2xxSuccessful
             .expectBody(HentDokumentResponse::class.java)
             .returnResult()
 
@@ -67,7 +103,11 @@ class Api(val restTemplate: WebTestClient) {
 
 
     fun getDocumentError(headers: HttpHeaders, oppgaveId: String): ResponseEntity<ErrorResponse> {
-        val result = restTemplate.get()
+        val result = restTemplate
+            .mutate()
+            .responseTimeout(Duration.ofMinutes(12))
+            .build()
+            .get()
             .uri("$URL_BEHANDLE_SERVICEKLAGE/$HENT_DOKUMENT/$oppgaveId")
             .headers { it.addAll(headers) }
             .exchange()
@@ -82,7 +122,11 @@ class Api(val restTemplate: WebTestClient) {
     }
 
     fun getSkjema(headers: HttpHeaders, journalpostId: String): ResponseEntity<HentSkjemaResponse> {
-        val result = restTemplate.get()
+        val result = restTemplate
+            .mutate()
+            .responseTimeout(Duration.ofMinutes(2))
+            .build()
+            .get()
             .uri("$URL_BEHANDLE_SERVICEKLAGE/$HENT_SKJEMA/$journalpostId")
             .headers { it.addAll(headers) }
             .exchange()
@@ -100,9 +144,14 @@ class Api(val restTemplate: WebTestClient) {
         requestEntity: HttpEntity<KlassifiserServiceklageRequest>,
         oppgaveId: String
     ): ResponseEntity<KlassifiserServiceklageResponse> {
-        val result = restTemplate.put()
+        val result = restTemplate
+            .mutate()
+            .responseTimeout(Duration.ofMinutes(20))
+            .build()
+            .put()
             .uri("$URL_BEHANDLE_SERVICEKLAGE/$KLASSIFISER?oppgaveId=$oppgaveId")
             .headers { it.addAll(requestEntity.headers) }
+            .bodyValue(requestEntity.body!!)
             .exchange()
             .expectStatus().isOk
             .expectBody(KlassifiserServiceklageResponse::class.java)

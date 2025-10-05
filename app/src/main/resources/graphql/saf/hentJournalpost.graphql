@@ -1,0 +1,15 @@
+query HentJournalpost( $queryJournalpostId: String!) {
+    journalpost(journalpostId: $queryJournalpostId) {
+        bruker {
+            id
+        }
+        datoOpprettet
+        dokumenter {
+            dokumentInfoId
+            dokumentvarianter {
+                saksbehandlerHarTilgang
+                variantformat
+            }
+        }
+    }
+}

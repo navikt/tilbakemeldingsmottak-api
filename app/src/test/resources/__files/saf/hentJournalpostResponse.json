@@ -1,0 +1,25 @@
+{
+  "data": {
+    "journalpost": {
+      "bruker": {
+        "id": "01010096460"
+      },
+      "datoOpprettet": "2025-10-03T17:08:56.705566",
+      "dokumenter": [
+        {
+          "dokumentInfoId": "dokumentInfoId",
+          "dokumentvarianter": [
+            {
+              "saksbehandlerHarTilgang": true,
+              "variantformat": "ARKIV"
+            },
+            {
+              "saksbehandlerHarTilgang": true,
+              "variantformat": "SLADDET"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -37,49 +37,86 @@ class RestClientTemplateSupport(
     @Value("\${pdl.url}")
     lateinit var pdlUrl: String
 
+    @Value("\${saf.graphql.url}")
+    lateinit var safUrl: String
 
-    @Bean
-    @Qualifier("safclient")
-    @Scope("prototype")
-    fun safClientRestTemplate(): WebClient {
-        val clientProperties = clientConfigurationProperties.registration["saf-maskintilmaskin"]
-            ?: throw RuntimeException("Fant ikke konfigurering for saf-maskintilmaskin")
+    /*
 
-        return webclientBuilder(buildHttpClient(5000, 60, 60), clientProperties).build()
-    }
+        @Bean
+        @Qualifier("safclient")
+        @Scope("prototype")
+        fun safClientRestTemplate(): WebClient {
+            val clientProperties = clientConfigurationProperties.registration["saf-maskintilmaskin"]
+                ?: throw RuntimeException("Fant ikke konfigurering for saf-maskintilmaskin")
+            val webClientBuilder = webclientBuilder(
+                buildHttpClient(5000, 60, 60),
+                clientProperties
+            )
 
-    @Bean
-    @Qualifier("pdlClient")
-    @Scope("prototype")
-    fun graphQlClient(): GraphQlClient {
-        val clientProperties = clientConfigurationProperties.registration["pdl"]
-            ?: throw RuntimeException("Fant ikke konfigurering for pdl")
-        val webClientBuilder = webclientBuilder(
-            buildHttpClient(5000, 60, 60),
-            clientProperties
-        )
-        return HttpGraphQlClient.builder(webClientBuilder)
-            .url(pdlUrl)
-            .build()
-    }
+            return webclientBuilder(buildHttpClient(5000, 60, 60), clientProperties).build()
+        }
 
+    */
 
-    @Bean
-    @Qualifier("pdlClientOld")
-    @Scope("prototype")
-    fun pdlClient(): GraphQLWebClient {
-        val clientProperties = clientConfigurationProperties.registration["pdl"]
-            ?: throw RuntimeException("Fant ikke konfigurering for pdl")
+    /*
+        @Bean
+        @Qualifier("safGraphQlclient")
+        @Scope("prototype")
+        fun safGraphQlClient(): GraphQlClient {
+            val clientProperties = clientConfigurationProperties.registration["saf-maskintilmaskin"]
+                ?: throw RuntimeException("Fant ikke konfigurering for saf-maskintilmaskin")
+            val webClientBuilder = webclientBuilder(
+                buildHttpClient(5000, 60, 60),
+                clientProperties
+            )
+            return HttpGraphQlClient.builder(webClientBuilder)
+                .url(safUrl)
+                .build()
+        }
+    */
+    /*
 
-        return GraphQLWebClient(
-            url = pdlUrl,
-            builder = pdlWebclientBuilder(buildHttpClient(5000, 60, 60), clientProperties)
-        )
-    }
+        @Bean
+        @Qualifier("pdlClient")
+        @Scope("prototype")
+        fun graphQlClient(): GraphQlClient {
+            val clientProperties = clientConfigurationProperties.registration["pdl"]
+                ?: throw RuntimeException("Fant ikke konfigurering for pdl")
+            val webClientBuilder = webclientBuilder(
+                buildHttpClient(5000, 60, 60),
+                clientProperties
+            )
+            return HttpGraphQlClient.builder(webClientBuilder)
+                .url(pdlUrl)
+                .build()
+        }
+    */
+
+    /*
+
+        @Bean
+        @Qualifier("pdlClientOld")
+        @Scope("prototype")
+        fun pdlClient(): GraphQLWebClient {
+            val clientProperties = clientConfigurationProperties.registration["pdl"]
+                ?: throw RuntimeException("Fant ikke konfigurering for pdl")
+
+            return GraphQLWebClient(
+                url = pdlUrl,
+                builder = pdlWebclientBuilder(buildHttpClient(5000, 60, 60), clientProperties)
+            )
+        }
+    */
 
     private fun buildHttpClient(connection_timeout: Int, readTimeout: Int, writeTimeout: Int): HttpClient {
         return HttpClient.create()
             .responseTimeout(Duration.ofSeconds(readTimeout.toLong()))
+            .headers { headers ->
+                headers.set("Nav-Consumer-Id", "tilbakemeldingsmottak"); headers.set(
+                HEADER_BEHANDLINGSNUMMER,
+                PDL_BEHANDLINGSNUMMER
+            );
+            }
     }
 
     fun webclientBuilder(httpClient: HttpClient, clientProperties: ClientProperties): WebClient.Builder {
@@ -89,13 +126,15 @@ class RestClientTemplateSupport(
             .filter(bearerTokenExchange(clientProperties))
     }
 
-    fun pdlWebclientBuilder(httpClient: HttpClient, clientProperties: ClientProperties): WebClient.Builder {
-        return WebClient.builder()
-            .exchangeStrategies(createExchangeStrategies())
-            .clientConnector(ReactorClientHttpConnector(httpClient))
-            .filter(bearerTokenExchange(clientProperties))
-            .defaultRequest { it.header(HEADER_BEHANDLINGSNUMMER, PDL_BEHANDLINGSNUMMER) }
-    }
+    /*
+        fun pdlWebclientBuilder(httpClient: HttpClient, clientProperties: ClientProperties): WebClient.Builder {
+            return WebClient.builder()
+                .exchangeStrategies(createExchangeStrategies())
+                .clientConnector(ReactorClientHttpConnector(httpClient))
+                .filter(bearerTokenExchange(clientProperties))
+                .defaultRequest { it.header(HEADER_BEHANDLINGSNUMMER, PDL_BEHANDLINGSNUMMER) }
+        }
+    */
 
     private fun createExchangeStrategies(): ExchangeStrategies {
         return ExchangeStrategies.builder()

@@ -45,7 +45,7 @@ import java.util.*
     properties = ["spring.main.allow-bean-definition-overriding=true"],
     classes = [Application::class],
 )
-@EnableAutoConfiguration
+//@EnableAutoConfiguration
 @ExtendWith(
     SpringExtension::class
 )
@@ -79,7 +79,7 @@ class ApplicationTest {
     lateinit var metricsRegistery: MeterRegistry
 
     @Value("\${local.server.port}")
-    protected val serverPort = 0
+    protected val serverPort = 5490
 
     private val INNLOGGET_BRUKER = "14117119611"
     private val AUD = "aud-localhost"
@@ -88,6 +88,7 @@ class ApplicationTest {
 
     @BeforeEach
     fun setup() {
+
         api = Api(restTemplate!!)
         hendelseRepository!!.deleteAll()
         serviceklageRepository!!.deleteAll()
@@ -181,6 +182,8 @@ class ApplicationTest {
                     WireMock.aResponse().withStatus(HttpStatus.OK.value())
                         .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(createSafGraphqlResponse())
+                    //.withBodyFile("saf/hentJournalpostResponse.json")
+
                 )
         )
         WireMock.stubFor(

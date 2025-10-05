@@ -1,7 +1,5 @@
 package no.nav.tilbakemeldingsmottak.config
 
-import no.nav.security.token.support.client.core.ClientProperties
-import no.nav.security.token.support.client.core.oauth2.OAuth2AccessTokenService
 import no.nav.security.token.support.client.spring.ClientConfigurationProperties
 import no.nav.tilbakemeldingsmottak.util.TokenServiceUtils
 import org.slf4j.Logger
@@ -13,33 +11,37 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Scope
-import org.springframework.http.HttpRequest
 import org.springframework.http.client.*
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.web.client.RestClient
 import java.time.Duration
 
 @Configuration
 @EnableConfigurationProperties(ClientConfigurationProperties::class)
-class RestClientConfig {
+class RestClientConfig(
+    private val authorizedClientManager: OAuth2AuthorizedClientManager
+) {
 
-    @Bean
-    @Qualifier("arkivRestClient")
-    @Scope("prototype")
-    fun arkivRestClient(
-        @Value("\${Journalpost_v1_url}") journalpostUrl: String,
-        oAuth2AccessTokenService: OAuth2AccessTokenService,
-        clientConfigurationProperties: ClientConfigurationProperties
-    ): RestClient {
+    /*
+        @Bean
+        @Qualifier("arkivRestClient")
+        @Scope("prototype")
+        fun arkivRestClient(
+            @Value("\${Journalpost_v1_url}") journalpostUrl: String,
+            oAuth2AccessTokenService: OAuth2AccessTokenService,
+            clientConfigurationProperties: ClientConfigurationProperties
+        ): RestClient {
 
-        return restClientOAuth2Client(
-            baseUrl = journalpostUrl,
-            timeouts = timeouts(
-                readTimeoutMinutes = 1L
-            ),
-            clientAccessProperties = clientConfigurationProperties.registration["arkiv"]!!,
-            oAuth2AccessTokenService = oAuth2AccessTokenService
-        )
-    }
+            return restClientOAuth2Client(
+                baseUrl = journalpostUrl,
+                timeouts = timeouts(
+                    readTimeoutMinutes = 1L
+                ),
+                clientAccessProperties = clientConfigurationProperties.registration["arkiv"]!!,
+                oAuth2AccessTokenService = oAuth2AccessTokenService
+            )
+        }
+    */
 
     @Bean
     @Qualifier("eregRestClient")
@@ -74,27 +76,44 @@ class RestClientConfig {
             )
             .build()
     }
+    /*
+
+        @Bean
+        @Qualifier("oppgaveRestClient")
+        @Scope("prototype")
+        fun oppgaveRestClient(
+            @Value("\${oppgave_oppgaver_url}") oppgaveUrl: String,
+            oAuth2AccessTokenService: OAuth2AccessTokenService,
+            clientConfigurationProperties: ClientConfigurationProperties
+
+        ): RestClient {
+
+            return restClientOAuth2Client(
+                baseUrl = oppgaveUrl,
+                timeouts = timeouts(
+                    readTimeoutMinutes = 1L
+                ),
+                clientAccessProperties = clientConfigurationProperties.registration["oppgave"]!!,
+                oAuth2AccessTokenService = oAuth2AccessTokenService
+            )
+        }
+    */
+
 
     @Bean
-    @Qualifier("oppgaveRestClient")
+    @Qualifier("hentDokumentRestClient")
     @Scope("prototype")
-    fun oppgaveRestClient(
-        @Value("\${oppgave_oppgaver_url}") oppgaveUrl: String,
-        oAuth2AccessTokenService: OAuth2AccessTokenService,
-        clientConfigurationProperties: ClientConfigurationProperties
-
+    fun hentDokumentRestClient(
+        @Value("\${hentdokument.url}") hentDokcumentUrl: String,
+        timeouts: ClientHttpRequestFactory
     ): RestClient {
 
-        return restClientOAuth2Client(
-            baseUrl = oppgaveUrl,
-            timeouts = timeouts(
-                readTimeoutMinutes = 1L
-            ),
-            clientAccessProperties = clientConfigurationProperties.registration["oppgave"]!!,
-            oAuth2AccessTokenService = oAuth2AccessTokenService
-        )
+        return RestClient.builder()
+            .baseUrl(hentDokcumentUrl)
+            .requestFactory(timeouts)
+            .requestInterceptor(OAuth2ClientCredentialsInterceptor(authorizedClientManager, "saf-maskintilmaskin"))
+            .build()
     }
-
 
     private fun timeouts(
         readTimeoutMinutes: Long
@@ -104,48 +123,83 @@ class RestClientConfig {
         factory.setReadTimeout(Duration.ofMinutes(readTimeoutMinutes))
         return factory
     }
+    /*
 
-    private fun restClientOAuth2Client(
-        baseUrl: String,
-        timeouts: ClientHttpRequestFactory,
-        clientAccessProperties: ClientProperties,
-        oAuth2AccessTokenService: OAuth2AccessTokenService
+        private fun restClientOAuth2Client(
+            baseUrl: String,
+            timeouts: ClientHttpRequestFactory,
+            clientAccessProperties: ClientProperties,
+            oAuth2AccessTokenService: OAuth2AccessTokenService
+        ): RestClient {
+
+            val tokenService = TokenServiceUtils(clientAccessProperties, oAuth2AccessTokenService)
+
+            return RestClient.builder()
+                .baseUrl(baseUrl)
+                .requestFactory(timeouts)
+                .requestInterceptor(RequestHeaderInterceptor(tokenService))
+                .build()
+        }
+    */
+    /*
+
+        class RequestHeaderInterceptor(val tokenService: TokenServiceUtils) :
+            ClientHttpRequestInterceptor {
+
+            val logger: Logger = LoggerFactory.getLogger(javaClass)
+
+            override fun intercept(
+                request: HttpRequest,
+                body: ByteArray,
+                execution: ClientHttpRequestExecution
+            ): ClientHttpResponse {
+                val token = tokenService.getToken()
+
+                logger.info(
+                    ("Kaller service med callId=${MDC.get(MDCConstants.MDC_CALL_ID)}, og consumerId=${
+                        MDC.get(
+                            MDCConstants.MDC_CONSUMER_ID
+                        )
+                    }")
+                )
+                request.headers.setBearerAuth(token ?: "")
+                request.headers.set(MDCConstants.HEADER_CALL_ID, MDC.get(MDCConstants.MDC_CALL_ID))
+                request.headers.set(MDCConstants.MDC_CONSUMER_ID, MDC.get(MDCConstants.MDC_CONSUMER_ID) ?: "")
+
+                return execution.execute(request, body)
+            }
+        }
+    */
+
+    @Bean
+    @Qualifier("arkivRestClient")
+    @Scope("prototype")
+    fun arkivRestClient(
+        @Value("\${Journalpost_v1_url}") journalpostUrl: String,
+        timeouts: ClientHttpRequestFactory
     ): RestClient {
 
-        val tokenService = TokenServiceUtils(clientAccessProperties, oAuth2AccessTokenService)
-
         return RestClient.builder()
-            .baseUrl(baseUrl)
+            .baseUrl(journalpostUrl)
             .requestFactory(timeouts)
-            .requestInterceptor(RequestHeaderInterceptor(tokenService))
+            .requestInterceptor(OAuth2ClientCredentialsInterceptor(authorizedClientManager, "arkiv"))
             .build()
     }
 
-    class RequestHeaderInterceptor(val tokenService: TokenServiceUtils) :
-        ClientHttpRequestInterceptor {
+    @Bean
+    @Qualifier("oppgaveRestClient")
+    @Scope("prototype")
+    fun oppgaveRestClient(
+        @Value("\${oppgave_oppgaver_url}") oppgaveUrl: String,
+        timeouts: ClientHttpRequestFactory
+    ): RestClient {
 
-        val logger: Logger = LoggerFactory.getLogger(javaClass)
-
-        override fun intercept(
-            request: HttpRequest,
-            body: ByteArray,
-            execution: ClientHttpRequestExecution
-        ): ClientHttpResponse {
-            val token = tokenService.getToken()
-
-            logger.info(
-                ("Kaller service med callId=${MDC.get(MDCConstants.MDC_CALL_ID)}, og consumerId=${
-                    MDC.get(
-                        MDCConstants.MDC_CONSUMER_ID
-                    )
-                }")
-            )
-            request.headers.setBearerAuth(token ?: "")
-            request.headers.set(MDCConstants.HEADER_CALL_ID, MDC.get(MDCConstants.MDC_CALL_ID))
-            request.headers.set(MDCConstants.MDC_CONSUMER_ID, MDC.get(MDCConstants.MDC_CONSUMER_ID) ?: "")
-
-            return execution.execute(request, body)
-        }
+        return RestClient.builder()
+            .baseUrl(oppgaveUrl)
+            .requestFactory(timeouts)
+            .requestInterceptor(OAuth2ClientCredentialsInterceptor(authorizedClientManager, "oppgave"))
+            .build()
     }
+
 
 }

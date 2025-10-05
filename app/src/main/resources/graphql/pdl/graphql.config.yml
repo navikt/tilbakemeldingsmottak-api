@@ -1,0 +1,8 @@
+schema: pdl-api-sdl.graphql
+extensions:
+  endpoints:
+    Default GraphQL Endpoint:
+      url: https://pdl-api.dev.intern.nav.no/graphql
+      headers:
+        user-agent: tilbakemeldingsmottak-api
+      introspect: true

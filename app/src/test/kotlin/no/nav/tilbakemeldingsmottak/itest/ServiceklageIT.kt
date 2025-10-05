@@ -1,7 +1,5 @@
 package no.nav.tilbakemeldingsmottak.itest
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.tomakehurst.wiremock.client.WireMock
 import io.micrometer.core.instrument.search.MeterNotFoundException
 import no.nav.tilbakemeldingsmottak.ApplicationTest
@@ -35,14 +33,14 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.test.context.transaction.TestTransaction
-import org.springframework.http.HttpHeaders
+import tools.jackson.module.kotlin.jacksonObjectMapper
+
 
 internal class ServiceklageIT : ApplicationTest() {
-    private val objectMapper = ObjectMapper().registerKotlinModule()
+    private val objectMapper = jacksonObjectMapper()
+
     private val SAKSBEHANDLER = "Saksbehandler"
     private val ORGANISASJONSNUMMER = "243602076"
     private val KLAGETEKST = "Dette er en klage"
@@ -308,7 +306,7 @@ internal class ServiceklageIT : ApplicationTest() {
             HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, request.innmelder!!.personnummer!!))
 
         // When
-        val response = api?.createServiceklage(requestEntity)
+        val response = api?.createServiceklageServerError(requestEntity)
 
         // Then
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response?.statusCode)
