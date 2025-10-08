@@ -48,8 +48,8 @@ spring:
             scope:  ${DOKARKIV_SCOPE}
           oppgave:
             client-id: ${AZURE_APP_CLIENT_ID}
-            client-secret: ${AZURE_APP_JWK}
-            authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+            client-secret: ${AZURE_APP_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
             scope: ${OPPGAVE_SCOPE}
           saf-maskintilmaskin:
             client-id: ${AZURE_APP_CLIENT_ID}
