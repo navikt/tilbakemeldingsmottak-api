@@ -33,7 +33,7 @@
         <kotlinx-serialization-bom.version>1.9.0</kotlinx-serialization-bom.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.version>3.2.5</maven.version>
+        <maven.version>3.9.0</maven.version>
 
         <!-- NAV internal dependencies -->
         <token-support.version>5.0.34</token-support.version>
@@ -93,8 +93,8 @@
 
         <!-- Maven plugins -->
         <wagon-webdav-jackrabbit.version>3.5.3</wagon-webdav-jackrabbit.version>
-        <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>3.5.3</maven-failsafe-plugin.version>
+        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
         <exec-maven-plugin.version>3.0.0</exec-maven-plugin.version>
         <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
         <!--7.15.0 feiler ved kompilering av genererte enums-->

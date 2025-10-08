@@ -101,18 +101,29 @@ graphql:
   endpoint:
     url: ${pdl.url}
 
+auth:
+  issuers:
+    azuread:
+      issuer-uri: http://localhost:${token.server.port}/azuread
+      accepted-audience: aud-localhost
+      jwk-set-uri: http://localhost:${token.server.port}/azuread/.well-known/openid-configuration
+    tokenx:
+      issuer-uri: http://localhost:${token.server.port}/tokenx
+      accepted-audience: aud-localhost
+      jwk-set-uri: http://localhost:${token.server.port}/tokenx/.well-known/openid-configuration
+
+
+
 spring:
-#  cache:
-#    type: simple
-#  aop:
-#    auto: true
-#    proxy-target-class: false
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
   security:
     oauth2:
+      resourceserver:
+        jwt:
+          # Spring Boot does not support auto-configuration with multiple issuers directly. Need to configure manually.
       client:
         registration:
           pdl:

@@ -35,7 +35,7 @@ internal class PdfServiceTest {
 
     @BeforeEach
     fun setup() {
-        Mockito.lenient().`when`(oidcUtils!!.getSubjectForIssuer(ArgumentMatchers.anyString()))
+        Mockito.lenient().`when`(oidcUtils!!.getSubject())
             .thenReturn("")
     }
 

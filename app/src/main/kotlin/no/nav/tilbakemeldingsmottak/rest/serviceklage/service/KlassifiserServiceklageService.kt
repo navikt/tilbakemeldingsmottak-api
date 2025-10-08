@@ -95,7 +95,7 @@ class KlassifiserServiceklageService(
     }
 
     private fun sendKvittering(serviceklage: Serviceklage, hentOppgaveResponseTo: HentOppgaveResponseTo) {
-        val email = oidcUtils.getEmailForIssuer(AZURE_ISSUER) ?: throw ClientErrorNotFoundException(
+        val email = oidcUtils.getEmail() ?: throw ClientErrorNotFoundException(
             message = "Fant ikke email-adresse i token",
             errorCode = ErrorCode.TOKEN_EMAIL_MISSING
         )

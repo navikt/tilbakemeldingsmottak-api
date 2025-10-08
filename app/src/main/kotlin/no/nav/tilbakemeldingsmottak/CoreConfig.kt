@@ -13,9 +13,12 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy
 
 @Configuration
 @EnableAspectJAutoProxy
+/*
 @EnableJwtTokenValidation(ignore = ["org.springframework", "springfox.documentation.swagger.web.ApiResourceController"])
 @EnableOAuth2Client(cacheEnabled = true)
+*/
 @ConfigurationPropertiesScan
+
 class CoreConfig {
     @Bean
     fun dokTimedAspect(meterRegistry: MeterRegistry, oidcUtils: OidcUtils, metricsUtils: MetricsUtils): DokTimedAspect {

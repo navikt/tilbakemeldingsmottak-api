@@ -25,11 +25,14 @@ import org.springframework.boot.test.autoconfigure.data.ldap.AutoConfigureDataLd
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -37,6 +40,7 @@ import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
+import org.springframework.test.web.servlet.MockMvc
 import java.util.*
 
 @ActiveProfiles("itest")
@@ -56,7 +60,20 @@ import java.util.*
 @Transactional
 @EnableMockOAuth2Server(port = 1888)
 @AutoConfigureWireMock(port = 5490)
+@AutoConfigureMockMvc
 class ApplicationTest {
+
+    @Autowired
+    lateinit var mockMvc: MockMvc
+
+    // Vi mocker ut de konkrete JwtDecoder-bønnene som er definert i SecurityConfig.
+    // Dette er nøkkelen til å omgå den eksterne JWKS-valideringen i tester.
+    @MockitoBean
+    protected lateinit var azureJwtDecoder: JwtDecoder
+
+    @MockitoBean
+    protected lateinit var tokenxJwtDecoder: JwtDecoder
+
     @Autowired
     protected var serviceklageRepository: ServiceklageRepository? = null
 
@@ -210,6 +227,37 @@ class ApplicationTest {
     fun tearDown() {
         WireMock.reset()
         WireMock.resetAllScenarios()
+    }
+
+    // Hjelpemetode for å lage et gyldig mock JWT-objekt for testing.
+    fun createMockJwt(issuer: String, subject: String = INNLOGGET_BRUKER, scope: String): Jwt {
+        return Jwt.withTokenValue("mock-token")
+            .header("alg", "none")
+            .claim("iss", issuer)
+            .claim("aud", AUD)
+            .claim("sub", subject)
+            .claim("pid", subject)
+            .claim("scp", scope)
+            .build()
+        // ha med claims: mapOf("acr" to "Level4")
+    }
+
+    fun createMockJwt(issuer: String, subject: String = INNLOGGET_BRUKER): Jwt {
+        return Jwt.withTokenValue("mock-token")
+            .header("alg", "none")
+            .claim("iss", issuer)
+            .claim("aud", AUD)
+            .claim("sub", subject)
+            .claim("pid", subject)
+            .build()
+    }
+
+    fun createMockJwt(issuer: String): Jwt {
+        return Jwt.withTokenValue("mock-token")
+            .header("alg", "none")
+            .claim("iss", issuer)
+            .claim("aud", AUD)
+            .build()
     }
 
     fun createHeaders(): HttpHeaders {

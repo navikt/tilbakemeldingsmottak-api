@@ -11,9 +11,16 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.post
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt
+
 import tools.jackson.databind.ObjectMapper
 import tools.jackson.module.kotlin.jacksonObjectMapper
-
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
+import org.springframework.beans.factory.annotation.Value
 
 
 internal class RosIT : ApplicationTest() {
@@ -24,6 +31,20 @@ internal class RosIT : ApplicationTest() {
 
     @Autowired
     lateinit var objectMapper: ObjectMapper
+
+    @Value("\${auth.issuers.azuread.issuer-uri}")
+    lateinit var azureIssuer: String
+
+    @Value("\${auth.issuers.tokenx.issuer-uri}")
+    lateinit var tokenxIssuer: String
+
+    @Test
+    fun `Kall mot sikret endepunkt skal returnere 401 Unauthorized uten token`() {
+        mockMvc.post("/rest/ros")
+            .andExpect { status { isUnauthorized() } }
+
+
+    }
 
     // Sjekk at Jackson config funker
     @Test
@@ -40,10 +61,26 @@ internal class RosIT : ApplicationTest() {
         val request = SendRosRequestBuilder().build()
         //val requestJson = objectMapper.writeValueAsString(request)
         // When
+        val mockJwt = createMockJwt(tokenxIssuer)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        /*
+
+                mockMvc.post("http://localhost:5490"+URL_ROS) {
+                    with(jwt().jwt(mockJwt))
+                    contentType = MediaType.APPLICATION_JSON
+                    content = objectMapper.writeValueAsString(request)
+                }.andExpect {
+                    status { isOk() }
+                    jsonPath("$.message") { value("Ros sendt") }
+                }
+        */
+
         val response = restTemplate!!.post()
             .uri(URL_ROS)
             .accept(MediaType.APPLICATION_JSON)
-            .headers { it.addAll(createHeaders(Constants.AZURE_ISSUER, tilbakemeldinger, loggedIn = false)) }
+            .headers { it.addAll(createHeaders(Constants.TOKENX_ISSUER, tilbakemeldinger, loggedIn = false)) }
             //.bodyValue(request)
             .bodyValue(request)
             .exchange()
@@ -58,6 +95,10 @@ internal class RosIT : ApplicationTest() {
     fun happyPathNavKontor() {
         // Given
         val request = SendRosRequestBuilder().withNavKontor().build()
+        val mockJwt = createMockJwt(tokenxIssuer)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+
         // When / Then
         val response = restTemplate!!.post()
             .uri(URL_ROS)

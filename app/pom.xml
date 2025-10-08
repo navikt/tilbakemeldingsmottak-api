@@ -324,7 +324,16 @@
         </dependency>
 
         <!-- Test -->
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-restclient</artifactId>
@@ -397,24 +406,26 @@
             <version>${mockk.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring-boot.version}</version>
-            <scope>test</scope>
-            <exclusions>
-                <!--
-                                <exclusion>
-                                    <groupId>junit</groupId>
-                                    <artifactId>junit</artifactId>
-                                </exclusion>
-                -->
-                <exclusion>
-                    <groupId>org.skyscreamer</groupId>
-                    <artifactId>jsonassert</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+        <!--
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-test</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <scope>test</scope>
+                    <exclusions>
+                        &lt;!&ndash;
+                                        <exclusion>
+                                            <groupId>junit</groupId>
+                                            <artifactId>junit</artifactId>
+                                        </exclusion>
+                        &ndash;&gt;
+                        <exclusion>
+                            <groupId>org.skyscreamer</groupId>
+                            <artifactId>jsonassert</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+        -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -463,9 +474,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
-                </configuration>
+                <version>${maven-surefire-plugin.version}</version>
             </plugin>
 
             <plugin>
