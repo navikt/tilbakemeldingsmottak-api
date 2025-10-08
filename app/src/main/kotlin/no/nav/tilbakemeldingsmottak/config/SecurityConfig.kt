@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak.config
 
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -22,6 +23,7 @@ class SecurityConfig(
     @Value("\${auth.issuers.tokenx.issuer-uri}") private val tokenxIssuer: String,
     @Value("\${auth.issuers.tokenx.jwk-set-uri}") private val tokenxJwkUri: String,
 ) {
+    private val logger = LoggerFactory.getLogger(SecurityConfig::class.java)
 
     // JSON mapper from Jackson 3 (tools.jackson)
     private val mapper = jacksonObjectMapper()
@@ -73,12 +75,18 @@ class SecurityConfig(
         // Delegating JwtDecoder: choose concrete decoder by inspecting "iss" claim.
         val delegatingDecoder = object : JwtDecoder {
             override fun decode(token: String): Jwt {
-                val iss = extractIssuer(token) ?: throw BadCredentialsException("Missing issuer (iss) in token")
+                val iss = extractIssuer(token) ?: {
+                    logger.info("Missing issuer (iss) in token")
+                    throw BadCredentialsException("Missing issuer (iss) in token")
+                }
                 // Important: compare full issuer string that the IdP actually emits. Consider normalization.
                 return when (iss) {
                     azureadIssuer -> azureJwtDecoder.decode(token)
                     tokenxIssuer -> tokenxJwtDecoder.decode(token)
-                    else -> throw BadCredentialsException("Unknown issuer: $iss")
+                    else -> {
+                        logger.info("Unknown issuer: $iss")
+                        throw BadCredentialsException("Unknown issuer: $iss")
+                    }
                 }
             }
         }

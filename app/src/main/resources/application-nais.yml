@@ -70,8 +70,10 @@ spring:
 auth:
   issuers:
     azuread:
-      issuer-uri: ${AZURE_APP_WELL_KNOWN_URL}
-      jwk-set-uri: ${AZURE_APP_WELL_KNOWN_URL}
+      token-uri: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
+      issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+      jwk-set-uri: ${AZURE_OPENID_CONFIG_JWKS_URI}
+      audiences: ${AZURE_APP_CLIENT_ID}
     tokenx:
       issuer-uri: ${TOKEN_X_CLIENT_ID}
       jwk-set-uri: ${TOKEN_X_WELL_KNOWN_URL}
