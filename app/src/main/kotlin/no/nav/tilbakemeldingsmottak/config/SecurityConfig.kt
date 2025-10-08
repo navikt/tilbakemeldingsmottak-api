@@ -94,7 +94,7 @@ class SecurityConfig(
         http
             .csrf { csrf -> csrf.disable() }
             .authorizeHttpRequests { auth ->
-                auth.requestMatchers("/public/**").permitAll()
+                auth.requestMatchers("/isAlive", "/isReady", "/health/**", "/public/**").permitAll()
                 auth.anyRequest().authenticated()
             }
             .oauth2ResourceServer { rs ->

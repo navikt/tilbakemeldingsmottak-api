@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.ClientHttpRequestFactory
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 
+// TODO Kan denne slettes?
 @Configuration
 class RestConfig {
     @Bean
