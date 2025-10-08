@@ -49,12 +49,12 @@ spring:
           oppgave:
             client-id: ${AZURE_APP_CLIENT_ID}
             client-secret: ${AZURE_APP_JWK}
-            authorization-grant-type: client_credentials
+            authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
             scope: ${OPPGAVE_SCOPE}
           saf-maskintilmaskin:
             client-id: ${AZURE_APP_CLIENT_ID}
             client-secret: ${AZURE_APP_JWK}
-            authorization-grant-type: client_credentials
+            authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
             scope: ${SAF_SCOPE}
 
         provider:
