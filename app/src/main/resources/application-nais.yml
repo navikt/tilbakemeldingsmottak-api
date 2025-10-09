@@ -54,7 +54,8 @@ spring:
           saf-maskintilmaskin:
             client-id: ${AZURE_APP_CLIENT_ID}
             client-secret: ${AZURE_APP_JWK}
-            authorization-grant-type: authorization_code
+            authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+            client-authentication-method: private_key_jwt
             scope: ${SAF_SCOPE}
 
         provider:
