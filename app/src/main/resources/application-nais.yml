@@ -75,8 +75,9 @@ auth:
       jwk-set-uri: ${AZURE_OPENID_CONFIG_JWKS_URI}
       audiences: ${AZURE_APP_CLIENT_ID}
     tokenx:
-      issuer-uri: ${TOKEN_X_CLIENT_ID}
+      issuer-uri: ${TOKEN_X_ISSUER}
       jwk-set-uri: ${TOKEN_X_WELL_KNOWN_URL}
+
 
 hentdokument:
   url: ${SAF_HENTDOKUMENT_URL}
