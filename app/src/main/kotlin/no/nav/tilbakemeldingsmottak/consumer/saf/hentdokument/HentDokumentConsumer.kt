@@ -28,7 +28,7 @@ import java.util.function.Consumer
 @Component
 class HentDokumentConsumer(
     @Value("\${hentdokument.url}") private val hentDokumentUrl: String,
-    @Qualifier("hentDokumentRestClient") private val restClient: RestClient
+    @Qualifier("safWebClient") private val webClient: WebClient
 ) : HentDokument {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -52,14 +52,15 @@ class HentDokumentConsumer(
             variantFormat
         )
 
-        val dokument = restClient
+        val dokument = webClient
             .method(HttpMethod.GET)
             .uri("$hentDokumentUrl/$journalpostId/$dokumentInfoId/$variantFormat")
             .header("Nav-Callid", MDC.get(MDC_CALL_ID))
             .header("Nav-Consumer-Id", "srvtilbakemeldings")
             .retrieve()
-            .onStatus(HttpStatusCode::isError) { _, response -> handleError(response, "saf (hent dokument)") }
-            .body(ByteArray::class.java)
+            .bodyToMono(ByteArray::class.java)
+            .doOnError { t: Throwable -> handleError(t, "saf (hent dokument)") }
+            .block()
             ?: throw ServerErrorException(message = "SAF dokument responsen er null", errorCode = ErrorCode.SAF_ERROR)
         return mapResponse(dokument, journalpostId, dokumentInfoId, variantFormat)
     }

@@ -1,5 +1,9 @@
 package no.nav.tilbakemeldingsmottak.config
 
+import com.nimbusds.jose.jwk.JWK
+import com.nimbusds.jose.jwk.JWKSet
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet
+import com.nimbusds.jose.jwk.source.JWKSource
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
@@ -7,14 +11,48 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Scope
 import org.springframework.http.client.*
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.client.*
+import org.springframework.security.oauth2.client.endpoint.*
+import org.springframework.security.oauth2.client.ClientCredentialsOAuth2AuthorizedClientProvider
+import org.springframework.security.oauth2.client.DelegatingOAuth2AuthorizedClientProvider
+import org.springframework.security.oauth2.client.JwtBearerOAuth2AuthorizedClientProvider
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
+import org.springframework.security.oauth2.client.endpoint.NimbusJwtClientAuthenticationParametersConverter
+import org.springframework.security.oauth2.client.endpoint.OAuth2ClientCredentialsGrantRequest
+import org.springframework.security.oauth2.client.registration.ClientRegistration
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository
+import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.web.client.RestClient
 import java.time.Duration
 
 @Configuration
-class RestClientConfig(
-    private val authorizedClientManager: OAuth2AuthorizedClientManager
-) {
+class RestClientConfig() {
+
+
+    /**
+     * Konfigurerer RestClient for HentDokument med 'jwt-bearer'-flyt.
+     */
+    @Bean
+    @Qualifier("hentDokumentRestClient")
+    fun hentDokumentRestClient(
+        @Value("\${hentdokument.url}") hentDokumentUrl: String,
+        authorizedClientManager: OAuth2AuthorizedClientManager,
+        clientRegistrationRepository: ClientRegistrationRepository
+    ): RestClient {
+
+        val oauth2Interceptor =
+            createOauth2Interceptor(authorizedClientManager, "saf-maskintilmaskin", clientRegistrationRepository)
+        return RestClient.builder()
+            .baseUrl(hentDokumentUrl)
+            .requestInterceptor(oauth2Interceptor)
+            .build()
+    }
 
 
     @Bean
@@ -76,18 +114,81 @@ class RestClientConfig(
 
 
     @Bean
-    @Qualifier("hentDokumentRestClient")
+    @Qualifier("arkivRestClient")
     @Scope("prototype")
-    fun hentDokumentRestClient(
-        @Value("\${hentdokument.url}") hentDokcumentUrl: String,
-        timeouts: ClientHttpRequestFactory
+    fun arkivRestClient(
+        @Value("\${Journalpost_v1_url}") journalpostUrl: String,
+        timeouts: ClientHttpRequestFactory,
+        authorizedClientManager: OAuth2AuthorizedClientManager,
+        clientRegistrationRepository: ClientRegistrationRepository
+
     ): RestClient {
 
+        val oauth2Interceptor = createOauth2Interceptor(authorizedClientManager, "arkiv", clientRegistrationRepository)
         return RestClient.builder()
-            .baseUrl(hentDokcumentUrl)
+            .baseUrl(journalpostUrl)
             .requestFactory(timeouts)
-            .requestInterceptor(OAuth2ClientCredentialsInterceptor(authorizedClientManager, "saf-maskintilmaskin"))
+            .requestInterceptor(oauth2Interceptor)
             .build()
+    }
+
+    @Bean
+    @Qualifier("oppgaveRestClient")
+    @Scope("prototype")
+    fun oppgaveRestClient(
+        @Value("\${oppgave_oppgaver_url}") oppgaveUrl: String,
+        timeouts: ClientHttpRequestFactory,
+        authorizedClientManager: OAuth2AuthorizedClientManager,
+        clientRegistrationRepository: ClientRegistrationRepository
+    ): RestClient {
+
+        val oauth2Interceptor = createOauth2Interceptor(
+            authorizedClientManager, "oppgave", clientRegistrationRepository
+        )
+        return RestClient.builder()
+            .baseUrl(oppgaveUrl)
+            .requestFactory(timeouts)
+            .requestInterceptor(oauth2Interceptor)
+            .build()
+    }
+
+    /**
+     * Privat hjelpemetode for å lage en gjenbrukbar interceptor.
+     * Denne metoden fungerer for både 'jwt-bearer' (som krever en bruker-principal)
+     * og 'client_credentials' (som ikke krever det).
+     */
+    private fun createOauth2Interceptor(
+        authorizedClientManager: OAuth2AuthorizedClientManager,
+        clientRegistrationId: String,
+        clientRegistrationRepository: ClientRegistrationRepository
+    ): ClientHttpRequestInterceptor {
+        return ClientHttpRequestInterceptor { request, body, execution ->
+            val clientRegistration = clientRegistrationRepository.findByRegistrationId(clientRegistrationId)
+                ?: throw IllegalStateException("Fant ikke klient-registrering for '$clientRegistrationId'.")
+
+            val authorizeRequestBuilder = OAuth2AuthorizeRequest.withClientRegistrationId(clientRegistrationId)
+
+            if (clientRegistration.authorizationGrantType == AuthorizationGrantType.CLIENT_CREDENTIALS) {
+                // For client_credentials: Bruk en statisk principal. Ikke send med brukerens token.
+                authorizeRequestBuilder.principal("tilbakemeldingsmottak-m2m")
+            } else {
+                // For andre flyter (som jwt-bearer): Hent og bruk brukerens principal.
+                val principal = SecurityContextHolder.getContext().authentication
+                authorizeRequestBuilder.principal(principal)
+            }
+
+            val authorizeRequest = authorizeRequestBuilder.build()
+
+            val authorizedClient = authorizedClientManager.authorize(authorizeRequest)
+                ?: throw IllegalStateException(
+                    "Kunne ikke autorisere klienten '$clientRegistrationId'. " +
+                            "Sjekk konfigurasjon og tilgjengelig sikkerhetskontekst."
+                )
+
+            request.headers.setBearerAuth(authorizedClient.accessToken.tokenValue)
+
+            execution.execute(request, body)
+        }
     }
 
     private fun timeouts(
@@ -97,36 +198,6 @@ class RestClientConfig(
             JdkClientHttpRequestFactory() // Merk at SimpleClientHttpRequestFactory ikke har støtte for patch requests
         factory.setReadTimeout(Duration.ofMinutes(readTimeoutMinutes))
         return factory
-    }
-
-    @Bean
-    @Qualifier("arkivRestClient")
-    @Scope("prototype")
-    fun arkivRestClient(
-        @Value("\${Journalpost_v1_url}") journalpostUrl: String,
-        timeouts: ClientHttpRequestFactory
-    ): RestClient {
-
-        return RestClient.builder()
-            .baseUrl(journalpostUrl)
-            .requestFactory(timeouts)
-            .requestInterceptor(OAuth2ClientCredentialsInterceptor(authorizedClientManager, "arkiv"))
-            .build()
-    }
-
-    @Bean
-    @Qualifier("oppgaveRestClient")
-    @Scope("prototype")
-    fun oppgaveRestClient(
-        @Value("\${oppgave_oppgaver_url}") oppgaveUrl: String,
-        timeouts: ClientHttpRequestFactory
-    ): RestClient {
-
-        return RestClient.builder()
-            .baseUrl(oppgaveUrl)
-            .requestFactory(timeouts)
-            .requestInterceptor(OAuth2ClientCredentialsInterceptor(authorizedClientManager, "oppgave"))
-            .build()
     }
 
 }

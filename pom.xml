@@ -23,6 +23,7 @@
         <!-- Project config -->
         <spring-boot.version>4.0.0-M3</spring-boot.version>
         <spring-security.version>7.0.0-M2</spring-security.version>
+        <spring-security-client.version>7.0.0-M3</spring-security-client.version>
         <spring-framework.version>7.0.0-M8</spring-framework.version>
         <spring-graphql.version>2.0.0-M3</spring-graphql.version>
         <java.version>21</java.version>

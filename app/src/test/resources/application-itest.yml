@@ -112,8 +112,6 @@ auth:
       accepted-audience: aud-localhost
       jwk-set-uri: http://localhost:${token.server.port}/tokenx/.well-known/openid-configuration
 
-
-
 spring:
   jpa:
     properties:
@@ -129,33 +127,36 @@ spring:
           pdl:
             client-id: fake
             client-secret: someSecret
+            provider: azuread
             authorization-grant-type: client_credentials
             scope: scope
           arkiv:
             client-id: fake
             client-secret: someSecret
+            provider: azuread
             authorization-grant-type: client_credentials
             scope: scope
           oppgave:
             client-id: fake
             client-secret: someSecret
+            provider: azuread
             authorization-grant-type: client_credentials
             scope: scope
           saf-maskintilmaskin:
             client-id: fake
             client-secret: someSecret
-            authorization-grant-type: client_credentials
+            provider: azuread
+            authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+            client-authentication-method: private_key_jwt
             scope: scope
 
         provider:
-          pdl:
+          azuread:
             token-uri: http://localhost:${token.server.port}/fake/token
-          arkiv:
+            #issuer-uri: http://localhost:${token.server.port}/azuread
+          tokenx:
             token-uri: http://localhost:${token.server.port}/fake/token
-          oppgave:
-            token-uri: http://localhost:${token.server.port}/fake/token
-          saf-maskintilmaskin:
-            token-uri: http://localhost:${token.server.port}/fake/token
+            #issuer-uri: http://localhost:${token.server.port}/tokenx
 
 token:
   server:

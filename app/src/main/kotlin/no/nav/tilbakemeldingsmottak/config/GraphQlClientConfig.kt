@@ -4,20 +4,18 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Scope
 import org.springframework.graphql.client.HttpGraphQlClient
-import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager
-import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
-import org.springframework.web.reactive.function.client.ClientRequest
+import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.security.oauth2.client.OAuth2AuthorizationContext
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
+import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient
-import reactor.core.publisher.Mono
+import reactor.netty.http.client.HttpClient
+import java.time.Duration
+
 
 @Configuration
 class GraphQlClientConfig(
-    private val clientRegistrationRepository: ClientRegistrationRepository,
-    private val authorizedClientRepository: OAuth2AuthorizedClientService
 ) {
 
     @Value("\${pdl.url}")
@@ -26,58 +24,82 @@ class GraphQlClientConfig(
     @Value("\${saf.graphql.url}")
     private lateinit var safUrl: String
 
+    /**
+     * Setter opp et felles filter som kan brukes av alle WebClients.
+     * Den auto-konfigurerte 'authorizedClientManager' har all logikken for å håndtere
+     * både 'client_credentials' og 'jwt-bearer' grant types.
+     */
+    @Bean
+    fun oauth2ExchangeFilterFunction(
+        authorizedClientManager: OAuth2AuthorizedClientManager
+    ): ServletOAuth2AuthorizedClientExchangeFilterFunction {
+        return ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
+    }
+
+    /**
+     * WebClient for PDL med 'client_credentials'-flyt.
+     */
+    @Bean
+    @Qualifier("pdlWebClient")
+    fun pdlWebClient(oauth2Filter: ServletOAuth2AuthorizedClientExchangeFilterFunction): WebClient {
+        // Konfigurerer en HTTP-klient med 15 sekunders timeout
+        val httpClient = HttpClient.create()
+            .responseTimeout(Duration.ofSeconds(15))
+
+        return WebClient.builder()
+            .clientConnector(ReactorClientHttpConnector(httpClient)) // Legger til HTTP-klienten
+            .filter(oauth2Filter) // 1. Legg til selve filteret
+            .defaultRequest { spec -> // 2. Sett en standard-attributt for alle kall
+                // Dette forteller filteret hvilken klient-konfigurasjon det skal bruke
+                spec.attributes { attrs ->
+                    attrs[OAuth2AuthorizationContext.REQUEST_SCOPE_ATTRIBUTE_NAME] = "pdl"
+                }
+            }
+            .build()
+    }
+
+    /**
+     * WebClient for SAF med 'jwt-bearer'-flyt.
+     */
+    @Bean
+    @Qualifier("safWebClient")
+    fun safWebClient(oauth2Filter: ServletOAuth2AuthorizedClientExchangeFilterFunction): WebClient {
+        // Konfigurerer en HTTP-klient med 15 sekunders timeout
+        val httpClient = HttpClient.create()
+            .responseTimeout(Duration.ofSeconds(15))
+
+        return WebClient.builder()
+            .clientConnector(ReactorClientHttpConnector(httpClient)) // Legger til HTTP-klienten
+            .filter(oauth2Filter) // 1. Legg til selve filteret
+            .defaultRequest { spec -> // 2. Sett en standard-attributt for alle kall
+                // Dette forteller filteret hvilken klient-konfigurasjon det skal bruke
+                spec.attributes { attrs ->
+                    attrs[OAuth2AuthorizationContext.REQUEST_SCOPE_ATTRIBUTE_NAME] = "saf-maskintilmaskin"
+                }
+            }
+            .build()
+    }
+
+    /**
+     * HttpGraphQlClient for PDL.
+     */
     @Bean
     @Qualifier("pdlQlClient")
-    @Scope("prototype")
-    fun graphQlWebClient(): HttpGraphQlClient {
-
-        val webClient = buildWebClient(5000, 60, "pdl")
-
-        return HttpGraphQlClient.builder(webClient)
+    fun pdlGraphQlWebClient(@Qualifier("pdlWebClient") pdlWebClient: WebClient): HttpGraphQlClient {
+        return HttpGraphQlClient.builder(pdlWebClient)
             .url(pdlUrl)
             .build()
     }
 
-
+    /**
+     * HttpGraphQlClient for SAF.
+     */
     @Bean
     @Qualifier("safQlClient")
-    @Scope("prototype")
-    fun graphQlWebSafClient(): HttpGraphQlClient {
-
-        val webClient = buildWebClient(5000, 60, "saf-maskintilmaskin")
-
-        return HttpGraphQlClient.builder(webClient)
+    fun safGraphQlWebClient(@Qualifier("safWebClient") safWebClient: WebClient): HttpGraphQlClient {
+        return HttpGraphQlClient.builder(safWebClient)
             .url(safUrl)
             .build()
     }
 
-    private fun buildWebClient(readTimeout: Int, writeTimeout: Int, target: String): WebClient {
-        val manager = AuthorizedClientServiceOAuth2AuthorizedClientManager(
-            clientRegistrationRepository,
-            authorizedClientRepository
-        )
-
-        return WebClient.builder()
-            .filter { request, next ->
-                // Ask Spring Security for a token for the "pdl" client registration
-                val authorizeRequest = OAuth2AuthorizeRequest
-                    .withClientRegistrationId(target)
-                    .principal("graphQlClient") // no user -> client_credentials
-                    .build()
-
-                val client = manager.authorize(authorizeRequest)
-
-                if (client == null || client.accessToken == null) {
-                    return@filter Mono.error(IllegalStateException("No OAuth2 access token for $target"))
-                }
-
-                val token = client.accessToken!!.tokenValue
-                val newRequest = ClientRequest.from(request)
-                    .header("Authorization", "Bearer $token")
-                    .build()
-
-                next.exchange(newRequest)
-            }
-            .build()
-    }
 }

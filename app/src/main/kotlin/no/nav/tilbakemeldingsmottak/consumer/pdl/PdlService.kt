@@ -52,7 +52,7 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
         val identliste: Identliste? = try {
             pdlGraphQLClient.document(HENT_IDENTER)
                 .variable("ident", ident)
-                .retrieve("hentIdenter")                              // <-- path relative to "data"
+                .retrieve("hentIdenter")
                 .toEntity(Identliste::class.java)
                 .block()
         } catch (e: GraphQlClientException) {

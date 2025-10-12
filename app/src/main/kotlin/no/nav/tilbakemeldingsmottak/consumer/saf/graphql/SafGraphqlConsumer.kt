@@ -5,7 +5,6 @@ import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE
 import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import no.nav.tilbakemeldingsmottak.saf.generated.HENT_JOURNALPOST
-import no.nav.tilbakemeldingsmottak.saf.generated.HentJournalpost
 import no.nav.tilbakemeldingsmottak.saf.generated.hentjournalpost.Journalpost
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
@@ -33,10 +32,6 @@ class SafGraphqlConsumer(
     )
     @Retryable(include = [ServerErrorException::class], maxAttempts = 3, backoff = Backoff(delay = 500))
     fun performQuery(graphQLRequest: GraphQLRequest): Journalpost {
-
-        /*
-                val query =     "query ( ${'$'}queryJournalpostId: String!) {\n    journalpost(journalpostId: ${'$'}queryJournalpostId) {\n    bruker {\n      id\n    }\n    datoOpprettet\n    dokumenter {\n      dokumentInfoId\n      dokumentvarianter {\n        saksbehandlerHarTilgang\n        variantformat\n      }\n    }\n  }\n}"
-        */
 
         val response = webClient.document(HENT_JOURNALPOST)
             .variables(graphQLRequest.variables)
