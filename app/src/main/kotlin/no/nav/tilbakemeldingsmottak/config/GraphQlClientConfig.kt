@@ -1,5 +1,7 @@
 package no.nav.tilbakemeldingsmottak.config
 
+import no.nav.tilbakemeldingsmottak.config.Constants.HEADER_BEHANDLINGSNUMMER
+import no.nav.tilbakemeldingsmottak.config.Constants.PDL_BEHANDLINGSNUMMER
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -47,7 +49,7 @@ class GraphQlClientConfig(
             .responseTimeout(Duration.ofSeconds(15))
 
         return WebClient.builder()
-            .clientConnector(ReactorClientHttpConnector(httpClient)) // Legger til HTTP-klienten
+            .clientConnector(ReactorClientHttpConnector(httpClient))
             .filter(oauth2Filter) // 1. Legg til selve filteret
             .defaultRequest { spec -> // 2. Sett en standard-attributt for alle kall
                 // Dette forteller filteret hvilken klient-konfigurasjon det skal bruke
@@ -55,6 +57,7 @@ class GraphQlClientConfig(
                     attrs[OAuth2AuthorizationContext.REQUEST_SCOPE_ATTRIBUTE_NAME] = "pdl"
                 }
             }
+            .defaultHeaders { it.add(HEADER_BEHANDLINGSNUMMER, PDL_BEHANDLINGSNUMMER) }
             .build()
     }
 
