@@ -41,7 +41,7 @@ spring:
             client-secret: someSecret
             authorization-grant-type: client_credentials
             scope: scope
-          saf-maskintilmaskin:
+          saf-obo:
             client-id: fake
             client-secret: someSecret
             authorization-grant-type: client_credentials
@@ -54,7 +54,7 @@ spring:
             token-uri: http://localhost:6969/fake/token
           oppgave:
             token-uri: http://localhost:6969/fake/token
-          saf-maskintilmaskin:
+          saf-obo:
             token-uri: http://localhost:6969/fake/token
 
 auth:

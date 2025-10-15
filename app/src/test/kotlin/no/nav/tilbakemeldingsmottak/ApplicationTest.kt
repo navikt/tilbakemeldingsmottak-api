@@ -12,6 +12,7 @@ import no.nav.tilbakemeldingsmottak.TestUtils.createNorg2Response
 import no.nav.tilbakemeldingsmottak.TestUtils.createSafGraphqlResponse
 import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery
 import no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER
+import no.nav.tilbakemeldingsmottak.config.TokenExchangeService
 import no.nav.tilbakemeldingsmottak.repository.HendelseRepository
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
 import no.nav.tilbakemeldingsmottak.util.Api
@@ -31,16 +32,22 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
+import org.springframework.security.oauth2.core.OAuth2AccessToken
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.bean.override.mockito.MockitoBean
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.transaction.TestTransaction
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
 import org.springframework.test.web.servlet.MockMvc
+import java.time.Instant
 import java.util.*
 
 @ActiveProfiles("itest")
@@ -65,6 +72,8 @@ class ApplicationTest {
 
     @Autowired
     lateinit var mockMvc: MockMvc
+
+    // SecurityMockMvcRequestPostProcessors
 
     // Vi mocker ut de konkrete JwtDecoder-bønnene som er definert i SecurityConfig.
     // Dette er nøkkelen til å omgå den eksterne JWKS-valideringen i tester.
@@ -95,6 +104,12 @@ class ApplicationTest {
     @Autowired
     lateinit var metricsRegistery: MeterRegistry
 
+    @Autowired
+    protected lateinit var tokenExchangeService: TokenExchangeService
+
+    @Autowired
+    protected lateinit var clientRegistrationRepository: ClientRegistrationRepository
+
     @Value("\${local.server.port}")
     protected val serverPort = 5490
 
@@ -102,6 +117,8 @@ class ApplicationTest {
     private val AUD = "aud-localhost"
 
     var api: Api? = null
+
+    protected val SAKSBEHANDLER = "Saksbehandler"
 
     @BeforeEach
     fun setup() {
@@ -220,6 +237,24 @@ class ApplicationTest {
                         .withBody("{}")
                 )
         )
+        WireMock.stubFor(
+            WireMock.post(WireMock.urlEqualTo("/fake/token"))
+                .willReturn(
+                    WireMock.aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                            """
+                        {
+                          "access_token": "mocked-obo-access-token",
+                          "token_type": "Bearer",
+                          "expires_in": 3600
+                        }
+                        """.trimIndent()
+                        )
+                )
+        )
+
         metricsRegistery.clear()
     }
 

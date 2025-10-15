@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Scope
 import org.springframework.http.client.*
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.client.*
@@ -47,7 +48,7 @@ class RestClientConfig() {
     ): RestClient {
 
         val oauth2Interceptor =
-            createOauth2Interceptor(authorizedClientManager, "saf-maskintilmaskin", clientRegistrationRepository)
+            createOauth2Interceptor(authorizedClientManager, "saf-obo", clientRegistrationRepository)
         return RestClient.builder()
             .baseUrl(hentDokumentUrl)
             .requestInterceptor(oauth2Interceptor)
@@ -152,6 +153,27 @@ class RestClientConfig() {
             .build()
     }
 
+
+    @Bean
+    @Qualifier("oppgaveOboRestClient")
+    @Scope("prototype")
+    fun oppgaveOboRestClient(
+        @Value("\${oppgave_oppgaver_url}") oppgaveUrl: String,
+        timeouts: ClientHttpRequestFactory,
+        authorizedClientManager: OAuth2AuthorizedClientManager,
+        clientRegistrationRepository: ClientRegistrationRepository
+    ): RestClient {
+
+        val oauth2Interceptor = createOauth2Interceptor(
+            authorizedClientManager, "oppgave-obo", clientRegistrationRepository
+        )
+        return RestClient.builder()
+            .baseUrl(oppgaveUrl)
+            .requestFactory(timeouts)
+            .requestInterceptor(oauth2Interceptor)
+            .build()
+    }
+
     /**
      * Privat hjelpemetode for å lage en gjenbrukbar interceptor.
      * Denne metoden fungerer for både 'jwt-bearer' (som krever en bruker-principal)
@@ -169,11 +191,12 @@ class RestClientConfig() {
             val authorizeRequestBuilder = OAuth2AuthorizeRequest.withClientRegistrationId(clientRegistrationId)
 
             if (clientRegistration.authorizationGrantType == AuthorizationGrantType.CLIENT_CREDENTIALS) {
-                // For client_credentials: Bruk en statisk principal. Ikke send med brukerens token.
-                authorizeRequestBuilder.principal("tilbakemeldingsmottak-m2m")
+                // ✅ For machine-to-machine flow, just use a static principal name
+                authorizeRequestBuilder.principal("m2m-service-account")
             } else {
-                // For andre flyter (som jwt-bearer): Hent og bruk brukerens principal.
+                // ✅ For OBO (JWT-bearer), forward the current authenticated user
                 val principal = SecurityContextHolder.getContext().authentication
+                    ?: throw IllegalStateException("Ingen SecurityContext Authentication funnet for OBO flyt.")
                 authorizeRequestBuilder.principal(principal)
             }
 
@@ -182,11 +205,10 @@ class RestClientConfig() {
             val authorizedClient = authorizedClientManager.authorize(authorizeRequest)
                 ?: throw IllegalStateException(
                     "Kunne ikke autorisere klienten '$clientRegistrationId'. " +
-                            "Sjekk konfigurasjon og tilgjengelig sikkerhetskontekst."
+                            "Sjekk konfigurasjon og grant-type."
                 )
 
             request.headers.setBearerAuth(authorizedClient.accessToken.tokenValue)
-
             execution.execute(request, body)
         }
     }

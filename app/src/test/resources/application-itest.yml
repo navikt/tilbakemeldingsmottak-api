@@ -142,9 +142,16 @@ spring:
             provider: azuread
             authorization-grant-type: client_credentials
             scope: scope
-          saf-maskintilmaskin:
-            client-id: fake
-            client-secret: someSecret
+          oppgave-obo:
+            client-id: "dev-gcp:teamserviceklage:tilbakemeldingsmottak-api"
+            client-secret: src/test/resources/tokenx-jwk.json
+            provider: azuread
+            authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+            client-authentication-method: private_key_jwt
+            scope: scope
+          saf-obo:
+            client-id: "dev-gcp:teamserviceklage:tilbakemeldingsmottak-api"
+            client-secret: src/test/resources/tokenx-jwk.json
             provider: azuread
             authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
             client-authentication-method: private_key_jwt
@@ -152,7 +159,8 @@ spring:
 
         provider:
           azuread:
-            token-uri: http://localhost:${token.server.port}/fake/token
+            token-uri: http://localhost:5490/fake/token
+            #token-uri: http://localhost:${token.server.port}/fake/token
             #issuer-uri: http://localhost:${token.server.port}/azuread
           tokenx:
             token-uri: http://localhost:${token.server.port}/fake/token

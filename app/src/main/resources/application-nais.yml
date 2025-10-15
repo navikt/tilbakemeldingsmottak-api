@@ -54,7 +54,14 @@ spring:
             provider: azuread
             authorization-grant-type: client_credentials
             scope: ${OPPGAVE_SCOPE}
-          saf-maskintilmaskin:
+          oppgave-obo:
+            client-id: ${AZURE_APP_CLIENT_ID}
+            client-secret: ${${AZURE_APP_JWK}}
+            provider: azuread
+            authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+            client-authentication-method: private_key_jwt
+            scope: ${OPPGAVE_SCOPE}
+          saf-obo:
             client-id: ${AZURE_APP_CLIENT_ID}
             client-secret: ${AZURE_APP_JWK}
             provider: azuread

@@ -74,7 +74,7 @@ class GraphQlClientConfig(
             .defaultRequest { spec -> // 2. Sett en standard-attributt for alle kall
                 // Dette forteller filteret hvilken klient-konfigurasjon det skal bruke
                 spec.attributes { attrs ->
-                    attrs[OAuth2AuthorizationContext.REQUEST_SCOPE_ATTRIBUTE_NAME] = "saf-maskintilmaskin"
+                    attrs[OAuth2AuthorizationContext.REQUEST_SCOPE_ATTRIBUTE_NAME] = "saf-obo"
                 }
             }
             .build()

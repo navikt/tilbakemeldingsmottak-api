@@ -18,11 +18,9 @@ import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest
-import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageResponse
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageKlagetype.*
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.*
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
-import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETSNR_1
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETSNR_2
 import no.nav.tilbakemeldingsmottak.util.builders.InnmelderBuilder
@@ -44,14 +42,9 @@ import tools.jackson.module.kotlin.jacksonObjectMapper
 internal class ServiceklageIT : ApplicationTest() {
     private val objectMapper = jacksonObjectMapper()
 
-    private val SAKSBEHANDLER = "Saksbehandler"
     private val ORGANISASJONSNUMMER = "243602076"
     private val KLAGETEKST = "Dette er en klage"
     private val PAAVEGNEAV_PERSONNUMMER = "28898698736"
-    private val URL_SENDINN_SERVICEKLAGE = "/rest/serviceklage"
-    private val URL_BEHANDLE_SERVICEKLAGE = "/rest/taskserviceklage"
-    private val KLASSIFISER = "klassifiser"
-    private val HENT_DOKUMENT = "hentdokument"
     private val JOURNALPOST_ID = "12345"
     private val OPPGAVE_ID = "1234567"
     private val GJELDER = "Gjelder én ytelse eller tjeneste"
@@ -555,9 +548,9 @@ internal class ServiceklageIT : ApplicationTest() {
 
         val azureMockJwt = createMockJwt(azureIssuer, SAKSBEHANDLER)
         val tokenxMockJwt = createMockJwt(tokenxIssuer, msg.innmelder!!.personnummer!!)
-
         `when`(azureJwtDecoder.decode(anyString())).thenReturn(azureMockJwt)
         `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(tokenxMockJwt)
+
         val opprettResponse = api?.createServiceklage(requestEntityOpprett)
 
         assertEquals(serviceklageRepository!!.count(), 1)
