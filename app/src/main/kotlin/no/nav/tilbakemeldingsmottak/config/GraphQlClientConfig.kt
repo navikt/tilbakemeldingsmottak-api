@@ -37,6 +37,7 @@ class GraphQlClientConfig(
     ): ServletOAuth2AuthorizedClientExchangeFilterFunction {
         val oauth2 = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
         oauth2.setDefaultOAuth2AuthorizedClient(true)
+
         return oauth2
     }
 
@@ -49,7 +50,7 @@ class GraphQlClientConfig(
         // Konfigurerer en HTTP-klient med 15 sekunders timeout
         val httpClient = HttpClient.create()
             .responseTimeout(Duration.ofSeconds(15))
-
+        oauth2Filter.setDefaultClientRegistrationId("pdl")
         return WebClient.builder()
             .clientConnector(ReactorClientHttpConnector(httpClient))
             .filter(oauth2Filter) // 1. Legg til selve filteret
@@ -71,7 +72,7 @@ class GraphQlClientConfig(
         // Konfigurerer en HTTP-klient med 15 sekunders timeout
         val httpClient = HttpClient.create()
             .responseTimeout(Duration.ofSeconds(15))
-
+        oauth2Filter.setDefaultClientRegistrationId("saf-obo")
         return WebClient.builder()
             .clientConnector(ReactorClientHttpConnector(httpClient)) // Legger til HTTP-klienten
             .filter(oauth2Filter) // 1. Legg til selve filteret
