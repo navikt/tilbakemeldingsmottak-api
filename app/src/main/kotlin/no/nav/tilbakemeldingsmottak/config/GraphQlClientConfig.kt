@@ -57,7 +57,6 @@ class GraphQlClientConfig(
                     attrs["org.springframework.security.oauth2.client.registrationId"] = "pdl"
                 }
             }
-            .defaultHeaders { it.add(HEADER_BEHANDLINGSNUMMER, PDL_BEHANDLINGSNUMMER) }
             .build()
     }
 
@@ -91,6 +90,7 @@ class GraphQlClientConfig(
     fun pdlGraphQlWebClient(@Qualifier("pdlWebClient") pdlWebClient: WebClient): HttpGraphQlClient {
         return HttpGraphQlClient.builder(pdlWebClient)
             .url(pdlUrl)
+            .header(HEADER_BEHANDLINGSNUMMER, PDL_BEHANDLINGSNUMMER)
             .build()
     }
 

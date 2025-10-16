@@ -11,17 +11,18 @@ class OAuth2ClientManagerConfig(
     private val tokenExchangeService: TokenExchangeService
 ) {
 
+    private val log = org.slf4j.LoggerFactory.getLogger(javaClass)
+
     @Bean
     fun authorizedClientManager(): OAuth2AuthorizedClientManager {
         // Register support for client_credentials and our custom jwt-bearer flow
         val provider = OAuth2AuthorizedClientProviderBuilder.builder()
             .clientCredentials()
             .provider { context ->
-                val context_ = context
                 val grantType = context.clientRegistration.authorizationGrantType.value
                 if (grantType == "urn:ietf:params:oauth:grant-type:jwt-bearer") {
                     System.out.println("Exchange token using ${context.clientRegistration.authorizationGrantType.value}")
-                    tokenExchangeService.performJwtBearerExchange(context_)
+                    tokenExchangeService.performJwtBearerExchange(context)
                 } else null
             }
             .build()
@@ -31,6 +32,7 @@ class OAuth2ClientManagerConfig(
             InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository)
         )
         manager.setAuthorizedClientProvider(provider)
+        log.info("OAuth2AuthorizedClientManager konfigurert.")
         return manager
     }
 }
