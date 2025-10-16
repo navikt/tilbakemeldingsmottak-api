@@ -35,7 +35,9 @@ class GraphQlClientConfig(
     fun oauth2ExchangeFilterFunction(
         authorizedClientManager: OAuth2AuthorizedClientManager
     ): ServletOAuth2AuthorizedClientExchangeFilterFunction {
-        return ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
+        val oauth2 = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
+        oauth2.setDefaultOAuth2AuthorizedClient(true)
+        return oauth2
     }
 
     /**
