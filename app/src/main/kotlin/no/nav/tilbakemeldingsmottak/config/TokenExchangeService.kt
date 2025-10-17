@@ -20,7 +20,7 @@ class TokenExchangeService(
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun performJwtBearerExchange(context: OAuth2AuthorizationContext): OAuth2AuthorizedClient? {
-        log.debug("Exchange token using ${context.clientRegistration.authorizationGrantType.value}")
+        log.debug("Exchange token using ${context.clientRegistration.authorizationGrantType.value} for ${context.clientRegistration.registrationId}")
         val principal: Authentication = context.principal
         if (principal !is JwtAuthenticationToken) {
             log.warn("invalid_principal", "Expected JwtAuthenticationToken but was ${principal.javaClass}")

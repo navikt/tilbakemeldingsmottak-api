@@ -32,12 +32,24 @@ class GraphQlClientConfig(
      * både 'client_credentials' og 'jwt-bearer' grant types.
      */
     @Bean
+    @Qualifier("pdlAuthMng")
     fun oauth2ExchangeFilterFunction(
         authorizedClientManager: OAuth2AuthorizedClientManager
     ): ServletOAuth2AuthorizedClientExchangeFilterFunction {
         val oauth2 = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
         oauth2.setDefaultOAuth2AuthorizedClient(true)
+        oauth2.setDefaultClientRegistrationId("pdl")
+        return oauth2
+    }
 
+    @Bean
+    @Qualifier("safAuthMng")
+    fun oauth2SafExchangeFilterFunction(
+        authorizedClientManager: OAuth2AuthorizedClientManager
+    ): ServletOAuth2AuthorizedClientExchangeFilterFunction {
+        val oauth2 = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
+        oauth2.setDefaultOAuth2AuthorizedClient(true)
+        oauth2.setDefaultClientRegistrationId("saf-obo")
         return oauth2
     }
 
@@ -46,11 +58,10 @@ class GraphQlClientConfig(
      */
     @Bean
     @Qualifier("pdlWebClient")
-    fun pdlWebClient(oauth2Filter: ServletOAuth2AuthorizedClientExchangeFilterFunction): WebClient {
+    fun pdlWebClient(@Qualifier("pdlAuthMng") oauth2Filter: ServletOAuth2AuthorizedClientExchangeFilterFunction): WebClient {
         // Konfigurerer en HTTP-klient med 15 sekunders timeout
         val httpClient = HttpClient.create()
             .responseTimeout(Duration.ofSeconds(15))
-        oauth2Filter.setDefaultClientRegistrationId("pdl")
         return WebClient.builder()
             .clientConnector(ReactorClientHttpConnector(httpClient))
             .filter(oauth2Filter) // 1. Legg til selve filteret
@@ -70,11 +81,10 @@ class GraphQlClientConfig(
      */
     @Bean
     @Qualifier("safWebClient")
-    fun safWebClient(oauth2Filter: ServletOAuth2AuthorizedClientExchangeFilterFunction): WebClient {
+    fun safWebClient(@Qualifier("safAuthMng") oauth2Filter: ServletOAuth2AuthorizedClientExchangeFilterFunction): WebClient {
         // Konfigurerer en HTTP-klient med 15 sekunders timeout
         val httpClient = HttpClient.create()
             .responseTimeout(Duration.ofSeconds(15))
-        oauth2Filter.setDefaultClientRegistrationId("saf-obo")
         return WebClient.builder()
             .clientConnector(ReactorClientHttpConnector(httpClient)) // Legger til HTTP-klienten
             .filter(oauth2Filter) // 1. Legg til selve filteret
