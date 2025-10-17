@@ -57,7 +57,7 @@ class GraphQlClientConfig(
             .defaultRequest { spec -> // 2. Sett en standard-attributt for alle kall
                 // Dette forteller filteret hvilken klient-konfigurasjon det skal bruke
                 spec.attributes { attrs ->
-                    attrs["org.springframework.security.oauth2.client.registrationId"] = "pdl"
+                    attrs[OAuth2AuthorizationContext.REQUEST_SCOPE_ATTRIBUTE_NAME] = "scope"
                 }
             }
             .build()
@@ -79,7 +79,7 @@ class GraphQlClientConfig(
             .defaultRequest { spec -> // 2. Sett en standard-attributt for alle kall
                 // Dette forteller filteret hvilken klient-konfigurasjon det skal bruke
                 spec.attributes { attrs ->
-                    attrs["org.springframework.security.oauth2.client.registrationId"] = "saf-obo"
+                    attrs[OAuth2AuthorizationContext.REQUEST_SCOPE_ATTRIBUTE_NAME] = "scope"
                 }
             }
             .build()
