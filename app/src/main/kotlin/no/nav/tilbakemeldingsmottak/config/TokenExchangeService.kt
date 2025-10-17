@@ -20,7 +20,7 @@ class TokenExchangeService(
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun performJwtBearerExchange(context: OAuth2AuthorizationContext): OAuth2AuthorizedClient? {
-        log.debug(
+        log.info(
             "Exchange token using ${context.clientRegistration.authorizationGrantType.value} for ${context.clientRegistration.registrationId}  and scope ${
                 context.clientRegistration.scopes.joinToString(
                     " "
@@ -74,6 +74,7 @@ class TokenExchangeService(
             registration.scopes
         )
 
+        log.info("Exchange token successful for ${registration.registrationId} og scope ${registration.scopes.joinToString()}")
         return OAuth2AuthorizedClient(registration, principal.name, accessToken)
     }
 }
