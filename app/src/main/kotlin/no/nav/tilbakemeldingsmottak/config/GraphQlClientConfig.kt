@@ -54,12 +54,14 @@ class GraphQlClientConfig(
         return WebClient.builder()
             .clientConnector(ReactorClientHttpConnector(httpClient))
             .filter(oauth2Filter) // 1. Legg til selve filteret
-            .defaultRequest { spec -> // 2. Sett en standard-attributt for alle kall
-                // Dette forteller filteret hvilken klient-konfigurasjon det skal bruke
-                spec.attributes { attrs ->
-                    attrs[OAuth2AuthorizationContext.REQUEST_SCOPE_ATTRIBUTE_NAME] = "scope"
-                }
-            }
+            /*
+                        .defaultRequest { spec -> // 2. Sett en standard-attributt for alle kall
+                            // Dette forteller filteret hvilken klient-konfigurasjon det skal bruke
+                            spec.attributes { attrs ->
+                                attrs[OAuth2AuthorizationContext.REQUEST_SCOPE_ATTRIBUTE_NAME] = "scope"
+                            }
+                        }
+            */
             .build()
     }
 
@@ -76,12 +78,14 @@ class GraphQlClientConfig(
         return WebClient.builder()
             .clientConnector(ReactorClientHttpConnector(httpClient)) // Legger til HTTP-klienten
             .filter(oauth2Filter) // 1. Legg til selve filteret
-            .defaultRequest { spec -> // 2. Sett en standard-attributt for alle kall
-                // Dette forteller filteret hvilken klient-konfigurasjon det skal bruke
-                spec.attributes { attrs ->
-                    attrs[OAuth2AuthorizationContext.REQUEST_SCOPE_ATTRIBUTE_NAME] = "scope"
-                }
-            }
+            /*
+                        .defaultRequest { spec -> // 2. Sett en standard-attributt for alle kall
+                            // Dette forteller filteret hvilken klient-konfigurasjon det skal bruke
+                            spec.attributes { attrs ->
+                                attrs[OAuth2AuthorizationContext.REQUEST_SCOPE_ATTRIBUTE_NAME] = "scope"
+                            }
+                        }
+            */
             .build()
     }
 
