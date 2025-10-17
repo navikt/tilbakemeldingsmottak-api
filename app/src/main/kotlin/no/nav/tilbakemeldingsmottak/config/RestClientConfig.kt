@@ -35,6 +35,7 @@ import java.time.Duration
 @Configuration
 class RestClientConfig() {
 
+    private val log = org.slf4j.LoggerFactory.getLogger(javaClass)
 
     /**
      * Konfigurerer RestClient for HentDokument med 'jwt-bearer'-flyt.
@@ -185,6 +186,7 @@ class RestClientConfig() {
         clientRegistrationRepository: ClientRegistrationRepository
     ): ClientHttpRequestInterceptor {
         return ClientHttpRequestInterceptor { request, body, execution ->
+            log.info("createOauth2Interceptor for clientRegistrationId: $clientRegistrationId")
             val clientRegistration = clientRegistrationRepository.findByRegistrationId(clientRegistrationId)
                 ?: throw IllegalStateException("Fant ikke klient-registrering for '$clientRegistrationId'.")
 

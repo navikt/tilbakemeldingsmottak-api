@@ -129,33 +129,33 @@ spring:
             client-secret: someSecret
             provider: azuread
             authorization-grant-type: client_credentials
-            scope: scope
+            scope: scope-pdl
           arkiv:
             client-id: fake
             client-secret: someSecret
             provider: azuread
             authorization-grant-type: client_credentials
-            scope: scope
+            scope: scope-arkiv
           oppgave:
             client-id: fake
             client-secret: someSecret
             provider: azuread
             authorization-grant-type: client_credentials
-            scope: scope
+            scope: scope-oppgave
           oppgave-obo:
             client-id: "dev-gcp:teamserviceklage:tilbakemeldingsmottak-api"
             client-secret: src/test/resources/tokenx-jwk.json
             provider: azuread
             authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
             client-authentication-method: private_key_jwt
-            scope: scope
+            scope: scope-oppgave-obo
           saf-obo:
             client-id: "dev-gcp:teamserviceklage:tilbakemeldingsmottak-api"
             client-secret: src/test/resources/tokenx-jwk.json
             provider: azuread
             authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
             client-authentication-method: private_key_jwt
-            scope: scope
+            scope: scope-saf-obo
 
         provider:
           azuread:

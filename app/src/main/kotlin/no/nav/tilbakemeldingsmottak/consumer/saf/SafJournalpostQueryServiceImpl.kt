@@ -32,6 +32,7 @@ class SafJournalpostQueryServiceImpl(private val safGraphqlConsumer: SafGraphqlC
             "}\n"
 
     override fun hentJournalpost(journalpostid: String): Journalpost {
+        log.info("Henter journalpost med dokumentliste for journalpostId: $journalpostid")
         val journalpost =
             journalpostToValidator.validateAndReturn(
                 safGraphqlConsumer.performQuery(

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.graphql.client.HttpGraphQlClient
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
-import org.springframework.security.oauth2.client.OAuth2AuthorizationContext
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient
@@ -26,10 +25,11 @@ class GraphQlClientConfig(
     @Value("\${saf.graphql.url}")
     private lateinit var safUrl: String
 
+    private val responseTimeout = Duration.ofSeconds(15)
     /**
-     * Setter opp et felles filter som kan brukes av alle WebClients.
-     * Den auto-konfigurerte 'authorizedClientManager' har all logikken for å håndtere
-     * både 'client_credentials' og 'jwt-bearer' grant types.
+     * Setter opp et filter som kan brukes for pdl kall.
+     * AuthorizedClientManager har logikken for å håndtere
+     * både 'client_credentials' og 'jwt-bearer' grant types (obo-fly).
      */
     @Bean
     @Qualifier("pdlAuthMng")
@@ -42,6 +42,11 @@ class GraphQlClientConfig(
         return oauth2
     }
 
+    /**
+     * Setter opp et filter som kan brukes for saf kall.
+     * AuthorizedClientManager har logikken for å håndtere
+     * både 'client_credentials' og 'jwt-bearer' grant types (obo-flyt).
+     */
     @Bean
     @Qualifier("safAuthMng")
     fun oauth2SafExchangeFilterFunction(
@@ -54,48 +59,30 @@ class GraphQlClientConfig(
     }
 
     /**
-     * WebClient for PDL med 'client_credentials'-flyt.
+     * WebClient for PDL
      */
     @Bean
     @Qualifier("pdlWebClient")
     fun pdlWebClient(@Qualifier("pdlAuthMng") oauth2Filter: ServletOAuth2AuthorizedClientExchangeFilterFunction): WebClient {
-        // Konfigurerer en HTTP-klient med 15 sekunders timeout
         val httpClient = HttpClient.create()
-            .responseTimeout(Duration.ofSeconds(15))
+            .responseTimeout(responseTimeout)
         return WebClient.builder()
             .clientConnector(ReactorClientHttpConnector(httpClient))
-            .filter(oauth2Filter) // 1. Legg til selve filteret
-            /*
-                        .defaultRequest { spec -> // 2. Sett en standard-attributt for alle kall
-                            // Dette forteller filteret hvilken klient-konfigurasjon det skal bruke
-                            spec.attributes { attrs ->
-                                attrs[OAuth2AuthorizationContext.REQUEST_SCOPE_ATTRIBUTE_NAME] = "scope"
-                            }
-                        }
-            */
+            .filter(oauth2Filter)
             .build()
     }
 
     /**
-     * WebClient for SAF med 'jwt-bearer'-flyt.
+     * WebClient for SAF.
      */
     @Bean
     @Qualifier("safWebClient")
     fun safWebClient(@Qualifier("safAuthMng") oauth2Filter: ServletOAuth2AuthorizedClientExchangeFilterFunction): WebClient {
-        // Konfigurerer en HTTP-klient med 15 sekunders timeout
         val httpClient = HttpClient.create()
-            .responseTimeout(Duration.ofSeconds(15))
+            .responseTimeout(responseTimeout)
         return WebClient.builder()
-            .clientConnector(ReactorClientHttpConnector(httpClient)) // Legger til HTTP-klienten
-            .filter(oauth2Filter) // 1. Legg til selve filteret
-            /*
-                        .defaultRequest { spec -> // 2. Sett en standard-attributt for alle kall
-                            // Dette forteller filteret hvilken klient-konfigurasjon det skal bruke
-                            spec.attributes { attrs ->
-                                attrs[OAuth2AuthorizationContext.REQUEST_SCOPE_ATTRIBUTE_NAME] = "scope"
-                            }
-                        }
-            */
+            .clientConnector(ReactorClientHttpConnector(httpClient))
+            .filter(oauth2Filter)
             .build()
     }
 
