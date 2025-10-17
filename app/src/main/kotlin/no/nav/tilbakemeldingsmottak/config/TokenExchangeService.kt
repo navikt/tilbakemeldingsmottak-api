@@ -51,6 +51,7 @@ class TokenExchangeService(
             .baseUrl(registration.providerDetails.tokenUri)
             .build()
 
+        log.info("Ready to exchange token for ${registration.registrationId} og scope ${registration.scopes.joinToString()}")
         val response = restClient.post()
             .contentType(MediaType.APPLICATION_FORM_URLENCODED)
             .body(body)
@@ -61,6 +62,8 @@ class TokenExchangeService(
 
         val accessTokenValue = response["access_token"] as? String
             ?: throw OAuth2AuthorizationException(OAuth2Error("invalid_token", "No access_token in response", null))
+
+        log.info("Received access token for ${registration.registrationId} og scope ${registration.scopes.joinToString()}")
 
         val expiresIn = (response["expires_in"] as? Number)?.toLong() ?: 3600L
         val issuedAt = Instant.now()
