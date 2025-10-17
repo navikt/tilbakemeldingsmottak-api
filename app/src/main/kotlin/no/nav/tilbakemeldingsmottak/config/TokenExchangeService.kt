@@ -44,6 +44,7 @@ class TokenExchangeService(
             registration.clientSecret?.let { add("client_secret", it) }
             add("assertion", tokenValue)
             add("scope", registration.scopes.joinToString(" "))
+            add("requested_token_use", "on_behalf_of")
         }
 
         // Bruker den injiserte builderen til å lage en RestClient for dette spesifikke kallet

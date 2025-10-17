@@ -1,9 +1,5 @@
 package no.nav.tilbakemeldingsmottak.config
 
-import com.nimbusds.jose.jwk.JWK
-import com.nimbusds.jose.jwk.JWKSet
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet
-import com.nimbusds.jose.jwk.source.JWKSource
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
@@ -11,23 +7,10 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Scope
 import org.springframework.http.client.*
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.oauth2.client.*
-import org.springframework.security.oauth2.client.endpoint.*
-import org.springframework.security.oauth2.client.ClientCredentialsOAuth2AuthorizedClientProvider
-import org.springframework.security.oauth2.client.DelegatingOAuth2AuthorizedClientProvider
-import org.springframework.security.oauth2.client.JwtBearerOAuth2AuthorizedClientProvider
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
-import org.springframework.security.oauth2.client.endpoint.NimbusJwtClientAuthenticationParametersConverter
-import org.springframework.security.oauth2.client.endpoint.OAuth2ClientCredentialsGrantRequest
-import org.springframework.security.oauth2.client.registration.ClientRegistration
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
-import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository
 import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.web.client.RestClient
 import java.time.Duration
