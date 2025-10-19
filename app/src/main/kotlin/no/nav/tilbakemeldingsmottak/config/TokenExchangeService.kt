@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.config
 
+import no.nav.tilbakemeldingsmottak.util.OidcUtils
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.security.core.Authentication
@@ -35,9 +36,12 @@ class TokenExchangeService(
             )
         }
 
+        val tst = OidcUtils().currentJwt()?.tokenValue
         val registration = context.clientRegistration
-        val tokenValue = principal.token.tokenValue
+        val tokenValue =
+            context.attributes["subject_token"] as? String ?: principal.token.tokenValue ?: return null
 
+        log.info("TokenExchangeService: tokenValue status: $tst == $tokenValue. TokenValue != null: ${tokenValue.isNotEmpty()} ")
         val body = LinkedMultiValueMap<String, String>().apply {
             add(OAuth2ParameterNames.GRANT_TYPE, "urn:ietf:params:oauth:grant-type:jwt-bearer")
             add("client_id", registration.clientId)

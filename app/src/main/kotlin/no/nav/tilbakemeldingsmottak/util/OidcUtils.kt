@@ -11,7 +11,7 @@ class OidcUtils {
 
     private val log = LoggerFactory.getLogger(OidcUtils::class.java)
 
-    private fun currentJwt(): Jwt? {
+    fun currentJwt(): Jwt? {
         val auth = SecurityContextHolder.getContext().authentication
         return (auth as? JwtAuthenticationToken)?.token
     }
