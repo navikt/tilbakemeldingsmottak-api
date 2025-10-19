@@ -36,16 +36,15 @@ class TokenExchangeService(
             )
         }
 
-        val tst = OidcUtils().currentJwt()?.tokenValue
         val registration = context.clientRegistration
         val tokenValue =
             context.attributes["subject_token"] as? String ?: principal.token.tokenValue ?: return null
 
-        log.info("TokenExchangeService: tokenValue status: $tst == $tokenValue. TokenValue != null: ${tokenValue.isNotEmpty()} ")
         val body = LinkedMultiValueMap<String, String>().apply {
             add(OAuth2ParameterNames.GRANT_TYPE, "urn:ietf:params:oauth:grant-type:jwt-bearer")
             add("client_id", registration.clientId)
-            registration.clientSecret?.let { add("client_secret", it) }
+            add("client_secret", registration.clientSecret ?: "")
+//            registration.clientSecret?.let { add("client_secret", it) }
             add("assertion", tokenValue)
             add("scope", registration.scopes.joinToString(" "))
             add("requested_token_use", "on_behalf_of")
