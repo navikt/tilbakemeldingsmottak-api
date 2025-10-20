@@ -45,10 +45,4 @@ class OidcUtils {
             log.info("JWT issuer=${jwt.issuer}, subject=${jwt.subject}, claims=${jwt.claims.keys}")
         }
     }
-
-    /**
-     * Returns the raw Bearer token string (for forwarding to downstream services if necessary).
-     */
-    fun getRawTokenValue(): String? =
-        currentJwt()?.tokenValue
 }

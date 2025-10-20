@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.consumer.pdl
 
-import com.expediagroup.graphql.client.types.GraphQLClientError
 import kotlinx.coroutines.runBlocking
 import no.nav.tilbakemeldingsmottak.consumer.pdl.domain.IdentDto
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
@@ -10,7 +9,6 @@ import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import no.nav.tilbakemeldingsmottak.pdl.generated.HENT_IDENTER
 import no.nav.tilbakemeldingsmottak.pdl.generated.HentIdenter
 import no.nav.tilbakemeldingsmottak.pdl.generated.hentidenter.Identliste
-import no.nav.tilbakemeldingsmottak.util.handleErrors
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value

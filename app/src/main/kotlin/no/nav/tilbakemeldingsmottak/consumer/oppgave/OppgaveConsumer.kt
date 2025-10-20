@@ -19,7 +19,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
-import org.springframework.web.reactive.function.BodyInserters
 import java.lang.String.format
 
 @Component

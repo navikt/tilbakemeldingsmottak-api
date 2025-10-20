@@ -1,8 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument
 
 import no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID
-import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJsonJournalpost
-import no.nav.tilbakemeldingsmottak.consumer.saf.util.HttpHeadersUtil
 import no.nav.tilbakemeldingsmottak.exceptions.*
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE
@@ -11,7 +9,6 @@ import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.graphql.client.GraphQlClient
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -20,7 +17,6 @@ import org.springframework.http.client.ClientHttpResponse
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestClient
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.util.function.Consumer

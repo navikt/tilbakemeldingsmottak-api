@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.config
 
-import no.nav.tilbakemeldingsmottak.util.OidcUtils
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.security.core.Authentication
@@ -44,7 +43,6 @@ class TokenExchangeService(
             add(OAuth2ParameterNames.GRANT_TYPE, "urn:ietf:params:oauth:grant-type:jwt-bearer")
             add("client_id", registration.clientId)
             add("client_secret", registration.clientSecret ?: "")
-//            registration.clientSecret?.let { add("client_secret", it) }
             add("assertion", tokenValue)
             add("scope", registration.scopes.joinToString(" "))
             add("requested_token_use", "on_behalf_of")

@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
-@Protected
+//@Protected
 @RestController
 class ServiceklageRestController(
     private val opprettServiceklageService: OpprettServiceklageService,

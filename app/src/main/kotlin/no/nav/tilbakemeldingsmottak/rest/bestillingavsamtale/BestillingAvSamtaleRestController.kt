@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
-@ProtectedWithClaims(issuer = "azuread")
+//@ProtectedWithClaims(issuer = "azuread")
 @RestController
 class BestillingAvSamtaleRestController(
     private val bestillingAvSamtaleService: BestillingAvSamtaleService
