@@ -2,7 +2,6 @@ package no.nav.tilbakemeldingsmottak.rest.serviceklage.service
 
 import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklageEventType
 import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery
-import no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo
 import no.nav.tilbakemeldingsmottak.consumer.saf.SafJournalpostQueryService

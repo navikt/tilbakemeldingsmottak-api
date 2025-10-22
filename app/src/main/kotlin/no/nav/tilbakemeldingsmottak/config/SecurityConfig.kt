@@ -91,7 +91,7 @@ class SecurityConfig(
             }
         }
 
-        // Optional: convert "scope"/"scp" claims to GrantedAuthorities (adjust to your claim names)
+        // Optional: convert "scope"/"scp" claims to GrantedAuthorities
         val jwtAuthConverter = JwtAuthenticationConverter().apply {
             val grantedAuthoritiesConverter = JwtGrantedAuthoritiesConverter()
             // e.g., grantedAuthoritiesConverter.setAuthorityPrefix("SCOPE_") // default

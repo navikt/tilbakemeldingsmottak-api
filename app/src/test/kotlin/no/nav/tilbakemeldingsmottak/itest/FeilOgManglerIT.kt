@@ -2,7 +2,6 @@ package no.nav.tilbakemeldingsmottak.itest
 
 import no.nav.tilbakemeldingsmottak.ApplicationTest
 import no.nav.tilbakemeldingsmottak.config.Constants
-import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.PRIVATPERSON
 import no.nav.tilbakemeldingsmottak.util.builders.MeldFeilOgManglerRequestBuilder
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString

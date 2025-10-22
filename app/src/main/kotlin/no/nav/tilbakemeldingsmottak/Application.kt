@@ -13,7 +13,6 @@ import org.springframework.retry.annotation.EnableRetry
 @SpringBootApplication(
     exclude = [OAuth2ResourceServerAutoConfiguration::class]
 )
-
 @ConfigurationPropertiesScan
 @EnableRetry(proxyTargetClass = true)
 @EnableCaching

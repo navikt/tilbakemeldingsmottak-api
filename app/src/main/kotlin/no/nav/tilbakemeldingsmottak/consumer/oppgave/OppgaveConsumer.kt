@@ -24,9 +24,9 @@ import java.lang.String.format
 @Component
 class OppgaveConsumer(
     @Qualifier("oppgaveRestClient") private val restClient: RestClient,
-    @Qualifier("oppgaveOboRestClient") private val restMtMClient: RestClient,
+    @Qualifier("oppgaveOboRestClient") private val restObOClient: RestClient,
 
-) {
+    ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Metrics(
@@ -64,7 +64,7 @@ class OppgaveConsumer(
             endreOppgaveRequestTo.journalpostId
         )
 
-        return restMtMClient.patch()
+        return restObOClient.patch()
             .uri("/${endreOppgaveRequestTo.id}")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
@@ -87,7 +87,7 @@ class OppgaveConsumer(
     fun hentOppgave(oppgaveId: String): HentOppgaveResponseTo {
         log.info("Henter oppgave med id={}", oppgaveId)
 
-        return restMtMClient
+        return restObOClient
             .method(HttpMethod.GET)
             .uri("/$oppgaveId")
             .contentType(MediaType.APPLICATION_JSON)

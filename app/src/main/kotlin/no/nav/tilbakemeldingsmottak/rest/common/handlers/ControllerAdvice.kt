@@ -1,14 +1,13 @@
 package no.nav.tilbakemeldingsmottak.rest.common.handlers
 
 import jakarta.servlet.http.HttpServletRequest
-import no.nav.security.token.support.core.exceptions.JwtTokenMissingException
-import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import no.nav.tilbakemeldingsmottak.exceptions.*
 import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse
 import org.slf4j.LoggerFactory
 import org.springframework.core.annotation.AnnotationUtils
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.AuthenticationException
 import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -25,7 +24,7 @@ class ControllerAdvice {
         return responseStatus?.code ?: HttpStatus.INTERNAL_SERVER_ERROR
     }
 
-    @ExceptionHandler(value = [JwtTokenMissingException::class, JwtTokenUnauthorizedException::class])
+    @ExceptionHandler(value = [AuthenticationException::class])
     fun loginRequiredExceptionHandler(request: HttpServletRequest, ex: Exception): ResponseEntity<ErrorResponse> {
         val status = getHttpStatus(ex)
         log.warn("Autentisering feilet ved kall til " + request.requestURI + ": " + ex.message, ex)

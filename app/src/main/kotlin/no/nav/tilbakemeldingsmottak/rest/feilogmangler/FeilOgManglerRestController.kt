@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.feilogmangler
 
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.tilbakemeldingsmottak.api.FeilOgManglerRestControllerApi
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
 import no.nav.tilbakemeldingsmottak.metrics.Metrics
@@ -10,12 +9,13 @@ import no.nav.tilbakemeldingsmottak.rest.feilogmangler.service.FeilOgManglerServ
 import no.nav.tilbakemeldingsmottak.rest.feilogmangler.validation.MeldFeilOgManglerValidator
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
-//@ProtectedWithClaims(issuer = "azuread")
 @RestController
+@PreAuthorize("@issuerChecker.hasIssuer(authentication, {'azuread', 'tokenx'})")
 class FeilOgManglerRestController(
     private val feilOgManglerService: FeilOgManglerService,
     private val meldFeilOgManglerValidator: MeldFeilOgManglerValidator

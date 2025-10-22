@@ -8,7 +8,7 @@ import tools.jackson.module.kotlin.jacksonObjectMapper
 
 
 /*
-Problem med Jackson and Kotlin data classes  i forbindelse med testing av overgang til spring boot 3.x til 4.x
+Problem med Jackson and Kotlin data classes  i forbindelse med testing av overgang fra spring boot 3.x til 4.x
  */
 @Configuration
 class JacksonConfig : WebMvcConfigurer {

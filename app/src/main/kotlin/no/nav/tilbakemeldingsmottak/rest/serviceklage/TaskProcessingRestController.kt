@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage
 
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.tilbakemeldingsmottak.api.TaskProcessingRestControllerApi
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST
@@ -25,12 +24,9 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-//@ProtectedWithClaims(issuer = "azuread", claimMap = ["scp=defaultaccess serviceklage-klassifisering"])
 @RestController
 @PreAuthorize(
-    "authentication.token.claims['scp'] != null and " +
-            "authentication.token.claims['scp'].toString().contains('serviceklage-klassifisering') and " +
-            "authentication.token.issuer.toString() == 'https://tokendings.dev-gcp.nais.io'"
+    "@claimChecer.hasAccess('azuread','serviceklage-klassifisering')"
 )
 class TaskProcessingRestController(
     private val klassifiserServiceklageService: KlassifiserServiceklageService,

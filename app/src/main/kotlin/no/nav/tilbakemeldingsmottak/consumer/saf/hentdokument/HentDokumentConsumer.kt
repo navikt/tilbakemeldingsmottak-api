@@ -9,17 +9,14 @@ import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
-import org.springframework.http.client.ClientHttpResponse
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import java.util.function.Consumer
 
 @Component
 class HentDokumentConsumer(
@@ -76,10 +73,6 @@ class HentDokumentConsumer(
         }
     }
 
-    private fun getHttpHeadersAsConsumer(httpHeaders: HttpHeaders): Consumer<HttpHeaders> {
-        return Consumer { consumer: HttpHeaders -> consumer.addAll(httpHeaders) }
-    }
-
     private fun handleError(error: Throwable, serviceName: String) {
         if (error is WebClientResponseException) {
             val statusCode: HttpStatusCode = error.statusCode
@@ -102,27 +95,4 @@ class HentDokumentConsumer(
             throw ServerErrorException(errorMessage, error, ErrorCode.SAF_ERROR)
         }
     }
-
-
-    private fun handleError(response: ClientHttpResponse, serviceName: String) {
-        val statusCode: HttpStatusCode = response.statusCode
-        val responseBody: String = response.statusText
-        val errorMessage =
-            String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody)
-
-        if (statusCode === HttpStatus.UNAUTHORIZED) {
-            throw ClientErrorUnauthorizedException(errorMessage, null, ErrorCode.SAF_UNAUTHORIZED)
-        }
-        if (statusCode === HttpStatus.FORBIDDEN) {
-            throw ClientErrorForbiddenException(errorMessage, null, ErrorCode.SAF_FORBIDDEN)
-        }
-        if (statusCode === HttpStatus.NOT_FOUND) {
-            throw ClientErrorNotFoundException(errorMessage, null, ErrorCode.SAF_NOT_FOUND)
-        }
-        if (statusCode.is4xxClientError) {
-            throw ClientErrorException(errorMessage, null, ErrorCode.SAF_ERROR)
-        }
-        throw ServerErrorException(errorMessage, null, ErrorCode.SAF_ERROR)
-    }
-
 }

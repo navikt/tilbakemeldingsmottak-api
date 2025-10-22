@@ -8,7 +8,6 @@ import no.nav.tilbakemeldingsmottak.saf.generated.HENT_JOURNALPOST
 import no.nav.tilbakemeldingsmottak.saf.generated.hentjournalpost.Journalpost
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.graphql.client.GraphQlClient
 import org.springframework.http.*
 import org.springframework.retry.annotation.Backoff
@@ -19,7 +18,6 @@ import java.util.function.Consumer
 
 @Component
 class SafGraphqlConsumer(
-    @Value("\${saf.graphql.url}") private val graphQLurl: String,
     @Qualifier("safQlClient") private val webClient: GraphQlClient
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -35,7 +33,7 @@ class SafGraphqlConsumer(
 
         val response = webClient.document(HENT_JOURNALPOST)
             .variables(graphQLRequest.variables)
-            .retrieve("journalpost")
+            .retrieve(graphQLRequest.operationName)
             .toEntity(Journalpost::class.java)
             .doOnError(Consumer { error: Throwable -> handleError(error, "SAF journalpost") })
             .block()
@@ -56,10 +54,6 @@ class SafGraphqlConsumer(
         }
 
         return response
-    }
-
-    private fun getHttpHeadersAsConsumer(httpHeaders: HttpHeaders): Consumer<HttpHeaders> {
-        return Consumer { consumer: HttpHeaders -> consumer.addAll(httpHeaders) }
     }
 
     private fun handleError(error: Throwable, serviceName: String) {

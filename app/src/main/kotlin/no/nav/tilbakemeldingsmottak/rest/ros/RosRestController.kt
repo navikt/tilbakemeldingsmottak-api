@@ -10,12 +10,13 @@ import no.nav.tilbakemeldingsmottak.rest.ros.service.RosService
 import no.nav.tilbakemeldingsmottak.rest.ros.validation.SendRosValidator
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
-//@ProtectedWithClaims(issuer = "azuread")
 @RestController
+@PreAuthorize("@issuerChecker.hasIssuer(authentication, {'azuread', 'tokenx'})")
 class RosRestController(
     private val rosService: RosService,
     private val sendRosValidator: SendRosValidator,

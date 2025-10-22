@@ -100,7 +100,6 @@ object TestUtils {
         dataJournalpost.journalpost = journalpost
         val safJsonJournalpost = SafJsonJournalpost()
         safJsonJournalpost.data = dataJournalpost
-        //return objectMapper.writeValueAsString(safJsonJournalpost.data)
         return "{\"data\": ${objectMapper.writeValueAsString(dataJournalpost)} }"
     }
 
