@@ -23,7 +23,7 @@ class KlassifiserServiceklageRequestBuilder {
     private var GJELDER: String? = "Gjelder én ytelse eller tjeneste"
     private var BESKRIVELSE: String? = "Bruker klager på service"
     private var YTELSE: String? = "AAP - Arbeidsavklaringspenger"
-    private var RELATERT: String? = "EØS-saken,Åpningstider på NAV-kontoret"
+    private var RELATERT: String? = "Åpningstider på NAV-kontoret,Språk"
     private var TEMA: String? = "Vente på NAV"
     private var VENTE: String? = "Saksbehandlingstid"
     private var TILGJENGELIGHET: String? = null
