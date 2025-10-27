@@ -198,8 +198,6 @@ questions:
         type: CHECKBOX
         optional: true
         answers:
-            -   answer: Korona-saken
-            -   answer: EØS-saken
             -   answer: Åpningstider på NAV-kontoret
             -   answer: Språk
             -   answer: Klage
