@@ -50,7 +50,7 @@ internal class ServiceklageIT : ApplicationTest() {
     private val GJELDER = "Gjelder én ytelse eller tjeneste"
     private val BESKRIVELSE = "Bruker klager på service"
     private val YTELSE = "AAP - Arbeidsavklaringspenger"
-    private val RELATERT = "EØS-saken,Åpningstider på NAV-kontoret"
+    private val RELATERT = "Åpningstider på NAV-kontoret,Språk"
     private val TEMA = "Vente på NAV"
     private val VENTE = "Saksbehandlingstid"
     private val UTFALL = "b) Regler/rutiner/frister er fulgt men NAV burde ivaretatt bruker bedre"
