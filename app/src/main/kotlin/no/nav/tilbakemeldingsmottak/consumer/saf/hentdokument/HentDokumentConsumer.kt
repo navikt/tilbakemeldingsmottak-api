@@ -1,7 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument
 
 import no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID
-import no.nav.tilbakemeldingsmottak.consumer.saf.util.HttpHeadersUtil
 import no.nav.tilbakemeldingsmottak.exceptions.*
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
@@ -19,12 +17,11 @@ import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import java.util.function.Consumer
 
 @Component
 class HentDokumentConsumer(
     @Value("\${hentdokument.url}") private val hentDokumentUrl: String,
-    @Qualifier("safclient") private val webClient: WebClient
+    @Qualifier("safWebClient") private val webClient: WebClient
 ) : HentDokument {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -40,19 +37,17 @@ class HentDokumentConsumer(
         journalpostId: String,
         dokumentInfoId: String,
         variantFormat: String,
-        token: String
     ): HentDokumentResponseTo {
-        val httpHeaders = HttpHeadersUtil.createAuthHeaderFromToken(token)
         log.info(
             "Henter dokument fra saf journalpostId={}, dokumentInfoId={}, variantFormat={}",
             journalpostId,
             dokumentInfoId,
             variantFormat
         )
+
         val dokument = webClient
             .method(HttpMethod.GET)
             .uri("$hentDokumentUrl/$journalpostId/$dokumentInfoId/$variantFormat")
-            .headers(getHttpHeadersAsConsumer(httpHeaders))
             .header("Nav-Callid", MDC.get(MDC_CALL_ID))
             .header("Nav-Consumer-Id", "srvtilbakemeldings")
             .retrieve()
@@ -78,10 +73,6 @@ class HentDokumentConsumer(
         }
     }
 
-    private fun getHttpHeadersAsConsumer(httpHeaders: HttpHeaders): Consumer<HttpHeaders> {
-        return Consumer { consumer: HttpHeaders -> consumer.addAll(httpHeaders) }
-    }
-
     private fun handleError(error: Throwable, serviceName: String) {
         if (error is WebClientResponseException) {
             val statusCode: HttpStatusCode = error.statusCode
@@ -104,5 +95,4 @@ class HentDokumentConsumer(
             throw ServerErrorException(errorMessage, error, ErrorCode.SAF_ERROR)
         }
     }
-
 }

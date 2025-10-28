@@ -4,12 +4,13 @@ import com.microsoft.graph.models.Message
 import no.nav.tilbakemeldingsmottak.ApplicationTest
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
-import org.springframework.boot.test.mock.mockito.SpyBean
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean
 
 internal class AADMailClientImplTest : ApplicationTest() {
 
-    @SpyBean
+    @MockitoSpyBean
     private lateinit var mailClient: AADMailClientImplLocal
+
 
     @Test
     fun `should retry send mail and recover`() {

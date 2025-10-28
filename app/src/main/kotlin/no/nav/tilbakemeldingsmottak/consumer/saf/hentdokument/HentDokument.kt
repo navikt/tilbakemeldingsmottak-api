@@ -5,6 +5,5 @@ interface HentDokument {
         journalpostId: String,
         dokumentInfoId: String,
         variantFormat: String,
-        token: String
     ): HentDokumentResponseTo
 }

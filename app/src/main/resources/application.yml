@@ -3,10 +3,17 @@ server:
   tomcat:
     use-relative-redirects: true
 
+#spring:
+#  cache:
+#    type: simple
+#  aop:
+#    auto: true
+#    proxy-target-class: false
+
 management:
   endpoint:
     prometheus:
-      enabled: true
+      access: unrestricted
   endpoints:
     enabled-by-default: false
     web:

@@ -29,6 +29,66 @@ spring:
   transaction:
     default-timeout: 300s
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Spring Boot does not support auto-configuration with multiple issuers directly. Configured manually, see bean securityFilterChain.
+      client:
+        registration:
+          pdl:
+            client-id: ${AZURE_APP_CLIENT_ID}
+            client-secret: ${AZURE_APP_CLIENT_SECRET}
+            provider: azuread
+            authorization-grant-type: client_credentials
+            scope: ${PDL_SCOPE}
+          arkiv:
+            client-id: ${AZURE_APP_CLIENT_ID}
+            client-secret: ${AZURE_APP_CLIENT_SECRET}
+            provider: azuread
+            authorization-grant-type: client_credentials
+            scope:  ${DOKARKIV_SCOPE}
+          oppgave:
+            client-id: ${AZURE_APP_CLIENT_ID}
+            client-secret: ${AZURE_APP_CLIENT_SECRET}
+            provider: azuread
+            authorization-grant-type: client_credentials
+            scope: ${OPPGAVE_SCOPE}
+          oppgave-obo:
+            client-id: ${AZURE_APP_CLIENT_ID}
+            client-secret: ${AZURE_APP_CLIENT_SECRET}
+            provider: azuread
+            authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+            client-authentication-method: client_secret_post
+            scope: ${OPPGAVE_SCOPE}
+          saf-obo:
+            client-id: ${AZURE_APP_CLIENT_ID}
+            client-secret: ${AZURE_APP_CLIENT_SECRET}
+            provider: azuread
+            authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+            client-authentication-method: client_secret_post
+            scope: ${SAF_SCOPE}
+
+        provider:
+          azuread:
+            token-uri: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
+            issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+          tokenx:
+            token-uri: ${TOKEN_X_TOKEN_ENDPOINT}
+            issuer-uri: ${TOKEN_X_ISSUER}
+
+auth:
+  issuers:
+    azuread:
+      token-uri: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
+      issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
+      jwk-set-uri: ${AZURE_OPENID_CONFIG_JWKS_URI}
+      audiences: ${AZURE_APP_CLIENT_ID}
+    tokenx:
+      issuer-uri: ${TOKEN_X_ISSUER}
+      jwk-set-uri: ${TOKEN_X_JWKS_URI}
+
+
 hentdokument:
   url: ${SAF_HENTDOKUMENT_URL}
 
@@ -63,49 +123,3 @@ cron:
     deleteServiceKlagerScheduled: "0 0 0 * * *" # midnight every day
     deleteBigQueryServiceKlagerOlderThan: 7 # days
     deleteServiceKlagerOlderThan: 90 # days (3 months)
-
-no.nav.security.jwt:
-  client:
-    registration:
-      arkiv:
-        token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
-        grant-type: client_credentials
-        scope: ${DOKARKIV_SCOPE}
-        authentication:
-          client-id: ${AZURE_APP_CLIENT_ID}
-          client-secret: ${AZURE_APP_CLIENT_SECRET}
-          client-auth-method: client_secret_basic
-
-      saf-maskintilmaskin:
-        token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
-        grant-type: client_credentials
-        scope: ${SAF_SCOPE}
-        authentication:
-          client-id: ${AZURE_APP_CLIENT_ID}
-          client-jwk: ${AZURE_APP_JWK}
-          client-auth-method: private_key_jwt
-
-      oppgave:
-        token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
-        grant-type: client_credentials
-        scope: ${OPPGAVE_SCOPE}
-        authentication:
-          client-id: ${AZURE_APP_CLIENT_ID}
-          client-jwk: ${AZURE_APP_JWK}
-          client-auth-method: private_key_jwt
-      pdl:
-        token-endpoint-url: ${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}
-        grant-type: client_credentials
-        scope: ${PDL_SCOPE}
-        authentication:
-          client-id: ${AZURE_APP_CLIENT_ID}
-          client-secret: ${AZURE_APP_CLIENT_SECRET}
-          client-auth-method: client_secret_basic
-
-  issuer:
-    azuread:
-      accepted-audience: ${AZURE_APP_CLIENT_ID}
-      discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
-    tokenx:
-      discoveryurl: ${TOKEN_X_WELL_KNOWN_URL}
-      accepted_audience: ${TOKEN_X_CLIENT_ID}
