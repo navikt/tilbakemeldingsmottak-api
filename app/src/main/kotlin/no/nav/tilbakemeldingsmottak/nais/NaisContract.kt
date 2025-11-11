@@ -2,7 +2,6 @@ package no.nav.tilbakemeldingsmottak.nais
 
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
-import no.nav.security.token.support.core.api.Unprotected
 import no.nav.tilbakemeldingsmottak.api.HealthApi
 import no.nav.tilbakemeldingsmottak.model.ApplicationStatus
 import no.nav.tilbakemeldingsmottak.model.ApplicationStatusType
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.concurrent.atomic.AtomicInteger
 
 @RestController
-@Unprotected
 class NaisContract(
     registry: MeterRegistry,
     @Value("\${APP_NAME:tilbakemeldingsmottak}") private val appName: String,

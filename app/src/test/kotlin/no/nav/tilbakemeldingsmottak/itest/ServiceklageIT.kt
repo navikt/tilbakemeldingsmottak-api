@@ -1,7 +1,5 @@
 package no.nav.tilbakemeldingsmottak.itest
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.github.tomakehurst.wiremock.client.WireMock
 import io.micrometer.core.instrument.search.MeterNotFoundException
 import no.nav.tilbakemeldingsmottak.ApplicationTest
@@ -20,11 +18,9 @@ import no.nav.tilbakemeldingsmottak.domain.models.Serviceklage
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST
 import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest
-import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageResponse
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageKlagetype.*
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.*
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
-import no.nav.tilbakemeldingsmottak.rest.common.domain.ErrorResponse
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETSNR_1
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETSNR_2
 import no.nav.tilbakemeldingsmottak.util.builders.InnmelderBuilder
@@ -34,22 +30,21 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito.`when`
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.test.context.transaction.TestTransaction
+import tools.jackson.module.kotlin.jacksonObjectMapper
+
 
 internal class ServiceklageIT : ApplicationTest() {
-    private val objectMapper = ObjectMapper().registerKotlinModule()
-    private val SAKSBEHANDLER = "Saksbehandler"
+    private val objectMapper = jacksonObjectMapper()
+
     private val ORGANISASJONSNUMMER = "243602076"
     private val KLAGETEKST = "Dette er en klage"
     private val PAAVEGNEAV_PERSONNUMMER = "28898698736"
-    private val URL_SENDINN_SERVICEKLAGE = "/rest/serviceklage"
-    private val URL_BEHANDLE_SERVICEKLAGE = "/rest/taskserviceklage"
-    private val KLASSIFISER = "klassifiser"
-    private val HENT_DOKUMENT = "hentdokument"
     private val JOURNALPOST_ID = "12345"
     private val OPPGAVE_ID = "1234567"
     private val GJELDER = "Gjelder én ytelse eller tjeneste"
@@ -63,6 +58,13 @@ internal class ServiceklageIT : ApplicationTest() {
     private val TILTAK = "Gi bedre service"
     private val INNSENDER_ANSWER = "Bruker selv som privatperson"
     private val BEHANDLES_SOM_SERVICEKLAGE_ANSWER = "Ja"
+
+    @Value("\${auth.issuers.azuread.issuer-uri}")
+    lateinit var azureIssuer: String
+
+    @Value("\${auth.issuers.tokenx.issuer-uri}")
+    lateinit var tokenxIssuer: String
+
 
     private fun assertBasicServiceklageFields(serviceklage: Serviceklage) {
         assertNotNull(serviceklage.serviceklageId)
@@ -81,6 +83,10 @@ internal class ServiceklageIT : ApplicationTest() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val personnummer = msg.innmelder!!.personnummer!!
+        val mockJwt = createMockJwt(tokenxIssuer, personnummer)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
 
         val requestEntity = HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, personnummer, true))
         val response = api?.createServiceklage(requestEntity)
@@ -113,6 +119,10 @@ internal class ServiceklageIT : ApplicationTest() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val personnummer = msg.innmelder!!.personnummer!!
+        val mockJwt = createMockJwt(tokenxIssuer)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
 
         // When
         val requestEntity = HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, personnummer, false))
@@ -140,6 +150,11 @@ internal class ServiceklageIT : ApplicationTest() {
     fun `Should return correct data when acting on behalf of another person`() {
         // Given
         val request: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPersonPaaVegneAv().build()
+        val mockJwt = createMockJwt(tokenxIssuer, request.innmelder!!.personnummer!!)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+
         val requestEntity =
             HttpEntity(request, createHeaders(Constants.TOKENX_ISSUER, request.innmelder!!.personnummer!!, true))
 
@@ -162,6 +177,11 @@ internal class ServiceklageIT : ApplicationTest() {
     @Test
     fun `Should return correct data when acting on behalf of a company`() {
         val request: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().asBedrift().build()
+        val mockJwt = createMockJwt(tokenxIssuer)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+
         val requestEntity = HttpEntity(request, createHeaders())
         val response = api?.createServiceklage(requestEntity)
 
@@ -184,6 +204,10 @@ internal class ServiceklageIT : ApplicationTest() {
             .build(innmelder = InnmelderBuilder().build(telefonnummer = "12345678"), oenskerAaKontaktes = true)
         val requestEntity =
             HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, request.innmelder!!.personnummer!!, true))
+        val mockJwt = createMockJwt(tokenxIssuer, request.innmelder!!.personnummer!!)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
 
         // When
         val response = api?.createServiceklage(requestEntity)
@@ -210,6 +234,10 @@ internal class ServiceklageIT : ApplicationTest() {
                 innmelder = InnmelderBuilder().build(harFullmakt = false, rolle = "Advokat")
             )
         val requestEntity = HttpEntity(request, createHeaders())
+        val mockJwt = createMockJwt(tokenxIssuer)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
 
         // When
         val response = api?.createServiceklage(requestEntity)
@@ -235,7 +263,11 @@ internal class ServiceklageIT : ApplicationTest() {
             .build(klagetyper = listOf(BREV, TELEFON))
 
         val requestEntity =
-            HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, request.innmelder!!.personnummer!!, true))
+            HttpEntity(request, createHeaders(Constants.TOKENX_ISSUER, request.innmelder!!.personnummer!!, true))
+        val mockJwt = createMockJwt(tokenxIssuer, request.innmelder!!.personnummer!!)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
 
         // When
         val response = api?.createServiceklage(requestEntity)
@@ -269,7 +301,11 @@ internal class ServiceklageIT : ApplicationTest() {
         val request = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
 
         val requestEntity =
-            HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, request.innmelder!!.personnummer!!))
+            HttpEntity(request, createHeaders(Constants.TOKENX_ISSUER, request.innmelder!!.personnummer!!))
+        val mockJwt = createMockJwt(tokenxIssuer, request.innmelder!!.personnummer!!)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
 
         // When
         val response = api?.createServiceklage(requestEntity)
@@ -288,7 +324,11 @@ internal class ServiceklageIT : ApplicationTest() {
         val request = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
 
         val requestEntity =
-            HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, request.innmelder!!.personnummer!!))
+            HttpEntity(request, createHeaders(Constants.TOKENX_ISSUER, request.innmelder!!.personnummer!!))
+        val mockJwt = createMockJwt(tokenxIssuer, request.innmelder!!.personnummer!!)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
 
         // When
         val response = api?.createServiceklage(requestEntity)
@@ -304,10 +344,15 @@ internal class ServiceklageIT : ApplicationTest() {
         val request = OpprettServiceklageRequestBuilder().asPrivatPerson()
             .build(klagetekst = RandomStringUtils.randomAlphabetic(50000))
         val requestEntity =
-            HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, request.innmelder!!.personnummer!!))
+            HttpEntity(request, createHeaders(Constants.TOKENX_ISSUER, request.innmelder!!.personnummer!!))
+
+        val tokenxMockJwt = createMockJwt(tokenxIssuer)
+
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(tokenxMockJwt)
+
 
         // When
-        val response = api?.createServiceklage(requestEntity)
+        val response = api?.createServiceklageServerError(requestEntity)
 
         // Then
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response?.statusCode)
@@ -318,7 +363,14 @@ internal class ServiceklageIT : ApplicationTest() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val requestEntityOpprett =
-            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!, false))
+            HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, msg.innmelder!!.personnummer!!, false))
+
+        val azureMockJwt = createMockJwt(azureIssuer, SAKSBEHANDLER)
+        val tokenxMockJwt = createMockJwt(tokenxIssuer)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(azureMockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(tokenxMockJwt)
+
         api?.createServiceklage(requestEntityOpprett)
 
         assertEquals(serviceklageRepository!!.count(), 1)
@@ -368,7 +420,13 @@ internal class ServiceklageIT : ApplicationTest() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val requestEntityOpprett =
-            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!))
+            HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, msg.innmelder!!.personnummer!!))
+
+        val azureMockJwt = createMockJwt(azureIssuer, SAKSBEHANDLER)
+        val tokenxMockJwt = createMockJwt(tokenxIssuer, msg.innmelder!!.personnummer!!)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(azureMockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(tokenxMockJwt)
         val opprettServiceklageResponse = api?.createServiceklage(requestEntityOpprett)
 
         val serviceklage = serviceklageRepository!!.findByJournalpostId(
@@ -405,13 +463,13 @@ internal class ServiceklageIT : ApplicationTest() {
             request,
             createHeaders(Constants.AZURE_ISSUER, request.INNSENDER!!, "serviceklage-klassifisering")
         )
-        val response = restTemplate!!.exchange(
-            "$URL_BEHANDLE_SERVICEKLAGE/$KLASSIFISER?oppgaveId=$OPPGAVE_ID",
-            HttpMethod.PUT,
-            requestEntity,
-            KlassifiserServiceklageResponse::class.java
-        )
-        assertEquals(HttpStatus.OK, response.statusCode)
+
+        val azureMockJwt = createMockJwt(azureIssuer, SAKSBEHANDLER)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(azureMockJwt)
+
+        val response = api?.classifyServiceklage(requestEntity, OPPGAVE_ID)
+        assertEquals(HttpStatus.OK, response?.statusCode)
         val serviceklage = serviceklageRepository!!.findAll().iterator().next()
 
         assertBasicServiceklageFields(serviceklage)
@@ -437,16 +495,22 @@ internal class ServiceklageIT : ApplicationTest() {
     fun `Should return correct data when getting schema`() {
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val requestEntityOpprett =
-            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!))
+            HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, msg.innmelder!!.personnummer!!))
+
+        val azureMockJwt = createMockJwt(azureIssuer, SAKSBEHANDLER)
+        val tokenxMockJwt = createMockJwt(azureIssuer, msg.innmelder!!.personnummer!!)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(azureMockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(tokenxMockJwt)
         api?.createServiceklage(requestEntityOpprett)
 
         assertEquals(1, serviceklageRepository!!.count())
         val fremmetDato = serviceklageRepository!!.findAll().iterator().next().fremmetDato.toString()
 
-        val requestEntity =
-            HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
-
-        val response = api?.getSkjema(requestEntity, JOURNALPOST_ID)
+        val response = api?.getSkjema(
+            createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"),
+            JOURNALPOST_ID
+        )
         assertEquals(HttpStatus.OK, response?.statusCode)
         TestTransaction.flagForCommit()
         TestTransaction.end()
@@ -480,16 +544,23 @@ internal class ServiceklageIT : ApplicationTest() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val requestEntityOpprett =
-            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!))
+            HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, msg.innmelder!!.personnummer!!))
+
+        val azureMockJwt = createMockJwt(azureIssuer, SAKSBEHANDLER)
+        val tokenxMockJwt = createMockJwt(tokenxIssuer, msg.innmelder!!.personnummer!!)
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(azureMockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(tokenxMockJwt)
+
         val opprettResponse = api?.createServiceklage(requestEntityOpprett)
 
         assertEquals(serviceklageRepository!!.count(), 1)
         assertNotNull(opprettResponse?.body)
-        val requestEntity =
-            HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
 
         // When
-        val response = api?.getDocument(requestEntity, opprettResponse?.body!!.oppgaveId!!)
+        val response = api?.getDocument(
+            headers = createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"),
+            oppgaveId = opprettResponse?.body!!.oppgaveId!!
+        )
 
         // Then
         assertEquals(HttpStatus.OK, response?.statusCode)
@@ -500,14 +571,20 @@ internal class ServiceklageIT : ApplicationTest() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val opprettRequestEntity =
-            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!))
+            HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, msg.innmelder!!.personnummer!!))
+
+        val azureMockJwt = createMockJwt(azureIssuer, SAKSBEHANDLER)
+        val tokenxMockJwt = createMockJwt(tokenxIssuer, msg.innmelder!!.personnummer!!)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(azureMockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(tokenxMockJwt)
         api?.createServiceklage(opprettRequestEntity)
 
-        val requestEntity =
-            HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"))
-
         // When
-        val response = api?.getDocument(requestEntity, "99")
+        val response = api?.getDocument(
+            headers = createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"),
+            oppgaveId = "99"
+        )
 
         // Then
         assertEquals(HttpStatus.NO_CONTENT, response?.statusCode)
@@ -517,17 +594,22 @@ internal class ServiceklageIT : ApplicationTest() {
     fun `Should return 404 when ereg is not found`() {
         // Given
         val request = OpprettServiceklageRequestBuilder().asBedrift().build()
-        val requestEntity = HttpEntity<Any>(request, createHeaders())
+        val requestEntity = HttpEntity(request, createHeaders())
         WireMock.setScenarioState("opprett_serviceklage", "ereg_404")
 
+        val azureMockJwt = createMockJwt(azureIssuer, SAKSBEHANDLER)
+        val tokenxMockJwt = createMockJwt(tokenxIssuer)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(azureMockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(tokenxMockJwt)
+
         // When
-        val response =
-            restTemplate!!.exchange(URL_SENDINN_SERVICEKLAGE, HttpMethod.POST, requestEntity, ErrorResponse::class.java)
+        val response = api?.createServiceklageError(requestEntity)
 
         // Then
-        assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
-        assertNotNull(response.body)
-        assertNotNull(response.body!!.errorCode)
+        assertEquals(HttpStatus.NOT_FOUND, response?.statusCode)
+        assertNotNull(response?.body)
+        assertNotNull(response?.body!!.errorCode)
         assertEquals(ErrorCode.EREG_NOT_FOUND.value, response.body!!.errorCode)
     }
 
@@ -538,16 +620,20 @@ internal class ServiceklageIT : ApplicationTest() {
         val requestEntityOpprett =
             HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, msg.innmelder!!.personnummer!!))
 
+        val azureMockJwt = createMockJwt(azureIssuer, SAKSBEHANDLER)
+        val tokenxMockJwt = createMockJwt(tokenxIssuer, msg.innmelder!!.personnummer!!)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(azureMockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(tokenxMockJwt)
+
         val opprettResponse = api?.createServiceklage(requestEntityOpprett)
 
         WireMock.setScenarioState("hent_dokument", "saf_403")
 
         // When
-        val response: ResponseEntity<ErrorResponse>? = restTemplate!!.exchange(
-            URL_BEHANDLE_SERVICEKLAGE + "/" + HENT_DOKUMENT + "/" + opprettResponse?.body!!.oppgaveId,
-            HttpMethod.GET,
-            HttpEntity<Any?>(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering")),
-            ErrorResponse::class.java
+        val response = api?.getDocumentError(
+            createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering"),
+            opprettResponse?.body!!.oppgaveId!!
         )
 
         // Then
@@ -565,6 +651,10 @@ internal class ServiceklageIT : ApplicationTest() {
 
         val requestEntity = HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, personnummer, true))
 
+        val tokenxMockJwt = createMockJwt(tokenxIssuer, msg.innmelder!!.personnummer!!)
+
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(tokenxMockJwt)
+
         // When
         val response = api?.createServiceklage(requestEntity)
 
@@ -580,7 +670,13 @@ internal class ServiceklageIT : ApplicationTest() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
         val requestEntityOpprett =
-            HttpEntity(msg, createHeaders(Constants.AZURE_ISSUER, msg.innmelder!!.personnummer!!))
+            HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, msg.innmelder!!.personnummer!!))
+        val azureMockJwt = createMockJwt(azureIssuer, SAKSBEHANDLER)
+        val tokenxMockJwt = createMockJwt(tokenxIssuer, msg.innmelder!!.personnummer!!)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(azureMockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(tokenxMockJwt)
+
         val opprettResponse = api?.createServiceklage(requestEntityOpprett)
 
         val fremmetDato = serviceklageRepository!!.findAll().iterator().next().fremmetDato.toString()

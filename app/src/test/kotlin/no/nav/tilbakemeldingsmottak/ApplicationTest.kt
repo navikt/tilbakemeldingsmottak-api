@@ -10,7 +10,9 @@ import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import no.nav.security.token.support.spring.test.MockLoginController
 import no.nav.tilbakemeldingsmottak.TestUtils.createNorg2Response
 import no.nav.tilbakemeldingsmottak.TestUtils.createSafGraphqlResponse
+import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery
 import no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER
+import no.nav.tilbakemeldingsmottak.config.TokenExchangeService
 import no.nav.tilbakemeldingsmottak.repository.HendelseRepository
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
 import no.nav.tilbakemeldingsmottak.util.Api
@@ -23,25 +25,33 @@ import org.springframework.boot.test.autoconfigure.data.ldap.AutoConfigureDataLd
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.security.oauth2.jwt.JwtDecoder
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.transaction.TestTransaction
+import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.context.WebApplicationContext
+import org.springframework.test.web.servlet.MockMvc
+import java.time.Instant
 import java.util.*
 
 @ActiveProfiles("itest")
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = ["spring.main.allow-bean-definition-overriding=true"],
-    classes = [Application::class]
+    classes = [Application::class],
 )
+//@EnableAutoConfiguration
 @ExtendWith(
     SpringExtension::class
 )
@@ -52,15 +62,33 @@ import java.util.*
 @Transactional
 @EnableMockOAuth2Server(port = 1888)
 @AutoConfigureWireMock(port = 5490)
+@AutoConfigureMockMvc
 class ApplicationTest {
+
+    @Autowired
+    lateinit var mockMvc: MockMvc
+
+    // SecurityMockMvcRequestPostProcessors
+
+    // Vi mocker ut de konkrete JwtDecoder-bønnene som er definert i SecurityConfig.
+    // Dette er nøkkelen til å omgå den eksterne JWKS-valideringen i tester.
+    @MockitoBean
+    protected lateinit var azureJwtDecoder: JwtDecoder
+
+    @MockitoBean
+    protected lateinit var tokenxJwtDecoder: JwtDecoder
+
     @Autowired
     protected var serviceklageRepository: ServiceklageRepository? = null
+
+    @MockitoBean
+    private lateinit var serviceklagerBigQuery: ServiceklagerBigQuery
 
     @Autowired
     protected var hendelseRepository: HendelseRepository? = null
 
     @Autowired
-    protected var restTemplate: TestRestTemplate? = null
+    protected var restTemplate: WebTestClient? = null
 
     @Autowired
     lateinit var mockOAuth2Server: MockOAuth2Server
@@ -71,16 +99,25 @@ class ApplicationTest {
     @Autowired
     lateinit var metricsRegistery: MeterRegistry
 
+    @Autowired
+    protected lateinit var tokenExchangeService: TokenExchangeService
+
+    @Autowired
+    protected lateinit var clientRegistrationRepository: ClientRegistrationRepository
+
     @Value("\${local.server.port}")
-    private val serverPort = 0
+    protected val serverPort = 5490
 
     private val INNLOGGET_BRUKER = "14117119611"
     private val AUD = "aud-localhost"
 
     var api: Api? = null
 
+    protected val SAKSBEHANDLER = "Saksbehandler"
+
     @BeforeEach
     fun setup() {
+
         api = Api(restTemplate!!)
         hendelseRepository!!.deleteAll()
         serviceklageRepository!!.deleteAll()
@@ -174,6 +211,8 @@ class ApplicationTest {
                     WireMock.aResponse().withStatus(HttpStatus.OK.value())
                         .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
                         .withBody(createSafGraphqlResponse())
+                    //.withBodyFile("saf/hentJournalpostResponse.json")
+
                 )
         )
         WireMock.stubFor(
@@ -193,6 +232,24 @@ class ApplicationTest {
                         .withBody("{}")
                 )
         )
+        WireMock.stubFor(
+            WireMock.post(WireMock.urlEqualTo("/fake/token"))
+                .willReturn(
+                    WireMock.aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                            """
+                        {
+                          "access_token": "mocked-obo-access-token",
+                          "token_type": "Bearer",
+                          "expires_in": 3600
+                        }
+                        """.trimIndent()
+                        )
+                )
+        )
+
         metricsRegistery.clear()
     }
 
@@ -200,6 +257,37 @@ class ApplicationTest {
     fun tearDown() {
         WireMock.reset()
         WireMock.resetAllScenarios()
+    }
+
+    // Hjelpemetode for å lage et gyldig mock JWT-objekt for testing.
+    fun createMockJwt(issuer: String, subject: String = INNLOGGET_BRUKER, scope: String): Jwt {
+        return Jwt.withTokenValue("mock-token")
+            .header("alg", "none")
+            .claim("iss", issuer)
+            .claim("aud", AUD)
+            .claim("sub", subject)
+            .claim("pid", subject)
+            .claim("scp", scope)
+            .build()
+        // ha med claims: mapOf("acr" to "Level4")
+    }
+
+    fun createMockJwt(issuer: String, subject: String = INNLOGGET_BRUKER): Jwt {
+        return Jwt.withTokenValue("mock-token")
+            .header("alg", "none")
+            .claim("iss", issuer)
+            .claim("aud", AUD)
+            .claim("sub", subject)
+            .claim("pid", subject)
+            .build()
+    }
+
+    fun createMockJwt(issuer: String): Jwt {
+        return Jwt.withTokenValue("mock-token")
+            .header("alg", "none")
+            .claim("iss", issuer)
+            .claim("aud", AUD)
+            .build()
     }
 
     fun createHeaders(): HttpHeaders {

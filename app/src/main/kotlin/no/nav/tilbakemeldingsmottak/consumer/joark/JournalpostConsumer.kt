@@ -18,7 +18,6 @@ import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
-import org.springframework.web.reactive.function.BodyInserters
 
 @Component
 class JournalpostConsumer(

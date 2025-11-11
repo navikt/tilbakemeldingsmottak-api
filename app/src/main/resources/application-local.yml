@@ -19,6 +19,57 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     url: jdbc:postgresql://localhost:5430/postgres?user=postgres&password=postgres
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Spring Boot does not support auto-configuration with multiple issuers directly. Need to configure manually.
+      client:
+        registration:
+          pdl:
+            client-id: fake
+            client-secret: someSecret
+            provider: azuread
+            authorization-grant-type: client_credentials
+            scope: scope
+          arkiv:
+            client-id: fake
+            client-secret: someSecret
+            provider: azuread
+            authorization-grant-type: client_credentials
+            scope: scope
+          oppgave:
+            client-id: fake
+            client-secret: someSecret
+            provider: azuread
+            authorization-grant-type: client_credentials
+            scope: scope
+          oppgave-obo:
+            client-id: fake
+            client-secret: someSecret
+            provider: azuread
+            authorization-grant-type: client_credentials
+            scope: scope
+          saf-obo:
+            client-id: fake
+            client-secret: someSecret
+            provider: azuread
+            authorization-grant-type: client_credentials
+            scope: scope
+
+        provider:
+          azuread:
+            token-uri: http://localhost:6969/fake/token
+
+auth:
+  issuers:
+    azuread:
+      issuer-uri: http://localhost:6969/azuread
+      jwk-set-uri: http://localhost:6969/azuread/.well-known/openid-configuration
+    tokenx:
+      issuer-uri: http://localhost:6969/tokenx
+      jwk-set-uri: http://localhost:6969/tokenx/.well-known/openid-configuration
+
 
 norg2:
   api:
@@ -73,51 +124,3 @@ cron:
     deleteServiceKlagerScheduled: "0 0 0 * * *" # midnight every day
     deleteBigQueryServiceKlagerOlderThan: 7 # days
     deleteServiceKlagerOlderThan: 90 # days (3 months)
-
-no.nav.security:
-  jwt:
-    client:
-      registration:
-        arkiv:
-          token-endpoint-url: http://localhost:6969/fake/token
-          grant-type: client_credentials
-          scope: ${DOKARKIV_SCOPE}
-          authentication:
-            client-id: fake
-            client-secret: someSecret
-            client-auth-method: client_secret_basic
-
-        saf-maskintilmaskin:
-          token-endpoint-url: http://localhost:6969/fake/token
-          grant-type: client_credentials
-          scope: ${SAF_SCOPE}
-          authentication:
-            client-id: fake
-            client-secret: someSecret
-            client-auth-method: client_secret_basic
-
-        oppgave:
-          token-endpoint-url: http://localhost:6969/fake/token
-          grant-type: client_credentials
-          scope: ${OPPGAVE_SCOPE}
-          authentication:
-            client-id: fake
-            client-secret: someSecret
-            client-auth-method: client_secret_basic
-
-        pdl:
-          token-endpoint-url: http://localhost:6969/fake/token
-          grant-type: client_credentials
-          scope: ${PDL_SCOPE}
-          authentication:
-            client-id: fake
-            client-secret: someSecret
-            client-auth-method: client_secret_basic
-
-    issuer:
-      azuread:
-        discovery-url: http://localhost:6969/azuread/.well-known/openid-configuration
-        accepted-audience: azuread-client-id
-      tokenx:
-        discovery-url: http://localhost:6969/tokenx/.well-known/openid-configuration
-        accepted-audience: tokenx-client-id
