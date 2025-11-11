@@ -1,11 +1,33 @@
 Tilbakemeldingsmottak
 ================
 
-Tilbakemeldingsmottak / Serviceklage er en backend applikasjon for mottak og behandling av serviceklager, samt ris/ros.
-Applikasjonen har skjema som sendes inn
-via [tilbakemeldinger](https://www.nav.no/person/kontakt-oss/nb/tilbakemeldinger/)  
-Serviceklager omgjøres til en pdf og det opprettes en kontrolloppgave som følges opp av ansvarlig enhet. Ris/ros sendes
-videre på mail til den ansvarlige.
+Tilbakemeldingsmottak / Serviceklage er en backend applikasjon
+for [tilbakemeldinger](https://www.nav.no/person/kontakt-oss/nb/tilbakemeldinger/) for mottak fra eksterne brukere av:
+
+* serviceklager og midlertidig lagring i lokal Postgres database. Konvertering av klagen til PDF. Validering av klagen
+  ved oppslag mot PDL og Ereg. Arkivering i Joark og oppretting av Oppgave til Gosys, samt videresending av klage til
+  Datavarehus via BigQuery
+* melding om feil og mangler hos NAV og videresending av melding på epost via AzureGraphService
+* Ros til Nav. Disse videresendes på epost via AzureGraphService
+
+I tillegg er den backend for applikasjonen samisk-samtale-bestilling for mottak fra eksterne brukere av:
+
+* bestilling av samtale på samisk. Disse videresendes på epost via AzureGraphService
+
+I tillegg er den en backend for applikasjonen tilbakemeldinger-frontend for saksbehandlere for:
+
+* klassifisering av serviceklager. Gitt oppgaveid hentes serviceklage data fra Joark via SAF. Bruker Norg for register
+  data. Klassifisering lagres midlertidig i lokal Postgres database og videresendes Datavarehus via BigQuery
+
+Applikasjonens omgivelser er vist i figuren nedenfor.
+
+![alt text](tilbakemeldingsmottak-api.jpg)
+
+Applikasjonen er skrevet i kotlin med Spring Boot og maven for bygging.
+
+Merk at pr 1/11-2025 kjører applikasjonen i dev miljøet med en branch med Spring Boot 4.0.0-M3 der Spring Security er
+tatt i bruk.
+Denne versjonen er planlagt for produksjon når offisiel Spring Boot 4.0 blir sluppet.
 
 # Komme i gang
 
@@ -19,9 +41,11 @@ Applikasjonen kjører Java 21. Hvordan bygge, teste og kjøre koden:
 
 ### Autentisering
 
-Denne applikasjonen autentiseres med issuers `azuread` og `tokenx`. En mock auth server kjøres via docker-compose og kan
-brukes til å generere gyldige tokens lokalt.
-TokenX brukes til å skille mellom innlogget og uinlogget innsending av serviceklager.
+Denne applikasjonen forventer token fra issuers `azuread` eller `tokenx`.
+Tilbakemeldinger applikasjonen vil gjøre kall mot denne applikasjonen med tokenx dersom bruker er logget på via
+Id-porten, ellers vil den bruker AzureAd utstedt token.
+Tilbakemeldingsmottak-frontend applikasjonen vil gjøre kall mot denne applikasjonen med azuread på vegne av
+saksbehandler.
 
 - For tokenx (brukere som er innlogget og sender inn serviceklage):
     - Gå til `http://localhost:6969/tokenx/debugger` og velg "Get a token" med hva som helst i user objektet. Et `pid`
@@ -34,6 +58,7 @@ TokenX brukes til å skille mellom innlogget og uinlogget innsending av servicek
 
 ### Test i miljøet
 
+En mock auth server kjøres via docker-compose og kan brukes til å generere gyldige tokens lokalt.
 For å teste appliaksjonen er en avhengig av å ha:
 
 1. En test-ident for saksbehandler opprettet i [Ida](https://ida.nais.adeo.no/)
