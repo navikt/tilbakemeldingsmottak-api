@@ -29,7 +29,7 @@
         <maven.version>3.2.5</maven.version>
 
         <!-- NAV internal dependencies -->
-        <token-support.version>5.0.34</token-support.version>
+        <token-support.version>6.0.0</token-support.version>
         <mock-oauth2-server.version>2.2.1</mock-oauth2-server.version>
         <spring-core.version>6.2.9</spring-core.version>
         <caffeine.version>3.2.2</caffeine.version>
