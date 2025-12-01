@@ -50,7 +50,7 @@
         <jakarta-validation-api.version>3.1.1</jakarta-validation-api.version>
         <jakarta-annotation.version>3.0.0</jakarta-annotation.version>
 
-        <logstash-logback-encoder.version>8.1</logstash-logback-encoder.version>
+        <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
         <mockito-junit-jupiter.version>5.18.0</mockito-junit-jupiter.version>
         <resilience4j.version>2.0.2</resilience4j.version>
         <resilience4j-prometheus.version>1.7.1</resilience4j-prometheus.version>
