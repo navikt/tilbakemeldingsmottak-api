@@ -34,5 +34,4 @@ internal class FeilOgManglerIT : ApplicationTest() {
 
     }
 
-
 }

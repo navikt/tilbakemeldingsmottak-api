@@ -1,4 +1,4 @@
-Journalpost_v1_url: http://localhost:${wiremock.server.port}/OPPRETT_JOURNALPOST
+Journalpost_v1_url: journalpost.url
 email_from_address: srvtilbakemeldings@preprod.local
 email_nav_support_address: nav-support@preprod.local
 email_samisk_kontakt_address: samisk-kontakt@preprod.local
@@ -11,9 +11,9 @@ logging.level.com.fasterxml.jackson.databind: DEBUG
 
 ereg:
   api:
-    url: http://localhost:${wiremock.server.port}/ereg
+    url: eregUrl
 hentdokument:
-  url: http://localhost:${wiremock.server.port}/hentdokument
+  url: hentDokumentUrl
 management:
   metrics:
     export:
@@ -46,13 +46,13 @@ no.nav.security:
 norg2:
   api:
     v1:
-      url: http://localhost:${wiremock.server.port}/norg2
-oppgave_oppgaver_url: http://localhost:${wiremock.server.port}/OPPGAVE
+      url: norg2Url
+oppgave_oppgaver_url: oppgaveUrl
 saf:
   graphql:
-    url: http://localhost:${wiremock.server.port}/safgraphql
+    url: safUrl
 pdl:
-  url: http://localhost:${wiremock.server.port}/pdlgraphql
+  url: pflUrl
 graphql:
   endpoint:
     url: ${pdl.url}
@@ -81,25 +81,25 @@ spring:
       client:
         registration:
           pdl:
-            client-id: fake
+            client-id: "dev-gcp:teamserviceklage:tilbakemeldingsmottak-api"
             client-secret: someSecret
             provider: azuread
             authorization-grant-type: client_credentials
             scope: scope-pdl
           arkiv:
-            client-id: fake
+            client-id: "dev-gcp:teamserviceklage:tilbakemeldingsmottak-api"
             client-secret: someSecret
             provider: azuread
             authorization-grant-type: client_credentials
             scope: scope-arkiv
           oppgave:
-            client-id: fake
+            client-id: "dev-gcp:teamserviceklage:tilbakemeldingsmottak-api"
             client-secret: someSecret
             provider: azuread
             authorization-grant-type: client_credentials
             scope: scope-oppgave
           oppgave-obo:
-            client-id: fake
+            client-id: "dev-gcp:teamserviceklage:tilbakemeldingsmottak-api"
             client-secret: someSecret
             provider: azuread
             authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
@@ -115,7 +115,7 @@ spring:
 
         provider:
           azuread:
-            token-uri: http://localhost:5490/fake/token
+            token-uri: http://localhost:${wiremock.server.port}/fake/token
           tokenx:
             token-uri: http://localhost:${token.server.port}/fake/token
 

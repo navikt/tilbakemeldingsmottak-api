@@ -313,16 +313,36 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <version>${spring-boot.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-restclient-test</artifactId>
+            <version>${spring-boot.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-webmvc-test</artifactId>
+            <version>${spring-boot.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
+            <version>${spring-security-test.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-restclient</artifactId>
+            <version>${spring-boot.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-webtestclient</artifactId>
             <version>${spring-boot.version}</version>
             <scope>test</scope>
         </dependency>
@@ -338,21 +358,6 @@
             <version>4.0.2</version>
             <scope>test</scope>
         </dependency>
-        <!-- Security / Nav token support -->
-        <!--
-                <dependency>
-                    <groupId>no.nav.security</groupId>
-                    <artifactId>token-validation-spring</artifactId>
-                    <version>${token-support.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>no.nav.security</groupId>
-                    <artifactId>token-client-spring</artifactId>
-                    <version>${token-support.version}</version>
-                    <scope>test</scope>
-                </dependency>
-        -->
         <dependency>
             <groupId>no.nav.security</groupId>
             <artifactId>token-validation-spring-test</artifactId>
@@ -405,6 +410,24 @@
             <groupId>io.mockk</groupId>
             <artifactId>mockk-jvm</artifactId>
             <version>${mockk.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-core</artifactId>
+            <version>4.0.0-beta.19</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock.integrations</groupId>
+            <artifactId>wiremock-spring-boot-base</artifactId>
+            <version>4.0.8</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock.integrations</groupId>
+            <artifactId>wiremock-spring-boot-standalone</artifactId>
+            <version>4.0.8</version>
             <scope>test</scope>
         </dependency>
         <dependency>

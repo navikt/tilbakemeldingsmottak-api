@@ -1,9 +1,12 @@
 package no.nav.tilbakemeldingsmottak.itest
 
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension
 import io.micrometer.core.instrument.search.MeterNotFoundException
 import no.nav.tilbakemeldingsmottak.ApplicationTest
 import no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER
+import no.nav.tilbakemeldingsmottak.WireMockStubs
 import no.nav.tilbakemeldingsmottak.config.Constants
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.BRUKER_IKKE_BEDT_OM_SVAR_ANSWER
@@ -21,6 +24,7 @@ import no.nav.tilbakemeldingsmottak.model.KlassifiserServiceklageRequest
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageKlagetype.*
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklagePaaVegneAv.*
 import no.nav.tilbakemeldingsmottak.model.OpprettServiceklageRequest
+import no.nav.tilbakemeldingsmottak.util.Api
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETSNR_1
 import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETSNR_2
 import no.nav.tilbakemeldingsmottak.util.builders.InnmelderBuilder
@@ -28,13 +32,17 @@ import no.nav.tilbakemeldingsmottak.util.builders.KlassifiserServiceklageRequest
 import no.nav.tilbakemeldingsmottak.util.builders.OpprettServiceklageRequestBuilder
 import org.apache.commons.lang3.RandomStringUtils
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.RegisterExtension
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.context.transaction.TestTransaction
 import tools.jackson.module.kotlin.jacksonObjectMapper
 
@@ -64,6 +72,65 @@ internal class ServiceklageIT : ApplicationTest() {
 
     @Value("\${auth.issuers.tokenx.issuer-uri}")
     lateinit var tokenxIssuer: String
+
+
+    companion object {
+        @JvmField
+        @RegisterExtension
+        val wm: WireMockExtension = WireMockExtension.newInstance()
+            .configureStaticDsl(true)
+            .options(wireMockConfig().dynamicPort())
+            .build()
+
+        @JvmStatic
+        @DynamicPropertySource
+        fun properties(reg: DynamicPropertyRegistry) {
+            val base = "http://localhost:${wm.port}"
+
+            reg.add("spring.security.oauth2.client.provider.azuread.token-uri") { "$base/fake/token" }
+            reg.add("pdl.url") { "$base/pdlgraphql" }
+            reg.add("norg2.api.v1.url") { "$base/norg2" }
+            reg.add("ereg.api.url") { "$base/ereg" }
+            reg.add("oppgave_oppgaver_url") { "$base/OPPGAVE" }
+            reg.add("saf.graphql.url") { "$base/safgraphql" }
+            reg.add("hentdokument.url") { "$base/hentdokument/[0-9]*/[0-9]*/[0-9]*" }
+            reg.add("saf.graphql.hentjournalpost.url") { "$base/hentjournalpost/[0-9]*/[0-9]*" }
+            reg.add("saf.url") { "$base/safgraphql" }
+            reg.add("Journalpost_v1_url") { "$base/OPPRETT_JOURNALPOST" }
+            reg.add("graphql.endpoint.url") { "$base/pdlgraphql" }
+        }
+    }
+
+
+    @BeforeEach
+    fun setupMocks() {
+        WireMockStubs.stubTokenEndpoint()
+        WireMockStubs.stubForJoark()
+        WireMockStubs.stubForOpprettJournalpostFail()
+        WireMockStubs.stubForSafHentJournalpost()
+        WireMockStubs.stubForHentDokument()
+        WireMockStubs.stubForHentDokumentScenario()
+        WireMockStubs.stubPDL()
+        WireMockStubs.stubForPdlHentIdenter()
+        WireMockStubs.stubEreg()
+        WireMockStubs.stubForEregScenario()
+        WireMockStubs.stubForNorg2HenEnhet()
+        WireMockStubs.stubForOpprettOppgave()
+        WireMockStubs.stubForHentOppgave()
+        WireMockStubs.stubForEndreOppgave()
+        WireMockStubs.stubForHentOppgaveUtenJournalpost()
+        WireMockStubs.stubForHenteOppgaveIngenJournalpost()
+
+        api = Api(restTemplate!!)
+        hendelseRepository!!.deleteAll()
+        serviceklageRepository!!.deleteAll()
+        TestTransaction.flagForCommit()
+        TestTransaction.end()
+        TestTransaction.start()
+
+        metricsRegistery.clear()
+
+    }
 
 
     private fun assertBasicServiceklageFields(serviceklage: Serviceklage) {
@@ -293,11 +360,7 @@ internal class ServiceklageIT : ApplicationTest() {
     @Test
     fun `Should return OK even when creating a journalpost fails (reverts to sending email)`() {
         // Given
-        WireMock.stubFor(
-            WireMock.post(WireMock.urlPathMatching("/OPPRETT_JOURNALPOST/journalpost/")).willReturn(
-                WireMock.aResponse().withStatus(500)
-            )
-        )
+        WireMock.setScenarioState("opprett_journalpost", "opprett_journalpost_500")
         val request = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
 
         val requestEntity =

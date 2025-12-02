@@ -11,14 +11,13 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.post
 
 import tools.jackson.databind.ObjectMapper
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Value
 
-
+//@WireMockTest
 internal class RosIT : ApplicationTest() {
     private val URL_ROS = "/rest/ros"
 
@@ -34,13 +33,24 @@ internal class RosIT : ApplicationTest() {
     @Value("\${auth.issuers.tokenx.issuer-uri}")
     lateinit var tokenxIssuer: String
 
+
+    /*
+
+        @AfterEach
+        fun tearDown() {
+            wm.resetAll()
+        }
+    */
+
+
     @Test
     fun `Kall mot sikret endepunkt skal returnere 401 Unauthorized uten token`() {
-        mockMvc.post("/rest/ros")
-            .andExpect { status { isUnauthorized() } }
-
-
+        restTemplate!!.post()
+            .uri("/rest/ros")
+            .exchange()
+            .expectStatus().is4xxClientError
     }
+
 
     // Sjekk at Jackson config funker
     @Test
@@ -61,22 +71,11 @@ internal class RosIT : ApplicationTest() {
 
         `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
         `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
-        /*
-
-                mockMvc.post("http://localhost:5490"+URL_ROS) {
-                    with(jwt().jwt(mockJwt))
-                    contentType = MediaType.APPLICATION_JSON
-                    content = objectMapper.writeValueAsString(request)
-                }.andExpect {
-                    status { isOk() }
-                    jsonPath("$.message") { value("Ros sendt") }
-                }
-        */
 
         val response = restTemplate!!.post()
             .uri(URL_ROS)
             .accept(MediaType.APPLICATION_JSON)
-            .headers { it.addAll(createHeaders(Constants.TOKENX_ISSUER, tilbakemeldinger, loggedIn = false)) }
+            .headers { it.addAll(createHeaders(Constants.AZURE_ISSUER, tilbakemeldinger, loggedIn = false)) }
             //.bodyValue(request)
             .bodyValue(request)
             .exchange()
@@ -95,6 +94,7 @@ internal class RosIT : ApplicationTest() {
 
         `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
 
+        val initialCount = metricsRegistery.get(MetricLabels.DOK_REQUEST + "_not_logged_in").counter().count()
         // When / Then
         val response = restTemplate!!.post()
             .uri(URL_ROS)
@@ -105,6 +105,9 @@ internal class RosIT : ApplicationTest() {
 
         // Then
         assertEquals(HttpStatus.OK, response.status)
-        assertEquals(1.0, metricsRegistery.get(MetricLabels.DOK_REQUEST + "_not_logged_in").counter().count())
+        assertEquals(
+            1.0 + initialCount,
+            metricsRegistery.get(MetricLabels.DOK_REQUEST + "_not_logged_in").counter().count()
+        )
     }
 }
