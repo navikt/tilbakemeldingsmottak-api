@@ -38,6 +38,7 @@ class OpprettServiceklageValidator(
         isNotNull(request.paaVegneAv, "paaVegneAv")
         isNotNull(request.innmelder, "innmelder")
         hasText(request.klagetekst, "klagetekst")
+        maxSize(request.klagetekst, 10000, "klagetekst")
     }
 
     private fun validatePaaVegneAvPrivatperson(request: OpprettServiceklageRequest, paloggetBruker: String?) {

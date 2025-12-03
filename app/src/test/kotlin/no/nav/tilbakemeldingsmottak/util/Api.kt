@@ -82,6 +82,28 @@ class Api(val restTemplate: WebTestClient) {
             .body(result.responseBody)
     }
 
+
+    fun createServiceklageClientError(requestEntity: HttpEntity<OpprettServiceklageRequest>): ResponseEntity<ErrorResponse> {
+
+        val result = restTemplate
+            .mutate()
+            .responseTimeout(Duration.ofMinutes(2))
+            .build()
+            .post()
+            .uri(URL_SENDINN_SERVICEKLAGE)
+            .headers { it.addAll(requestEntity.headers) }
+            .bodyValue(requestEntity.body!!)
+            .exchange()
+            .expectStatus().is4xxClientError
+            .expectBody(ErrorResponse::class.java)
+            .returnResult()
+
+        return ResponseEntity
+            .status(result.status)
+            .headers(result.responseHeaders)
+            .body(result.responseBody)
+    }
+
     fun getDocument(headers: HttpHeaders, oppgaveId: String): ResponseEntity<HentDokumentResponse> {
         val result = restTemplate
             .mutate()
