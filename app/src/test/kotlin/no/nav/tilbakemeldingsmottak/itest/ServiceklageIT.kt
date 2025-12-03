@@ -104,6 +104,7 @@ internal class ServiceklageIT : ApplicationTest() {
 
     @BeforeEach
     fun setupMocks() {
+        wm.resetAll()
         WireMockStubs.stubTokenEndpoint()
         WireMockStubs.stubForJoark()
         WireMockStubs.stubForOpprettJournalpostFail()
