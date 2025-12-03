@@ -310,7 +310,7 @@ internal class ServiceklageIT : ApplicationTest() {
         val response = api?.createServiceklage(requestEntity)
 
         // Then
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response?.statusCode)
+        assertEquals(HttpStatus.BAD_REQUEST, response?.statusCode)
     }
 
     @Test

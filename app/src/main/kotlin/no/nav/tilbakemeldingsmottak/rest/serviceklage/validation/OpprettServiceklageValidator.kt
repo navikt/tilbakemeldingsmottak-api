@@ -38,14 +38,17 @@ class OpprettServiceklageValidator(
         isNotNull(request.paaVegneAv, "paaVegneAv")
         isNotNull(request.innmelder, "innmelder")
         hasText(request.klagetekst, "klagetekst")
+        maxSize(request.klagetekst, 10000, "klagetekst")
     }
 
     private fun validatePaaVegneAvPrivatperson(request: OpprettServiceklageRequest, paloggetBruker: String?) {
         hasText(request.innmelder?.navn, "innmelder.navn", " dersom paaVegneAv=PRIVATPERSON")
+        maxSize(request.innmelder?.navn, 100, "innmelder.navn")
         hasText(request.innmelder?.personnummer, "innmelder.personnummer", " dersom paaVegneAv=PRIVATPERSON")
         isNotNull(request.oenskerAaKontaktes, "oenskerAaKontaktes", " dersom paaVegneAv=PRIVATPERSON")
         if (request.oenskerAaKontaktes == true) {
             hasText(request.innmelder?.telefonnummer, "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true")
+            isLegalTelephoneNumber(request.innmelder?.telefonnummer, "innmelder.telefonnummer")
         }
         request.innmelder?.personnummer?.let { validateFnr(it) }
         validateRequestFnrMatchesTokenFnr(request.innmelder?.personnummer, paloggetBruker)
@@ -53,7 +56,9 @@ class OpprettServiceklageValidator(
 
     private fun validatePaaVegneAvAnnenPerson(request: OpprettServiceklageRequest) {
         hasText(request.innmelder?.navn, "innmelder.navn", " dersom paaVegneAv=ANNEN_PERSON")
+        maxSize(request.innmelder?.navn, 100, "innmelder.navn")
         hasText(request.innmelder?.rolle, "innmelder.rolle", " dersom paaVegneAv=ANNEN_PERSON")
+        maxSize(request.innmelder?.rolle, 100, "innmelder.rolle")
         isNotNull(request.innmelder?.harFullmakt, "innmelder.harFullmakt", " dersom paaVegneAv=ANNEN_PERSON")
         if (request.innmelder?.harFullmakt == false) {
             isNull(
@@ -64,9 +69,11 @@ class OpprettServiceklageValidator(
         }
         if (request.oenskerAaKontaktes != null && request.oenskerAaKontaktes == true) {
             hasText(request.innmelder?.telefonnummer, "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true")
+            isLegalTelephoneNumber(request.innmelder?.telefonnummer, "innmelder.telefonnummer")
         }
         isNotNull(request.paaVegneAvPerson, "paaVegneAvPerson", " dersom paaVegneAv=ANNEN_PERSON")
         hasText(request.paaVegneAvPerson?.navn, "paaVegneAvPerson.navn")
+        maxSize(request.paaVegneAvPerson?.navn, 100, "paaVegneAvPerson.navn")
         hasText(request.paaVegneAvPerson?.personnummer, "paaVegneAvPerson.personnummer")
         request.paaVegneAvPerson?.personnummer?.let { validateFnr(it) }
     }
@@ -74,6 +81,7 @@ class OpprettServiceklageValidator(
     private fun validatePaaVegneAvBedrift(request: OpprettServiceklageRequest) {
         isNotNull(request.paaVegneAvBedrift, "paaVegneAvBedrift", " dersom paaVegneAv=BEDRIFT")
         hasText(request.paaVegneAvBedrift?.navn, "paaVegneAvBedrift.navn")
+        maxSize(request.paaVegneAvBedrift?.navn, 250, "paaVegneAvBedrift.navn")
         hasText(request.paaVegneAvBedrift?.organisasjonsnummer, "paaVegneAvBedrift.organisasjonsnummer")
         isNotNull(request.oenskerAaKontaktes, "oenskerAaKontaktes", " dersom paaVegneAv=BEDRIFT")
         hasText(request.enhetsnummerPaaklaget, "enhetsnummerPaaklaget", " dersom paaVegneAv=BEDRIFT")
@@ -84,6 +92,7 @@ class OpprettServiceklageValidator(
         if (request.oenskerAaKontaktes == true) {
             hasText(request.innmelder?.navn, "innmelder.navn", " dersom paaVegneAv=BEDRIFT og oenskerAaKontaktes=true")
             hasText(request.innmelder?.telefonnummer, "innmelder.telefonnummer", " dersom oenskerAaKontaktes=true")
+            isLegalTelephoneNumber(request.innmelder?.telefonnummer, "innmelder.telefonnummer")
         }
         request.paaVegneAvBedrift?.organisasjonsnummer?.let { validateOrgnr(it) }
     }

@@ -29,4 +29,23 @@ internal class FeilOgManglerIT : ApplicationTest() {
     }
 
 
+    @Test
+    fun `validation error, message too long`() {
+        // Given
+        val request = MeldFeilOgManglerRequestBuilder().build(
+            onskerKontakt = true,
+            melding = "Det er en feil på skjema.".repeat(500)
+        )
+        val requestEntity = HttpEntity(request, createHeaders())
+
+        // When
+        val response: ResponseEntity<MeldFeilOgManglerResponse> = restTemplate!!.exchange(
+            URL_FEIL_OG_MANGLER, HttpMethod.POST, requestEntity, MeldFeilOgManglerResponse::class.java
+        )
+
+        // Then
+        assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
+    }
+
+
 }

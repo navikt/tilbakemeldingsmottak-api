@@ -29,4 +29,28 @@ abstract class RequestValidator {
             throw ClientErrorException(String.format("%s kan ikke være satt%s", feltnavn, condition))
         }
     }
+
+    protected fun isLegalTelephoneNumber(input: String?, feltnavn: String?, condition: String? = "") {
+        isNotNull(input, feltnavn)
+        val regex = Regex("^([0-9() +-]*)$")
+        if (regex.matchEntire(input!!) == null) {
+            throw ClientErrorException(String.format("%s inneholder ulovlige karakterer%s", feltnavn, condition))
+        }
+
+    }
+
+    protected fun maxSize(input: String?, maxSize: Int, feltnavn: String?) {
+        isNotNull(input, feltnavn)
+        if ((input?.length ?: 0) > maxSize) {
+            throw ClientErrorException(String.format("%s inneholder for lang tekst%s", feltnavn, null))
+        }
+    }
+
+    protected fun isLegalEmail(input: String?, feltnavn: String?, condition: String? = "") {
+        isNotNull(input, feltnavn)
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\$"
+        if (!input!!.matches(emailRegex.toRegex())) {
+            throw ClientErrorException(String.format("%s er ikke en gyldig epost adresse%s", feltnavn, condition))
+        }
+    }
 }

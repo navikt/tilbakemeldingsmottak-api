@@ -4,6 +4,7 @@ import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService
 import no.nav.tilbakemeldingsmottak.model.SendRosRequest
 import no.nav.tilbakemeldingsmottak.model.SendRosRequestHvemRoses
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent
+import org.apache.commons.text.StringEscapeUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -31,8 +32,11 @@ class RosService(private val emailService: AzureEmailService) {
         if (SendRosRequestHvemRoses.NAV_KONTOR == request.hvemRoses) {
             request.navKontor?.let { content.addParagraph("NAV-kontor", it) }
         }
-        request.melding?.let { content.addParagraph("Melding", it) }
+        request.melding?.let { content.addParagraph("Melding", htmlVaskInput(it)) }
         return content.contentString
     }
 
+    fun htmlVaskInput(input: String): String {
+        return StringEscapeUtils.escapeHtml4(input)
+    }
 }

@@ -13,5 +13,7 @@ class SendRosValidator : RequestValidator() {
             hasText(request.navKontor, "navKontor", " dersom hvemRoses=NAV_KONTOR")
         }
         hasText(request.melding, "melding")
+        maxSize(request.melding, 10000, "melding")
+
     }
 }
