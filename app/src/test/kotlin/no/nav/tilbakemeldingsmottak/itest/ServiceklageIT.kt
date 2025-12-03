@@ -31,6 +31,7 @@ import no.nav.tilbakemeldingsmottak.util.builders.InnmelderBuilder
 import no.nav.tilbakemeldingsmottak.util.builders.KlassifiserServiceklageRequestBuilder
 import no.nav.tilbakemeldingsmottak.util.builders.OpprettServiceklageRequestBuilder
 import org.apache.commons.lang3.RandomStringUtils
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -104,7 +105,6 @@ internal class ServiceklageIT : ApplicationTest() {
 
     @BeforeEach
     fun setupMocks() {
-        wm.resetAll()
         WireMockStubs.stubTokenEndpoint()
         WireMockStubs.stubForJoark()
         WireMockStubs.stubForOpprettJournalpostFail()
@@ -131,6 +131,11 @@ internal class ServiceklageIT : ApplicationTest() {
 
         metricsRegistery.clear()
 
+    }
+
+    @AfterEach
+    fun tearDown() {
+        wm.resetAll()
     }
 
 
@@ -213,35 +218,34 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(1.0, metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count())
     }
 
-    /*
 
-        @Test
-        fun `Should return correct data when acting on behalf of another person`() {
-            // Given
-            val request: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPersonPaaVegneAv().build()
-            val mockJwt = createMockJwt(tokenxIssuer, request.innmelder!!.personnummer!!)
+    @Test
+    fun `Should return correct data when acting on behalf of another person`() {
+        // Given
+        val request: OpprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPersonPaaVegneAv().build()
+        val mockJwt = createMockJwt(tokenxIssuer, request.innmelder!!.personnummer!!)
 
-            `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
-            `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
 
-            val requestEntity =
-                HttpEntity(request, createHeaders(Constants.TOKENX_ISSUER, request.innmelder!!.personnummer!!, true))
+        val requestEntity =
+            HttpEntity(request, createHeaders(Constants.TOKENX_ISSUER, request.innmelder!!.personnummer!!, true))
 
-            // When
-            val response = api?.createServiceklage(requestEntity)
+        // When
+        val response = api?.createServiceklage(requestEntity)
 
-            // Then
-            val serviceklage = serviceklageRepository!!.findAll().iterator().next()
+        // Then
+        val serviceklage = serviceklageRepository!!.findAll().iterator().next()
 
-            assertEquals(HttpStatus.OK, response?.statusCode)
-            assertBasicServiceklageFields(serviceklage)
-            assertEquals(PAAVEGNEAV_PERSONNUMMER, serviceklage.klagenGjelderId)
-            assertEquals(NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
-            assertEquals(ANNEN_PERSON.value, serviceklage.innsender)
-            assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
-            assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
-            assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
-        }
+        assertEquals(HttpStatus.OK, response?.statusCode)
+        assertBasicServiceklageFields(serviceklage)
+        assertEquals(PAAVEGNEAV_PERSONNUMMER, serviceklage.klagenGjelderId)
+        assertEquals(NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
+        assertEquals(ANNEN_PERSON.value, serviceklage.innsender)
+        assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
+        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
+    }
 
         @Test
         fun `Should return correct data when acting on behalf of a company`() {
@@ -763,6 +767,5 @@ internal class ServiceklageIT : ApplicationTest() {
             assertEquals(HendelseType.KLASSIFISER_SERVICEKLAGE.name, classifiedHendelse?.hendelsetype)
             assertEquals(JOURNALPOST_ID, classifiedHendelse?.journalpostId)
         }
-    */
 
 }

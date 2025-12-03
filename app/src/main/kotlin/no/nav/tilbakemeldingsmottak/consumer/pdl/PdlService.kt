@@ -44,7 +44,7 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
     }
 
     suspend fun hentIdenter(ident: String): HentIdenter.Result? {
-        log.info("Henter identer for ident: $ident")
+        log.info("Henter identer for ident: xxxx")
 
         // This will map only `data` part to HentIdenter.Result, if data is present
         val identliste: Identliste? = try {
