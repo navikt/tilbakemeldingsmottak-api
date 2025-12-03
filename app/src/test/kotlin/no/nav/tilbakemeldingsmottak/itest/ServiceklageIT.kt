@@ -105,6 +105,8 @@ internal class ServiceklageIT : ApplicationTest() {
 
     @BeforeEach
     fun setupMocks() {
+        wm.resetAll()
+        println("WIREMOCK PORT = ${wm.port}")
         WireMockStubs.stubTokenEndpoint()
         WireMockStubs.stubForJoark()
         WireMockStubs.stubForOpprettJournalpostFail()
