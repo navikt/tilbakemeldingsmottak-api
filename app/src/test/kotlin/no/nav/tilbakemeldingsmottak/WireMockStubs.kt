@@ -150,7 +150,8 @@ object WireMockStubs {
                 .willReturn(
                     aResponse().withStatus(200)
                         .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
-                        .withBodyFile("pdl/hentIdenterResponse.json")
+                        .withBody("""{"data": {"hentIdenter": {"identer": [{"ident": "1234567890123","historisk": false,"gruppe": "AKTORID"}]}}""")
+                    //.withBodyFile("pdl/hentIdenterResponse.json")
                 )
         )
     }

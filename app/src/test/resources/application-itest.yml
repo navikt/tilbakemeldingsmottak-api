@@ -52,7 +52,7 @@ saf:
   graphql:
     url: safUrl
 pdl:
-  url: pflUrl
+  url: http://localhost:8099/pdlgraphql
 graphql:
   endpoint:
     url: ${pdl.url}
