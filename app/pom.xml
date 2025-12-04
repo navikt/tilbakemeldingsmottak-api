@@ -401,12 +401,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock-standalone</artifactId>
-            <version>${wiremock.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>io.mockk</groupId>
             <artifactId>mockk-jvm</artifactId>
             <version>${mockk.version}</version>
@@ -414,20 +408,32 @@
         </dependency>
         <dependency>
             <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-junit5</artifactId>
+            <version>${wiremock-junit5.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
             <artifactId>wiremock-core</artifactId>
-            <version>4.0.0-beta.19</version>
+            <version>${wiremock.core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>${wiremock.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.wiremock.integrations</groupId>
             <artifactId>wiremock-spring-boot-base</artifactId>
-            <version>4.0.8</version>
+            <version>${wiremock.integrations.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.wiremock.integrations</groupId>
             <artifactId>wiremock-spring-boot-standalone</artifactId>
-            <version>4.0.8</version>
+            <version>${wiremock.integrations.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -17,7 +17,6 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Value
 
-//@WireMockTest
 internal class RosIT : ApplicationTest() {
     private val URL_ROS = "/rest/ros"
 
@@ -32,16 +31,6 @@ internal class RosIT : ApplicationTest() {
 
     @Value("\${auth.issuers.tokenx.issuer-uri}")
     lateinit var tokenxIssuer: String
-
-
-    /*
-
-        @AfterEach
-        fun tearDown() {
-            wm.resetAll()
-        }
-    */
-
 
     @Test
     fun `Kall mot sikret endepunkt skal returnere 401 Unauthorized uten token`() {

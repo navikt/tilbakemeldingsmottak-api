@@ -1,8 +1,10 @@
 package no.nav.tilbakemeldingsmottak.itest
 
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.common.ConsoleNotifier
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension
+
 import io.micrometer.core.instrument.search.MeterNotFoundException
 import no.nav.tilbakemeldingsmottak.ApplicationTest
 import no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER
@@ -80,7 +82,11 @@ internal class ServiceklageIT : ApplicationTest() {
         @RegisterExtension
         val wm: WireMockExtension = WireMockExtension.newInstance()
             .configureStaticDsl(true)
-            .options(wireMockConfig().dynamicPort())
+            .options(
+                wireMockConfig()
+                    .dynamicPort()
+                    .notifier(ConsoleNotifier(true))
+            )
             .build()
 
         @JvmStatic
