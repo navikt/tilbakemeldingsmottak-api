@@ -84,8 +84,10 @@ internal class ServiceklageIT : ApplicationTest() {
             .configureStaticDsl(true)
             .options(
                 wireMockConfig()
-                    .dynamicPort()
+                    .port(8099)
                     .notifier(ConsoleNotifier(true))
+                    .withRootDirectory("src/test/resources")
+                    .asynchronousResponseEnabled(false)
             )
             .build()
 
