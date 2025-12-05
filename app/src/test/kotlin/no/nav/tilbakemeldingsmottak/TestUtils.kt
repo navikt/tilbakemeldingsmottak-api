@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.tilbakemeldingsmottak.consumer.norg2.Enhet
+import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.DataJournalpost
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJsonJournalpost
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.ENHETSNUMMER_BEHANDLENDE
@@ -115,5 +116,56 @@ object TestUtils {
         val document = Loader.loadPDF(bytes)
         val stripper = PDFTextStripper()
         return stripper.getText(document)
+    }
+
+    fun hentOppgaveResponse(): String {
+        val response = HentOppgaveResponseTo(
+            id = "1234567",
+            tildeltEnhetsnr = "4100",
+            journalpostId = "12345",
+            aktoerId = "1234567891113",
+            orgnr = "string",
+            tema = "AAP",
+            oppgavetype = "JFR",
+            versjon = "1",
+            prioritet = "NORM",
+            status = "OPPRETTET",
+            aktivDato = "2023-09-15",
+        )
+        return objectMapper.writeValueAsString(response)
+    }
+
+    fun hentOppgaveIngenJournalpostSattResponse(): String {
+        val response = HentOppgaveResponseTo(
+            id = "98765432",
+            tildeltEnhetsnr = "4100",
+            journalpostId = "",
+            aktoerId = "1234567891113",
+            orgnr = "string",
+            tema = "AAP",
+            oppgavetype = "JFR",
+            versjon = "1",
+            prioritet = "NORM",
+            status = "OPPRETTET",
+            aktivDato = "2023-09-15",
+        )
+        return objectMapper.writeValueAsString(response)
+    }
+
+    fun hentOppgaveIkkeEksisterendeJournalpostSattResponse(): String {
+        val response = HentOppgaveResponseTo(
+            id = "87654321",
+            tildeltEnhetsnr = "4100",
+            journalpostId = "88",
+            aktoerId = "1234567891113",
+            orgnr = "string",
+            tema = "AAP",
+            oppgavetype = "JFR",
+            versjon = "1",
+            prioritet = "NORM",
+            status = "OPPRETTET",
+            aktivDato = "2023-09-15",
+        )
+        return objectMapper.writeValueAsString(response)
     }
 }

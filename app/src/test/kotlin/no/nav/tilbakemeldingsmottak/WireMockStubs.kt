@@ -10,6 +10,9 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader
 import no.nav.tilbakemeldingsmottak.TestUtils.createNorg2Response
 import no.nav.tilbakemeldingsmottak.TestUtils.createSafGraphqlResponse
+import no.nav.tilbakemeldingsmottak.TestUtils.hentOppgaveIkkeEksisterendeJournalpostSattResponse
+import no.nav.tilbakemeldingsmottak.TestUtils.hentOppgaveIngenJournalpostSattResponse
+import no.nav.tilbakemeldingsmottak.TestUtils.hentOppgaveResponse
 import org.springframework.http.MediaType
 
 object WireMockStubs {
@@ -86,7 +89,8 @@ object WireMockStubs {
                 .willReturn(
                     aResponse().withStatus(201) // CREATED
                         .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .withBodyFile("joark/opprettJournalpost/opprettJournalpostResponse.json")
+                        //.withBodyFile("joark/opprettJournalpost/opprettJournalpostResponse.json")
+                        .withBody("""{"journalpostId": "12345","journalstatus": "ENDELIG","melding": "string"}""")
                 )
         )
     }
@@ -107,7 +111,8 @@ object WireMockStubs {
                 .willReturn(
                     aResponse().withStatus(200)
                         .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .withBodyFile("oppgave/opprettOppgaveResponse.json")
+                        //.withBodyFile("oppgave/opprettOppgaveResponse.json")
+                        .withBody("""{"id": "1234567", "versjon": 1}""")
                 )
         )
     }
@@ -129,7 +134,8 @@ object WireMockStubs {
                 .willReturn(
                     aResponse().withStatus(200)
                         .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .withBodyFile("oppgave/hentOppgaveIkkeEksisterendeJournalpostResponse.json")
+                        //.withBodyFile("oppgave/hentOppgaveIkkeEksisterendeJournalpostResponse.json")
+                        .withBody(hentOppgaveIkkeEksisterendeJournalpostSattResponse())
                 )
         )
     }
@@ -140,7 +146,8 @@ object WireMockStubs {
                 .willReturn(
                     aResponse().withStatus(200)
                         .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .withBodyFile("oppgave/hentOppgaveIngenJournalpostSattResponse.json")
+                        //.withBodyFile("oppgave/hentOppgaveIngenJournalpostSattResponse.json")
+                        .withBody(hentOppgaveIngenJournalpostSattResponse())
                 )
         )
     }
@@ -151,7 +158,8 @@ object WireMockStubs {
                 .willReturn(
                     aResponse().withStatus(200)
                         .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                        .withBodyFile("oppgave/hentOppgaveResponse.json")
+                        //.withBodyFile("oppgave/hentOppgaveResponse.json")
+                        .withBody(hentOppgaveResponse())
                 )
         )
     }
