@@ -45,6 +45,18 @@ object WireMockStubs {
         )
     }
 
+    fun stubForPdlHentIdenter() {
+        stubFor(
+            post(urlPathMatching("/pdlgraphql"))
+                .willReturn(
+                    aResponse().withStatus(200)
+                        .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
+                        .withBody("""{"data": {"hentIdenter": {"identer": [{"ident": "1234567890123","historisk": false,"gruppe": "AKTORID"}]}}}""")
+                    //.withBodyFile("pdl/hentIdenterResponse.json")
+                )
+        )
+    }
+
     fun stubEreg() {
         stubFor(
             get(urlPathMatching("/ereg/v1/organisasjon/[0-9]*"))
@@ -140,18 +152,6 @@ object WireMockStubs {
                     aResponse().withStatus(200)
                         .withHeader(org.apache.http.HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                         .withBodyFile("oppgave/hentOppgaveResponse.json")
-                )
-        )
-    }
-
-    fun stubForPdlHentIdenter() {
-        stubFor(
-            post(urlPathMatching("/pdlgraphql"))
-                .willReturn(
-                    aResponse().withStatus(200)
-                        .withHeader(ContentTypeHeader.KEY, MediaType.APPLICATION_JSON_VALUE)
-                        .withBody("""{"data": {"hentIdenter": {"identer": [{"ident": "1234567890123","historisk": false,"gruppe": "AKTORID"}]}}""")
-                    //.withBodyFile("pdl/hentIdenterResponse.json")
                 )
         )
     }
