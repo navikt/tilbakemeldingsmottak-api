@@ -6,6 +6,8 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension
 
 import io.micrometer.core.instrument.search.MeterNotFoundException
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import no.nav.tilbakemeldingsmottak.ApplicationTest
 import no.nav.tilbakemeldingsmottak.TestUtils.PERSONNUMMER
 import no.nav.tilbakemeldingsmottak.WireMockStubs
@@ -145,9 +147,14 @@ internal class ServiceklageIT : ApplicationTest() {
 
     @AfterEach
     fun tearDown() {
-        wm.resetAll()
+        runBlocking {
+            pauseBeforeNextTest()
+        }
     }
 
+    private suspend fun pauseBeforeNextTest() {
+        delay(5000)
+    }
 
     private fun assertBasicServiceklageFields(serviceklage: Serviceklage) {
         assertNotNull(serviceklage.serviceklageId)
