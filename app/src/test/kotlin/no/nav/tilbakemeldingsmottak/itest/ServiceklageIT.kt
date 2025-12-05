@@ -115,9 +115,6 @@ internal class ServiceklageIT : ApplicationTest() {
 
     @BeforeEach
     fun setupMocks() {
-        runBlocking {
-            pauseBeforeRunningTest()
-        }
         wm.resetAll()
         println("WIREMOCK PORT = ${wm.port}")
         WireMockStubs.stubTokenEndpoint()
@@ -148,10 +145,6 @@ internal class ServiceklageIT : ApplicationTest() {
 
     }
 
-
-    private suspend fun pauseBeforeRunningTest() {
-        delay(2000)
-    }
 
     private fun assertBasicServiceklageFields(serviceklage: Serviceklage) {
         assertNotNull(serviceklage.serviceklageId)
