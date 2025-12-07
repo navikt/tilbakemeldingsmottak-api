@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.graphql.client.GraphQlClientException
 import org.springframework.graphql.client.HttpGraphQlClient
+import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 
 
@@ -33,6 +35,15 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
         histogram = true
     )
     @Cacheable("hentIdenter")
+    @Retryable(
+        retryFor = [Exception::class],
+        maxAttemptsExpression = "3",
+        backoff = Backoff(
+            delay = 100,
+            multiplier = 3.0,
+            maxDelay = 20000
+        )
+    )
     fun hentPersonIdents(brukerId: String): List<IdentDto> = runBlocking {
         log.info("Skal hente en personsidenter fra PDL")
         try {
@@ -57,6 +68,7 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
             log.warn("GraphQL client transport or protocol error", e)
             throw ClientErrorException("Feil ved kall til PDL", e, ErrorCode.PDL_ERROR)
         }
+        log.info("Hentet identer for ident: xxxx")
 
         // Currently no method for accessing errors, validate data
         if (identliste == null) {

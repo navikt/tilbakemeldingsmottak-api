@@ -31,12 +31,14 @@ class SafGraphqlConsumer(
     @Retryable(include = [ServerErrorException::class], maxAttempts = 3, backoff = Backoff(delay = 500))
     fun performQuery(graphQLRequest: GraphQLRequest): Journalpost {
 
+        logger.info("GraphQL hent journalpost")
         val response = webClient.document(HENT_JOURNALPOST)
             .variables(graphQLRequest.variables)
             .retrieve(graphQLRequest.operationName)
             .toEntity(Journalpost::class.java)
             .doOnError(Consumer { error: Throwable -> handleError(error, "SAF journalpost") })
             .block()
+        logger.info("GraphQL hentet journalpost")
 
         if (response == null) {
             val raw = webClient.document(HENT_JOURNALPOST)
