@@ -32,7 +32,7 @@ class GraphQlClientConfig(
     @Value("\${saf.graphql.url}")
     private lateinit var safUrl: String
 
-    private val responseTimeout = Duration.ofSeconds(30)
+    private val responseTimeout = Duration.ofSeconds(15)
 
     /**
      * WebClient for PDL

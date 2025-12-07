@@ -17,6 +17,7 @@ import org.springframework.graphql.client.GraphQlClientException
 import org.springframework.graphql.client.HttpGraphQlClient
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Retryable
+import org.springframework.retry.support.RetrySynchronizationManager
 import org.springframework.stereotype.Service
 
 
@@ -46,6 +47,7 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
     )
     fun hentPersonIdents(brukerId: String): List<IdentDto> = runBlocking {
         log.info("Skal hente en personsidenter fra PDL")
+        log.info("###Retry Number: " + RetrySynchronizationManager.getContext()?.retryCount);
         try {
             hentIdenter(brukerId)?.hentIdenter?.identer?.map { IdentDto(it.ident, it.gruppe.toString(), it.historisk) }
                 ?: listOf(IdentDto(brukerId, "AKTORID", false))
