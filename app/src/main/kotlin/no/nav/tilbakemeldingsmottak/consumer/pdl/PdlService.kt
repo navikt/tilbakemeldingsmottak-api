@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.tilbakemeldingsmottak.consumer.pdl.domain.IdentDto
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
 import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import no.nav.tilbakemeldingsmottak.pdl.generated.HENT_IDENTER
@@ -36,18 +37,8 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
         histogram = true
     )
     @Cacheable("hentIdenter")
-    @Retryable(
-        retryFor = [Exception::class],
-        maxAttemptsExpression = "3",
-        backoff = Backoff(
-            delay = 100,
-            multiplier = 3.0,
-            maxDelay = 20000
-        )
-    )
     fun hentPersonIdents(brukerId: String): List<IdentDto> = runBlocking {
         log.info("Skal hente en personsidenter fra PDL")
-        log.info("###Retry Number: " + RetrySynchronizationManager.getContext()?.retryCount);
         try {
             hentIdenter(brukerId)?.hentIdenter?.identer?.map { IdentDto(it.ident, it.gruppe.toString(), it.historisk) }
                 ?: listOf(IdentDto(brukerId, "AKTORID", false))
@@ -56,8 +47,10 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
         }
     }
 
-    suspend fun hentIdenter(ident: String): HentIdenter.Result? {
+    @Retryable(include = [ServerErrorException::class], maxAttempts = 3, backoff = Backoff(delay = 5000))
+    fun hentIdenter(ident: String): HentIdenter.Result? {
         log.info("Henter identer for ident: xxxx")
+        log.info("###Retry Number: " + RetrySynchronizationManager.getContext()?.retryCount);
 
         // This will map only `data` part to HentIdenter.Result, if data is present
         val identliste: Identliste? = try {
