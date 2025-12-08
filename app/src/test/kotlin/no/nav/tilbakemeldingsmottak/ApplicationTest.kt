@@ -1,6 +1,7 @@
 package no.nav.tilbakemeldingsmottak
 
 import com.nimbusds.jose.JOSEObjectType
+import com.ninjasquad.springmockk.SpykBean
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
@@ -8,6 +9,7 @@ import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
 import no.nav.security.token.support.spring.test.MockLoginController
 import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery
 import no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER
+import no.nav.tilbakemeldingsmottak.consumer.email.aad.AADMailClient
 import no.nav.tilbakemeldingsmottak.config.TokenExchangeService
 import no.nav.tilbakemeldingsmottak.repository.HendelseRepository
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
@@ -15,6 +17,7 @@ import no.nav.tilbakemeldingsmottak.util.Api
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureDataSourceInitialization
+import org.springframework.boot.test.mock.mockito.SpyBean
 
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
@@ -80,6 +83,9 @@ class ApplicationTest {
 
     @Autowired
     protected lateinit var clientRegistrationRepository: ClientRegistrationRepository
+
+    @SpykBean()
+    lateinit var aadMailClient: AADMailClient
 
     private val INNLOGGET_BRUKER = "14117119611"
     private val AUD = "aud-localhost"

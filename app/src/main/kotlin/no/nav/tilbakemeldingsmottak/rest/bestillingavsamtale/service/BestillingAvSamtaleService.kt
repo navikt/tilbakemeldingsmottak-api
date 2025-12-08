@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.service
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService
 import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent
+import org.apache.commons.text.StringEscapeUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -25,8 +26,8 @@ class BestillingAvSamtaleService(private val emailService: AzureEmailService) {
 
     private fun createContent(request: BestillSamtaleRequest): String {
         val content = HtmlContent()
-        request.fornavn?.let { content.addParagraph("Fornavn", it) }
-        request.etternavn?.let { content.addParagraph("Etternavn", it) }
+        request.fornavn?.let { content.addParagraph("Fornavn", StringEscapeUtils.escapeHtml4(it)) }
+        request.etternavn?.let { content.addParagraph("Etternavn", StringEscapeUtils.escapeHtml4(it)) }
         request.telefonnummer?.let { content.addParagraph("Telefonnummer", it) }
         request.tidsrom?.value?.let { content.addParagraph("Tidsrom", it) }
         return content.contentString

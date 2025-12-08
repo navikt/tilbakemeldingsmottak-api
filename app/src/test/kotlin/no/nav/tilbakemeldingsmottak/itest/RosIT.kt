@@ -1,5 +1,7 @@
 package no.nav.tilbakemeldingsmottak.itest
 
+import io.mockk.slot
+import io.mockk.verify
 import no.nav.tilbakemeldingsmottak.ApplicationTest
 import no.nav.tilbakemeldingsmottak.config.Constants
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
@@ -16,6 +18,9 @@ import tools.jackson.databind.ObjectMapper
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.springframework.beans.factory.annotation.Value
+import com.microsoft.graph.models.Message
+import no.nav.tilbakemeldingsmottak.model.SendRosRequest
+import org.junit.jupiter.api.Assertions.assertTrue
 
 internal class RosIT : ApplicationTest() {
     private val URL_ROS = "/rest/ros"
@@ -99,4 +104,41 @@ internal class RosIT : ApplicationTest() {
             metricsRegistery.get(MetricLabels.DOK_REQUEST + "_not_logged_in").counter().count()
         )
     }
+
+    @Test
+    fun `validering feiler, meldingslengde for stor`() {
+        // Given
+        val request =
+            SendRosRequestBuilder().withNavKontor().build(melding = "Dette er en for lang melding.".repeat(500))
+        val requestEntity =
+            HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, tilbakemeldinger, loggedIn = false))
+
+        // When
+        val response = restTemplate!!.exchange(URL_ROS, HttpMethod.POST, requestEntity, SendRosResponse::class.java)
+
+        // Then
+        assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
+    }
+
+    @Test
+    fun `validering, html input blir vasket`() {
+        // Given
+        val request = SendRosRequestBuilder().withNavKontor()
+            .build(melding = "Dette er en melding med html tagger.  <script>alert('Hallo, hvordan går det?');</script>")
+
+        val requestEntity =
+            HttpEntity(request, createHeaders(Constants.AZURE_ISSUER, tilbakemeldinger, loggedIn = false))
+
+        // When
+        val response = restTemplate!!.exchange(URL_ROS, HttpMethod.POST, requestEntity, SendRosResponse::class.java)
+        val messageCapture = mutableListOf<Message>()
+        verify(atLeast = 1) { aadMailClient.sendMailViaClient(capture(messageCapture)) }
+
+        // Then
+        assertEquals(HttpStatus.OK, response.statusCode)
+        val messageSent = messageCapture.last().body
+        assertTrue(messageSent != null && messageSent.content != null)
+        assertTrue(messageSent!!.content.contains("&lt;script&gt;alert('Hallo, hvordan g&aring;r det?');&lt;/script&gt;"))
+    }
+
 }

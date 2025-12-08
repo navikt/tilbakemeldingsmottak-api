@@ -9,7 +9,7 @@ class MeldFeilOgManglerRequestBuilder {
     private var onskerKontakt: Boolean? = false
     private var epost: String? = "innmelder@hotmail.com"
     private var feiltype: MeldFeilOgManglerRequestFeiltype? = TEKNISK_FEIL
-    private var melding: String? = "Det er en feil på siden"
+    private var melding: String? = "Det er en feil på siden."
     fun build(
         onskerKontakt: Boolean? = this.onskerKontakt,
         epost: String? = this.epost,

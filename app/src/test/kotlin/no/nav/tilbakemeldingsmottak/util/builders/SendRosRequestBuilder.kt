@@ -10,7 +10,7 @@ class SendRosRequestBuilder {
 
     private var hvemRoses: SendRosRequestHvemRoses? = NAV_DIGITALE_TJENESTER
     private var navKontor: String? = null
-    private var melding: String? = "Saksbehandleren var snill"
+    private var melding: String? = "Saksbehandleren var snill."
 
     fun build(
         hvemRoses: SendRosRequestHvemRoses? = this.hvemRoses,
