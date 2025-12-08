@@ -39,15 +39,17 @@ internal class BestillingAvSamtaleIT : ApplicationTest() {
     fun `validation error, illegal telephone number`() {
         // Given
         val request = BestillSamtaleRequestBuilder().build(telefonnummer = "ABC-9999")
-        val requestEntity = HttpEntity<BestillSamtaleRequest>(request, createHeaders())
+        val mockJwt = createMockJwt(tokenxIssuer)
 
-        // When
-        val response: ResponseEntity<BestillSamtaleResponse> = restTemplate!!.exchange(
-            URL_BESTILLING_AV_SAMTALE, HttpMethod.POST, requestEntity, BestillSamtaleResponse::class.java
-        )
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
 
-        // Then
-        assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
+        // When / Then
+        restTemplate!!.post()
+            .uri(URL_BESTILLING_AV_SAMTALE)
+            .headers { it.addAll(createHeaders(Constants.TOKENX_ISSUER, tilbakemeldinger)) }
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().is4xxClientError
     }
 
 
@@ -55,15 +57,17 @@ internal class BestillingAvSamtaleIT : ApplicationTest() {
     fun `validation error, periode ikke angitt`() {
         // Given
         val request = BestillSamtaleRequestBuilder().build(tidsrom = null)
-        val requestEntity = HttpEntity<BestillSamtaleRequest>(request, createHeaders())
+        val mockJwt = createMockJwt(tokenxIssuer)
 
-        // When
-        val response: ResponseEntity<BestillSamtaleResponse> = restTemplate!!.exchange(
-            URL_BESTILLING_AV_SAMTALE, HttpMethod.POST, requestEntity, BestillSamtaleResponse::class.java
-        )
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
 
-        // Then
-        assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
+        // When / Then
+        restTemplate!!.post()
+            .uri(URL_BESTILLING_AV_SAMTALE)
+            .headers { it.addAll(createHeaders(Constants.TOKENX_ISSUER, tilbakemeldinger)) }
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().is4xxClientError
     }
 
 

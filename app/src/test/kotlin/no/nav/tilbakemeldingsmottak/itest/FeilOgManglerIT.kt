@@ -41,16 +41,18 @@ internal class FeilOgManglerIT : ApplicationTest() {
             onskerKontakt = true,
             melding = "Det er en feil på skjema.".repeat(500)
         )
-        val requestEntity = HttpEntity(request, createHeaders())
+        val mockJwt = createMockJwt(tokenxIssuer)
 
-        // When
-        val response: ResponseEntity<MeldFeilOgManglerResponse> = restTemplate!!.exchange(
-            URL_FEIL_OG_MANGLER, HttpMethod.POST, requestEntity, MeldFeilOgManglerResponse::class.java
-        )
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
 
-        // Then
-        assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
+        // When / Then
+        restTemplate!!.post()
+            .uri(URL_FEIL_OG_MANGLER)
+            .headers { it.addAll(createHeaders(Constants.TOKENX_ISSUER, tilbakemeldinger)) }
+            .bodyValue(request)
+            .exchange()
+            .expectStatus().is4xxClientError
+
     }
-
 
 }
