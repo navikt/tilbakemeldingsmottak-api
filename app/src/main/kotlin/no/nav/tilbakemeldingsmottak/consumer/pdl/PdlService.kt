@@ -1,10 +1,8 @@
 package no.nav.tilbakemeldingsmottak.consumer.pdl
 
-import kotlinx.coroutines.runBlocking
 import no.nav.tilbakemeldingsmottak.consumer.pdl.domain.IdentDto
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
-import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
 import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import no.nav.tilbakemeldingsmottak.pdl.generated.HENT_IDENTER
@@ -17,6 +15,7 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.graphql.client.GraphQlClientException
 import org.springframework.graphql.client.HttpGraphQlClient
 import org.springframework.retry.annotation.Backoff
+import org.springframework.retry.annotation.Recover
 import org.springframework.retry.annotation.Retryable
 import org.springframework.retry.support.RetrySynchronizationManager
 import org.springframework.stereotype.Service
@@ -38,7 +37,6 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
     )
     @Cacheable("hentIdenter")
     fun hentPersonIdents(brukerId: String): List<IdentDto> {
-        log.info("Skal hente en personsidenter fra PDL")
         try {
             return hentIdenter(brukerId)?.hentIdenter?.identer?.map {
                 IdentDto(
@@ -53,7 +51,7 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
         }
     }
 
-    @Retryable(include = [ServerErrorException::class], maxAttempts = 3, backoff = Backoff(delay = 5000))
+    @Retryable(include = [Exception::class], maxAttempts = 3, backoff = Backoff(delay = 5000))
     fun hentIdenter(ident: String): HentIdenter.Result? {
         log.info("Henter identer for ident: xxxx")
         log.info("###Retry Number: " + RetrySynchronizationManager.getContext()?.retryCount);
@@ -68,6 +66,9 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
         } catch (e: GraphQlClientException) {
             log.warn("GraphQL client transport or protocol error", e)
             throw ClientErrorException("Feil ved kall til PDL", e, ErrorCode.PDL_ERROR)
+        } catch (ex: Exception) {
+            log.warn("Exception error when doing PDL call", ex)
+            throw ClientErrorException("Feil ved kall til PDL", ex, ErrorCode.PDL_ERROR)
         }
         log.info("Hentet identer for ident: xxxx")
 
@@ -78,6 +79,12 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
         }
 
         return HentIdenter.Result(hentIdenter = identliste)
+    }
+
+    @Recover
+    fun retryFailed(e: Exception) {
+        log.warn("Retrying failed", e)
+        throw e
     }
 
 
