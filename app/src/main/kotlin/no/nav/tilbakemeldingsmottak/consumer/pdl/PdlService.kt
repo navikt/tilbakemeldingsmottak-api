@@ -37,10 +37,16 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
         histogram = true
     )
     @Cacheable("hentIdenter")
-    fun hentPersonIdents(brukerId: String): List<IdentDto> = runBlocking {
+    fun hentPersonIdents(brukerId: String): List<IdentDto> {
         log.info("Skal hente en personsidenter fra PDL")
         try {
-            hentIdenter(brukerId)?.hentIdenter?.identer?.map { IdentDto(it.ident, it.gruppe.toString(), it.historisk) }
+            return hentIdenter(brukerId)?.hentIdenter?.identer?.map {
+                IdentDto(
+                    it.ident,
+                    it.gruppe.toString(),
+                    it.historisk
+                )
+            }
                 ?: listOf(IdentDto(brukerId, "AKTORID", false))
         } catch (e: Exception) {
             throw ClientErrorException("Graphql query mot PDL feilet", e, ErrorCode.PDL_ERROR)
