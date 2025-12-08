@@ -29,4 +29,38 @@ internal class BestillingAvSamtaleIT : ApplicationTest() {
         // Then
         assertEquals(HttpStatus.OK, response.statusCode)
     }
+
+
+    @Test
+    fun `validation error, illegal telephone number`() {
+        // Given
+        val request = BestillSamtaleRequestBuilder().build(telefonnummer = "ABC-9999")
+        val requestEntity = HttpEntity<BestillSamtaleRequest>(request, createHeaders())
+
+        // When
+        val response: ResponseEntity<BestillSamtaleResponse> = restTemplate!!.exchange(
+            URL_BESTILLING_AV_SAMTALE, HttpMethod.POST, requestEntity, BestillSamtaleResponse::class.java
+        )
+
+        // Then
+        assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
+    }
+
+
+    @Test
+    fun `validation error, periode ikke angitt`() {
+        // Given
+        val request = BestillSamtaleRequestBuilder().build(tidsrom = null)
+        val requestEntity = HttpEntity<BestillSamtaleRequest>(request, createHeaders())
+
+        // When
+        val response: ResponseEntity<BestillSamtaleResponse> = restTemplate!!.exchange(
+            URL_BESTILLING_AV_SAMTALE, HttpMethod.POST, requestEntity, BestillSamtaleResponse::class.java
+        )
+
+        // Then
+        assertEquals(HttpStatus.BAD_REQUEST, response.statusCode)
+    }
+
+
 }

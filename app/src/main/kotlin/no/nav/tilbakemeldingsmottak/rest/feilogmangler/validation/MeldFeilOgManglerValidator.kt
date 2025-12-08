@@ -10,8 +10,10 @@ class MeldFeilOgManglerValidator : RequestValidator() {
         isNotNull(request.onskerKontakt, "onskerKontakt")
         if (request.onskerKontakt == true) {
             hasText(request.epost, "epost", " dersom onskerKontakt=true")
+            isLegalEmail(request.epost, "epost", " dersom epost")
         }
         isNotNull(request.feiltype, "feiltype")
         hasText(request.melding, "melding")
+        maxSize(request.melding, 10000, "melding")
     }
 }

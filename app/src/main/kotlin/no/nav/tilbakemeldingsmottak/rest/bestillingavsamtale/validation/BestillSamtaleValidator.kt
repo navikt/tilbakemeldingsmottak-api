@@ -9,5 +9,6 @@ class BestillSamtaleValidator : RequestValidator() {
         hasText(request.etternavn, "etternavn")
         isNotNull(request.tidsrom, "tidsrom")
         hasText(request.telefonnummer, "telefonnummer")
+        isLegalTelephoneNumber(request.telefonnummer, "telefonnummer")
     }
 }

@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.consumer.email.aad
 import com.microsoft.graph.models.*
 import no.nav.tilbakemeldingsmottak.consumer.email.EmailService
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException
+import org.apache.commons.text.StringEscapeUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component

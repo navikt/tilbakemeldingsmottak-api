@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.ContentTypeHeader
 import com.nimbusds.jose.JOSEObjectType
+import com.ninjasquad.springmockk.SpykBean
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
@@ -11,6 +12,7 @@ import no.nav.security.token.support.spring.test.MockLoginController
 import no.nav.tilbakemeldingsmottak.TestUtils.createNorg2Response
 import no.nav.tilbakemeldingsmottak.TestUtils.createSafGraphqlResponse
 import no.nav.tilbakemeldingsmottak.config.Constants.AZURE_ISSUER
+import no.nav.tilbakemeldingsmottak.consumer.email.aad.AADMailClient
 import no.nav.tilbakemeldingsmottak.repository.HendelseRepository
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
 import no.nav.tilbakemeldingsmottak.util.Api
@@ -24,6 +26,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.SpyBean
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock
 import org.springframework.http.HttpHeaders
@@ -73,6 +76,9 @@ class ApplicationTest {
 
     @Value("\${local.server.port}")
     private val serverPort = 0
+
+    @SpykBean()
+    lateinit var aadMailClient: AADMailClient
 
     private val INNLOGGET_BRUKER = "14117119611"
     private val AUD = "aud-localhost"

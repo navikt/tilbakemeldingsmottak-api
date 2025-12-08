@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.rest.feilogmangler.service
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService
 import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent
+import org.apache.commons.text.StringEscapeUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -30,7 +31,7 @@ class FeilOgManglerService(private val emailService: AzureEmailService) {
             request.epost?.let { content.addParagraph("Innsender ønsker å kontaktes på epost", it) }
         }
         request.feiltype?.value?.let { content.addParagraph("Hva slags feil", it) }
-        request.melding?.let { content.addParagraph("Melding", it) }
+        request.melding?.let { content.addParagraph("Melding", StringEscapeUtils.escapeHtml4(it)) }
         return content.contentString
     }
 }
