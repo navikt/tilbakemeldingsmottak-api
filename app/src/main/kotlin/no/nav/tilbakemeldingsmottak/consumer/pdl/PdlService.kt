@@ -42,6 +42,7 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
         percentiles = [0.5, 0.95],
         histogram = true
     )
+    @Cacheable("hentIdenter")
     fun hentPersonIdents(brukerId: String): List<IdentDto> {
         return performQuery(brukerId)?.hentIdenter?.identer?.map {
             IdentDto(
@@ -105,7 +106,6 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
     }
 
 
-    @Cacheable("hentIdenter")
     fun hentAktorIdForIdent(ident: String): String {
         log.info("Skal hente aktørId for ident")
         val identer = hentPersonIdents(ident)
