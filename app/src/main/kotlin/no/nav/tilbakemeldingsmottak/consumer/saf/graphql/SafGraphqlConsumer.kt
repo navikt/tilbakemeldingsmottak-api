@@ -47,7 +47,7 @@ class SafGraphqlConsumer(
                 .toEntity(Journalpost::class.java)
                 .block()
 
-            logger.info("Raw GraphQL response: $raw")
+            logger.info("Funnet raw GraphQL response ${raw != null}")
 
             throw ClientErrorNotFoundException(
                 message = "Ingen journalpost ble funnet",

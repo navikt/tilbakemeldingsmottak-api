@@ -1,8 +1,11 @@
 package no.nav.tilbakemeldingsmottak.consumer.pdl
 
+import io.grpc.netty.shaded.io.netty.handler.timeout.ReadTimeoutException
 import no.nav.tilbakemeldingsmottak.consumer.pdl.domain.IdentDto
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
+import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
+import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels
 import no.nav.tilbakemeldingsmottak.metrics.Metrics
 import no.nav.tilbakemeldingsmottak.pdl.generated.HENT_IDENTER
@@ -14,11 +17,15 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.graphql.client.GraphQlClientException
 import org.springframework.graphql.client.HttpGraphQlClient
+import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatusCode
 import org.springframework.retry.annotation.Backoff
 import org.springframework.retry.annotation.Recover
 import org.springframework.retry.annotation.Retryable
 import org.springframework.retry.support.RetrySynchronizationManager
 import org.springframework.stereotype.Service
+import org.springframework.web.reactive.function.client.WebClientResponseException
+import java.util.function.Consumer
 
 
 @Service
@@ -35,50 +42,60 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
         percentiles = [0.5, 0.95],
         histogram = true
     )
-    @Cacheable("hentIdenter")
     fun hentPersonIdents(brukerId: String): List<IdentDto> {
-        try {
-            return hentIdenter(brukerId)?.hentIdenter?.identer?.map {
-                IdentDto(
-                    it.ident,
-                    it.gruppe.toString(),
-                    it.historisk
-                )
-            }
-                ?: listOf(IdentDto(brukerId, "AKTORID", false))
-        } catch (e: Exception) {
-            throw ClientErrorException("Graphql query mot PDL feilet", e, ErrorCode.PDL_ERROR)
-        }
+        return performQuery(brukerId)?.hentIdenter?.identer?.map {
+            IdentDto(
+                it.ident,
+                it.gruppe.toString(),
+                it.historisk
+            )
+        } ?: listOf(IdentDto(brukerId, "AKTORID", false))
     }
 
-    @Retryable(include = [Exception::class], maxAttempts = 3, backoff = Backoff(delay = 5000))
-    fun hentIdenter(ident: String): HentIdenter.Result? {
+    @Retryable(include = [ServerErrorException::class], maxAttempts = 3, backoff = Backoff(delay = 5000))
+    fun performQuery(ident: String): HentIdenter.Result? {
         log.info("Henter identer for ident: xxxx")
         log.info("###Retry Number: " + RetrySynchronizationManager.getContext()?.retryCount);
 
         // This will map only `data` part to HentIdenter.Result, if data is present
-        val identliste: Identliste? = try {
+        val identliste: Identliste? =
             pdlGraphQLClient.document(HENT_IDENTER)
                 .variable("ident", ident)
                 .retrieve("hentIdenter")
                 .toEntity(Identliste::class.java)
+                .doOnError(Consumer { error: Throwable -> handleError(error, "PDL hentIdenter") })
                 .block()
-        } catch (e: GraphQlClientException) {
-            log.warn("GraphQL client transport or protocol error", e)
-            throw ClientErrorException("Feil ved kall til PDL", e, ErrorCode.PDL_ERROR)
-        } catch (ex: Exception) {
-            log.warn("Exception error when doing PDL call", ex)
-            throw ClientErrorException("Feil ved kall til PDL", ex, ErrorCode.PDL_ERROR)
-        }
         log.info("Hentet identer for ident: xxxx")
 
         // Currently no method for accessing errors, validate data
         if (identliste == null) {
             log.warn("Fant ingen aktørId for ident")
-            return null
+            throw ClientErrorException(
+                message = "Ingen aktorid funnet for ident",
+                errorCode = ErrorCode.PDL_MISSING_AKTORID
+            )
         }
 
         return HentIdenter.Result(hentIdenter = identliste)
+    }
+
+    private fun handleError(error: Throwable, serviceName: String) {
+        if (error is WebClientResponseException) {
+            val statusCode: HttpStatusCode = error.statusCode
+            val responseBody: String = error.responseBodyAsString
+            val errorMessage =
+                String.format("Kall mot %s feilet (statuskode: %s). Body: %s", serviceName, statusCode, responseBody)
+            if (statusCode === HttpStatus.UNAUTHORIZED) {
+                throw ClientErrorUnauthorizedException(errorMessage, error, ErrorCode.PDL_ERROR)
+            }
+            if (statusCode.is4xxClientError) {
+                throw ClientErrorException(errorMessage, error, ErrorCode.PDL_ERROR)
+            }
+            throw ServerErrorException(errorMessage, error, ErrorCode.PDL_ERROR)
+        } else if (error is ReadTimeoutException) {
+            log.warn("Fant ingen aktørId for ident pga ReadTimeout")
+            throw ServerErrorException("ReadMessageException", error, ErrorCode.PDL_ERROR)
+        }
     }
 
     @Recover
@@ -88,6 +105,7 @@ class PdlService(@Qualifier("pdlQlClient") private val pdlGraphQLClient: HttpGra
     }
 
 
+    @Cacheable("hentIdenter")
     fun hentAktorIdForIdent(ident: String): String {
         log.info("Skal hente aktørId for ident")
         val identer = hentPersonIdents(ident)
