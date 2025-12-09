@@ -20,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureDataSourceI
 
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
+import org.springframework.cache.annotation.EnableCaching
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
@@ -46,6 +47,7 @@ import java.util.*
 @Transactional
 @EnableMockOAuth2Server(port = 1888)
 @AutoConfigureWebTestClient
+@EnableCaching
 class ApplicationTest {
 
     // Vi mocker ut de konkrete JwtDecoder-bønnene som er definert i SecurityConfig.
