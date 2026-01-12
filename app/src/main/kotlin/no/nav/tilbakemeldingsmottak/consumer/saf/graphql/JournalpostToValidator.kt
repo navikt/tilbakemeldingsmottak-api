@@ -1,37 +1,48 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.graphql
 
-import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.SafJournalpostTo
+import no.nav.tilbakemeldingsmottak.saf.generated.hentjournalpost.Journalpost
 import no.nav.tilbakemeldingsmottak.consumer.saf.util.ValidationUtil
+import no.nav.tilbakemeldingsmottak.saf.generated.hentjournalpost.DokumentInfo
+import no.nav.tilbakemeldingsmottak.saf.generated.hentjournalpost.Dokumentvariant
 import java.util.function.Consumer
 
 class JournalpostToValidator {
-    fun validateAndReturn(safJournalpostTo: SafJournalpostTo): SafJournalpostTo {
+    fun validateAndReturn(safJournalpostTo: Journalpost): Journalpost {
+
         ValidationUtil.assertJournalpostFieldNotNull(
-            SafJournalpostTo.DokumentInfo::class.java,
+            DokumentInfo::class.java,
             safJournalpostTo.dokumenter
         )
-        validateDokumenter(safJournalpostTo.dokumenter)
+        validateDokumenter(safJournalpostTo.dokumenter!!)
         return safJournalpostTo
     }
 
-    private fun validateDokumenter(dokumenter: List<SafJournalpostTo.DokumentInfo>) {
-        dokumenter.forEach(Consumer { dokumentInfo: SafJournalpostTo.DokumentInfo -> validateDokument(dokumentInfo) })
+    private fun validateDokumenter(dokumenter: List<DokumentInfo?>) {
+        dokumenter.forEach(Consumer { dokumentInfo -> validateDokument(dokumentInfo) })
     }
 
-    private fun validateDokument(dokumentInfo: SafJournalpostTo.DokumentInfo) {
-        ValidationUtil.assertDokumentFieldNotNullOrEmpty("dokumentInfoId", dokumentInfo.dokumentInfoId)
-        validateDokumentVarianter(dokumentInfo.dokumentvarianter)
+    private fun validateDokument(dokumentInfo: DokumentInfo?) {
+        ValidationUtil.assertJournalpostFieldNotNull(
+            DokumentInfo::class.java,
+            dokumentInfo
+        )
+        ValidationUtil.assertDokumentFieldNotNullOrEmpty("dokumentInfoId", dokumentInfo?.dokumentInfoId)
+        validateDokumentVarianter(dokumentInfo?.dokumentvarianter)
     }
 
-    private fun validateDokumentVarianter(dokumentvarianter: List<SafJournalpostTo.Dokumentvariant>) {
-        dokumentvarianter.forEach(Consumer { dokumentvariant: SafJournalpostTo.Dokumentvariant ->
+    private fun validateDokumentVarianter(dokumentvarianter: List<Dokumentvariant?>?) {
+        ValidationUtil.assertJournalpostFieldNotNull(
+            Dokumentvariant::class.java,
+            dokumentvarianter
+        )
+        dokumentvarianter?.forEach(Consumer { dokumentvariant ->
             validateAndReturnDokumentVariant(
                 dokumentvariant
             )
         })
     }
 
-    private fun validateAndReturnDokumentVariant(dokumentvariant: SafJournalpostTo.Dokumentvariant) {
-        ValidationUtil.assertNotNullOrEmpty("variantformat", dokumentvariant.variantformat)
+    private fun validateAndReturnDokumentVariant(dokumentvariant: Dokumentvariant?) {
+        ValidationUtil.assertNotNullOrEmpty("variantformat", dokumentvariant?.variantformat?.name)
     }
 }

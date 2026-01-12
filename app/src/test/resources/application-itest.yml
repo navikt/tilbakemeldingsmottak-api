@@ -1,14 +1,19 @@
-Journalpost_v1_url: http://localhost:${wiremock.server.port}/OPPRETT_JOURNALPOST
+Journalpost_v1_url: journalpost.url
 email_from_address: srvtilbakemeldings@preprod.local
 email_nav_support_address: nav-support@preprod.local
 email_samisk_kontakt_address: samisk-kontakt@preprod.local
 email_serviceklage_address: nav.serviceklager@preprod.local
 email_uu_address: uu@preprod.local
+
+# application.properties
+logging.level.org.springframework.http.converter.json: DEBUG
+logging.level.com.fasterxml.jackson.databind: DEBUG
+
 ereg:
   api:
-    url: http://localhost:${wiremock.server.port}/ereg
+    url: eregUrl
 hentdokument:
-  url: http://localhost:${wiremock.server.port}/hentdokument
+  url: hentDokumentUrl
 management:
   metrics:
     export:
@@ -37,70 +42,83 @@ no.nav.security:
   jwt:
     mock:
       enable: true
-    client:
-      registration:
-        arkiv:
-          token-endpoint-url: http://localhost:${token.server.port}/fake/token
-          grant-type: client_credentials
-          scope: scope
-          authentication:
-            client-id: fake
-            client-secret: someSecret
-            client-auth-method: client_secret_basic
-
-        saf-maskintilmaskin:
-          token-endpoint-url: http://localhost:${token.server.port}/fake/token
-          grant-type: client_credentials
-          scope: scope
-          authentication:
-            client-id: fake
-            client-secret: someSecret
-            client-auth-method: client_secret_basic
-
-        oppgave:
-          token-endpoint-url: http://localhost:${token.server.port}/fake/token
-          grant-type: client_credentials
-          scope: scope
-          authentication:
-            client-id: fake
-            client-secret: someSecret
-            client-auth-method: client_secret_basic
-
-        pdl:
-          token-endpoint-url: http://localhost:${token.server.port}/fake/token
-          grant-type: client_credentials
-          scope: scope
-          authentication:
-            client-id: fake
-            client-secret: someSecret
-            client-auth-method: client_secret_basic
-    issuer:
-      azuread:
-        accepted-audience: aud-localhost
-        discovery-url: http://localhost:${token.server.port}/azuread/.well-known/openid-configuration
-      tokenx:
-        accepted-audience: aud-localhost
-        discovery-url: http://localhost:${token.server.port}/tokenx/.well-known/openid-configuration
 
 norg2:
   api:
     v1:
-      url: http://localhost:${wiremock.server.port}/norg2
-oppgave_oppgaver_url: http://localhost:${wiremock.server.port}/OPPGAVE
+      url: norg2Url
+oppgave_oppgaver_url: oppgaveUrl
 saf:
   graphql:
-    url: http://localhost:${wiremock.server.port}/safgraphql
+    url: safUrl
 pdl:
-  url: http://localhost:${wiremock.server.port}/pdlgraphql
+  url: http://localhost:8099/pdlgraphql
 graphql:
   endpoint:
     url: ${pdl.url}
+
+auth:
+  issuers:
+    azuread:
+      issuer-uri: http://localhost:${token.server.port}/azuread
+      accepted-audience: aud-localhost
+      jwk-set-uri: http://localhost:${token.server.port}/azuread/.well-known/openid-configuration
+    tokenx:
+      issuer-uri: http://localhost:${token.server.port}/tokenx
+      accepted-audience: aud-localhost
+      jwk-set-uri: http://localhost:${token.server.port}/tokenx/.well-known/openid-configuration
 
 spring:
   jpa:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Spring Boot does not support auto-configuration with multiple issuers directly. Need to configure manually.
+      client:
+        registration:
+          pdl:
+            client-id: "dev-gcp:teamserviceklage:tilbakemeldingsmottak-api"
+            client-secret: someSecret
+            provider: azuread
+            authorization-grant-type: client_credentials
+            scope: scope-pdl
+          arkiv:
+            client-id: "dev-gcp:teamserviceklage:tilbakemeldingsmottak-api"
+            client-secret: someSecret
+            provider: azuread
+            authorization-grant-type: client_credentials
+            scope: scope-arkiv
+          oppgave:
+            client-id: "dev-gcp:teamserviceklage:tilbakemeldingsmottak-api"
+            client-secret: someSecret
+            provider: azuread
+            authorization-grant-type: client_credentials
+            scope: scope-oppgave
+          oppgave-obo:
+            client-id: "dev-gcp:teamserviceklage:tilbakemeldingsmottak-api"
+            client-secret: someSecret
+            provider: azuread
+            authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+            client-authentication-method: client_secret_post
+            scope: scope-oppgave-obo
+          saf-obo:
+            client-id: "dev-gcp:teamserviceklage:tilbakemeldingsmottak-api"
+            client-secret: someSecret
+            provider: azuread
+            authorization-grant-type: urn:ietf:params:oauth:grant-type:jwt-bearer
+            client-authentication-method: client_secret_post
+            scope: scope-oppgave-obo
+
+        provider:
+          azuread:
+            token-uri: http://localhost:${wiremock.server.port}/fake/token
+          tokenx:
+            token-uri: http://localhost:${token.server.port}/fake/token
+
 token:
   server:
     port: ${mock-oauth2-server.port}

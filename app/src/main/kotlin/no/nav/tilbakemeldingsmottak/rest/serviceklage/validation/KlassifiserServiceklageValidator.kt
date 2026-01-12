@@ -1,8 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.validation
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.convertValue
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.tilbakemeldingsmottak.domain.ServiceklageConstants.NONE
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import no.nav.tilbakemeldingsmottak.model.DefaultAnswers
@@ -13,17 +10,19 @@ import no.nav.tilbakemeldingsmottak.model.QuestionType.*
 import no.nav.tilbakemeldingsmottak.rest.common.validation.RequestValidator
 import org.apache.commons.lang3.StringUtils.isBlank
 import org.springframework.stereotype.Component
+import tools.jackson.core.type.TypeReference
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
+import tools.jackson.databind.ObjectMapper
 
 @Component
 class KlassifiserServiceklageValidator : RequestValidator() {
 
     fun validateRequest(request: KlassifiserServiceklageRequest, hentSkjemaResponse: HentSkjemaResponse) {
-        val mapper = ObjectMapper().registerKotlinModule()
+        val mapper = ObjectMapper()
 
         val answersMap: Map<String, String> =
-            mapper.convertValue<Map<String, String?>>(request).filterValues { it != null }
+            mapper.convertValue(request, object : TypeReference<Map<String, String?>>() {}).filterValues { it != null }
                 .mapValues { it.value.toString() }
 
         hentSkjemaResponse.questions?.let { validateQuestions(it, answersMap) }

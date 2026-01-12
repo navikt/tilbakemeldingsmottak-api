@@ -48,7 +48,7 @@ internal class OpprettServiceklageValidatorTest {
         Mockito.lenient().`when`(eregConsumer!!.hentInfo(ArgumentMatchers.anyString())).thenReturn("")
         Mockito.lenient().`when`(pdlService!!.hentAktorIdForIdent(ArgumentMatchers.anyString()))
             .thenReturn(TestUtils.AKTOERID)
-        Mockito.lenient().`when`(oidcUtils!!.getSubjectForIssuer(ArgumentMatchers.anyString()))
+        Mockito.lenient().`when`(oidcUtils!!.getSubject())
             .thenReturn("")
     }
 

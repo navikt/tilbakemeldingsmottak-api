@@ -19,13 +19,14 @@ import org.springframework.http.MediaType
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
-import org.springframework.web.reactive.function.BodyInserters
 import java.lang.String.format
 
 @Component
 class OppgaveConsumer(
-    @Qualifier("oppgaveRestClient") private val restClient: RestClient
-) {
+    @Qualifier("oppgaveRestClient") private val restClient: RestClient,
+    @Qualifier("oppgaveOboRestClient") private val restObOClient: RestClient,
+
+    ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Metrics(
@@ -63,7 +64,7 @@ class OppgaveConsumer(
             endreOppgaveRequestTo.journalpostId
         )
 
-        return restClient.patch()
+        return restObOClient.patch()
             .uri("/${endreOppgaveRequestTo.id}")
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
@@ -86,7 +87,7 @@ class OppgaveConsumer(
     fun hentOppgave(oppgaveId: String): HentOppgaveResponseTo {
         log.info("Henter oppgave med id={}", oppgaveId)
 
-        return restClient
+        return restObOClient
             .method(HttpMethod.GET)
             .uri("/$oppgaveId")
             .contentType(MediaType.APPLICATION_JSON)

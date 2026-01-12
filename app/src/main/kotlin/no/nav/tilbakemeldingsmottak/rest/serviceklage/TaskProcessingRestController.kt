@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage
 
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.tilbakemeldingsmottak.api.TaskProcessingRestControllerApi
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.OppgaveConsumer
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_REQUEST
@@ -18,14 +17,17 @@ import no.nav.tilbakemeldingsmottak.util.OppgaveUtils
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-@ProtectedWithClaims(issuer = "azuread", claimMap = ["scp=defaultaccess serviceklage-klassifisering"])
 @RestController
+@PreAuthorize(
+    "@claimChecer.hasAccess('azuread','serviceklage-klassifisering')"
+)
 class TaskProcessingRestController(
     private val klassifiserServiceklageService: KlassifiserServiceklageService,
     private val hentSkjemaService: HentSkjemaService,
