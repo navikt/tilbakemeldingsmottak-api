@@ -1,4 +1,4 @@
-buffersize: ${BUFFER_SIZE}
+buffersize: ${BUFFER_SIZE_MB}
 
 spring:
   config:

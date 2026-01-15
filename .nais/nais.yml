@@ -139,5 +139,5 @@ spec:
       value: {{ LOG_URL }}
     - name: SPRING_PROFILES_ACTIVE
       value: {{ SPRING_PROFILES_ACTIVE }}
-    - name: BUFFER_SIZE
-      value: {{ BUFFER_SIZE }}
+    - name: BUFFER_SIZE_MB
+      value: {{ BUFFER_SIZE_MB }}
