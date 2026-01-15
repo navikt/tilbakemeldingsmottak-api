@@ -42,6 +42,6 @@
   "PDL_SCOPE": "api://dev-fss.pdl.pdl-api/.default",
   "LOG_URL": "https://logs.adeo.no/app/discover#/view/b7d9c480-f977-11ed-b7f9-11953dd7a874",
   "TIER": "db-f1-micro",
-  "BUFFER_SIZE": "300"
+  "BUFFER_SIZE": 300
 
 }

@@ -33,11 +33,11 @@ class GraphQlClientConfig(
     private lateinit var safUrl: String
 
     @Value("\${buffersize}")
-    private val bufferSize: String = "300"
+    private val bufferSize: Int = 300
 
     private val responseTimeout = Duration.ofSeconds(15)
 
-    private val maxBufferSize = 1024 * 1024 * bufferSize.toInt() // 300 MB
+    private val maxBufferSize = 1024 * 1024 * bufferSize // MB
 
     /**
      * WebClient for PDL
