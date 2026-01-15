@@ -32,7 +32,12 @@ class GraphQlClientConfig(
     @Value("\${saf.graphql.url}")
     private lateinit var safUrl: String
 
+    @Value("\${buffersize}")
+    private val bufferSize: String = "300"
+
     private val responseTimeout = Duration.ofSeconds(15)
+
+    private val maxBufferSize = 1024 * 1024 * bufferSize.toInt() // 300 MB
 
     /**
      * WebClient for PDL
@@ -70,6 +75,9 @@ class GraphQlClientConfig(
             .responseTimeout(responseTimeout)
         return WebClient.builder()
             .clientConnector(ReactorClientHttpConnector(httpClient))
+            .codecs { configurer ->
+                configurer.defaultCodecs().maxInMemorySize(maxBufferSize)
+            }
             .filter(oauth2Filter)
             .build()
     }

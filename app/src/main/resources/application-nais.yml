@@ -1,3 +1,5 @@
+buffersize: ${BUFFER_SIZE}
+
 spring:
   config:
     activate:
