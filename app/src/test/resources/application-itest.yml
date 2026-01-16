@@ -9,6 +9,8 @@ email_uu_address: uu@preprod.local
 logging.level.org.springframework.http.converter.json: DEBUG
 logging.level.com.fasterxml.jackson.databind: DEBUG
 
+buffersize: 1
+
 ereg:
   api:
     url: eregUrl

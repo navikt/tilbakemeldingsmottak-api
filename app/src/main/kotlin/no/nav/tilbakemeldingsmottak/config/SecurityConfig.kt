@@ -100,7 +100,9 @@ class SecurityConfig(
         }
 
         http
-            // .csrf { csrf -> csrf.disable() }
+            .csrf { csrf ->
+                csrf.ignoringRequestMatchers("/isAlive", "/isReady", "/health/**", "/public/**")
+            }
             .authorizeHttpRequests { auth ->
                 auth.requestMatchers("/isAlive", "/isReady", "/health/**", "/public/**").permitAll()
                 auth.anyRequest().authenticated()

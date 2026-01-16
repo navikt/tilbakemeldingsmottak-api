@@ -1,3 +1,5 @@
+buffersize: 300
+
 spring:
   config:
     activate:
