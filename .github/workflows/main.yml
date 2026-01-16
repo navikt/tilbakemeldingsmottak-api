@@ -66,17 +66,3 @@ jobs:
           VARS: .nais/p-config.json
           DRY_RUN: false
           VAR: image=${{needs.bygg-app-main.outputs.image}}
-
-  deploy-alerts-prod:
-    name: Deploy alerts to prod
-    needs: [deploy-main]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Deploy to prod
-        uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: prod-gcp
-          RESOURCE: .nais/alerts.yml
-          VARS: .nais/prod-alert.json
