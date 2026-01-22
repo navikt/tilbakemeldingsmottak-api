@@ -79,7 +79,7 @@
 
         <spring-retry.version>2.0.12</spring-retry.version>
         <flyway.version>11.12.0</flyway.version>
-        <tika-core.version>3.2.1</tika-core.version>
+        <tika-core.version>3.2.2</tika-core.version>
         <pdfbox.version>3.0.5</pdfbox.version>
         <openhtml.version>1.1.29</openhtml.version>
         <handlebars.version>4.4.0</handlebars.version>
