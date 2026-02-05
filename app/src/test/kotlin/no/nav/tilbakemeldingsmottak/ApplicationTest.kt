@@ -20,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureDataSourceI
 
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
+import org.springframework.cache.annotation.EnableCaching
 //import org.springframework.cache.annotation.EnableCaching
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -46,9 +47,10 @@ import java.util.*
 )
 @AutoConfigureDataSourceInitialization
 @Transactional
-@EnableMockOAuth2Server(port = 1888)
+@EnableMockOAuth2Server
 @AutoConfigureWebTestClient
 @EnableResilientMethods(proxyTargetClass = true)
+@EnableCaching
 class ApplicationTest {
 
     // Vi mocker ut de konkrete JwtDecoder-bønnene som er definert i SecurityConfig.
