@@ -136,7 +136,6 @@ internal class RosIT : ApplicationTest() {
         val mockJwt = createMockJwt(tokenxIssuer)
 
         `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
-        val initialCount = metricsRegistery.get(MetricLabels.DOK_REQUEST + "_not_logged_in").counter().count()
 
         // When / Then
         val response = restTemplate!!.post()

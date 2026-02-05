@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.norg2
 
+import io.github.resilience4j.retry.annotation.Retry
 import no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID
 import no.nav.tilbakemeldingsmottak.config.cache.CacheConfig
 import no.nav.tilbakemeldingsmottak.exceptions.*
@@ -17,8 +18,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.MediaType
 import org.springframework.http.client.ClientHttpResponse
-import org.springframework.retry.annotation.Backoff
-import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 
@@ -38,7 +37,7 @@ class Norg2Consumer(
         percentiles = [0.5, 0.95],
         histogram = true
     )
-    @Retryable(include = [ServerErrorException::class], backoff = Backoff(delay = 1000))
+    @Retry(name = "norg2")
     @Cacheable(
         CacheConfig.NORG2_CACHE
     )

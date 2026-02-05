@@ -1,54 +1,53 @@
-package no.nav.tilbakemeldingsmottak.consumer.email.aad
+package no.nav.tilbakemeldingsmottak.consumer.pdl
 
 import com.microsoft.graph.models.Message
 import com.ninjasquad.springmockk.MockkSpyBean
 import io.github.resilience4j.retry.RetryRegistry
 import io.mockk.every
 import io.mockk.verify
-import no.nav.tilbakemeldingsmottak.consumer.email.EmailService
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 
-
 @ActiveProfiles("itest")
 @SpringBootTest
-class AADMailClientImplTest {
+class PdlServiceTest {
 
     @MockkSpyBean
-    lateinit var aadMailClient: AADMailClient
+    lateinit var pdlClient: PdlClient
 
     @Autowired
-    lateinit var emailService: EmailService
+    lateinit var pdlService: PdlService
 
     @Autowired
     lateinit var retryRegistry: RetryRegistry
 
     @Test
     fun `retry config should be loaded correctly`() {
-        val retry = retryRegistry.retry("sendMail")
+        val retry = retryRegistry.retry("pdlGraphQl")
 
         assertEquals(3, retry.retryConfig.maxAttempts)
     }
 
     @Test
-    fun `should retry send mail and recover`() {
+    @Disabled
+    fun `should retry call to PDL`() {
         // Given
-        every { aadMailClient.sendMailViaClient(any<Message>()) } throws RuntimeException("boom")
+        every { pdlClient.performQuery(any()) } throws RuntimeException("boom")
 
         // When
         try {
-            emailService.sendSimpleMessage("test@mail.com", "Test", "Test message")
+            pdlService.hentPersonIdents(brukerId = "12345678901")
         } catch (e: RuntimeException) {
             ;
         }
 
         // Then
-        verify(exactly = 3) { aadMailClient.sendMailViaClient(any()) }
-        verify(exactly = 1) { aadMailClient.mailRecover(any(), any()) }
+        verify(exactly = 3) { pdlClient.performQuery(any()) }
+        verify(exactly = 1) { pdlClient.retryFailed(any(), any()) }
     }
 
 }

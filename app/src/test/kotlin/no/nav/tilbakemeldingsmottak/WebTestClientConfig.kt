@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.test.web.reactive.server.WebTestClient
 import java.time.Duration
 
-@TestConfiguration
+@TestConfiguration(proxyBeanMethods = false)
 class WebTestClientConfig {
 
     @Bean
