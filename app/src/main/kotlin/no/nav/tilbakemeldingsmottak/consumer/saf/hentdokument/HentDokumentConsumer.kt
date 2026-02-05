@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.hentdokument
 
+import io.github.resilience4j.retry.annotation.Retry
 import no.nav.tilbakemeldingsmottak.config.MDCConstants.MDC_CALL_ID
 import no.nav.tilbakemeldingsmottak.exceptions.*
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER
@@ -12,8 +13,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
-import org.springframework.retry.annotation.Backoff
-import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
@@ -32,7 +31,7 @@ class HentDokumentConsumer(
         percentiles = [0.5, 0.95],
         histogram = true
     )
-    @Retryable(include = [ServerErrorException::class], backoff = Backoff(delay = 3, multiplier = 500.0))
+    @Retry(name = "hentDokument")
     override fun hentDokument(
         journalpostId: String,
         dokumentInfoId: String,

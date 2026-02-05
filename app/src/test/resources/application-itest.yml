@@ -23,10 +23,61 @@ management:
         enabled: true
 
 retry-config:
-    send-mail:
-        max-attempts: 3
-        delay: 10
-        multiplier: 2
+  sendMail:
+    max-attempts: 3
+    delay: 10
+    multiplier: 2
+  safGraphQl:
+    max-attempts: 3
+    delay: 50
+    multiplier: 1.5
+  norg2:
+    max-attempts: 3
+    delay: 50
+    multiplier: 1.5
+  pdlGraphQl:
+    max-attempts: 3
+    delay: 50
+    multiplier: 1.5
+  hentDokument:
+    max-attempts: 3
+    delay: 50
+    multiplier: 1.5
+
+resilience4j:
+  retry:
+    instances:
+      sendMail:
+        max-attempts: ${retry-config.sendMail.max-attempts}
+        wait-duration: ${retry-config.sendMail.delay}ms
+        exponential-backoff-multiplier: ${retry-config.sendMail.multiplier}
+        retry-exceptions:
+          - java.lang.Exception
+      safGraphQl:
+        maxAttempts: ${retry-config.safGraphQl.max-attempts}
+        waitDuration: ${retry-config.safGraphQl.delay}ms
+        exponential-backoff-multiplier: ${retry-config.safGraphQl.multiplier}
+        retry-exceptions:
+          - java.lang.Exception
+      norg2:
+        maxAttempts: ${retry-config.norg2.max-attempts}
+        waitDuration: ${retry-config.norg2.delay}ms
+        exponential-backoff-multiplier: ${retry-config.norg2.multiplier}
+        retry-exceptions:
+          - java.lang.Exception
+      pdlGraphQl:
+        maxAttempts: ${retry-config.pdlGraphQl.max-attempts}
+        waitDuration: ${retry-config.pdlGraphQl.delay}ms
+        exponential-backoff-multiplier: ${retry-config.pdlGraphQl.multiplier}
+        retry-exceptions:
+          - java.lang.Exception
+      hentDokument:
+        maxAttempts: ${retry-config.hentDokument.max-attempts}
+        waitDuration: ${retry-config.hentDokument.delay}ms
+        exponential-backoff-multiplier: ${retry-config.hentDokument.multiplier}
+        retry-exceptions:
+          - java.lang.Exception
+
 aad:
   authority: https://localhost:${wiremock.server.port}/authority
   clientId: 1111199999

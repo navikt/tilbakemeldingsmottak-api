@@ -1,7 +1,7 @@
 package no.nav.tilbakemeldingsmottak
 
 import com.nimbusds.jose.JOSEObjectType
-import com.ninjasquad.springmockk.SpykBean
+import com.ninjasquad.springmockk.MockkSpyBean
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
@@ -23,6 +23,7 @@ import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTest
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
+import org.springframework.resilience.annotation.EnableResilientMethods
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.jwt.JwtDecoder
@@ -45,8 +46,9 @@ import java.util.*
 )
 @AutoConfigureDataSourceInitialization
 @Transactional
-@EnableMockOAuth2Server(port = 1888)
+@EnableMockOAuth2Server
 @AutoConfigureWebTestClient
+@EnableResilientMethods(proxyTargetClass = true)
 @EnableCaching
 class ApplicationTest {
 
@@ -85,7 +87,7 @@ class ApplicationTest {
     @Autowired
     protected lateinit var clientRegistrationRepository: ClientRegistrationRepository
 
-    @SpykBean()
+    @MockkSpyBean
     lateinit var aadMailClient: AADMailClient
 
     private val INNLOGGET_BRUKER = "14117119611"
