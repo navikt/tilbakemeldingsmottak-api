@@ -84,13 +84,6 @@
             <artifactId>javax.activation-api</artifactId>
             <version>${javax.activation.version}</version>
         </dependency>
-        <!--
-                <dependency>
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                    <version>${javax.xml-bind.version}</version>
-                </dependency>
-        -->
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>

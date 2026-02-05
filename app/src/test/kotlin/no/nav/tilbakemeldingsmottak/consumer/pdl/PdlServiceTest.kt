@@ -1,6 +1,5 @@
 package no.nav.tilbakemeldingsmottak.consumer.pdl
 
-import com.microsoft.graph.models.Message
 import com.ninjasquad.springmockk.MockkSpyBean
 import io.github.resilience4j.retry.RetryRegistry
 import io.mockk.every

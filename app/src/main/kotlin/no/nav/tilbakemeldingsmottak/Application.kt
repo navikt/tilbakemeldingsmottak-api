@@ -11,7 +11,6 @@ import org.springframework.resilience.annotation.EnableResilientMethods
     exclude = [OAuth2ResourceServerAutoConfiguration::class]
 )
 @ConfigurationPropertiesScan
-//@EnableRetry(proxyTargetClass = true)
 @EnableResilientMethods(proxyTargetClass = true)
 @EnableCaching
 class Application
