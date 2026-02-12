@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.saf.graphql
 
+import io.github.resilience4j.retry.annotation.Retry
 import no.nav.tilbakemeldingsmottak.exceptions.*
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.DOK_CONSUMER
 import no.nav.tilbakemeldingsmottak.metrics.MetricLabels.PROCESS_CODE
@@ -10,8 +11,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.graphql.client.GraphQlClient
 import org.springframework.http.*
-import org.springframework.retry.annotation.Backoff
-import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.util.function.Consumer
@@ -28,7 +27,7 @@ class SafGraphqlConsumer(
         percentiles = [0.5, 0.95],
         histogram = true
     )
-    @Retryable(include = [ServerErrorException::class], maxAttempts = 3, backoff = Backoff(delay = 500))
+    @Retry(name = "safGraphQl")
     fun performQuery(graphQLRequest: GraphQLRequest): Journalpost {
 
         logger.info("GraphQL hent journalpost")

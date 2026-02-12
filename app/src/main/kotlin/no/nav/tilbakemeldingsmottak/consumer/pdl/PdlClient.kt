@@ -1,5 +1,6 @@
 package no.nav.tilbakemeldingsmottak.consumer.pdl
 
+import io.github.resilience4j.retry.annotation.Retry
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorException
 import no.nav.tilbakemeldingsmottak.exceptions.ClientErrorUnauthorizedException
 import no.nav.tilbakemeldingsmottak.exceptions.ErrorCode
@@ -11,9 +12,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.graphql.client.HttpGraphQlClient
 import org.springframework.http.HttpStatus
-import org.springframework.retry.annotation.Backoff
-import org.springframework.retry.annotation.Recover
-import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClientResponseException
 
@@ -24,7 +22,8 @@ class PdlClient(
     private val log = LoggerFactory.getLogger(javaClass)
 
     // Retry på serverfeil og IO feil
-    @Retryable(include = [ServerErrorException::class], maxAttempts = 3, backoff = Backoff(delay = 2000))
+
+    @Retry(name = "pdlGraphQl", fallbackMethod = "retryFailed")
     fun performQuery(ident: String): HentIdenter.Result {
         log.info("PdlClient: performQuery for ident=xxxx")
 
@@ -79,8 +78,7 @@ class PdlClient(
     }
 
 
-    @Recover
-    fun retryFailed(e: Exception) {
+    fun retryFailed(ident: String, e: Exception): HentIdenter.Result {
         log.warn("Retry av PDL-kall feilet.", e)
         throw e
     }
