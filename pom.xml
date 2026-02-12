@@ -24,7 +24,7 @@
         <spring-boot.version>4.0.2</spring-boot.version>
         <spring-security-client.version>7.0.2</spring-security-client.version>
         <java.version>21</java.version>
-        <kotlin.version>2.2.21</kotlin.version>
+        <kotlin.version>2.3.10</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.version>3.9.0</maven.version>
@@ -32,15 +32,15 @@
         <resilience4j-spring-boot3.version>2.3.0</resilience4j-spring-boot3.version>
 
         <!-- NAV internal dependencies -->
-        <token-support.version>6.0.1</token-support.version>
+        <token-support.version>6.0.2</token-support.version>
         <mock-oauth2-server.version>3.0.1</mock-oauth2-server.version>
-        <spring-core.version>7.0.3</spring-core.version>
+        <spring-core.version>7.0.4</spring-core.version>
         <spring-security-test.version>7.0.2</spring-security-test.version>
         <caffeine.version>3.2.3</caffeine.version>
 
         <!-- Dependencies that should be on the latest version -->
         <httpclient5.version>5.6</httpclient5.version>
-        <microsoft-graph.version>6.60.0</microsoft-graph.version>
+        <microsoft-graph.version>6.61.0</microsoft-graph.version>
         <microsoft-graph-core.version>3.6.5</microsoft-graph-core.version>
         <graphql.dataloader.version>6.0.0</graphql.dataloader.version>
         <azure.identity.version>1.18.2</azure.identity.version>
@@ -51,14 +51,14 @@
         <jakarta-servlet-api.version>6.1.0</jakarta-servlet-api.version>
         <jakarta-validation-api.version>4.0.0-M1</jakarta-validation-api.version>
         <jakarta-annotation.version>3.0.0</jakarta-annotation.version>
-        <jakarta.xml-bind.version>4.0.4</jakarta.xml-bind.version>
+        <jakarta.xml-bind.version>4.0.5</jakarta.xml-bind.version>
 
         <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
         <mockito-junit-jupiter.version>5.21.0</mockito-junit-jupiter.version>
         <junit-jupiter.version>6.0.2</junit-jupiter.version>
         <resilience4j.version>2.3.0</resilience4j.version>
         <resilience4j-prometheus.version>1.7.1</resilience4j-prometheus.version>
-        <micrometer.version>1.16.2</micrometer.version>
+        <micrometer.version>1.16.3</micrometer.version>
         <spring-cloud-contract-wiremock.version>5.0.2</spring-cloud-contract-wiremock.version>
         <wiremock.version>4.0.0-beta.27</wiremock.version>
         <wiremock.core.version>4.0.0-beta.27</wiremock.core.version>
@@ -70,14 +70,14 @@
         <mockk.version>1.14.9</mockk.version>
 
         <spring-retry.version>2.0.12</spring-retry.version>
-        <flyway.version>12.0.0</flyway.version>
+        <flyway.version>12.0.1</flyway.version>
         <tika-core.version>3.2.3</tika-core.version>
         <pdfbox.version>3.0.6</pdfbox.version>
         <openhtml.version>1.1.37</openhtml.version>
         <handlebars.version>4.5.0</handlebars.version>
         <springdoc-openapi.version>1.8.0</springdoc-openapi.version>
         <swagger-annotations.version>2.2.42</swagger-annotations.version>
-        <httpcore5.version>5.4</httpcore5.version>
+        <httpcore5.version>5.4.1</httpcore5.version>
         <javax.activation.version>1.2.0</javax.activation.version>
         <poi.version>5.5.1</poi.version>
 
@@ -85,11 +85,11 @@
         <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.5.4</maven-failsafe-plugin.version>
         <!--7.15.0 og nyere feiler ved kompilering av genererte enums-->
-        <openapi-generator-maven-plugin.version>7.14.0</openapi-generator-maven-plugin.version>
+        <openapi-generator-maven-plugin.version>7.19.0</openapi-generator-maven-plugin.version>
         <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
         <maven-filtering>3.4.0</maven-filtering>
         <maven-enforcer.version>3.6.2</maven-enforcer.version>
-        <versions-maven-plugin.version>2.20.1</versions-maven-plugin.version>
+        <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
         <graphql-kotlin.version>8.8.1</graphql-kotlin.version>
 
         <springmockk.version>5.0.1</springmockk.version>
