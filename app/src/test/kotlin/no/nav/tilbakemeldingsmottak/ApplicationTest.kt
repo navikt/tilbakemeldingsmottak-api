@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak
 import com.nimbusds.jose.JOSEObjectType
 import com.ninjasquad.springmockk.MockkSpyBean
 import io.micrometer.core.instrument.MeterRegistry
+import io.mockk.clearAllMocks
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
@@ -14,6 +15,7 @@ import no.nav.tilbakemeldingsmottak.config.TokenExchangeService
 import no.nav.tilbakemeldingsmottak.repository.HendelseRepository
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
 import no.nav.tilbakemeldingsmottak.util.Api
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureDataSourceInitialization
@@ -96,6 +98,12 @@ class ApplicationTest {
     var api: Api? = null
 
     protected val SAKSBEHANDLER = "Saksbehandler"
+
+    @BeforeEach
+    fun setup() {
+        metricsRegistery.clear()
+        clearAllMocks()
+    }
 
 
     fun createMockJwt(issuer: String, subject: String = INNLOGGET_BRUKER): Jwt {
