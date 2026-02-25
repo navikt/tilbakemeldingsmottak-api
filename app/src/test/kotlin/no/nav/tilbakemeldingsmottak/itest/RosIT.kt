@@ -86,7 +86,6 @@ internal class RosIT : ApplicationTest() {
 
         `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
 
-        val initialCount = metricsRegistery.get(MetricLabels.DOK_REQUEST + "_not_logged_in").counter().count()
         // When / Then
         val response = restTemplate!!.post()
             .uri(URL_ROS)
@@ -98,7 +97,7 @@ internal class RosIT : ApplicationTest() {
         // Then
         assertEquals(HttpStatus.OK, response.status)
         assertEquals(
-            1.0 + initialCount,
+            1.0,
             metricsRegistery.get(MetricLabels.DOK_REQUEST + "_not_logged_in").counter().count()
         )
     }
@@ -111,7 +110,6 @@ internal class RosIT : ApplicationTest() {
         val mockJwt = createMockJwt(tokenxIssuer)
 
         `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
-        val initialCount = metricsRegistery.get(MetricLabels.DOK_REQUEST + "_not_logged_in").counter().count()
 
         // When / Then
         val response = restTemplate!!.post()
@@ -122,7 +120,7 @@ internal class RosIT : ApplicationTest() {
             .expectStatus().is4xxClientError
 
         assertEquals(
-            1.0 + initialCount,
+            1.0,
             metricsRegistery.get(MetricLabels.DOK_REQUEST + "_not_logged_in").counter().count()
         )
 
