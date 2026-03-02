@@ -54,8 +54,13 @@
             <version>${swagger-annotations.version}</version>
         </dependency>
         <dependency>
+            <groupId>tools.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <version>${jackson-module-kotlin.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc-openapi.version}</version>
         </dependency>
     </dependencies>
@@ -79,8 +84,10 @@
                             <generatorName>kotlin-spring</generatorName>
                             <apiPackage>no.nav.tilbakemeldingsmottak.api</apiPackage>
                             <modelPackage>no.nav.tilbakemeldingsmottak.model</modelPackage>
-                            <templateDirectory>${project.basedir}/src/main/resources/custom-templates
-                            </templateDirectory>
+                            <!--
+                                                        <templateDirectory>${project.basedir}/src/main/resources/custom-templates
+                                                        </templateDirectory>
+                            -->
                             <configOptions>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <gradleBuildFile>false</gradleBuildFile>
@@ -99,7 +106,7 @@
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
-                <version>${kotlin.version}</version>
+                <version>${kotlin-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>compile</id>

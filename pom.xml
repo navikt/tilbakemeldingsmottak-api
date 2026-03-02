@@ -75,7 +75,8 @@
         <pdfbox.version>3.0.6</pdfbox.version>
         <openhtml.version>1.1.37</openhtml.version>
         <handlebars.version>4.5.0</handlebars.version>
-        <springdoc-openapi.version>1.8.0</springdoc-openapi.version>
+        <springdoc-openapi.version>3.0.2</springdoc-openapi.version>
+        <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
         <swagger-annotations.version>2.2.43</swagger-annotations.version>
         <httpcore5.version>5.4.1</httpcore5.version>
         <javax.activation.version>1.2.0</javax.activation.version>
@@ -84,9 +85,8 @@
         <!-- Maven plugins -->
         <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
         <maven-failsafe-plugin.version>3.5.5</maven-failsafe-plugin.version>
-        <!--7.15.0 og nyere feiler ved kompilering av genererte enums-->
         <openapi-generator-maven-plugin.version>7.20.0</openapi-generator-maven-plugin.version>
-        <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
+        <kotlin-maven-plugin.version>2.2.21</kotlin-maven-plugin.version>
         <maven-filtering>3.4.0</maven-filtering>
         <maven-enforcer.version>3.6.2</maven-enforcer.version>
         <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
