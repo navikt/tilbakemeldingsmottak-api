@@ -160,6 +160,9 @@ internal class ServiceklageIT : ApplicationTest() {
         // Given
         val msg = OpprettServiceklageRequestBuilder().asPrivatPerson()
             .build(klagetyper = listOf(NAV_DIGITALE_TJENESTER, TELEFON))
+
+        val jsonString = objectMapper.writeValueAsString(msg)
+
         val personnummer = msg.innmelder!!.personnummer!!
         val mockJwt = createMockJwt(tokenxIssuer, personnummer)
 

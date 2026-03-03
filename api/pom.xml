@@ -89,10 +89,8 @@
                             <generatorName>kotlin-spring</generatorName>
                             <apiPackage>no.nav.tilbakemeldingsmottak.api</apiPackage>
                             <modelPackage>no.nav.tilbakemeldingsmottak.model</modelPackage>
-                            <!--
-                                                        <templateDirectory>${project.basedir}/src/main/resources/custom-templates
-                                                        </templateDirectory>
-                            -->
+                            <templateDirectory>${project.basedir}/src/main/resources/custom-templates
+                            </templateDirectory>
                             <configOptions>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <gradleBuildFile>false</gradleBuildFile>
