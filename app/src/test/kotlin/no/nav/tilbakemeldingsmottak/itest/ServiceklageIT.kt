@@ -158,7 +158,8 @@ internal class ServiceklageIT : ApplicationTest() {
     @Test
     fun `Should return correct data as a private person`() {
         // Given
-        val msg = OpprettServiceklageRequestBuilder().asPrivatPerson().build()
+        val msg = OpprettServiceklageRequestBuilder().asPrivatPerson()
+            .build(klagetyper = listOf(NAV_DIGITALE_TJENESTER, TELEFON))
         val personnummer = msg.innmelder!!.personnummer!!
         val mockJwt = createMockJwt(tokenxIssuer, personnummer)
 
@@ -179,7 +180,7 @@ internal class ServiceklageIT : ApplicationTest() {
 
         assertBasicServiceklageFields(serviceklage)
         assertEquals(PERSONNUMMER, serviceklage.klagenGjelderId)
-        assertEquals(NAV_DIGITALE_TJENESTER.value, serviceklage.klagetyper)
+        assertEquals(NAV_DIGITALE_TJENESTER.value + ", " + TELEFON.value, serviceklage.klagetyper)
         assertTrue(serviceklage.innlogget!!)
         assertEquals(PRIVATPERSON.value, serviceklage.innsender)
         assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
