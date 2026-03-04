@@ -28,7 +28,20 @@
     enum class {{{nameInCamelCase}}}(val value: {{#isContainer}}{{#items}}{{{dataType}}}{{/items}}{{/isContainer}}{{^isContainer}}{{{dataType}}}{{/isContainer}}) {
     {{#allowableValues}}{{#enumVars}}
         @JsonProperty("{{&name}}") {{&name}}({{{value}}}){{^-last}},{{/-last}}
-    {{/enumVars}}{{/allowableValues}}
+    {{/enumVars}}{{/allowableValues}};
+    ;
+    companion object {
+    @JvmStatic
+    @JsonCreator
+    fun forValue(value: kotlin.String): {{classname}} {
+    return values().firstOrNull {
+    it.value == value || it.name == value
+    } ?: throw IllegalArgumentException(
+    "Unexpected value '$value' for enum '{{classname}}'"
+    )
+    }
+    }
+    }
     }
 {{/isEnum}}{{/vars}}{{/hasEnums}}
 }
