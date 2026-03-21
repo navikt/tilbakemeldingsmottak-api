@@ -34,7 +34,7 @@
         <!-- NAV internal dependencies -->
         <token-support.version>6.0.3</token-support.version>
         <mock-oauth2-server.version>3.0.1</mock-oauth2-server.version>
-        <spring-core.version>7.0.5</spring-core.version>
+        <spring-core.version>7.0.6</spring-core.version>
         <spring-security-test.version>7.0.3</spring-security-test.version>
         <caffeine.version>3.2.3</caffeine.version>
 
