@@ -91,7 +91,7 @@
         <maven-filtering>3.4.0</maven-filtering>
         <maven-enforcer.version>3.6.2</maven-enforcer.version>
         <versions-maven-plugin.version>2.21.0</versions-maven-plugin.version>
-        <graphql-kotlin.version>8.8.1</graphql-kotlin.version>
+        <graphql-kotlin.version>9.1.0</graphql-kotlin.version>
 
         <springmockk.version>5.0.1</springmockk.version>
 
