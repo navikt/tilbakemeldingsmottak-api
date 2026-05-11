@@ -132,7 +132,7 @@
         </dependency>
         <dependency>
             <groupId>io.github.resilience4j</groupId>
-            <artifactId>resilience4j-spring-boot3</artifactId>
+            <artifactId>resilience4j-spring-boot4</artifactId>
             <version>${resilience4j-spring-boot3.version}</version>
         </dependency>
         <dependency>
@@ -438,7 +438,7 @@
         <dependency>
             <groupId>org.mockito.kotlin</groupId>
             <artifactId>mockito-kotlin</artifactId>
-            <version>6.2.3</version>
+            <version>6.3.0</version>
             <scope>test</scope>
         </dependency>
 
