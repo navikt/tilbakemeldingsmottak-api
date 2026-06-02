@@ -13,6 +13,7 @@ import no.nav.tilbakemeldingsmottak.util.builders.InnmelderBuilder
 import no.nav.tilbakemeldingsmottak.util.builders.OpprettServiceklageRequestBuilder
 import no.nav.tilbakemeldingsmottak.util.builders.PaaVegneAvBedriftBuilder
 import no.nav.tilbakemeldingsmottak.util.builders.PaaVegneAvPersonBuilder
+import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -103,6 +104,16 @@ internal class OpprettServiceklageValidatorTest {
         }
 
         assertTrue(thrown.message.contains("gjelderSosialhjelp er påkrevd dersom klagetyper=LOKALT_NAV_KONTOR"))
+    }
+
+    @Test
+    fun shouldAllowMissingComplaintTypeFieldsWhenValidationIsDisabled() {
+        opprettServiceklageRequest =
+            OpprettServiceklageRequestBuilder().asPrivatPerson().build(klagetyper = null, gjelderSosialhjelp = null)
+
+        assertDoesNotThrow {
+            opprettServiceklageValidator!!.validateRequest(opprettServiceklageRequest, null, false)
+        }
     }
 
     @Test

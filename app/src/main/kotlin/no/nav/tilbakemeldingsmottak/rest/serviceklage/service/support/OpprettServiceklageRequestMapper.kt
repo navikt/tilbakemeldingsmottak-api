@@ -38,8 +38,8 @@ class OpprettServiceklageRequestMapper {
         } else null
     }
 
-    private fun mapKlagetype(klagetype: List<OpprettServiceklageKlagetype>?): String {
-        return klagetype?.joinToString(", ") { it.value } ?: ""
+    private fun mapKlagetype(klagetype: List<OpprettServiceklageKlagetype>?): String? {
+        return klagetype?.joinToString(", ") { it.value }
     }
 
     private fun mapSvarmetode(oenskerAaKontaktes: Boolean?): String? {

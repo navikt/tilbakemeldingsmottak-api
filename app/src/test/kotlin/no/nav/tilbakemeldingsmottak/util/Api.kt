@@ -11,6 +11,7 @@ import java.time.Duration
 class Api(val restTemplate: WebTestClient) {
 
     private val URL_SENDINN_SERVICEKLAGE = "/rest/serviceklage"
+    private val URL_SENDINN_SERVICEKLAGE_V2 = "/rest/v2/serviceklage"
     private val URL_BEHANDLE_SERVICEKLAGE = "/rest/taskserviceklage"
     private val HENT_DOKUMENT = "hentdokument"
     private val HENT_SKJEMA = "hentskjema"
@@ -27,6 +28,27 @@ class Api(val restTemplate: WebTestClient) {
             .headers { it.addAll(requestEntity.headers) }
             .bodyValue(requestEntity.body!!)
 
+            .exchange()
+            .expectStatus().isOk
+            .expectBody(OpprettServiceklageResponse::class.java)
+            .returnResult()
+
+        return ResponseEntity
+            .status(result.status)
+            .headers(result.responseHeaders)
+            .body(result.responseBody)
+    }
+
+    fun createServiceklageV2(requestEntity: HttpEntity<OpprettServiceklageV2Request>): ResponseEntity<OpprettServiceklageResponse> {
+
+        val result = restTemplate
+            .mutate()
+            .responseTimeout(Duration.ofMinutes(2))
+            .build()
+            .post()
+            .uri(URL_SENDINN_SERVICEKLAGE_V2)
+            .headers { it.addAll(requestEntity.headers) }
+            .bodyValue(requestEntity.body!!)
             .exchange()
             .expectStatus().isOk
             .expectBody(OpprettServiceklageResponse::class.java)

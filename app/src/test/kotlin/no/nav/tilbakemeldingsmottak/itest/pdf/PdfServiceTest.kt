@@ -127,6 +127,27 @@ internal class PdfServiceTest {
     }
 
     @Test
+    fun happyPathWithoutComplaintTypeFields() {
+        // Given
+        opprettServiceklageRequest =
+            OpprettServiceklageRequestBuilder().asPrivatPerson().build(
+                klagetyper = null,
+                klagetypeUtdypning = null,
+                gjelderSosialhjelp = null
+            )
+
+        // When
+        val pdf = pdfService!!.opprettServiceklagePdf(opprettServiceklageRequest, false)
+        val content = getStringFromByteArrayPdf(pdf)
+
+        // Then
+        assertTrue(content.contains(opprettServiceklageRequest.klagetekst!!))
+        assertFalse(content.contains("Klagetype:"))
+        assertFalse(content.contains("Klagetype spesifisert i fritekst"))
+        assertFalse(content.contains("Gjelder økonomisk sosialhjelp"))
+    }
+
+    @Test
     fun happyPathInnlogget() {
         // Given
         opprettServiceklageRequest = OpprettServiceklageRequestBuilder().asPrivatPerson().build()

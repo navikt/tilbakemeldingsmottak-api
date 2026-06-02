@@ -20,8 +20,12 @@ class OpprettServiceklageValidator(
 
     private val ENHETSNUMMER_LENGTH = 4
 
-    fun validateRequest(request: OpprettServiceklageRequest, paloggetBruker: String?) {
-        validateCommonRequiredFields(request)
+    fun validateRequest(
+        request: OpprettServiceklageRequest,
+        paloggetBruker: String?,
+        validateComplaintFields: Boolean = true
+    ) {
+        validateCommonRequiredFields(request, validateComplaintFields)
         when (request.paaVegneAv) {
             PRIVATPERSON -> validatePaaVegneAvPrivatperson(request, paloggetBruker)
             ANNEN_PERSON -> validatePaaVegneAvAnnenPerson(request)
@@ -30,10 +34,12 @@ class OpprettServiceklageValidator(
         }
     }
 
-    private fun validateCommonRequiredFields(request: OpprettServiceklageRequest) {
-        isNotNull(request.klagetyper, "klagetyper")
-        if (request.klagetyper?.contains(LOKALT_NAV_KONTOR) == true) {
-            isNotNull(request.gjelderSosialhjelp, "gjelderSosialhjelp", " dersom klagetyper=LOKALT_NAV_KONTOR")
+    private fun validateCommonRequiredFields(request: OpprettServiceklageRequest, validateComplaintFields: Boolean) {
+        if (validateComplaintFields) {
+            isNotNull(request.klagetyper, "klagetyper")
+            if (request.klagetyper?.contains(LOKALT_NAV_KONTOR) == true) {
+                isNotNull(request.gjelderSosialhjelp, "gjelderSosialhjelp", " dersom klagetyper=LOKALT_NAV_KONTOR")
+            }
         }
         isNotNull(request.paaVegneAv, "paaVegneAv")
         isNotNull(request.innmelder, "innmelder")

@@ -32,7 +32,7 @@ Applikasjonen kjører Java 21. Hvordan bygge, teste og kjøre koden:
 ## Bygging lokalt
 
 * Kjør `mvn clean install`
-* Kjør `docker-compose up` for å kjøre opp mocks og database lokalt
+* Kjør `docker compose up` for å kjøre opp mocks og database lokalt
 * Kjør Spring Boot applikasjonen med `local` som aktiv profil (`-Dspring.profiles.active=local`)
 
 ### Autentisering

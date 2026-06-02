@@ -52,6 +52,25 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/OpprettServiceklageResponse'
+  /rest/v2/serviceklage:
+    post:
+      description: Bruker sender inn serviceklage. Dette er klager på servicen man har fått fra NAV.
+      tags:
+        - serviceklage-v2-rest-controller
+      operationId: opprettServiceklageV2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpprettServiceklageV2Request'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OpprettServiceklageResponse'
   /rest/ros:
     description: Bruker sender inn ros til NAV om brukeren har hatt en god opplevelse med NAV.
     post:
@@ -352,6 +371,23 @@ components:
           type: string
         gjelderSosialhjelp:
           $ref: '#/components/schemas/OpprettServiceklageGjelderSosialhjelp'
+        klagetekst:
+          type: string
+        oenskerAaKontaktes:
+          type: boolean
+    OpprettServiceklageV2Request:
+      type: object
+      properties:
+        paaVegneAv:
+          $ref: '#/components/schemas/OpprettServiceklagePaaVegneAv'
+        innmelder:
+          $ref: '#/components/schemas/Innmelder'
+        paaVegneAvPerson:
+          $ref: '#/components/schemas/PaaVegneAvPerson'
+        paaVegneAvBedrift:
+          $ref: '#/components/schemas/PaaVegneAvBedrift'
+        enhetsnummerPaaklaget:
+          type: string
         klagetekst:
           type: string
         oenskerAaKontaktes:
