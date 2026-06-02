@@ -25,10 +25,6 @@ Applikasjonens omgivelser er vist i figuren nedenfor.
 
 Applikasjonen er skrevet i kotlin med Spring Boot og maven for bygging.
 
-Merk at pr 1/11-2025 kjører applikasjonen i dev miljøet med en branch med Spring Boot 4.0.0-M3 der Spring Security er
-tatt i bruk.
-Denne versjonen er planlagt for produksjon når offisiel Spring Boot 4.0 blir sluppet.
-
 # Komme i gang
 
 Applikasjonen kjører Java 21. Hvordan bygge, teste og kjøre koden:
