@@ -6,5 +6,6 @@
     "aktivDato": "2019-08-23",
     "prioritet": "NORM",
     "oppgavetype": "VUR",
-    "journalpostId": "12345"
+    "journalpostId": "12345",
+    "status": "OPPRETTET"
 }

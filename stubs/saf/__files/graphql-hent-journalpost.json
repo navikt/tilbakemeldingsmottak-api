@@ -1,38 +1,25 @@
 {
-    "data": {
-        "journalpost": {
-            "dokumenter": [
-                {
-                    "dokumentInfoId": "dokumentInfoId",
-                    "dokumentvarianter": [
-                        {
-                            "variantformat": "ARKIV",
-                            "saksbehandlerHarTilgang": true
-                        },
-                        {
-                            "variantformat": "SLADDET",
-                            "saksbehandlerHarTilgang": true
-                        }
-                    ]
-                }
-            ]
-        }
-    },
+  "data": {
     "journalpost": {
-        "dokumenter": [
+      "bruker": {
+        "id": "01010096460"
+      },
+      "datoOpprettet": "2025-10-03T17:08:56.705566",
+      "dokumenter": [
+        {
+          "dokumentInfoId": "dokumentInfoId",
+          "dokumentvarianter": [
             {
-                "dokumentInfoId": "dokumentInfoId",
-                "dokumentvarianter": [
-                    {
-                        "variantformat": "ARKIV",
-                        "saksbehandlerHarTilgang": true
-                    },
-                    {
-                        "variantformat": "SLADDET",
-                        "saksbehandlerHarTilgang": true
-                    }
-                ]
+              "saksbehandlerHarTilgang": true,
+              "variantformat": "ARKIV"
+            },
+            {
+              "saksbehandlerHarTilgang": true,
+              "variantformat": "SLADDET"
             }
-        ]
+          ]
+        }
+      ]
     }
+  }
 }
