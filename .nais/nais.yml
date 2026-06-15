@@ -15,16 +15,19 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: tilbakemeldinger
-          namespace: navno
-        - application: samisk-samtale-bestilling
-          namespace: navno
-        - application: statuspoll
-          namespace: navdig
-        - application: tilbakemeldingsmottak-frontend
+      {{#each accessPolicyInbound.applications}}
+        - application: "{{this.name}}"
+          {{#if this.namespace}}
+          namespace: "{{this.namespace}}"
+          {{/if}}
+          {{#if (this.scopes)}}
           permissions:
             scopes:
-              - serviceklage-klassifisering
+            {{#each this.scopes as |scope|}}
+              - "{{scope}}"
+            {{/each}}
+          {{/if}}
+      {{/each}}
     outbound:
       external:
       {{#each outboundExternalHosts}}

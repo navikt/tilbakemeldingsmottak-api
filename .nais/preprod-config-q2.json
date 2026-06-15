@@ -12,6 +12,35 @@
   "INGRESS": [
     "https://tilbakemeldingsmottak-gcp.intern.dev.nav.no"
   ],
+  "accessPolicyInbound": {
+    "applications": [
+      {
+        "name": "tilbakemeldinger",
+        "namespace": "navno"
+      },
+      {
+        "name": "samisk-samtale-bestilling",
+        "namespace": "navno"
+      },
+      {
+        "name": "statuspoll",
+        "namespace": "navdig"
+      },
+      {
+        "name": "tilbakemeldingsmottak-frontend",
+        "scopes": ["serviceklage-klassifisering"]
+      },
+      {
+        "name": "azure-token-generator",
+        "namespace": "nais",
+        "scopes": ["serviceklage-klassifisering"]
+      },
+      {
+        "name": "tokenx-token-generator",
+        "namespace": "nais"
+      }
+    ]
+  },
   "accessPolicyOutbound": {
     "other-namespace": [
       {
