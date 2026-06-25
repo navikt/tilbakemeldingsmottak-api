@@ -32,6 +32,7 @@ import no.nav.tilbakemeldingsmottak.util.NavKontorConstants.Companion.NAV_ENHETS
 import no.nav.tilbakemeldingsmottak.util.builders.InnmelderBuilder
 import no.nav.tilbakemeldingsmottak.util.builders.KlassifiserServiceklageRequestBuilder
 import no.nav.tilbakemeldingsmottak.util.builders.OpprettServiceklageRequestBuilder
+import no.nav.tilbakemeldingsmottak.util.builders.OpprettServiceklageV2RequestBuilder
 import org.apache.commons.lang3.RandomStringUtils
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -223,6 +224,37 @@ internal class ServiceklageIT : ApplicationTest() {
         assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
         assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
         assertEquals(1.0, metricsRegistery.get(DOK_REQUEST + "_not_logged_in").counter().count())
+    }
+
+    @Test
+    fun `Should accept v2 request without complaint type fields`() {
+        // Given
+        val msg = OpprettServiceklageV2RequestBuilder().asPrivatPerson().build()
+        val personnummer = msg.innmelder!!.personnummer!!
+        val mockJwt = createMockJwt(tokenxIssuer, personnummer)
+
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+        `when`(tokenxJwtDecoder.decode(anyString())).thenReturn(mockJwt)
+
+        val requestEntity = HttpEntity(msg, createHeaders(Constants.TOKENX_ISSUER, personnummer, true))
+
+        // When
+        val response = api?.createServiceklageV2(requestEntity)
+
+        // Then
+        val serviceklage = serviceklageRepository!!.findAll().first()
+
+        assertEquals(HttpStatus.OK, response?.statusCode)
+        assertBasicServiceklageFields(serviceklage)
+        assertEquals(PERSONNUMMER, serviceklage.klagenGjelderId)
+        assertNull(serviceklage.klagetyper)
+        assertNull(serviceklage.klagetypeUtdypning)
+        assertNull(serviceklage.gjelderSosialhjelp)
+        assertTrue(serviceklage.innlogget!!)
+        assertEquals(PRIVATPERSON.value, serviceklage.innsender)
+        assertEquals(BRUKER_IKKE_BEDT_OM_SVAR_ANSWER, serviceklage.svarmetodeUtdypning)
+        assertEquals(SVAR_IKKE_NOEDVENDIG_ANSWER, serviceklage.svarmetode)
+        assertEquals(OPPGAVE_ID, serviceklage.oppgaveId)
     }
 
 

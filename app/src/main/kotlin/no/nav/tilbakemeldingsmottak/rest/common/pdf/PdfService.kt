@@ -82,7 +82,9 @@ class PdfService {
             klageMap["Påklaget enhet"] = it
         }
 
-        klageMap["Klagetype"] = request.klagetyper?.joinToString(", ") { it.value }
+        request.klagetyper?.let {
+            klageMap["Klagetype"] = it.joinToString(", ") { klagetype -> klagetype.value }
+        }
 
         if (request.klagetyper?.contains(LOKALT_NAV_KONTOR) == true) {
             klageMap["Gjelder økonomisk sosialhjelp/sosiale tjenester"] =
