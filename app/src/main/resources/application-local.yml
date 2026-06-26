@@ -61,10 +61,6 @@ spring:
           azuread:
             token-uri: http://localhost:6969/fake/token
 
-app:
-  security:
-    disable-auth: false
-
 auth:
   issuers:
     azuread:

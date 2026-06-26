@@ -122,13 +122,7 @@ auth:
       jwk-set-uri: http://localhost:${token.server.port}/tokenx/.well-known/openid-configuration
 
 spring:
-  datasource:
-    url: jdbc:h2:mem:${random.uuid};MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect

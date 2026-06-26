@@ -116,17 +116,6 @@ class ApplicationTest {
             .build()
     }
 
-    fun createMockJwtWithScope(issuer: String, subject: String = INNLOGGET_BRUKER, scope: String): Jwt {
-        return Jwt.withTokenValue("mock-token")
-            .header("alg", "none")
-            .claim("iss", issuer)
-            .claim("aud", AUD)
-            .claim("sub", subject)
-            .claim("pid", subject)
-            .claim("scp", "defaultaccess $scope")
-            .build()
-    }
-
     fun createMockJwt(issuer: String): Jwt {
         return Jwt.withTokenValue("mock-token")
             .header("alg", "none")

@@ -1,3 +1,0 @@
-app:
-  security:
-    disable-auth: true
