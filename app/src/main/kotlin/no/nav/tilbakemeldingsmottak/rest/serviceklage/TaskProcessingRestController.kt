@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @PreAuthorize(
-    "@claimChecker.hasAccess(authentication, {'serviceklage-klassifisering'})"
+    "@claimChecer.hasAccess('azuread','serviceklage-klassifisering')"
 )
 class TaskProcessingRestController(
     private val klassifiserServiceklageService: KlassifiserServiceklageService,
