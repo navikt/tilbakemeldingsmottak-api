@@ -1,4 +1,4 @@
-package no.nav.tilbakemeldingsmottak.config
+package no.nav.tilbakemeldingsmottak.config.security
 
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication

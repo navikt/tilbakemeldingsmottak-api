@@ -7,6 +7,8 @@ info:
 servers:
   - url: http://localhost:9069
     description: Lokal utvikling
+security:
+  - bearerAuth: [ ]
 paths:
   /rest/taskserviceklage/klassifiser:
     description: Saksbehandler klassifiserer serviceklage som er sendt inn.
@@ -195,6 +197,7 @@ paths:
       tags:
         - nais-contract
       operationId: isAlive
+      security: [ ]
       responses:
         "200":
           description: OK
@@ -208,6 +211,7 @@ paths:
       tags:
         - nais-contract
       operationId: selftest
+      security: [ ]
       responses:
         "200":
           description: OK
@@ -221,6 +225,7 @@ paths:
       tags:
         - nais-contract
       operationId: isReady
+      security: [ ]
       responses:
         "200":
           description: OK
@@ -247,6 +252,11 @@ paths:
           - health
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     ApplicationStatus:
       type: object
