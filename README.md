@@ -52,6 +52,23 @@ saksbehandler.
     - Gå til `http://localhost:6969/azuread/debugger` og bytt ut `somescope` med `frontend`. Velg deretter "Get a token"
       med hva som helst i user objektet
 
+### Swagger og lokal testing
+
+- Swagger UI er tilgjengelig på `http://localhost:9069/swagger-ui/index.html`
+- OpenAPI JSON er tilgjengelig på `http://localhost:9069/v3/api-docs`
+- Swagger/OpenAPI kan åpnes uten autentisering
+- For å teste beskyttede endepunkter i Swagger klikker du `Authorize` og limer inn en bearer token fra mock auth-serveren på `localhost:6969`
+  - Bruk `tokenx`-token for brukerendepunkter
+  - Bruk `azuread`-token med scope `serviceklage-klassifisering` for saksbehandler-endepunkter
+
+#### Deaktivere inbound auth lokalt
+
+Hvis du vil teste API-et lokalt uten å hente token, kan du starte applikasjonen med:
+
+- `-Dspring.profiles.active=local -Dapp.security.disable-auth=true`
+
+Da blir inbound auth slått av for lokal kjøring, mens Swagger/OpenAPI fortsatt er tilgjengelig. For å teste faktisk autentisering lokalt lar du `app.security.disable-auth` stå som `false` og bruker token fra debuggeren.
+
 ### Test i miljøet
 
 En mock auth server kjøres via docker-compose og kan brukes til å generere gyldige tokens lokalt.
