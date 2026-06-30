@@ -81,6 +81,7 @@ internal class ProdLikeAuthIT {
             val base = "http://localhost:${wm.port}"
             reg.add("spring.security.oauth2.client.provider.azuread.token-uri") { "$base/fake/token" }
             reg.add("Journalpost_v1_url") { "$base/OPPRETT_JOURNALPOST" }
+            reg.add("oppgave_oppgaver_url") { "$base/OPPGAVE" }
         }
     }
 
@@ -89,6 +90,8 @@ internal class ProdLikeAuthIT {
         wm.resetAll()
         WireMockStubs.stubTokenEndpoint()
         WireMockStubs.stubForJoark()
+        WireMockStubs.stubForPdlHentIdenter()
+        WireMockStubs.stubForOpprettOppgave()
         justRun { aadMailClient.sendMailViaClient(any()) }
     }
 
@@ -99,26 +102,26 @@ internal class ProdLikeAuthIT {
             DefaultOAuth2TokenCallback(issuerId, subject, "JWT", listOf(aud), claims, 3600)
         ).serialize()
 
-    private fun postServiceklageV2(bearer: String?): WebTestClient.ResponseSpec {
+    private fun postServiceklageV2(token: String?): WebTestClient.ResponseSpec {
         val req = OpprettServiceklageV2RequestBuilder().asPrivatPerson().build()
         val spec = webTestClient.post()
             .uri("/rest/v2/serviceklage")
             .contentType(MediaType.APPLICATION_JSON)
             .header("correlation_id", UUID.randomUUID().toString())
-        bearer?.let { spec.header(HttpHeaders.AUTHORIZATION, "Bearer $it") }
+        token?.let { spec.header(HttpHeaders.AUTHORIZATION, "Bearer $it") }
         return spec.bodyValue(objectMapper.writeValueAsString(req)).exchange()
     }
 
     @Test
     fun `M2M token from Azure AD is accepted (issue 339 regression)`() {
         val m2m = token("microsoft", "client-id", mapOf("scp" to "defaultaccess"))
-        postServiceklageV2(m2m).expectStatus().value { code -> assert(code != 401) }
+        postServiceklageV2(m2m).expectStatus().value { code -> assert(code == 200) }
     }
 
     @Test
     fun `OBO token from TokenX is accepted`() {
-        val obo = token("tokenx", "14117119611", mapOf("pid" to "14117119611", "acr" to "Level4"))
-        postServiceklageV2(obo).expectStatus().value { code -> assert(code != 401) }
+        val obo = token("tokenx", "01010096460", mapOf("pid" to "01010096460", "acr" to "Level4"))
+        postServiceklageV2(obo).expectStatus().value { code -> assert(code == 200) }
     }
 
     @Test
