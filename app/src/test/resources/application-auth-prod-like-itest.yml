@@ -1,0 +1,14 @@
+# Overlay on top of the "itest" profile that simulates production: the Azure AD issuer
+# URI does NOT contain the substring "azuread" (just like login.microsoftonline.com),
+# so the substring-based bug behind issue #339 would reproduce here. JWTs are validated
+# for real against MockOAuth2Server (no mocked JwtDecoder beans).
+auth:
+  issuers:
+    azuread:
+      issuer-uri: http://localhost:${token.server.port}/microsoft
+      accepted-audience: aud-localhost
+      jwk-set-uri: http://localhost:${token.server.port}/microsoft/jwks
+    tokenx:
+      issuer-uri: http://localhost:${token.server.port}/tokenx
+      accepted-audience: aud-localhost
+      jwk-set-uri: http://localhost:${token.server.port}/tokenx/jwks

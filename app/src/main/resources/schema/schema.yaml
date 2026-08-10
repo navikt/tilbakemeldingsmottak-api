@@ -1,21 +1,6 @@
 version: '1'
 
 questions:
-    -   id: PAAKLAGET_ENHET_ER_BEHANDLENDE
-        text: Er klagen behandlet i enheten det klages på?
-        type: RADIO
-        answers:
-            -   answer: Ja
-            -   answer: Nei
-                questions:
-                    -   id: ENHETSNUMMER_BEHANDLENDE
-                        text: Angi enhetsnummer til enheten som behandler klagen
-                        type: DATALIST
-
-    -   id: ENHETSNUMMER_PAAKLAGET
-        text: Angi enhetsnummer til enheten det klages på
-        type: DATALIST
-
     -   id: BEHANDLES_SOM_SERVICEKLAGE
         text: Skal klagen behandles etter serviceklagerutinen?
         type: RADIO
@@ -34,6 +19,19 @@ questions:
                                 next: none
             -   answer: Nei, innsender har ikke fullmakt på vegne av bruker
                 questions:
+                    -   id: PAAKLAGET_ENHET_ER_BEHANDLENDE
+                        text: Er klagen behandlet i enheten det klages på?
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                            -   answer: Nei
+                                questions:
+                                    -   id: ENHETSNUMMER_BEHANDLENDE
+                                        text: Angi enhetsnummer til enheten som behandler klagen
+                                        type: DATALIST
+                    -   id: ENHETSNUMMER_PAAKLAGET
+                        text: Angi enhetsnummer til enheten det klages på
+                        type: DATALIST
                     -   id: KVITTERING
                         text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
                         type: RADIO
@@ -56,6 +54,19 @@ questions:
                                 button:
                                     text: Lukk og gå tilbake til Gosys
                                 next: none
+                    -   id: PAAKLAGET_ENHET_ER_BEHANDLENDE
+                        text: Er klagen behandlet i enheten det klages på?
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                            -   answer: Nei
+                                questions:
+                                    -   id: ENHETSNUMMER_BEHANDLENDE
+                                        text: Angi enhetsnummer til enheten som behandler klagen
+                                        type: DATALIST
+                    -   id: ENHETSNUMMER_PAAKLAGET
+                        text: Angi enhetsnummer til enheten det klages på
+                        type: DATALIST
                     -   id: KVITTERING
                         text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
                         type: RADIO
@@ -78,6 +89,19 @@ questions:
                                 button:
                                     text: Lukk og gå tilbake til Gosys
                                 next: none
+                    -   id: PAAKLAGET_ENHET_ER_BEHANDLENDE
+                        text: Er klagen behandlet i enheten det klages på?
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                            -   answer: Nei
+                                questions:
+                                    -   id: ENHETSNUMMER_BEHANDLENDE
+                                        text: Angi enhetsnummer til enheten som behandler klagen
+                                        type: DATALIST
+                    -   id: ENHETSNUMMER_PAAKLAGET
+                        text: Angi enhetsnummer til enheten det klages på
+                        type: DATALIST
                     -   id: KVITTERING
                         text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
                         type: RADIO
@@ -100,6 +124,19 @@ questions:
                                 button:
                                     text: Lukk og gå tilbake til Gosys
                                 next: none
+                    -   id: PAAKLAGET_ENHET_ER_BEHANDLENDE
+                        text: Er klagen behandlet i enheten det klages på?
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                            -   answer: Nei
+                                questions:
+                                    -   id: ENHETSNUMMER_BEHANDLENDE
+                                        text: Angi enhetsnummer til enheten som behandler klagen
+                                        type: DATALIST
+                    -   id: ENHETSNUMMER_PAAKLAGET
+                        text: Angi enhetsnummer til enheten det klages på
+                        type: DATALIST
                     -   id: KVITTERING
                         text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
                         type: RADIO
@@ -111,6 +148,19 @@ questions:
                         next: none
             -   answer: Nei, annet
                 questions:
+                    -   id: PAAKLAGET_ENHET_ER_BEHANDLENDE
+                        text: Er klagen behandlet i enheten det klages på?
+                        type: RADIO
+                        answers:
+                            -   answer: Ja
+                            -   answer: Nei
+                                questions:
+                                    -   id: ENHETSNUMMER_BEHANDLENDE
+                                        text: Angi enhetsnummer til enheten som behandler klagen
+                                        type: DATALIST
+                    -   id: ENHETSNUMMER_PAAKLAGET
+                        text: Angi enhetsnummer til enheten det klages på
+                        type: DATALIST
                     -   id: KVITTERING
                         text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?
                         type: RADIO
@@ -319,6 +369,21 @@ questions:
                                         banner:
                                             message: Ikke identifiser bruker eller ansatt
                                             type: WARN
+
+    -   id: PAAKLAGET_ENHET_ER_BEHANDLENDE
+        text: Er klagen behandlet i enheten det klages på?
+        type: RADIO
+        answers:
+            -   answer: Ja
+            -   answer: Nei
+                questions:
+                    -   id: ENHETSNUMMER_BEHANDLENDE
+                        text: Angi enhetsnummer til enheten som behandler klagen
+                        type: DATALIST
+
+    -   id: ENHETSNUMMER_PAAKLAGET
+        text: Angi enhetsnummer til enheten det klages på
+        type: DATALIST
 
     -   id: KVITTERING
         text: Ønsker du å få kvittering for innsendt skjema tilsendt på mail?

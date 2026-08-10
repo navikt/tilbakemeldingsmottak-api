@@ -39,7 +39,7 @@ class JournalpostConsumer(
 
         val journalpostReponse = restClient
             .method(HttpMethod.POST)
-            .uri("/journalpost/$FORSOEK_FERDIGSTILL")
+            .uri("/journalpost$FORSOEK_FERDIGSTILL")
             .contentType(APPLICATION_JSON)
             .accept(APPLICATION_JSON)
             .header("Nav-Callid", callId)
