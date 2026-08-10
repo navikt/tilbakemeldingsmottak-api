@@ -37,7 +37,7 @@ internal class SecurityIT : ApplicationTest() {
     fun `protected endpoint requires authentication when auth is enabled`() {
         restTemplate!!
             .get()
-            .uri("/test/security/issuer")
+            .uri("/test/security/claim")
             .exchange()
             .expectStatus().isUnauthorized
     }

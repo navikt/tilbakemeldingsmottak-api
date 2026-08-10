@@ -35,6 +35,42 @@ Applikasjonen kjører Java 21. Hvordan bygge, teste og kjøre koden:
 * Kjør `docker compose up` for å kjøre opp mocks og database lokalt
 * Kjør Spring Boot applikasjonen med `local` som aktiv profil (`-Dspring.profiles.active=local`)
 
+### Maven-konfigurasjon for nedlasting av nav-pakker fra github
+
+For å kunne kjøre `mvn install` må man oppgi GitHub PAT med lesetilgang til nav-pakker, hvis ikke får man en lignende feilmelding:
+
+```
+[ERROR] Could not transfer artifact no.nav.security:token-validation-spring-test:jar:6.0.6 from/to github (https://maven.pkg.github.com/navikt/maven-release): status code: 401, reason phrase: Unauthorized (401)
+```
+
+En måte å gjøre dette på er å bruke Maven sin innebygde støtte for kryptering av passord.
+
+Først, lag et master-passord for maven:
+
+    mvn --encrypt-master-password
+
+Legg inn det krypterte passordet i `~/.m2/settings-security.xml`:
+
+    <settingsSecurity>
+      <master>{ENCRYPTED_MASTER_PASSWORD}</master>
+    </settingsSecurity>
+
+Krypter GitHub PAT:
+
+    mvn --encrypt-password
+
+Legg inn ditt github brukernavn og det krypterte passordet i `~/.m2/settings.xml`:
+
+    <settings>
+      <servers>
+        <server>
+          <id>github</id>
+          <username>YOUR_GITHUB_USERNAME</username>
+          <password>{ENCRYPTED_GITHUB_PAT}</password>
+        </server>
+      </servers>
+    </settings>
+
 ### Autentisering
 
 Denne applikasjonen forventer token fra issuers `azuread` eller `tokenx`.

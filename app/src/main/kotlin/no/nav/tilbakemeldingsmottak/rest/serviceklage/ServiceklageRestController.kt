@@ -16,13 +16,11 @@ import no.nav.tilbakemeldingsmottak.util.OidcUtils
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@PreAuthorize("@issuerChecker.hasIssuer(authentication, {'azuread', 'tokenx'})")
 class ServiceklageRestController(
     private val opprettServiceklageService: OpprettServiceklageService,
     private val opprettServiceklageValidator: OpprettServiceklageValidator,
