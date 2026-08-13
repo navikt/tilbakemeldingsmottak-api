@@ -79,7 +79,7 @@
         <springdoc-openapi.version>3.0.3</springdoc-openapi.version>
         <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
         <swagger-annotations.version>2.2.49</swagger-annotations.version>
-        <httpcore5.version>5.4.2</httpcore5.version>
+        <httpcore5.version>5.4.3</httpcore5.version>
         <javax.activation.version>1.2.0</javax.activation.version>
         <poi.version>5.5.1</poi.version>
 
