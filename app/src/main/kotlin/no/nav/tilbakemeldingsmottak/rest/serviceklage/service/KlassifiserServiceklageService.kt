@@ -26,7 +26,6 @@ import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.EndreOppga
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.OpprettOppgaveRequestToMapper
 import no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support.ServiceklageMailHelper
 import no.nav.tilbakemeldingsmottak.util.OidcUtils
-import no.nav.tilbakemeldingsmottak.util.SkjemaUtils.Companion.getQuestionById
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -152,12 +151,10 @@ class KlassifiserServiceklageService(
         questions?.let { questionList ->
             for (question in questionList) {
                 if (answersMap.containsKey(question.id) && !questionAnswerMap.containsKey(question.text)) {
-                    val foundQuestion = question.id?.let { getQuestionById(questionList, it) }
-                        ?: throw ServerErrorException("Finner ikke spørsmål med id=${question.id}")
-
-                    val questionText = foundQuestion.text
-                    if (questionText != null) {
-                        questionAnswerMap[questionText] = answersMap[foundQuestion.id] ?: ""
+                    // Spørsmålet vi allerede står på er riktig; et oppslag på id kan treffe en
+                    // duplikat-forekomst i en annen svargren
+                    question.text?.let { questionText ->
+                        questionAnswerMap[questionText] = answersMap[question.id] ?: ""
                     }
                 }
 
