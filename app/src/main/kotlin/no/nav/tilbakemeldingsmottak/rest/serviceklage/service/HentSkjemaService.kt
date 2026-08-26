@@ -15,9 +15,9 @@ import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import no.nav.tilbakemeldingsmottak.model.Answer
 import no.nav.tilbakemeldingsmottak.model.DefaultAnswers
 import no.nav.tilbakemeldingsmottak.model.HentSkjemaResponse
-import no.nav.tilbakemeldingsmottak.model.Question
 import no.nav.tilbakemeldingsmottak.repository.ServiceklageRepository
 import no.nav.tilbakemeldingsmottak.util.SkjemaUtils.Companion.getQuestionById
+import no.nav.tilbakemeldingsmottak.util.SkjemaUtils.Companion.updateQuestionsById
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
@@ -56,15 +56,8 @@ class HentSkjemaService(
         var response = readSkjema()
         val enheter = hentEnheter()
 
-        val updatedQuestionPaaklaget =
-            response.questions?.let { getQuestionById(it, ENHETSNUMMER_PAAKLAGET)?.copy(answers = enheter) }
-                ?: throw ServerErrorException("Finner ikke spørsmål med id=$ENHETSNUMMER_PAAKLAGET")
-        response = updateQuestionInResponse(response, updatedQuestionPaaklaget)
-
-        val updatedQuestionBehandlede =
-            response.questions?.let { getQuestionById(it, ENHETSNUMMER_BEHANDLENDE)?.copy(answers = enheter) }
-                ?: throw ServerErrorException("Finner ikke spørsmål med id=$ENHETSNUMMER_BEHANDLENDE")
-        response = updateQuestionInResponse(response, updatedQuestionBehandlede)
+        response = setAnswersOnQuestions(response, ENHETSNUMMER_PAAKLAGET, enheter)
+        response = setAnswersOnQuestions(response, ENHETSNUMMER_BEHANDLENDE, enheter)
 
         serviceklageRepository.findByJournalpostId(journalpostId)?.let { serviceklage ->
             response = response.copy(
@@ -78,26 +71,17 @@ class HentSkjemaService(
         return response
     }
 
-    fun updateQuestionInResponse(response: HentSkjemaResponse, updatedQuestion: Question): HentSkjemaResponse {
-        val updatedQuestions = updateQuestionInResponseRecursively(response.questions, updatedQuestion)
-        return response.copy(questions = updatedQuestions)
-    }
-
-    fun updateQuestionInResponseRecursively(questions: List<Question>?, updatedQuestion: Question): List<Question> {
-        return questions?.map { question ->
-            if (question.id == updatedQuestion.id) {
-                // If the current question matches the updated question, replace it
-                updatedQuestion
-            } else {
-                // If it's not the updated question, check if it has answers with nested questions
-                val updatedAnswers = question.answers?.map { answer ->
-                    val updatedQuestionsInAnswer =
-                        updateQuestionInResponseRecursively(answer.questions, updatedQuestion)
-                    answer.copy(questions = updatedQuestionsInAnswer)
-                }
-                question.copy(answers = updatedAnswers)
-            }
-        } ?: emptyList()
+    // Spørsmålet kan være duplisert inn i flere svargrener, så alle forekomstene må få enhetene
+    private fun setAnswersOnQuestions(
+        response: HentSkjemaResponse,
+        id: String,
+        answers: List<Answer>
+    ): HentSkjemaResponse {
+        val questions = response.questions
+        if (questions == null || getQuestionById(questions, id) == null) {
+            throw ServerErrorException("Finner ikke spørsmål med id=$id")
+        }
+        return response.copy(questions = updateQuestionsById(questions, id) { it.copy(answers = answers) })
     }
 
 
