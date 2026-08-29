@@ -75,7 +75,7 @@
         <tika-core.version>3.3.0</tika-core.version>
         <pdfbox.version>3.0.7</pdfbox.version>
         <openhtml.version>1.1.37</openhtml.version>
-        <handlebars.version>4.5.0</handlebars.version>
+        <handlebars.version>4.5.2</handlebars.version>
         <springdoc-openapi.version>3.0.3</springdoc-openapi.version>
         <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
         <swagger-annotations.version>2.2.49</swagger-annotations.version>
