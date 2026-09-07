@@ -16,6 +16,7 @@ class OpprettOppgaveRequestToMapper(private val pdlService: PdlService) {
     private val FAGPOST_ENHETSNR = "2950"
     private val PRIORITET = "NORM"
     private val SERVICEKLAGE_TEMA = "SER"
+    private val APP_TILBAKEMELDINGSMOTTAK = "TILBAKEMELDINGSMOTTAK"
     private val RETTING_TEMA = "RPO"
     private val OPPGAVETYPE_VUR = "VUR"
     private val OPPGAVETYPE_JFR = "JFR"
@@ -38,6 +39,7 @@ class OpprettOppgaveRequestToMapper(private val pdlService: PdlService) {
             aktivDato = LocalDate.now().toString(),
             journalpostId = opprettJournalpostResponseTo.journalpostId,
             tema = SERVICEKLAGE_TEMA,
+            behandlesAvApplikasjon = APP_TILBAKEMELDINGSMOTTAK,
             oppgavetype = if (JOURNALSTATUS_ENDELIG == opprettJournalpostResponseTo.journalstatus) OPPGAVETYPE_VUR else OPPGAVETYPE_JFR,
             fristFerdigstillelse = LocalDate.now().plusDays(DAGER_FRIST).toString()
         )
