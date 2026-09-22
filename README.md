@@ -27,7 +27,7 @@ Applikasjonen er skrevet i kotlin med Spring Boot og maven for bygging.
 
 # Komme i gang
 
-Applikasjonen kjører Java 25. Hvordan bygge, teste og kjøre koden:
+Applikasjonen kjører Java 21. Hvordan bygge, teste og kjøre koden:
 
 ## Bygging lokalt
 
