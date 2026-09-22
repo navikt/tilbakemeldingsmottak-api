@@ -33,7 +33,7 @@
 
         <!-- NAV internal dependencies -->
         <token-support.version>6.0.12</token-support.version>
-        <mock-oauth2-server.version>3.0.3</mock-oauth2-server.version>
+        <mock-oauth2-server.version>6.0.2</mock-oauth2-server.version>
         <spring-core.version>7.0.9</spring-core.version>
         <spring-security-test.version>7.1.1</spring-security-test.version>
         <caffeine.version>3.2.4</caffeine.version>
@@ -71,8 +71,8 @@
         <mockk.version>1.14.11</mockk.version>
 
         <spring-retry.version>2.0.12</spring-retry.version>
-        <flyway.version>12.5.0</flyway.version>
-        <tika-core.version>3.3.2</tika-core.version>
+        <flyway.version>13.7.0</flyway.version>
+        <tika-core.version>4.0.0</tika-core.version>
         <pdfbox.version>3.0.8</pdfbox.version>
         <openhtml.version>1.1.86</openhtml.version>
         <handlebars.version>4.5.5</handlebars.version>
@@ -91,7 +91,7 @@
         <maven-filtering>3.5.1</maven-filtering>
         <maven-enforcer.version>3.6.3</maven-enforcer.version>
         <versions-maven-plugin.version>2.22.0</versions-maven-plugin.version>
-        <graphql-kotlin.version>9.3.1</graphql-kotlin.version>
+        <graphql-kotlin.version>10.2.2</graphql-kotlin.version>
 
         <springmockk.version>5.0.1</springmockk.version>
 
