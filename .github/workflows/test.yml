@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
-          java-version: 21
+          java-version: 25
           cache: 'maven'
       - name: Cache dependencies
 
@@ -31,4 +31,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
         run: |
           mvn clean install --settings maven-settings.xml
-
