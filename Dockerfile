@@ -7,4 +7,3 @@ COPY app/target/app.jar /app/app.jar
 WORKDIR /app
 
 CMD ["app.jar"]
-

@@ -31,4 +31,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
         run: |
           mvn clean install --settings maven-settings.xml
-
