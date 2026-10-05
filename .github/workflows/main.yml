@@ -58,7 +58,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
       - name: Deploy
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@v3
         env:
           PRINT_PAYLOAD: true
           CLUSTER: prod-gcp
