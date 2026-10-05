@@ -1,8 +1,5 @@
 package no.nav.tilbakemeldingsmottak
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.tilbakemeldingsmottak.consumer.norg2.Enhet
 import no.nav.tilbakemeldingsmottak.consumer.oppgave.domain.HentOppgaveResponseTo
 import no.nav.tilbakemeldingsmottak.consumer.saf.journalpost.DataJournalpost
@@ -39,18 +36,23 @@ import org.apache.pdfbox.Loader
 import org.apache.pdfbox.text.PDFTextStripper
 import java.nio.charset.StandardCharsets
 import java.time.LocalDateTime
+import tools.jackson.dataformat.yaml.YAMLMapper
+import tools.jackson.module.kotlin.jacksonObjectMapper
+import tools.jackson.module.kotlin.kotlinModule
 
 object TestUtils {
     const val PERSONNUMMER = "01010096460"
     const val AKTOERID = "1234567890123"
     const val DOKUMENT_INFO_ID = "dokumentInfoId"
-    private val objectMapper = ObjectMapper().registerKotlinModule()
+    private val objectMapper = jacksonObjectMapper()
 
     object TestUtils {
 
         fun createHentSkjemaResponse(): HentSkjemaResponse {
             val schema = TestUtils::class.java.classLoader.getResourceAsStream("schema/schema.yaml")
-            val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
+            val mapper = YAMLMapper.builder()
+                .addModule(kotlinModule())
+                .build()
             val classpathSkjema = schema?.bufferedReader(StandardCharsets.UTF_8).use { it?.readText() }
             var response = mapper.readValue(classpathSkjema, HentSkjemaResponse::class.java)
 

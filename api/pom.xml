@@ -99,6 +99,8 @@
                                 <swaggerAnnotations>true</swaggerAnnotations>
                                 <useTags>true</useTags>
                                 <enumPropertyNaming>UPPERCASE</enumPropertyNaming>
+                                <generateJsonIncludeAnnotations>false</generateJsonIncludeAnnotations>
+                                <generateJsonSetterNullsAnnotations>false</generateJsonSetterNullsAnnotations>
                             </configOptions>
                         </configuration>
                     </execution>

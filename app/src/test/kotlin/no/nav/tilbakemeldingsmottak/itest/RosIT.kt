@@ -147,9 +147,8 @@ internal class RosIT : ApplicationTest() {
         verify(atLeast = 1) { aadMailClient.sendMailViaClient(capture(messageCapture)) }
 
         // Then
-        val messageSent = messageCapture.last().body
-        assertTrue(messageSent != null && messageSent.content != null)
-        assertTrue(messageSent!!.content.contains("&lt;script&gt;alert('Hallo, hvordan g&aring;r det?');&lt;/script&gt;"))
+        val content = requireNotNull(messageCapture.last().body?.content)
+        assertTrue(content.contains("&lt;script&gt;alert('Hallo, hvordan g&aring;r det?');&lt;/script&gt;"))
     }
 
 }
