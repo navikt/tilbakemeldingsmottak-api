@@ -48,6 +48,7 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.context.transaction.TestTransaction
 import tools.jackson.module.kotlin.jacksonObjectMapper
+import java.time.Duration
 
 
 internal class ServiceklageIT : ApplicationTest() {
@@ -141,6 +142,149 @@ internal class ServiceklageIT : ApplicationTest() {
 
         metricsRegistery.clear()
 
+    }
+
+    @Test
+    fun `Should finish task using assigned unit for serviceklage`() {
+        assertFerdigstillingBrukerTildeltEnhet(kommunalKlage = false)
+    }
+
+    @Test
+    fun `Should finish task using assigned unit for municipal complaint`() {
+        assertFerdigstillingBrukerTildeltEnhet(kommunalKlage = true)
+    }
+
+    private fun assertFerdigstillingBrukerTildeltEnhet(kommunalKlage: Boolean) {
+        val saksbehandler = "$SAKSBEHANDLER-oppgave-$kommunalKlage"
+        val jwt = createMockJwtWithScope(azureIssuer, saksbehandler, "serviceklage-klassifisering")
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(jwt)
+
+        WireMock.stubFor(
+            WireMock.get(WireMock.urlEqualTo("/OPPGAVE/$OPPGAVE_ID"))
+                .willReturn(
+                    WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBodyFile("oppgave/hentOppgaveResponse.json")
+                )
+        )
+        WireMock.stubFor(
+            WireMock.post(WireMock.urlEqualTo("/fake/token"))
+                .withRequestBody(WireMock.containing("requested_token_use=on_behalf_of"))
+                .withRequestBody(WireMock.containing("scope=scope-oppgave-obo"))
+                .willReturn(
+                    WireMock.aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("""{"access_token":"oppgave-obo-token","token_type":"Bearer","expires_in":3600}""")
+                )
+        )
+
+        val builder = KlassifiserServiceklageRequestBuilder()
+        if (kommunalKlage) {
+            builder.asKommunalKlage()
+        }
+        val requestEntity = HttpEntity(
+            builder.build(),
+            createHeaders(Constants.AZURE_ISSUER, saksbehandler, "serviceklage-klassifisering")
+        )
+
+        val response = api!!.classifyServiceklage(requestEntity, OPPGAVE_ID)
+        assertEquals(HttpStatus.OK, response.statusCode)
+
+        WireMock.verify(
+            1,
+            WireMock.patchRequestedFor(WireMock.urlEqualTo("/OPPGAVE/$OPPGAVE_ID"))
+                .withHeader("Authorization", WireMock.equalTo("Bearer oppgave-obo-token"))
+                .withHeader("Content-Type", WireMock.equalTo("application/json"))
+                .withRequestBody(
+                    WireMock.equalToJson(
+                        """
+                        {
+                          "id": "$OPPGAVE_ID",
+                          "versjon": "1",
+                          "tildeltEnhetsnr": "4100",
+                          "endretAvEnhetsnr": "4100",
+                          "tema": "AAP",
+                          "aktivDato": "2023-09-15",
+                          "prioritet": "NORM",
+                          "oppgavetype": "JFR",
+                          "journalpostId": "$JOURNALPOST_ID",
+                          "status": "FERDIGSTILT"
+                        }
+                        """.trimIndent()
+                    )
+                )
+        )
+        WireMock.verify(
+            WireMock.postRequestedFor(WireMock.urlEqualTo("/fake/token"))
+                .withRequestBody(WireMock.containing("requested_token_use=on_behalf_of"))
+                .withRequestBody(WireMock.containing("scope=scope-oppgave-obo"))
+                .withRequestBody(WireMock.containing("assertion=mock-token"))
+        )
+        WireMock.verify(
+            if (kommunalKlage) 1 else 0,
+            WireMock.postRequestedFor(WireMock.urlEqualTo("/OPPGAVE"))
+        )
+    }
+
+    @Test
+    fun `Should return OPPGAVE_FORBIDDEN when schema cannot be opened`() {
+        assertOppgaveForbiddenVedAapning("hentskjema")
+    }
+
+    @Test
+    fun `Should return OPPGAVE_FORBIDDEN when document cannot be opened`() {
+        assertOppgaveForbiddenVedAapning("hentdokument")
+    }
+
+    private fun assertOppgaveForbiddenVedAapning(endpoint: String) {
+        val jwt = createMockJwtWithScope(azureIssuer, SAKSBEHANDLER, "serviceklage-klassifisering")
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(jwt)
+        WireMock.stubFor(
+            WireMock.get(WireMock.urlEqualTo("/OPPGAVE/$OPPGAVE_ID"))
+                .willReturn(WireMock.aResponse().withStatus(403))
+        )
+
+        restTemplate!!.mutate()
+            .responseTimeout(Duration.ofMinutes(2))
+            .build()
+            .get()
+            .uri("/rest/taskserviceklage/$endpoint/$OPPGAVE_ID")
+            .headers { it.addAll(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering")) }
+            .exchange()
+            .expectStatus().isForbidden
+            .expectBody()
+            .jsonPath("$.errorCode").isEqualTo(ErrorCode.OPPGAVE_FORBIDDEN.value)
+    }
+
+    @Test
+    fun `Should return OPPGAVE_FORBIDDEN when task GET rejects classification`() {
+        assertOppgaveForbiddenVedKlassifisering("GET")
+    }
+
+    @Test
+    fun `Should return OPPGAVE_FORBIDDEN when task PATCH rejects classification`() {
+        assertOppgaveForbiddenVedKlassifisering("PATCH")
+    }
+
+    private fun assertOppgaveForbiddenVedKlassifisering(method: String) {
+        val jwt = createMockJwtWithScope(azureIssuer, SAKSBEHANDLER, "serviceklage-klassifisering")
+        `when`(azureJwtDecoder.decode(anyString())).thenReturn(jwt)
+        WireMock.stubFor(
+            WireMock.request(method, WireMock.urlEqualTo("/OPPGAVE/$OPPGAVE_ID"))
+                .willReturn(WireMock.aResponse().withStatus(403))
+        )
+
+        restTemplate!!.mutate()
+            .responseTimeout(Duration.ofMinutes(2))
+            .build()
+            .put()
+            .uri("/rest/taskserviceklage/klassifiser?oppgaveId=$OPPGAVE_ID")
+            .headers { it.addAll(createHeaders(Constants.AZURE_ISSUER, SAKSBEHANDLER, "serviceklage-klassifisering")) }
+            .bodyValue(KlassifiserServiceklageRequestBuilder().build())
+            .exchange()
+            .expectStatus().isForbidden
+            .expectBody()
+            .jsonPath("$.errorCode").isEqualTo(ErrorCode.OPPGAVE_FORBIDDEN.value)
     }
 
 

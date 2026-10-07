@@ -17,6 +17,7 @@ class EndreOppgaveRequestToMapper {
             oppgavetype = hentOppgaveResponseTo.oppgavetype,
             prioritet = hentOppgaveResponseTo.prioritet,
             tildeltEnhetsnr = hentOppgaveResponseTo.tildeltEnhetsnr,
+            endretAvEnhetsnr = hentOppgaveResponseTo.tildeltEnhetsnr,
             versjon = hentOppgaveResponseTo.versjon,
             tema = hentOppgaveResponseTo.tema,
             status = hentOppgaveResponseTo.status
