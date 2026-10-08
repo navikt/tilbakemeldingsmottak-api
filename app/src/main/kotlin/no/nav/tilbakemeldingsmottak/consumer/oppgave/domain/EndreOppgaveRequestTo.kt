@@ -5,6 +5,7 @@ data class EndreOppgaveRequestTo(
 
     val id: String? = null,
     val tildeltEnhetsnr: String? = null,
+    val endretAvEnhetsnr: String? = null,
     val tema: String? = null,
     val aktivDato: String? = null,
     val prioritet: String? = null,

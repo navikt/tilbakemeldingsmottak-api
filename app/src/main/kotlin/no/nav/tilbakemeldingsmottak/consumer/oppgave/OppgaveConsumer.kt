@@ -95,6 +95,9 @@ class OppgaveConsumer(
             .body(oppgaveId)
             .header("X-Correlation-ID", MDC.get(MDC_CALL_ID))
             .retrieve()
+            .onStatus(HttpStatusCode::isError) { _, response ->
+                handleError(response, "oppgave (hent oppgave)")
+            }
             .body(HentOppgaveResponseTo::class.java)
             ?: throw ClientErrorException("Ingen oppgave hentet for oppgave id= $oppgaveId")
     }
