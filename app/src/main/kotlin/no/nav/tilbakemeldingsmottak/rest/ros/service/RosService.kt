@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.ros.service
 
-import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService
+import no.nav.tilbakemeldingsmottak.consumer.email.EmailService
 import no.nav.tilbakemeldingsmottak.model.SendRosRequest
 import no.nav.tilbakemeldingsmottak.model.SendRosRequestHvemRoses
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent
@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class RosService(private val emailService: AzureEmailService) {
+class RosService(private val emailService: EmailService) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -23,7 +23,7 @@ class RosService(private val emailService: AzureEmailService) {
             "Ros til NAV sendt inn via skjema på nav.no",
             createContent(request)
         )
-        log.info("Ros til NAV videresendt til $emailToAddress")
+        log.info("Varsling om ros til Nav behandlet")
     }
 
     private fun createContent(request: SendRosRequest): String {

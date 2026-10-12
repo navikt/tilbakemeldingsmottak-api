@@ -1,12 +1,12 @@
 package no.nav.tilbakemeldingsmottak.rest.serviceklage.service.support
 
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException
-import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService
+import no.nav.tilbakemeldingsmottak.consumer.email.EmailService
 import no.nav.tilbakemeldingsmottak.exceptions.ServerErrorException
 import org.springframework.stereotype.Component
 
 @Component
-class ServiceklageMailHelper(private val emailService: AzureEmailService) {
+class ServiceklageMailHelper(private val emailService: EmailService) {
     fun sendEmail(
         fromAddress: String,
         toAddress: String,

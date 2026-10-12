@@ -98,7 +98,7 @@ class KlassifiserServiceklageService(
             errorCode = ErrorCode.TOKEN_EMAIL_MISSING
         )
 
-        log.info("Kvittering på innsendt klassifiseringsskjema sendes til epost: {}", email)
+        log.info("Behandler varsling om kvittering på innsendt klassifiseringsskjema")
 
         val questionAnswerMap = createQuestionAnswerMap(serviceklage, hentOppgaveResponseTo)
         val pdf = pdfService.opprettKlassifiseringPdf(questionAnswerMap, serviceklage)
@@ -110,7 +110,7 @@ class KlassifiserServiceklageService(
                     "Innholdet i ditt utfylte skjema ligger vedlagt.",
             fysiskDokument = pdf
         )
-        log.info("Kvittering sendt på mail til saksbehandler")
+        log.info("Varsling om kvittering til saksbehandler behandlet")
     }
 
     private fun createQuestionAnswerMap(

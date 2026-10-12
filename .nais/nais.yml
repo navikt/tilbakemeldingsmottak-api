@@ -116,14 +116,16 @@ spec:
       value: {{AZURE_DEFAULT_SCOPE}}
     - name: TENANT
       value: {{ TENANT }}
+    - name: EMAIL_ENABLED
+      value: "{{ EMAIL_ENABLED }}"
     - name: EMAIL_FROM_ADDRESS
       value: {{ EMAIL_FROM_ADDRESS }}
     - name: EMAIL_SERVICEKLAGE_ADDRESS
-      value: {{ EMAIL_SERVICEKLAGE_ADDRESS }}
+      value: "{{ EMAIL_SERVICEKLAGE_ADDRESS }}"
     - name: EMAIL_NAV_SUPPORT_ADDRESS
-      value: {{ EMAIL_NAV_SUPPORT_ADDRESS }}
+      value: "{{ EMAIL_NAV_SUPPORT_ADDRESS }}"
     - name: EMAIL_SAMISK_KONTAKT_ADDRESS
-      value: {{ EMAIL_SAMISK_KONTAKT_ADDRESS }}
+      value: "{{ EMAIL_SAMISK_KONTAKT_ADDRESS }}"
     - name: DOKARKIV_SCOPE
       value: {{ DOKARKIV_SCOPE }}
     - name: SAF_SCOPE

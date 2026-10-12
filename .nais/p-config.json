@@ -53,6 +53,7 @@
   "BIG_QUERY_DATASET": "tilbakemeldingsmottak_metrics",
   "AAD_EMAIL": "srvtilbakemeldings@nav.no",
   "EMAIL_FROM_ADDRESS": "srvtilbakemeldings@nav.no",
+  "EMAIL_ENABLED": true,
   "EMAIL_SERVICEKLAGE_ADDRESS": "nav.serviceklager@nav.no",
   "EMAIL_NAV_SUPPORT_ADDRESS": "support@nav.no",
   "EMAIL_SAMISK_KONTAKT_ADDRESS": "nav.kontaktsenter.finnmark.samisk.kontakt.bruker@nav.no",

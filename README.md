@@ -134,6 +134,19 @@ ut statistikk på dette.
 
 Håndteres av [Github workflow](https://github.com/navikt/tilbakemeldingsmottak-api/tree/main/.github/workflows)
 
+### E-postvarsling
+
+Tjenestene bruker `EmailService`. I produksjon er `EMAIL_ENABLED=true`, og `AzureEmailService`
+sender epost via Microsoft Graph med eksisterende avsender og mottakere.
+Begge preprod-konfigurasjonene har `EMAIL_ENABLED=false` og tomme mottakeradresser.
+Da bruker applikasjonen `LoggingEmailService`, som skriver en INFO-melding uten mottaker,
+emne, innhold eller vedlegg. Microsoft Graph-klienten opprettes ikke.
+
+Dette gjelder også kvitteringer til saksbehandlere og varsler når journalføring eller
+oppretting av oppgaver feiler. I preprod må disse hendelsene følges opp i loggene,
+ikke i en innboks. Lokal kjøring bruker også loggvarsling når `email.enabled` ikke er satt.
+Integrasjonstestene setter `email.enabled=true` og bruker en testklient uten e-postutsending.
+
 ## OpenAPI
 
 En OpenAPI definisjon ligger

@@ -3,13 +3,14 @@ package no.nav.tilbakemeldingsmottak.consumer.email.aad
 import com.microsoft.graph.models.*
 import no.nav.tilbakemeldingsmottak.consumer.email.EmailService
 import no.nav.tilbakemeldingsmottak.consumer.email.SendEmailException
-import org.apache.commons.text.StringEscapeUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
+@ConditionalOnProperty(prefix = "email", name = ["enabled"], havingValue = "true")
 class AzureEmailService(private val mailClient: AADMailClient) : EmailService {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -64,7 +65,7 @@ class AzureEmailService(private val mailClient: AADMailClient) : EmailService {
         assert(Objects.requireNonNull(message.from)?.emailAddress != null)
         assert(Objects.requireNonNull(Objects.requireNonNull(message.toRecipients)[0]).emailAddress != null)
         assert(message.body != null)
-        log.info("Send epost fra: " + message.from?.emailAddress?.address + " til: " + message.toRecipients?.get(0)?.emailAddress?.address + " body størrelse: " + message.body?.content?.length)
+        log.info("Sender epost")
         try {
             mailClient.sendMailViaClient(message)
         } catch (e: Exception) {

@@ -1,4 +1,6 @@
 Journalpost_v1_url: journalpost.url
+email:
+  enabled: true
 email_from_address: srvtilbakemeldings@preprod.local
 email_nav_support_address: nav-support@preprod.local
 email_samisk_kontakt_address: samisk-kontakt@preprod.local
