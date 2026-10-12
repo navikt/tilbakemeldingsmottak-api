@@ -134,11 +134,6 @@ ut statistikk på dette.
 
 Håndteres av [Github workflow](https://github.com/navikt/tilbakemeldingsmottak-api/tree/main/.github/workflows)
 
-## Prometheus-metrikker
-
-Nais scraper `GET /internal/metrics` uten token. Denne routen er åpen i sikkerhetsfilterkjeden.
-Andre routes under `/internal` krever fortsatt autentisering.
-
 ## OpenAPI
 
 En OpenAPI definisjon ligger
