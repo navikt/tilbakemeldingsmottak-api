@@ -1,5 +1,8 @@
 buffersize: 300
 
+email:
+  enabled: ${EMAIL_ENABLED}
+
 spring:
   config:
     activate:

@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.bestillingavsamtale.service
 
-import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService
+import no.nav.tilbakemeldingsmottak.consumer.email.EmailService
 import no.nav.tilbakemeldingsmottak.model.BestillSamtaleRequest
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent
 import org.apache.commons.text.StringEscapeUtils
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class BestillingAvSamtaleService(private val emailService: AzureEmailService) {
+class BestillingAvSamtaleService(private val emailService: EmailService) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Value("\${email_samisk_kontakt_address}")
@@ -21,7 +21,7 @@ class BestillingAvSamtaleService(private val emailService: AzureEmailService) {
             "Bestilling av samtale mottatt via skjema på nav.no",
             createContent(request)
         )
-        log.info("Bestilling av samtale videresendt til $emailToAddress")
+        log.info("Varsling om bestilling av samtale behandlet")
     }
 
     private fun createContent(request: BestillSamtaleRequest): String {

@@ -1,6 +1,6 @@
 package no.nav.tilbakemeldingsmottak.rest.feilogmangler.service
 
-import no.nav.tilbakemeldingsmottak.consumer.email.aad.AzureEmailService
+import no.nav.tilbakemeldingsmottak.consumer.email.EmailService
 import no.nav.tilbakemeldingsmottak.model.MeldFeilOgManglerRequest
 import no.nav.tilbakemeldingsmottak.rest.common.epost.HtmlContent
 import org.apache.commons.text.StringEscapeUtils
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class FeilOgManglerService(private val emailService: AzureEmailService) {
+class FeilOgManglerService(private val emailService: EmailService) {
 
     private val log = LoggerFactory.getLogger(javaClass)
 
@@ -22,7 +22,7 @@ class FeilOgManglerService(private val emailService: AzureEmailService) {
             "Feil/mangel på nav.no meldt via skjema på nav.no",
             createContent(request)
         )
-        log.info("Melding om feil og mangler videresendt til $emailToAddress")
+        log.info("Varsling om feil og mangler behandlet")
     }
 
     private fun createContent(request: MeldFeilOgManglerRequest): String {

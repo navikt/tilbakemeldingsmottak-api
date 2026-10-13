@@ -6,11 +6,13 @@ import com.microsoft.graph.users.item.sendmail.SendMailPostRequestBody
 import io.github.resilience4j.retry.annotation.Retry
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 @Component
 @Profile("nais")
+@ConditionalOnProperty(prefix = "email", name = ["enabled"], havingValue = "true")
 class AADMailClientImpl(private val aadProperties: AADProperties, private val graphClient: GraphServiceClient) :
     AADMailClient {
 
@@ -24,7 +26,7 @@ class AADMailClientImpl(private val aadProperties: AADProperties, private val gr
         fallbackMethod = "mailRecover",
     )
     override fun sendMailViaClient(message: Message) {
-        log.debug("Skal sende melding: ${message.subject}, ${message.body?.content}")
+        log.debug("Skal sende epost via Microsoft Graph")
 
         val sendMailPostRequestBody = SendMailPostRequestBody()
         sendMailPostRequestBody.message = message
