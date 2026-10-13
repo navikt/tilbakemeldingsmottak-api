@@ -3,6 +3,7 @@ package no.nav.tilbakemeldingsmottak.config.security
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.oauth2.jwt.JwtDecoder
@@ -32,6 +33,7 @@ class SecurityFilterChainFactory(
             }
             .authorizeHttpRequests { auth ->
                 auth.requestMatchers(*PUBLIC_REQUEST_MATCHERS).permitAll()
+                auth.requestMatchers(HttpMethod.GET, "/internal/metrics").permitAll()
                 auth.anyRequest().authenticated()
             }
             .oauth2ResourceServer { rs ->
