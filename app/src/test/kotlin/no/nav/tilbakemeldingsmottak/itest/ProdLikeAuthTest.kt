@@ -12,7 +12,9 @@ import no.nav.tilbakemeldingsmottak.Application
 import no.nav.tilbakemeldingsmottak.WireMockStubs
 import no.nav.tilbakemeldingsmottak.bigquery.serviceklager.ServiceklagerBigQuery
 import no.nav.tilbakemeldingsmottak.consumer.email.aad.AADMailClient
+import no.nav.tilbakemeldingsmottak.metrics.MetricsUtils
 import no.nav.tilbakemeldingsmottak.util.builders.OpprettServiceklageV2RequestBuilder
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
@@ -50,7 +53,7 @@ import java.util.UUID
 @ExtendWith(SpringExtension::class)
 @EnableMockOAuth2Server
 @AutoConfigureWebTestClient
-internal class ProdLikeAuthIT {
+internal class ProdLikeAuthTest {
 
     private val objectMapper = jacksonObjectMapper()
     private val aud = "aud-localhost"
@@ -66,6 +69,9 @@ internal class ProdLikeAuthIT {
 
     @Autowired
     lateinit var mockOAuth2Server: MockOAuth2Server
+
+    @Autowired
+    lateinit var metricsUtils: MetricsUtils
 
     companion object {
         @JvmField
@@ -113,15 +119,60 @@ internal class ProdLikeAuthIT {
     }
 
     @Test
+    fun `prometheus metrics are accessible without authentication`() {
+        metricsUtils.incrementNotLoggedInRequestCounter("scrape-regression", "metrics")
+
+        webTestClient.get()
+            .uri("/internal/metrics")
+            .exchange()
+            .expectStatus().isOk
+            .expectHeader().contentTypeCompatibleWith(MediaType.TEXT_PLAIN)
+            .expectBody(String::class.java).value { body ->
+                val metrics = requireNotNull(body)
+                assertTrue(metrics.contains("# TYPE dok_request_not_logged_in_total counter"))
+                assertTrue(metrics.contains("dok_request_not_logged_in_total{"))
+                assertTrue(metrics.contains("class=\"scrape-regression\""))
+            }
+    }
+
+    @Test
+    fun `other internal paths require authentication`() {
+        listOf("/internal/health", "/internal/metrics/details").forEach { path ->
+            webTestClient.get()
+                .uri(path)
+                .exchange()
+                .expectStatus().isUnauthorized
+        }
+    }
+
+    @Test
+    fun `other metrics methods require authentication`() {
+        listOf(HttpMethod.HEAD, HttpMethod.OPTIONS).forEach { method ->
+            webTestClient.method(method)
+                .uri("/internal/metrics")
+                .exchange()
+                .expectStatus().isUnauthorized
+        }
+    }
+
+    @Test
+    fun `liveness is accessible without authentication`() {
+        webTestClient.get()
+            .uri("/isAlive")
+            .exchange()
+            .expectStatus().isOk
+    }
+
+    @Test
     fun `M2M token from Azure AD is accepted (issue 339 regression)`() {
         val m2m = token("microsoft", "client-id", mapOf("scp" to "defaultaccess"))
-        postServiceklageV2(m2m).expectStatus().value { code -> assert(code == 200) }
+        postServiceklageV2(m2m).expectStatus().isOk
     }
 
     @Test
     fun `OBO token from TokenX is accepted`() {
         val obo = token("tokenx", "01010096460", mapOf("pid" to "01010096460", "acr" to "Level4"))
-        postServiceklageV2(obo).expectStatus().value { code -> assert(code == 200) }
+        postServiceklageV2(obo).expectStatus().isOk
     }
 
     @Test
