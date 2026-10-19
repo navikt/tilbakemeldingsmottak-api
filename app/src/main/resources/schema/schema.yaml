@@ -248,7 +248,7 @@ questions:
         type: CHECKBOX
         optional: true
         answers:
-            -   answer: Åpningstider på NAV-kontoret
+            -   answer: Åpningstider på Nav-kontoret
             -   answer: Språk
             -   answer: Klage
 
@@ -256,10 +256,10 @@ questions:
         text: Hva gjelder serviceklagen?
         type: RADIO
         answers:
-            -   answer: Vente på NAV
+            -   answer: Vente på Nav
                 questions:
                     -   id: VENTE
-                        text: Vente på NAV
+                        text: Vente på Nav
                         type: RADIO
                         answers:
                             -   answer: Saksbehandlingstid
@@ -275,7 +275,7 @@ questions:
                         type: RADIO
                         answers:
                             -   answer: Mulighet til kontakt i dagens kanaler
-                            -   answer: Nedetid i NAVs løsninger
+                            -   answer: Nedetid i Navs løsninger
                             -   answer: Ønsket kanal mangler
                             -   answer: Annet
             -   answer: Informasjon
@@ -286,10 +286,10 @@ questions:
                         answers:
                             -   answer: Muntlig over telefonen
                             -   answer: Muntlig ved oppmøte/møte
-                            -   answer: På nav.no /andre brukerflater i NAV
+                            -   answer: På nav.no /andre brukerflater i Nav
                             -   answer: I brev
                             -   answer: Annet
-            -   answer: Funksjonalitet i NAVs løsninger
+            -   answer: Funksjonalitet i Navs løsninger
             -   answer: Veiledning og oppfølging mot arbeid
                 questions:
                     -   id: VEILEDNING
@@ -298,9 +298,9 @@ questions:
                         answers:
                             -   answer: Muntlig over telefon
                             -   answer: Muntlig ved oppmøte/møte
-                            -   answer: På nav.no/andre brukerflater i NAV
+                            -   answer: På nav.no/andre brukerflater i Nav
                             -   answer: Annet
-            -   answer: NAV-ansattes oppførsel
+            -   answer: Nav-ansattes oppførsel
             -   answer: Annet
                 questions:
                     -   id: TEMA_UTDYPNING
@@ -314,8 +314,8 @@ questions:
         text: Hva er utfallet av serviceklagen?
         type: RADIO
         answers:
-            -   answer: a) Regler/rutiner/frister er fulgt - NAV har ivaretatt bruker godt
-            -   answer: b) Regler/rutiner/frister er fulgt men NAV burde ivaretatt bruker bedre
+            -   answer: a) Regler/rutiner/frister er fulgt - Nav har ivaretatt bruker godt
+            -   answer: b) Regler/rutiner/frister er fulgt men Nav burde ivaretatt bruker bedre
                 questions:
                     -   id: AARSAK
                         text: Hva er, etter din mening, de bakenforliggende årsakene?
@@ -324,12 +324,12 @@ questions:
                             message: Ikke identifiser bruker eller ansatt
                             type: WARN
                     -   id: TILTAK
-                        text: Hvordan kan NAV hindre at det samme skjer igjen, etter din mening?
+                        text: Hvordan kan Nav hindre at det samme skjer igjen, etter din mening?
                         type: TEXT
                         banner:
                             message: Ikke identifiser bruker eller ansatt
                             type: WARN
-            -   answer: c) Regler/rutiner/frister er brutt - NAV burde ivaretatt bruker bedre
+            -   answer: c) Regler/rutiner/frister er brutt - Nav burde ivaretatt bruker bedre
                 questions:
                     -   id: AARSAK
                         text: Hva er, etter din mening, de bakenforliggende årsakene?
@@ -338,7 +338,7 @@ questions:
                             message: Ikke identifiser bruker eller ansatt
                             type: WARN
                     -   id: TILTAK
-                        text: Hvordan kan NAV hindre at det samme skjer igjen, etter din mening?
+                        text: Hvordan kan Nav hindre at det samme skjer igjen, etter din mening?
                         type: TEXT
                         banner:
                             message: Ikke identifiser bruker eller ansatt

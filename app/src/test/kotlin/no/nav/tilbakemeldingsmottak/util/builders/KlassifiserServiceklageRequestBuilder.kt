@@ -23,14 +23,14 @@ class KlassifiserServiceklageRequestBuilder {
     private var GJELDER: String? = "Gjelder én ytelse eller tjeneste"
     private var BESKRIVELSE: String? = "Bruker klager på service"
     private var YTELSE: String? = "AAP - Arbeidsavklaringspenger"
-    private var RELATERT: String? = "Åpningstider på NAV-kontoret,Språk"
-    private var TEMA: String? = "Vente på NAV"
+    private var RELATERT: String? = "Åpningstider på Nav-kontoret,Språk"
+    private var TEMA: String? = "Vente på Nav"
     private var VENTE: String? = "Saksbehandlingstid"
     private var TILGJENGELIGHET: String? = null
     private var INFORMASJON: String? = null
     private var VEILEDNING: String? = null
     private var TEMA_UTDYPNING: String? = "Tema utdypning"
-    private var UTFALL: String? = "b) Regler/rutiner/frister er fulgt men NAV burde ivaretatt bruker bedre"
+    private var UTFALL: String? = "b) Regler/rutiner/frister er fulgt men Nav burde ivaretatt bruker bedre"
     private var AARSAK: String? = "Service har vært dårlig"
     private var TILTAK: String? = "Gi bedre service"
     private var SVARMETODE: String? = SVAR_IKKE_NOEDVENDIG_ANSWER
